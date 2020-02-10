@@ -13,3 +13,10 @@ export class Venta{
         
 }
 
+class Factura{
+    fecha:string
+    vendedor:string
+    documento:string
+    cliente:string
+}
+

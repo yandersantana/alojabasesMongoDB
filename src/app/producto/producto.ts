@@ -25,7 +25,7 @@ export class ProductoDetalleVenta{
     disponible:number
     precio_min:number
     cantidad:number
-    equivalencia:number
+    equivalencia:string
     precio_venta:number
     total:number
     pedir:boolean

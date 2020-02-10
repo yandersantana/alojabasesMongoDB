@@ -3,6 +3,7 @@ import { Venta } from './venta';
 import { Producto, ProductoDetalleVenta } from '../producto/producto';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
+import { CalculadoraComponent } from './calculadora/calculadora.component';
 
 @Component({
   selector: 'app-ventas',
@@ -18,6 +19,8 @@ export class VentasComponent implements OnInit {
    productosVendidos:ProductoDetalleVenta[] = []
    newButtonEnabled:boolean=true
     medida:string = "m2"
+    cantidad:number
+    cantidadPiezas:number
    private visibleCalculadora:boolean=false
 
   constructor(private db:AngularFirestore) {
@@ -74,10 +77,10 @@ export class VentasComponent implements OnInit {
         console.log("entro")
        
       let cajas = Math.trunc(this.productosVendidos[this.productosVendidos.length - 1].cantidad/element['m_caja']);
-      
-      let piezas= (this.productosVendidos[this.productosVendidos.length - 1].cantidad * Math.trunc(element['p_caja'] /element['m_caja'])) -(cajas * element['p_caja']); 
+      console.log("CAJAS "+ cajas)
+      let piezas= Math.trunc(this.productosVendidos[this.productosVendidos.length - 1].cantidad * element['p_caja'] /element['m_caja']) -(cajas * element['p_caja']); 
 
-      this.productosVendidos[this.productosVendidos.length - 1].equivalencia = piezas
+      this.productosVendidos[this.productosVendidos.length - 1].equivalencia = cajas+"C "+ piezas+"P"
       }})
     
   }
@@ -101,12 +104,34 @@ export class VentasComponent implements OnInit {
   }
 
 generarFactura(e){
-  this.db
-            .collection("coffeeOrders")
-            .add(this.productosVendidos)
-            .then(a => alert("Facturas ingresadas"));
-    
+  console.log("entro")
+  this.post().then(res=>{
+    console.log("bien")
+  })
 }
 
+post(){
+  return new Promise<any>((resolve, reject) =>{
+    this.db
+        .collection("/ventas")
+        .add({...this.productosVendidos[this.productosVendidos.length - 1]})
+        .then(res => {}, err => reject(err));
+});   
+}
+
+calcularMetros(e){
+  console.log(this.productosVendidos[this.productosVendidos.length - 1].nombreComercial)
+  let tmp = this.productosVendidos[this.productosVendidos.length - 1].nombreComercial.split(' - ')
+  
+  this.productos.forEach(element => {
+    
+    if(element['clasificacion'] == tmp[0] && element['nombre'] == tmp[1] && element['dimension'] == tmp[2] && element['calidad'] == tmp[3]){
+      console.log("entro")
+     
+    let metros = (element['m_caja']*this.cantidad) + (this.cantidadPiezas * element['m_caja']/element['p_caja']);
+    console.log(metros)
+    }})
+
+}
 
 }

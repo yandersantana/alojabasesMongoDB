@@ -10,7 +10,7 @@
             <dx-button
             [text]="'Generar Factura'"
             [type]="success"
-            (onItemClick)="generarFactura($event)">
+            (onClick)="generarFactura($event)">
             </dx-button>
             
         </div>
@@ -141,12 +141,7 @@
                 <dx-text-box [(value)]="p.precio_min" [disabled]="false" [readOnly]="true"></dx-text-box>                
             </div>
             <div class ="col-1">
-                <dx-number-box
-                [value]="p.equivalencia"
-                [disabled]="true"
-                [readOnly]="false"
-                [min]="value" [max]="value">
-                </dx-number-box>
+                <dx-text-box [(value)]="p.equivalencia" [disabled]="false" [readOnly]="true"></dx-text-box>
             </div>
             <div class ="col-1">
                 <dx-number-box
@@ -197,11 +192,28 @@ title="'Information'"
 [closeOnOutsideClick]="true"
 [(visible)]="visibleCalculadora">
 <h2>Convertor de m2 a cajas</h2>
+<dx-number-box
+[(value)]="cantidad"
+[showSpinButtons]="true"
+[showClearButton]="true"
+[disabled]="false"
+[readOnly]="false"
+[min]="value" [max]="value">
+</dx-number-box>
+<dx-number-box
+[(value)]="cantidadPiezas"
+[showSpinButtons]="true"
+[showClearButton]="true"
+[disabled]="false"
+[readOnly]="false"
+[min]="value" [max]="value">
+</dx-number-box>
+<dx-button
+[text]="'calcular'"
+[type]="success"
+(onClick)="calcularMetros($event)">
+</dx-button>
 
-<p>
-  <label>MPH</label>
-  <input id="inputMPH" type="number" placeholder="MPH" oninput="speedConverter(this.value)" onchange="speedConverter(this.value)">
-</p>
-<p>KPH: <span id="outputKPH"></span></p>
+
 
 </dx-popup>

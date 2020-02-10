@@ -1,0 +1,21 @@
+.productos{
+    position: absolute;
+    margin-top: 135px;
+}
+
+dx-form{
+    position: absolute;
+}
+
+.altura{
+    max-height: 30px;
+    margin-bottom: 5px;
+}
+
+h5{
+    font-size: 0.8em;
+}
+
+.row{
+    margin-bottom: 5px;
+}

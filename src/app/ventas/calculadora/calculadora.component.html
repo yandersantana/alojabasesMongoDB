@@ -1,0 +1,18 @@
+<dx-popup
+[width]="300"
+[height]="250"
+[showTitle]="true"
+title="'Information'"
+[dragEnabled]="false"
+[closeOnOutsideClick]="true"
+[(visible)]="visible"
+(onHidden)="print($e)">
+<h2>Convertor de m2 a cajas</h2>
+
+<p>
+  <label>MPH</label>
+  <input id="inputMPH" type="number" placeholder="MPH" oninput="speedConverter(this.value)" onchange="speedConverter(this.value)">
+</p>
+<p>KPH: <span id="outputKPH"></span></p>
+
+</dx-popup>

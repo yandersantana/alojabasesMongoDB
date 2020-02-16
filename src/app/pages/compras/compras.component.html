@@ -1,0 +1,156 @@
+<!--<div class="container">
+    <div class="row">
+        <div class="col-4">
+            <dx-button>Generar Cotizacion</dx-button>
+        </div>
+        <div class="col-4">
+            <dx-button>Generar Nota de venta</dx-button>
+        </div>
+        <div class="col-4">
+            <dx-button>Generar Factura</dx-button>
+        </div>
+    </div>
+    
+    <dx-form id="form" [(formData)]="venta" [readOnly]="false" [colCount]="3" [width]="800">
+        <dxi-item dataField="fecha" [editorOptions]="{ placeholder: 'Fecha'}">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="vendedor" [editorOptions]="{ placeholder: 'Vendedor'}">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="documentoN" [editorOptions]="{ placeholder: 'Documento'}" >
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="cliente" [editorOptions]="{ placeholder: 'Cliente'}"[colSpan]="2">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
+            <dxi-item dataField="tcliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
+            <dxo-label [visible]="false"></dxo-label>   
+            </dxi-item>
+            <dxi-item dataField="tventa" [editorOptions]="{ placeholder: 'Tventa'}" [colSpan]="1">
+            <dxo-label [visible]="false"></dxo-label>
+            </dxi-item>
+        </dxi-item>
+        <dxi-item dataField="ruc" [editorOptions]="{ placeholder: 'Ruc'}">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="direccion"[editorOptions]="{ placeholder: 'Direccion'}">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="celular" [editorOptions]="{ placeholder: 'Celular'}">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+
+
+        <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+        
+        <dxi-item *ngFor="let p of productosVendidos; let i = index" itemType="group" [colCount]="3" [colSpan]="3">
+            <dxi-item itemType="empty" [colSpan]="3">
+                
+            </dxi-item>
+            
+        </dxi-item>
+        <div class="formFooter">
+        <dxi-item dataField="costeTransporte" [editorOptions]="{ placeholder: 'Coste Transporte'}" [colSpan]="1">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+        <dxi-item dataField="Observacion" [editorOptions]="{ placeholder: 'Observaciones'}"[colSpan]="1">
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+        <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+        <dxi-item dataField="total" [colSpan]="1"></dxi-item>
+    </div>
+    </dx-form>
+    <div class="productos">
+        <dx-button
+        [text]="'Añadir producto'"
+        [type]="success"
+        [disabled]="newButtonEnabled"
+        (onClick)="anadirProducto($event)">
+        </dx-button>
+        <div class="row">
+            <div class="col-1">
+                <h5>Selec</h5>
+            </div>
+            <div class="col-5">
+                <h5>Producto</h5>
+            </div>
+            <div class ="col-1">
+                <h5>Disponible</h5>
+                
+            </div>
+            <div class="col-1">
+                <h5>Precio min</h5>
+            </div>
+            <div class ="col-1">
+                <h5>Cantidad</h5>
+            </div>
+            <div class ="col-1">
+                <h5>Precio venta</h5>
+            </div>
+            <div class="col-1">
+                <h5>Pedir</h5>
+                
+            </div>
+            <div class="col-1">
+                <h5>Entregar</h5>
+            </div>
+        </div>
+    <div *ngFor="let p of productosVendidos">
+        
+        <div class="row altura">
+            <div class="col-1">
+                <dx-check-box [value]="true"></dx-check-box>
+            </div>
+            <div class="col-5">
+                <dx-select-box [items]="nombresProductos" [readOnly]="false" [disabled]="false"  [searchEnabled]="true" (onValueChanged)="obtenerDatosDeProducto($event)"></dx-select-box>
+            </div>
+            <div class ="col-1">
+                <dx-number-box
+                [value]="1"
+                [disabled]="false"
+                [readOnly]="false"
+                [min]="value" [max]="value">
+                </dx-number-box>
+                
+            </div>
+            <div class="col-1">
+                <dx-text-box [(value)]="p.p_caja" [disabled]="false" [readOnly]="false"></dx-text-box>                
+            </div>
+            <div class ="col-1">
+                <dx-number-box
+                [value]="1"
+                [disabled]="false"
+                [readOnly]="false"
+                [min]="value" [max]="value">
+                </dx-number-box>
+            </div>
+            <div class ="col-1">
+                <dx-number-box
+                [value]="1"
+                [disabled]="false"
+                [readOnly]="false"
+                [min]="value" [max]="value">
+                </dx-number-box>
+            </div>
+            <div class="col-1">
+                <dx-check-box [value]="false"></dx-check-box>
+                
+            </div>
+            <div class="col-1">
+                <dx-check-box [value]="true"></dx-check-box>
+            </div>
+        </div>
+        
+    </div>
+    </div>
+    
+
+</div>-->

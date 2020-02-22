@@ -21,11 +21,6 @@ const routes: Routes = [
     canActivate: [ AuthGuardService ]
   },
   {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
     path: 'login-form',
     component: LoginFormComponent,
     canActivate: [ AuthGuardService ]
@@ -38,6 +33,11 @@ const routes: Routes = [
   {
     path: 'ventas',
     component: VentasComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'home',
+    component: HomeComponent,
     canActivate: [ AuthGuardService ]
   },
   {

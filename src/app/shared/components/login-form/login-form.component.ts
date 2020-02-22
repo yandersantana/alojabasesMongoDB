@@ -8,6 +8,11 @@ import { DxCheckBoxModule } from 'devextreme-angular/ui/check-box';
 import { DxTextBoxModule } from 'devextreme-angular/ui/text-box';
 import { DxValidatorModule } from 'devextreme-angular/ui/validator';
 import { DxValidationGroupModule } from 'devextreme-angular/ui/validation-group';
+import { AngularFireModule } from 'angularfire2';
+import { environment } from 'src/environments/environment';
+import { AngularFirestoreModule } from 'angularfire2/firestore';
+import { AngularFireAuthModule } from 'angularfire2/auth';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
   selector: 'app-login-form',
@@ -38,7 +43,10 @@ export class LoginFormComponent {
     DxCheckBoxModule,
     DxTextBoxModule,
     DxValidatorModule,
-    DxValidationGroupModule
+    DxValidationGroupModule,
+    AngularFireModule.initializeApp(environment.firebase),
+    AngularFirestoreModule,
+    AngularFireAuthModule    
   ],
   declarations: [ LoginFormComponent ],
   exports: [ LoginFormComponent ]

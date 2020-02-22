@@ -116,7 +116,7 @@ export class VentasComponent implements OnInit {
   }
 
   generarFactura(e) {
-    console.log("entro")
+    //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     this.post().then(res => {
       console.log("bien")
     })

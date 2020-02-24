@@ -1,22 +1,22 @@
 import { Producto } from '../producto/producto'
 
-export class Venta{
+export class Factura{
     fecha:Date
-    vendedor:String
-    documentoN:String
-    cliente:String
+    vendedor:string
+    documento:string
+    cliente:string
+    costeTransporte:number
+    observaciones:string
+    total:number = 0 
     tcliente:String
     tventa:String
     ruc:string
     direccion:string
     celular:String
-        
 }
 
-class Factura{
-    fecha:string
-    vendedor:string
-    documento:string
-    cliente:string
+export class Cliente{
+    nombre:string
+    ruc:string
+    direccion:string
 }
-

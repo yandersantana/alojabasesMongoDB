@@ -12,7 +12,8 @@ import { AngularFireModule } from 'angularfire2';
 import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { AngularFireAuthModule } from 'angularfire2/auth';
-import { AngularFireAuth } from 'angularfire2/auth';
+import { NgxSpinnerModule, NgxSpinnerService } from "ngx-spinner";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @Component({
   selector: 'app-login-form',
@@ -23,9 +24,10 @@ export class LoginFormComponent {
   login = '';
   password = '';
 
-  constructor(private authService: AuthService, public appInfo: AppInfoService) { }
+  constructor(private authService: AuthService, public appInfo: AppInfoService, private spinner: NgxSpinnerService) { }
 
   onLoginClick(args) {
+    this.spinner.show()
     if (!args.validationGroup.validate().isValid) {
       return;
     }
@@ -33,6 +35,7 @@ export class LoginFormComponent {
     this.authService.logIn(this.login, this.password);
 
     args.validationGroup.reset();
+    this.spinner.hide()
   }
 }
 @NgModule({
@@ -46,7 +49,9 @@ export class LoginFormComponent {
     DxValidationGroupModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    AngularFireAuthModule    
+    AngularFireAuthModule,
+    NgxSpinnerModule,
+    BrowserAnimationsModule
   ],
   declarations: [ LoginFormComponent ],
   exports: [ LoginFormComponent ]

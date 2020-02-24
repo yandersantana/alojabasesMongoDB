@@ -15,7 +15,7 @@ export class Producto{
     estado: string
     marca:string
     usuario:string
-    
+    nombreComercial:string
 }
 
 export class ProductoDetalleVenta{
@@ -36,5 +36,6 @@ export class ProductoDetalleVenta{
         this.iva = true
         this.pedir =false
         this.entregar=true
+        this.cantidad=1
     }
 }

@@ -1,0 +1,20 @@
+<dx-data-grid 
+    id="gridContainer"
+    [dataSource]="transacciones"
+    [showBorders]="true">    
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager 
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[5, 10, 20]"
+        [showInfo]="true">
+    </dxo-pager>
+    
+    <dxi-column dataField="marca_temporal"></dxi-column>
+    <dxi-column dataField="fecha"></dxi-column>
+    <dxi-column dataField="sucursal"></dxi-column>
+    <dxi-column dataField="transaccion"></dxi-column>
+    <dxi-column dataField="documento"></dxi-column>
+    <dxi-column dataField="producto"></dxi-column>
+    <dxi-column dataField="cajas"></dxi-column>
+    <dxi-column dataField="piezas"></dxi-column>
+</dx-data-grid>

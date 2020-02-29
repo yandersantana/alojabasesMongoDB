@@ -15,6 +15,7 @@ import { transaccion } from '../transacciones/transacciones';
   styleUrls: ['./ventas.component.css']
 })
 export class VentasComponent implements OnInit {
+ nombre:string
   factura : Factura;
   now: Date = new Date();
   maxDate:Date = new Date();
@@ -67,38 +68,37 @@ stringIsNumber(s) {
 }
 
   ct:string = ""
+  selected:number
   //VA A COGER SIEMPRE EL ULTIMO
+
+setSelectedProducto(i:number){
+  this.selected=i 
+}
+
   calcularMetros(e) {
-    if (this.stringIsNumber(e.event.key)){
+    if (this.stringIsNumber(e.event.key)){ //on focus
       this.ct = this.ct + e.event.key
+    let tmp = this.productosVendidos[this.selected]
 
-    }
-   /*   let tmp = this.productosVendidos[this.productosVendidos.length - 1].nombreComercial.split(' - ')
       this.productos.forEach(element => {
-        if (element['clasificacion'] == tmp[0] && element['nombre'] == tmp[1] && element['dimension'] == tmp[2] && element['calidad'] == tmp[3]) {
-          let metros = (element['m_caja'] * parseInt(this.ct)) + (this.cantidadPiezas * element['m_caja'] / element['p_caja']);
-         console.log((element['m_caja'] * parseInt(this.ct)))
-         console.log(metros)
-
+        if (element.nombreComercial == tmp.nombreComercial) {
+          let metros = (element.m_caja * tmp.cantidad) + (this.cantidadPiezas * element.m_caja / element.p_caja);
           this.valorEnM2 = metros
         }
       })
-    
-    */
-
+  
+    }
   }
 
-  obtenerDatosDeProductoParaUnDetalle(e) {
+  obtenerDatosDeProductoParaUnDetalle(e, i:number) {
 
     //se debe validar por e
-    
     let compra:compra
     this.newButtonEnabled = false
     compra=this.compras.filter(x=>x.producto == e.value)[0]
-    console.log(compra)
-    this.productosVendidos[this.productosVendidos.length - 1].disponible = compra.cantidad
-    this.productosVendidos[this.productosVendidos.length - 1].precio_min = compra.precio * compra.porcentaje_ganancia / 100 + compra.precio
-    
+    this.productosVendidos[i].disponible = compra.cantidad
+    this.productosVendidos[i].precio_min = compra.precio * compra.porcentaje_ganancia / 100 + compra.precio
+    this.calcularEquivalencia(e,i)
   }
 
   //se ejecuta apenas se carga la pantalla
@@ -115,7 +115,15 @@ stringIsNumber(s) {
 
 
     this.db.collection('/clientes').valueChanges().subscribe((data:Cliente[]) => {
-      this.clientes = data
+      if(data != null)
+        this.clientes = data
+
+    })
+
+    this.db.collection('/factureros').doc('matriz').valueChanges().subscribe(data => {
+      console.log(data)
+      if(data != null)
+        this.factura.documento = data['n_factura']
 
     })
 
@@ -124,19 +132,36 @@ stringIsNumber(s) {
   }
 
 
+  getClientNames(){
+    let names = []
+    this.clientes.forEach(element => {
+      names.push(element.nombre)    
+    });
+    return names
+  }
+
   deleteProductoVendido(i){
+    if(this.productosVendidos.length > 1){
     this.productosVendidos.splice(i,1);
     this.calcularTotalFactura()
+    }
+    else{
+      alert("Las facturas deben tener al menos un producto")
+    }
         }
 
   setClienteData(e){
-    this.factura.documento = e.value
-    this.factura.direccion = this.clientes.filter(x=>x.ruc = e.value)[0].direccion
+this.clientes.forEach(element => {
+  console.log("siiiii")
+    if(element.nombre == e.component._changedValue)
+    this.factura.cliente = element
+});
+    
   }
 
-  carcularTotalProducto(e) {
+  carcularTotalProducto(e, i:number) {
     console.log(e)
-    this.calcularTotalRow()
+    this.calcularTotalRow(i)
     this.calcularTotalFactura()
   }
 
@@ -153,20 +178,20 @@ cambiarEstadoSeleccionado(e){
   this.calcularTotalFactura()
 }
 
-  calcularEquivalencia(e) {
+  calcularEquivalencia(e, i:number) {
 
     this.productos.forEach(element => {
 
-        let cajas = Math.trunc(this.productosVendidos[this.productosVendidos.length - 1].cantidad / element.m_caja);
+        let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.m_caja);
         console.log("CAJAS " + cajas)
-        let piezas = Math.trunc(this.productosVendidos[this.productosVendidos.length - 1].cantidad * element.p_caja / element.m_caja) - (cajas * element.p_caja);
+        let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.p_caja / element.m_caja) - (cajas * element.p_caja);
 
-        this.productosVendidos[this.productosVendidos.length - 1].equivalencia = cajas + "C " + piezas + "P"
+        this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
     })
   }
 
-  calcularTotalRow() {
-    this.productosVendidos[this.productosVendidos.length - 1].total = this.productosVendidos[this.productosVendidos.length - 1].cantidad * this.productosVendidos[this.productosVendidos.length - 1].precio_venta
+  calcularTotalRow(i:number) {
+    this.productosVendidos[i].total = this.productosVendidos[i].cantidad * this.productosVendidos[i].precio_venta
     console.log(this.productosVendidos[this.productosVendidos.length - 1].cantidad)
     console.log(this.productosVendidos[this.productosVendidos.length - 1].precio_venta)
     console.log(this.productosVendidos[this.productosVendidos.length - 1].total)
@@ -178,7 +203,6 @@ cambiarEstadoSeleccionado(e){
   }
 
   generarFactura(e) {
-    let i = 0
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 
     //grabar en usuarios
@@ -186,14 +210,71 @@ cambiarEstadoSeleccionado(e){
     //grabar en productodetalle
     //transacciones
     if(this.ventasForm.instance.validate().isValid){
-      console.log("valido")
+      let grabar = true
+      this.clientes.forEach(element => {
+        if(element.ruc == this.factura.cliente.ruc)
+          grabar = false
+      });
+
       new Promise<any>((resolve, reject) => {
+        if(grabar)
+          this.db
+            .collection("/clientes")
+            .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
+            .then(res => { }, err => reject(err));
         this.db
           .collection("/facturas")
-          .doc(i.toString()).set({ ...this.factura })
+          .doc(this.factura.documento.toString()).set({ ...this.factura })
           .then(res => { }, err => reject(err));
         this.productosVendidos.forEach(element => {
-          this.db.collection("/productosVendidos")
+          element.factura = this.factura.documento
+          this.db.collection("/productosVendidos").add({ ...element })
+          .then(res => { }, err => reject(err));
+
+      /*    this.transaccion = new transaccion()
+          this.transaccion.marca_temporal = new Date(this.transaccion.marca_temporal.getDate())
+          this.transaccion.fecha=this.factura.fecha
+          this.transaccion.sucursal="Milagro"
+          this.transaccion.documento=null
+          this.transaccion.producto=element.nombreComercial
+          this.transaccion.cajas=null
+          this.transaccion.piezas=element.cantidad*-1
+
+          this.db.collection("/transacciones")
+          .add({ ...this.transaccion })
+          .then(res => { }, err => reject(err));
+*/
+        });
+      });
+    }
+        
+    }
+  generarCotizacion(e) {
+    //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
+    //validar todo 
+    //grabar en usuarios
+    //grabar en factura
+    //grabar en productodetalle
+    //transacciones
+    if(this.ventasForm.instance.validate().isValid){
+      let grabar = true
+      this.clientes.forEach(element => {
+        if(element.ruc == this.factura.cliente.ruc)
+          grabar = false
+      });
+
+      new Promise<any>((resolve, reject) => {
+        if(grabar)
+          this.db
+            .collection("/clientes")
+            .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
+            .then(res => { }, err => reject(err));
+        this.db
+          .collection("/cotizaciones")
+          .add({ ...this.factura })
+          .then(res => { }, err => reject(err));
+        this.productosVendidos.forEach(element => {
+          /*this.db.collection("/productosVendidos")
           .doc(i.toString()).set({ ...element })
           .then(res => { }, err => reject(err));
 
@@ -210,7 +291,56 @@ cambiarEstadoSeleccionado(e){
           .add({ ...this.transaccion })
           .then(res => { }, err => reject(err));
 
-          i++
+          i++*/
+        });
+      });
+    }
+        
+    }
+  generarNotaDeVenta(e) {
+    let i = 0
+    //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
+    //validar todo 
+    //grabar en usuarios
+    //grabar en factura
+    //grabar en productodetalle
+    //transacciones
+    if(this.ventasForm.instance.validate().isValid){
+      let grabar = true
+      this.clientes.forEach(element => {
+        if(element.ruc == this.factura.cliente.ruc)
+          grabar = false
+      });
+
+      new Promise<any>((resolve, reject) => {
+        if(grabar)
+          this.db
+            .collection("/clientes")
+            .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
+            .then(res => { }, err => reject(err));
+        this.db
+          .collection("/notas_venta")
+          .doc(i.toString()).set({ ...this.factura })
+          .then(res => { }, err => reject(err));
+        this.productosVendidos.forEach(element => {
+          this.db.collection("/productosVendidos")
+          .doc(i.toString()).set({ ...element })
+          .then(res => { }, err => reject(err));
+
+          /*this.transaccion = new transaccion()
+          this.transaccion.marca_temporal = new Date(this.transaccion.marca_temporal.getDate())
+          this.transaccion.fecha=this.factura.fecha
+          this.transaccion.sucursal="Milagro"
+          this.transaccion.documento=null
+          this.transaccion.producto=element.nombreComercial
+          this.transaccion.cajas=null
+          this.transaccion.piezas=element.cantidad*-1
+
+          this.db.collection("/transacciones")
+          .add({ ...this.transaccion })
+          .then(res => { }, err => reject(err));
+
+          i++*/
         });
       });
     }

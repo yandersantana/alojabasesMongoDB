@@ -10,12 +10,11 @@ import { VentasComponent } from './pages/ventas/ventas.component';
 import { ComprasComponent } from './pages/compras/compras.component';
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 import { ProductoComponent } from './pages/producto/producto.component';
-import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule } from 'devextreme-angular';
+import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule, DxAutocompleteModule, DxTemplateModule } from 'devextreme-angular';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
 import { TransaccionesComponent } from './pages/transacciones/transacciones.component';
-
 
 @NgModule({
   declarations: [
@@ -43,10 +42,11 @@ import { TransaccionesComponent } from './pages/transacciones/transacciones.comp
     DxNumberBoxModule,
     DxPopupModule,
     DxDateBoxModule,
+    DxAutocompleteModule,
     AngularFireModule.initializeApp(environment.firebase),
     AngularFirestoreModule,
-    DxValidatorModule
-
+    DxValidatorModule,
+    DxTemplateModule,
   ],
   providers: [AuthService, ScreenService, AppInfoService],
   bootstrap: [AppComponent]

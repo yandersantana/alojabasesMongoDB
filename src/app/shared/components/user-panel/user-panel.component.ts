@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 
 import { DxListModule } from 'devextreme-angular/ui/list';
 import { DxContextMenuModule } from 'devextreme-angular/ui/context-menu';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 @Component({
   selector: 'app-user-panel',
@@ -17,7 +18,11 @@ export class UserPanelComponent {
   @Input()
   menuMode: string;
 
-  constructor() {}
+  user:string
+
+  constructor(public  afAuth:  AngularFireAuth) {
+    this.user=sessionStorage.getItem("user")
+  }
 }
 
 @NgModule({

@@ -4,11 +4,11 @@
 <!--BOTONES DE ACCION-->
 <div class="row">
     <div class="col-4">
-        <dx-button [text]="'Generar Cotizacion'" [type]="'success'" [disabled]="true">
+        <dx-button [text]="'Generar Cotizacion'" [type]="'success'">
         </dx-button>
     </div>
     <div class="col-4">
-        <dx-button [text]="'Generar Nota de venta'" [type]="'success'" [disabled]="true">
+        <dx-button [text]="'Generar Nota de venta'" [type]="'success'">
         </dx-button>
     </div>
     <div class="col-4">
@@ -18,7 +18,6 @@
 </div>
 
 <!--ENCABEZADO DEL FORMULARIO-->
-
 <dx-form id="form" #ventasForm [(formData)]="factura" [readOnly]="false" [colCount]="3" [width]="1000">
     <dxi-item itemType="group" [colCount]="3" [colSpan]="3">
         <dxi-item dataField="fecha" [editorOptions]="{ placeholder: 'Fecha'}">
@@ -34,34 +33,38 @@
             <dxo-label [visible]="false"></dxo-label>
 
         </dxi-item>
-        <dxi-item dataField="vendedor" [editorOptions]="{ placeholder: 'Vendedor', disabled:'true'}">
+        <dxi-item dataField="vendedor" [editorOptions]="{ placeholder: 'Vendedor'}">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="documentoN" [editorOptions]="{ placeholder: 'Documento'}">
+        <dxi-item dataField="documento" [editorOptions]="{ placeholder: 'Documento'}">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
     </dxi-item>
-        <dxi-item dataField="cliente" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
-            <dx-select-box [items]="clientes" [readOnly]="false" [disabled]="false" [searchEnabled]="true"
-                valueExpr="ruc" displayExpr="nombre" (onValueChanged)="setClienteData($event)"></dx-select-box>
+        <dxi-item dataField="cliente.nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
+            <dx-autocomplete
+            [dataSource]="clientes"
+            placeholder="Nombre del cliente"
+            valueExpr="nombre"
+            (onChange)="setClienteData($event)">
+        </dx-autocomplete>
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
     
     <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
-        <dxi-item dataField="tcliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
+        <dxi-item dataField="cliente.tcliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="tventa" [editorOptions]="{ placeholder: 'Tventa'}" [colSpan]="1">
+        <dxi-item dataField="cliente.tventa" [editorOptions]="{ placeholder: 'Tventa'}" [colSpan]="1">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
     </dxi-item>
-    <dxi-item dataField="documento" [editorOptions]="{ placeholder: 'Ruc'}">
+    <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}">
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
-    <dxi-item dataField="direccion" [editorOptions]="{ placeholder: 'Direccion'}">
+    <dxi-item dataField="cliente.direccion" [editorOptions]="{ placeholder: 'Direccion'}">
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
-    <dxi-item dataField="celular" [editorOptions]="{ placeholder: 'Celular'}">
+    <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}">
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
 
@@ -83,7 +86,7 @@
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
     <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-    <dxi-item dataField="Observacion" [editorOptions]="{ placeholder: 'Observaciones'}" [colSpan]="1">
+    <dxi-item dataField="observaciones" [editorOptions]="{ placeholder: 'Observaciones'}" [colSpan]="1">
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
     <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
@@ -164,7 +167,7 @@
             </div>
             <div class="col-4">
                 <dx-select-box [items]="productos" [(value)]="p.nombreComercial" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event)"
+                    [searchEnabled]="true" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
                     valueExpr="nombreComercial" displayExpr="nombreComercial">
                 </dx-select-box>
             </div>
@@ -183,12 +186,13 @@
             </div>
             <div class="col-1">
                 <dx-number-box [(value)]="p.cantidad" [disabled]="false" [readOnly]="false"
-                    (onChange)="calcularEquivalencia($event)" [min]="1">
+                    (onChange)="calcularEquivalencia($event, i)"
+                    (onFocusIn)="setSelectedProducto(i)" [min]="1">
                 </dx-number-box>
             </div>
             <div class="col-1">
                 <dx-number-box [(value)]="p.precio_venta" [disabled]="false" [readOnly]="false"
-                    (onChange)="carcularTotalProducto($event)" [min]="p.precio_min">
+                    (onChange)="carcularTotalProducto($event, i)" [min]="p.precio_min">
                 </dx-number-box>
             </div>
             <div class="col-1">

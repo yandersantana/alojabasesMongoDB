@@ -20,17 +20,9 @@ export const navigation = [
     icon: 'home'
   },
   {
-    text: 'Examples',
-    icon: 'folder',
-    items: [
-      {
-        text: 'Profile',
-        path: '/profile'
-      },
-      {
-        text: 'Display Data',
-        path: '/display-data'
-      }
-    ]
-  }
+    text: 'Profile',
+    path: '/profile',
+    icon: 'home'
+  },
+  
 ];

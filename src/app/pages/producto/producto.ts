@@ -4,7 +4,6 @@ export class Producto{
     referencia: string
     unidad:string	
     dimension:string
-    nombre_comercial:string
     p_caja:number
     m_caja: number
     calidad: number
@@ -30,12 +29,31 @@ export class ProductoDetalleVenta{
     total:number
     pedir:boolean
     entregar:boolean
-
+    factura:number
     constructor() {
         this.seleccionado = true
         this.iva = true
         this.pedir =false
         this.entregar=true
+        this.cantidad=1
+    }
+}
+export class ProductoDetalleCompra{
+    seleccionado:boolean
+    iva:boolean
+    nombreComercial:string
+    rotacion:number
+    disponible:number
+    precio_cos:number
+    cantidad:number
+    precio_comercial:number
+    dto:number
+    total:number
+    orden_compra:number
+    constructor() {
+        this.seleccionado = true
+        this.iva = true
+        
         this.cantidad=1
     }
 }

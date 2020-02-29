@@ -16,12 +16,12 @@ export class AuthService {
     }
     this.loggedIn = JSON.parse(sessionStorage.getItem("logged"));
     
-    this.afAuth.authState.subscribe(user => {
+    this.afAuth.auth.onAuthStateChanged(user => {
       if (user){
         this.user = user;
-        localStorage.setItem('user', JSON.stringify(this.user));
+        sessionStorage.setItem('user', JSON.stringify(this.user.email));
       } else {
-        localStorage.setItem('user', null);
+        sessionStorage.setItem('user', null);
       }
     })
   }
@@ -31,6 +31,7 @@ export class AuthService {
       var result = await this.afAuth.auth.signInWithEmailAndPassword(login, passord)
       this.loggedIn = true;
       sessionStorage.setItem("logged", this.loggedIn.toString())
+      sessionStorage.setItem("user", login)
       this.router.navigate(['/']);
     }catch(e){
       alert("Credenciales incorrectas")

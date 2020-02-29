@@ -23,10 +23,7 @@ export class HeaderComponent {
   title: string;
 
   userMenuItems = [{
-    text: 'Profile',
-    icon: 'user'
-  }, {
-    text: 'Logout',
+    text: 'Salir',
     icon: 'runner',
     onClick: () => {
       this.authService.logOut();

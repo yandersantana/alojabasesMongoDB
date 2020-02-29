@@ -1,4 +1,4 @@
-import { Component, NgModule } from '@angular/core';
+import { Component, NgModule, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -7,7 +7,7 @@ import { DxButtonModule } from 'devextreme-angular/ui/button';
 import { DxCheckBoxModule } from 'devextreme-angular/ui/check-box';
 import { DxTextBoxModule } from 'devextreme-angular/ui/text-box';
 import { DxValidatorModule } from 'devextreme-angular/ui/validator';
-import { DxValidationGroupModule } from 'devextreme-angular/ui/validation-group';
+import { DxValidationGroupModule, DxValidationGroupComponent } from 'devextreme-angular/ui/validation-group';
 import { AngularFireModule } from 'angularfire2';
 import { environment } from 'src/environments/environment';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
@@ -23,18 +23,19 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 export class LoginFormComponent {
   login = '';
   password = '';
+  @ViewChild("validateLogin", { static: false }) validateLogin: DxValidationGroupComponent
 
   constructor(private authService: AuthService, public appInfo: AppInfoService, private spinner: NgxSpinnerService) { }
 
-  onLoginClick(args) {
+  onLoginClick(e) {
     this.spinner.show()
-    if (!args.validationGroup.validate().isValid) {
+    if (!this.validateLogin.instance.validate().isValid) {
       return;
     }
 
     this.authService.logIn(this.login, this.password);
 
-    args.validationGroup.reset();
+    this.validateLogin.instance.reset();
     this.spinner.hide()
   }
 }

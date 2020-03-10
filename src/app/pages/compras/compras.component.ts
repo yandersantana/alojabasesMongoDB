@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { OrdenDeCompra, compra, Proveedor } from './compra';
 import { Producto, ProductoDetalleVenta, ProductoDetalleCompra } from '../producto/producto';
-import { Cliente, Factura } from '../ventas/venta';
+//import { Cliente, Factura } from '../ventas/venta';
 import { transaccion } from '../transacciones/transacciones';
 import { DxFormComponent } from 'devextreme-angular';
 import { AngularFirestore } from 'angularfire2/firestore';

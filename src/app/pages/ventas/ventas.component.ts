@@ -1,6 +1,4 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { Factura, Cliente } from './venta';
-import { Producto, ProductoDetalleVenta } from '../producto/producto';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { Observable } from 'rxjs';
 import { CalculadoraComponent } from './calculadora/calculadora.component';
@@ -8,6 +6,12 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { compra } from '../compras/compra';
 import { DxFormComponent } from 'devextreme-angular';
 import { transaccion } from '../transacciones/transacciones';
+import { factura, cliente, venta, producto } from './venta';
+import { PdfMakeWrapper } from 'pdfmake-wrapper';
+import pdfMake from 'pdfmake/build/pdfmake';
+import pdfFonts from "pdfmake/build/vfs_fonts";
+
+pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-ventas',
@@ -16,49 +20,114 @@ import { transaccion } from '../transacciones/transacciones';
 })
 export class VentasComponent implements OnInit {
  nombre:string
-  factura : Factura;
+  factura : factura;
   now: Date = new Date();
   maxDate:Date = new Date();
   minDate:Date = new Date();
-  productos: Producto[] = []
-  clientes:Cliente[] = []
+  productos: producto[] = []
+  clientes:cliente[] = []
   sePuedeCalcular:Boolean
   compras: compra[] = []
   transaccion:transaccion
-  productosVendidos: ProductoDetalleVenta[] = []
+  productosVendidos: venta[] = []
   newButtonEnabled: boolean = true
   medida: string = "m2"
   cantidad: number
   cantidadPiezas: number
   visibleCalculadora: boolean = false
   valorEnM2:number
-  @ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
+  pdf:PdfMakeWrapper = new PdfMakeWrapper()
+  sucursales:string[]
+
+  //@ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
 
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth) {
-    this.factura = new Factura()
+    this.factura = new factura()
     this.factura.fecha = new Date()
     this.maxDate = new Date(this.maxDate.setDate(this.maxDate.getDate() - 2));
     this.minDate = this.now
     
-    this.productosVendidos.push(new ProductoDetalleVenta)
+    this.productosVendidos.push(new venta)
+    this.sucursales = []
+    /*this.pdf.add("Hello world")
+    
+    try {
+      this.pdf.create().download();
+    } catch (err) {
+      alert(err);
+    }
+*/
+  }
 
+
+  //se ejecuta apenas se carga la pantalla
+  ngOnInit() {
+
+    this.getSucursales()
+    this.getProductos()
+    this.getFactureros()
+    this.getClientes()
+
+    this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
+      this.compras = data
+    })
+    this.factura.username=this.afAuth.auth.currentUser.email
+
+  }
+  async getSucursales() {
+    
+    await this.db.collection('factureros').snapshotChanges().subscribe((sucursales) => {
+      
+      sucursales.forEach((nt: any) => {
+        this.sucursales.push(nt.payload.doc.id)
+      })
+    });;
+  }
+
+  async getProductos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
+      this.productos = []
+      productos.forEach((nt: any) => {
+        this.productos.push(nt.payload.doc.data());
+      })
+    });;
+  }
+  async getFactureros() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('factureros').doc('matriz').snapshotChanges().subscribe((facturero) => {
+      console.log(facturero.payload.data())
+
+      this.factura.documento_n = facturero.payload.data()['n_factura']
+      console.log(this.factura.documento_n)
+    });;
+  }
+  async getClientes() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('clientes').snapshotChanges().subscribe((clientes) => {
+      this.clientes = []
+      clientes.forEach((element:any) => {
+        this.clientes.push(element.payload.doc.data())        
+      });
+    });;
   }
 
   anadirProducto = (e) => {
     this.newButtonEnabled = true
-    this.productosVendidos.push(new ProductoDetalleVenta())
+    this.productosVendidos.push(new venta())
 
+    
   }
 
   verCalculadora(e) {
     this.visibleCalculadora = true
-    console.log(this.productosVendidos[this.productosVendidos.length - 1].nombreComercial)
-    if(this.productosVendidos[this.productosVendidos.length - 1].nombreComercial != undefined){
+    console.log(this.productosVendidos[this.productosVendidos.length - 1].producto.REFERENCIA)
+    if(this.productosVendidos[this.productosVendidos.length - 1].producto.REFERENCIA != undefined){
       this.sePuedeCalcular=true
 
     }
     else{
-      this.sePuedeCalcular = false;
+      this.sePuedeCalcular = true;
     }
   }
 
@@ -81,8 +150,8 @@ setSelectedProducto(i:number){
     let tmp = this.productosVendidos[this.selected]
 
       this.productos.forEach(element => {
-        if (element.nombreComercial == tmp.nombreComercial) {
-          let metros = (element.m_caja * tmp.cantidad) + (this.cantidadPiezas * element.m_caja / element.p_caja);
+        if (element.REFERENCIA == tmp.producto.REFERENCIA) {
+          let metros = (element.M2 * tmp.cantidad) + (this.cantidadPiezas * element.M2 / element.P_CAJA);
           this.valorEnM2 = metros
         }
       })
@@ -101,41 +170,10 @@ setSelectedProducto(i:number){
     this.calcularEquivalencia(e,i)
   }
 
-  //se ejecuta apenas se carga la pantalla
-  ngOnInit() {
-    this.db.collection('/productos').valueChanges().subscribe((data:Producto[]) => {
-      this.productos = data
-      this.generarNombresProductos()
-      console.log(this.productos)
-    })
-    this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
-      this.compras = data
-
-    })
-
-
-    this.db.collection('/clientes').valueChanges().subscribe((data:Cliente[]) => {
-      if(data != null)
-        this.clientes = data
-
-    })
-
-    this.db.collection('/factureros').doc('matriz').valueChanges().subscribe(data => {
-      console.log(data)
-      if(data != null)
-        this.factura.documento = data['n_factura']
-
-    })
-
-    this.factura.vendedor=this.afAuth.auth.currentUser.email
-
-  }
-
-
   getClientNames(){
     let names = []
     this.clientes.forEach(element => {
-      names.push(element.nombre)    
+      names.push(element.cliente_nombre)    
     });
     return names
   }
@@ -152,8 +190,7 @@ setSelectedProducto(i:number){
 
   setClienteData(e){
 this.clientes.forEach(element => {
-  console.log("siiiii")
-    if(element.nombre == e.component._changedValue)
+    if(element.cliente_nombre == e.component._changedValue)
     this.factura.cliente = element
 });
     
@@ -179,14 +216,17 @@ cambiarEstadoSeleccionado(e){
 }
 
   calcularEquivalencia(e, i:number) {
-
+ 
     this.productos.forEach(element => {
+    console.log(this.productosVendidos[i].producto.REFERENCIA)
+    console.log(element.REFERENCIA)
 
-        let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.m_caja);
-        console.log("CAJAS " + cajas)
-        let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.p_caja / element.m_caja) - (cajas * element.p_caja);
+      if(element.PRODUCTO == this.productosVendidos[i].producto.REFERENCIA){
+        let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
+        let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);
 
         this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
+      }
     })
   }
 
@@ -196,12 +236,12 @@ cambiarEstadoSeleccionado(e){
     console.log(this.productosVendidos[this.productosVendidos.length - 1].precio_venta)
     console.log(this.productosVendidos[this.productosVendidos.length - 1].total)
   }
-  generarNombresProductos() {
+  /*generarNombresProductos() {
     this.productos.forEach(element => {
       element.nombreComercial = element.clasificacion + " - " + element.nombre + " - " + element.dimension + " - " + element.calidad
     });
   }
-
+*/
   generarFactura(e) {
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 
@@ -209,25 +249,25 @@ cambiarEstadoSeleccionado(e){
     //grabar en factura
     //grabar en productodetalle
     //transacciones
-    if(this.ventasForm.instance.validate().isValid){
+    /*if(this.ventasForm.instance.validate().isValid){
       let grabar = true
       this.clientes.forEach(element => {
         if(element.ruc == this.factura.cliente.ruc)
           grabar = false
       });
-
+*/
       new Promise<any>((resolve, reject) => {
-        if(grabar)
+  //      if(grabar)
           this.db
             .collection("/clientes")
             .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
             .then(res => { }, err => reject(err));
         this.db
           .collection("/facturas")
-          .doc(this.factura.documento.toString()).set({ ...this.factura })
+          .doc(this.factura.documento_n.toString()).set({ ...this.factura })
           .then(res => { }, err => reject(err));
         this.productosVendidos.forEach(element => {
-          element.factura = this.factura.documento
+          element.factura_id = this.factura.documento_n
           this.db.collection("/productosVendidos").add({ ...element })
           .then(res => { }, err => reject(err));
 
@@ -249,7 +289,7 @@ cambiarEstadoSeleccionado(e){
     }
         
     }
-  generarCotizacion(e) {
+ /* generarCotizacion(e) {
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 
     //grabar en usuarios
@@ -292,12 +332,12 @@ cambiarEstadoSeleccionado(e){
           .then(res => { }, err => reject(err));
 
           i++*/
-        });
+  /*      });
       });
     }
         
     }
-  generarNotaDeVenta(e) {
+  /*generarNotaDeVenta(e) {
     let i = 0
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 
@@ -341,10 +381,10 @@ cambiarEstadoSeleccionado(e){
           .then(res => { }, err => reject(err));
 
           i++*/
-        });
+    /*    });
       });
     }
-        
+      
     }
-  }
+  }*/
 

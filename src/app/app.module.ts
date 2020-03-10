@@ -47,6 +47,7 @@ import { TransaccionesComponent } from './pages/transacciones/transacciones.comp
     AngularFirestoreModule,
     DxValidatorModule,
     DxTemplateModule,
+  
   ],
   providers: [AuthService, ScreenService, AppInfoService],
   bootstrap: [AppComponent]

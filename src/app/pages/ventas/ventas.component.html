@@ -1,5 +1,13 @@
-<div>
+<div class="row">
+<div class="col-4">
     <h3>Ventas</h3>
+</div>
+<div class="col-4">
+    <dx-select-box [items]="sucursales" 
+    [value]="sucursales[0]" 
+    [readOnly]="false" 
+    [disabled]="false"></dx-select-box>
+</div><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
 </div>
 <!--BOTONES DE ACCION-->
 <div class="row">
@@ -33,11 +41,14 @@
             <dxo-label [visible]="false"></dxo-label>
 
         </dxi-item>
-        <dxi-item dataField="vendedor" [editorOptions]="{ placeholder: 'Vendedor'}">
+        <dxi-item dataField="username" [editorOptions]="{ placeholder: 'Vendedor'}">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="documento" [editorOptions]="{ placeholder: 'Documento'}">
-            <dxo-label [visible]="false"></dxo-label>
+        <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}">
+            <dxo-label
+            location="left"
+            alignment="right"> <!-- or "left" | "center" -->
+        </dxo-label>
         </dxi-item>
     </dxi-item>
         <dxi-item dataField="cliente.nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
@@ -166,9 +177,9 @@
                 </div>
             </div>
             <div class="col-4">
-                <dx-select-box [items]="productos" [(value)]="p.nombreComercial" [readOnly]="false" [disabled]="false"
+                <dx-select-box [items]="productos" [(value)]="p.producto.REFERENCIA" [readOnly]="false" [disabled]="false"
                     [searchEnabled]="true" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
-                    valueExpr="nombreComercial" displayExpr="nombreComercial">
+                    valueExpr="PRODUCTO" displayExpr="PRODUCTO">
                 </dx-select-box>
             </div>
             <div class="col-2">

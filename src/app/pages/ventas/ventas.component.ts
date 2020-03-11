@@ -10,7 +10,8 @@ import { factura, cliente, venta, producto } from './venta';
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
-
+import { AlertsService } from 'angular-alert-module';
+import Swal from 'sweetalert2';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -38,10 +39,12 @@ export class VentasComponent implements OnInit {
   valorEnM2:number
   pdf:PdfMakeWrapper = new PdfMakeWrapper()
   sucursales:string[]
+  productosSolicitados:number
+  flag:boolean
 
   //@ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
 
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
     this.factura = new factura()
     this.factura.fecha = new Date()
     this.maxDate = new Date(this.maxDate.setDate(this.maxDate.getDate() - 2));
@@ -58,6 +61,7 @@ export class VentasComponent implements OnInit {
     }
 */
   }
+  
 
 
   //se ejecuta apenas se carga la pantalla
@@ -67,6 +71,7 @@ export class VentasComponent implements OnInit {
     this.getProductos()
     this.getFactureros()
     this.getClientes()
+   
 
     this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
       this.compras = data
@@ -197,9 +202,31 @@ this.clientes.forEach(element => {
   }
 
   carcularTotalProducto(e, i:number) {
+    
+    console.log("ssssss")
     console.log(e)
     this.calcularTotalRow(i)
     this.calcularTotalFactura()
+  }
+
+  calcularDisponibilidadProducto(e, i:number) {
+
+    this.productosSolicitados=this.productosVendidos[i].disponible-this.productosVendidos[i].cantidad
+    this.calcularTotalFactura()
+    //this.alerts.setMessage('All the fields are required','error');
+    if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
+      //this.productosVendidos[i].cantidad=this.productosVendidos[i].disponible
+      this.showModal(e,i)
+    
+      this.calcularEquivalencia(e, i)
+      this.calcularTotalFactura()
+      this.productosVendidos[i].pedir= true
+     //console.log("holasi"+this.showModal())
+   }
+    /* setTimeout(function () {
+      console.log();
+   }, 5000); */
+
   }
 
 calcularTotalFactura(){
@@ -216,10 +243,10 @@ cambiarEstadoSeleccionado(e){
 }
 
   calcularEquivalencia(e, i:number) {
- 
     this.productos.forEach(element => {
     console.log(this.productosVendidos[i].producto.REFERENCIA)
     console.log(element.REFERENCIA)
+    console.log(this.productosVendidos[i].cantidad)
 
       if(element.PRODUCTO == this.productosVendidos[i].producto.REFERENCIA){
         let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
@@ -232,10 +259,63 @@ cambiarEstadoSeleccionado(e){
 
   calcularTotalRow(i:number) {
     this.productosVendidos[i].total = this.productosVendidos[i].cantidad * this.productosVendidos[i].precio_venta
+    console.log("aqui estoy mostrandi")
     console.log(this.productosVendidos[this.productosVendidos.length - 1].cantidad)
     console.log(this.productosVendidos[this.productosVendidos.length - 1].precio_venta)
     console.log(this.productosVendidos[this.productosVendidos.length - 1].total)
   }
+
+
+  showModal(e,i:number){
+    /* Swal.fire({
+      title: 'Cantidad no disponible!',
+      text: 'Desea hacer un pedido del producto?',
+      icon: 'warning',
+      confirmButtonText: 'Ok'
+    }) */
+    
+    const swalWithBootstrapButtons = Swal.mixin({
+      customClass: {
+        confirmButton: 'btn btn-success',
+        cancelButton: 'btn btn-danger'
+      },
+      buttonsStyling: false
+    })
+    
+    swalWithBootstrapButtons.fire({
+      title: 'Cantidad no disponible',
+      text: "Desea hacer un pedido del producto",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'si',
+      cancelButtonText: 'No',
+      reverseButtons: true
+    }).then((result) => {
+      if (result.value) {
+        swalWithBootstrapButtons.fire(
+          'Producto solicitado!',
+          'Tu producto ha sido añadido con éxito',
+          'success'
+        )
+        
+      } else if (
+        /* Read more about handling dismissals below */
+        result.dismiss === Swal.DismissReason.cancel
+      ) {
+        swalWithBootstrapButtons.fire(
+          'Cancelado',
+          'Se ha cancelado su orden',
+          'error'
+          
+        )
+        this.deleteProductoVendido(i)
+      }
+      
+    })
+    
+  }
+
+
   /*generarNombresProductos() {
     this.productos.forEach(element => {
       element.nombreComercial = element.clasificacion + " - " + element.nombre + " - " + element.dimension + " - " + element.calidad

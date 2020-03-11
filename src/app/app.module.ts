@@ -16,6 +16,9 @@ import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
 import { TransaccionesComponent } from './pages/transacciones/transacciones.component';
 
+
+import { AlertsModule } from 'angular-alert-module';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -47,6 +50,7 @@ import { TransaccionesComponent } from './pages/transacciones/transacciones.comp
     AngularFirestoreModule,
     DxValidatorModule,
     DxTemplateModule,
+    AlertsModule.forRoot()
   
   ],
   providers: [AuthService, ScreenService, AppInfoService],

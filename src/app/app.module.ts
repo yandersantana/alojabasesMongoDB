@@ -15,7 +15,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
 import { TransaccionesComponent } from './pages/transacciones/transacciones.component';
-
+import {DatePipe} from '@angular/common';
 
 import { AlertsModule } from 'angular-alert-module';
 
@@ -26,7 +26,7 @@ import { AlertsModule } from 'angular-alert-module';
     ComprasComponent,
     CalculadoraComponent,
     ProductoComponent,
-    TransaccionesComponent
+    TransaccionesComponent,
   ],
   imports: [
     BrowserModule,

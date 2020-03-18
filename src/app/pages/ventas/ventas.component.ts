@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { CalculadoraComponent } from './calculadora/calculadora.component';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { compra } from '../compras/compra';
-import { DxFormComponent } from 'devextreme-angular';
+import { DxFormComponent, RenderData } from 'devextreme-angular';
 import { transaccion } from '../transacciones/transacciones';
 import { factura, cliente, venta, producto } from './venta';
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
@@ -12,15 +12,20 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
 import { AlertsService } from 'angular-alert-module';
 import Swal from 'sweetalert2';
+import { url } from 'inspector';
+import { DatePipe } from '@angular/common';
+import { read } from 'fs';
+
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
   selector: 'app-ventas',
   templateUrl: './ventas.component.html',
-  styleUrls: ['./ventas.component.css']
+  styleUrls: ['./ventas.component.css'],
+  providers: [DatePipe]
 })
 export class VentasComponent implements OnInit {
- nombre:string
+ nombre:string;
   factura : factura;
   now: Date = new Date();
   maxDate:Date = new Date();
@@ -41,8 +46,11 @@ export class VentasComponent implements OnInit {
   sucursales:string[]
   productosSolicitados:number
   flag:boolean
+  dateToday: number = Date.now();
+  datePipe:DatePipe
+  
 
-  //@ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
+  @ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
 
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
     this.factura = new factura()
@@ -52,14 +60,8 @@ export class VentasComponent implements OnInit {
     
     this.productosVendidos.push(new venta)
     this.sucursales = []
-    /*this.pdf.add("Hello world")
     
-    try {
-      this.pdf.create().download();
-    } catch (err) {
-      alert(err);
-    }
-*/
+
   }
   
 
@@ -72,7 +74,7 @@ export class VentasComponent implements OnInit {
     this.getFactureros()
     this.getClientes()
    
-
+   
     this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
       this.compras = data
     })
@@ -103,7 +105,7 @@ export class VentasComponent implements OnInit {
     await this.db.collection('factureros').doc('matriz').snapshotChanges().subscribe((facturero) => {
       console.log(facturero.payload.data())
 
-      this.factura.documento_n = facturero.payload.data()['n_factura']
+      this.factura.documento_n = facturero.payload.data()['n_factura']+1;
       console.log(this.factura.documento_n)
     });;
   }
@@ -126,8 +128,8 @@ export class VentasComponent implements OnInit {
 
   verCalculadora(e) {
     this.visibleCalculadora = true
-    console.log(this.productosVendidos[this.productosVendidos.length - 1].producto.REFERENCIA)
-    if(this.productosVendidos[this.productosVendidos.length - 1].producto.REFERENCIA != undefined){
+    //console.log(this.productosVendidos[this.productosVendidos.length - 1].producto.REFERENCIA)
+    if(this.productosVendidos[this.productosVendidos.length - 1].producto != undefined){
       this.sePuedeCalcular=true
 
     }
@@ -194,10 +196,10 @@ setSelectedProducto(i:number){
         }
 
   setClienteData(e){
-this.clientes.forEach(element => {
-    if(element.cliente_nombre == e.component._changedValue)
-    this.factura.cliente = element
-});
+    this.clientes.forEach(element => {
+        if(element.cliente_nombre == e.component._changedValue)
+        this.factura.cliente = element
+    });
     
   }
 
@@ -274,43 +276,32 @@ cambiarEstadoSeleccionado(e){
       confirmButtonText: 'Ok'
     }) */
     
-    const swalWithBootstrapButtons = Swal.mixin({
-      customClass: {
-        confirmButton: 'btn btn-success',
-        cancelButton: 'btn btn-danger'
-      },
-      buttonsStyling: false
-    })
     
-    swalWithBootstrapButtons.fire({
+    Swal.fire({
       title: 'Cantidad no disponible',
       text: "Desea hacer un pedido del producto",
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'si',
-      cancelButtonText: 'No',
-      reverseButtons: true
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        swalWithBootstrapButtons.fire(
+        Swal.fire(
           'Producto solicitado!',
           'Tu producto ha sido añadido con éxito',
           'success'
-        )
-        
-      } else if (
-        /* Read more about handling dismissals below */
-        result.dismiss === Swal.DismissReason.cancel
-      ) {
-        swalWithBootstrapButtons.fire(
-          'Cancelado',
-          'Se ha cancelado su orden',
-          'error'
           
+        )
+      // For more information about handling dismissals please visit
+      // https://sweetalert2.github.io/#handling-dismissals
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su orden.',
+          'error'
         )
         this.deleteProductoVendido(i)
       }
-      
     })
     
   }
@@ -322,6 +313,260 @@ cambiarEstadoSeleccionado(e){
     });
   }
 */
+
+
+
+  crearPDF(){
+    const documentDefinition = this.getDocumentDefinition();
+  pdfMake.createPdf(documentDefinition).open();
+
+    /* const documentDefinition = this.getDocumentDefinition();
+    this.pdf.add(documentDefinition);
+  this.pdf.add("Hello world")
+    try {
+      this.pdf.create().download();
+    } catch (err) {
+      alert(err);
+    } */}
+
+
+
+    getDocumentDefinition() {
+      //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
+    //console.log("holaaaa"+fecha2); 
+      sessionStorage.setItem('resume', JSON.stringify("jj"));
+      return {
+        content: [
+          {
+            
+            text: 'RESUME',
+            bold: true,
+            fontSize: 20,
+            alignment: 'center',
+            margin: [0, 0, 0, 20]
+          }, {
+
+       
+          },
+          {
+            columns: [
+              [{
+                columns: [{
+                width:300,
+                text: "FORERO DELGADO JUAN ",
+              },
+              {
+                width:300,
+                text: "FECHA:17/03/2020 ",
+              },
+              ]
+              
+              },
+              {
+                text: "RUC: 0961654563",
+              },
+              {
+                text: "Fecha de impresión: "+this.factura.fecha,
+              },
+              {
+                text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ",
+              },
+              {
+                text: "Dirección: Av. Juan Montalvo entre Seminario y Olmedo 423 ",
+              },
+              {
+                text: "Teléfonos: 0986951573 - 0997975089 - Milagro ",
+              },
+              {
+                text: "Auto SRI 1124706493",
+              },{
+                columns: [{
+                width:300,
+                text: "FACTURA 001-001-000 ",
+                bold: true,
+                fontSize: 20,
+              },
+              {
+                width:300,
+                text: "NO "+"001479",
+                color: 'red',
+                bold: true,
+                fontSize: 20,
+              },
+              ]
+              },
+              {
+                columns: [{
+                width:300,
+                text: "Fecha de Autorización 29 de Abril 2019 ",
+              },
+              {
+                width:300,
+                text: "Vendedor: "+"Juan Forero",
+              },
+              ]
+              
+              },{
+              //Desde aqui comienza los datos del cliente
+              style: 'tableExample',
+              table: {
+                widths: [100,400],
+                body: [
+                  [
+                    {
+                      stack: [
+                        {
+                          type: 'none',
+                          bold: true,
+                          ul: [
+                            'Cliente',
+                            'Contacto',
+                            "Dirección",
+                            "Teléfonos"
+                          ]
+                        }
+                      ]
+                    },
+                    [{
+                      stack: [
+                        {
+                          type: 'none',
+                          ul: [
+                            ''+this.factura.cliente.cliente_nombre,
+                            ''+this.factura.cliente.direccion,
+                            ''+this.factura.cliente.direccion,
+                            ''+this.factura.cliente.celular,
+                          ]
+                        }
+                      ]
+                    },
+                    ],
+                   
+                  ]
+                ]
+              }
+              },
+
+              //aqui termina
+              {
+                columns: [{
+                width:100,
+                text: "Cliente ",
+              },
+              {
+                width:300,
+                text: ""+this.factura.cliente.cliente_nombre,
+                background: '#F1F2F3'
+              },
+              ]
+              
+              },{
+                columns: [{
+                width:100,
+                text: "Contacto ",
+              },
+              {
+                width:300,
+                text: ""+this.factura.cliente.cliente_nombre,
+                background: '#F1F2F3'
+              },
+              ]
+              
+              },{
+                columns: [{
+                width:100,
+                text: "Dirección ",
+              },
+              {
+                width:300,
+                text: ""+this.factura.cliente.cliente_nombre,
+                background: '#F1F2F3'
+              },
+              ]
+              
+              },{
+                columns: [{
+                width:100,
+                text: "Teléfonos ",
+              },
+              {
+                width:300,
+                background: '#F1F2F3',
+                text: ""+this.factura.cliente.cliente_nombre,
+                fillColor: '#2361AE',
+           
+              },
+              ]
+              
+              },
+              {
+                text: "Cliente : "+this.factura.cliente.cliente_nombre,
+                style: 'name'
+              },
+              {
+                text: "Contacto : "+this.factura.cliente.celular,
+              },
+              {
+                text: 'Dirección : ' + this.factura.cliente.t_cliente,
+              },
+              {
+                text: 'Teléfonos : ' + this.factura.cliente.direccion,
+              },
+              
+              ],
+              [
+                
+              ]
+            ]
+          },
+          {
+            text: 'Skills',
+            style: 'header'
+          },
+          
+          
+        ], images: {
+          mySuperImage: 'data:image/jpeg;base64,...content...'
+        },
+        info: {
+          title: "this.resume.name" + '_RESUME',
+          author: "this.resume.name",
+          subject: 'RESUME',
+          keywords: 'RESUME, ONLINE RESUME',
+        },
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              margin: [0, 20, 0, 10],
+              decoration: 'underline'
+            },
+            tableExample: {
+              margin: [0, 5, 0, 15]
+            },
+            name: {
+              fontSize: 16,
+              bold: true
+            },
+            jobTitle: {
+              fontSize: 14,
+              bold: true,
+              italics: true
+            },
+            sign: {
+              margin: [0, 50, 0, 10],
+              alignment: 'right',
+              italics: true
+            },
+            tableHeader: {
+              bold: true,
+            }
+          }
+      };
+    } 
+
+    
+
   generarFactura(e) {
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 
@@ -329,26 +574,37 @@ cambiarEstadoSeleccionado(e){
     //grabar en factura
     //grabar en productodetalle
     //transacciones
-    /*if(this.ventasForm.instance.validate().isValid){
+    if(this.ventasForm.instance.validate().isValid){
       let grabar = true
       this.clientes.forEach(element => {
         if(element.ruc == this.factura.cliente.ruc)
           grabar = false
       });
-*/
+
       new Promise<any>((resolve, reject) => {
   //      if(grabar)
           this.db
             .collection("/clientes")
             .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
             .then(res => { }, err => reject(err));
+            //console.log("los datos"+this.factura.cliente.cliente_nombre)
         this.db
           .collection("/facturas")
-          .doc(this.factura.documento_n.toString()).set({ ...this.factura })
+          .doc(this.factura.documento_n.toString()).set({ ...this.factura.cliente })
           .then(res => { }, err => reject(err));
+
         this.productosVendidos.forEach(element => {
           element.factura_id = this.factura.documento_n
-          this.db.collection("/productosVendidos").add({ ...element })
+          console.log("aqui inicio"+element);
+          console.log("aqui inicio"+element.factura_id);
+          console.log("cantidad"+element.cantidad);
+          console.log("aqui inicio"+element.disponible);
+          console.log("aqui inicio"+element.entregar);
+          console.log("equivalencia"+element.equivalencia);
+          console.log("producto"+element.producto.REFERENCIA);
+          console.log("aqui inicio"+this.factura.cliente);
+          
+          this.db.collection("/productosVendidos").add({ ... element})
           .then(res => { }, err => reject(err));
 
       /*    this.transaccion = new transaccion()
@@ -367,8 +623,16 @@ cambiarEstadoSeleccionado(e){
         });
       });
     }
+    //window.location.reload();
+    this.getFactureros();
+    this.crearPDF();
+   
+    
+
+
+    
         
-    }
+    }}
  /* generarCotizacion(e) {
     //SE DEBE GRABAR EL ENCABEZADO DE LA FACTURA Y SU DETALLE EN LA BASE DE DATOS
     //validar todo 

@@ -2,12 +2,12 @@
 <div class="col-4">
     <h3>Ventas</h3>
 </div>
-<div class="col-4">
+<!-- <div class="col-4">
     <dx-select-box [items]="sucursales" 
     [value]="sucursales[0]" 
     [readOnly]="false" 
     [disabled]="false"></dx-select-box>
-</div><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
+</div> --><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
 </div>
 <!--BOTONES DE ACCION-->
 <div class="row">
@@ -51,18 +51,18 @@
         </dxo-label>
         </dxi-item>
     </dxi-item>
-        <dxi-item dataField="cliente.nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
-            <dx-autocomplete
+        <dxi-item dataField="cliente.cliente_nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
+           <!--  <dx-autocomplete
             [dataSource]="clientes"
             placeholder="Nombre del cliente"
             valueExpr="nombre"
             (onChange)="setClienteData($event)">
-        </dx-autocomplete>
+        </dx-autocomplete> -->
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
     
     <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
-        <dxi-item dataField="cliente.tcliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
+        <dxi-item dataField="cliente.t_cliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
         <dxi-item dataField="cliente.tventa" [editorOptions]="{ placeholder: 'Tventa'}" [colSpan]="1">

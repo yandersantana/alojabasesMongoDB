@@ -16,4 +16,17 @@ export class AppComponent  {
   isAutorized() {
     return this.authService.isLoggedIn;
   }
+
+  
+  
+  formatsDateTest: string[] = [
+    'dd/MM/yyyy'
+    
+    ];
+  
+  dateNow : Date = new Date();
+  dateNowISO = this.dateNow.toISOString();
+  dateNowMilliseconds = this.dateNow.getTime();
+
+
 }

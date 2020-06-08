@@ -1,0 +1,612 @@
+
+<br>
+<div class="row remiPro titulos">
+    <div class="col-md-8"><div class="">
+        
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+<br>
+<div id="pendientes" style="display: block;">
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="productosPendientesNoEN"
+        [showBorders]="true"
+        (onExporting)="onExporting($event)"
+        (onExported)="onExported($event)">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="Productos Pendientes" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="id_Pedido" caption="Entrega N" dataType="string" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="fecha"  caption="Fecha" dataType="string"></dxi-column>
+        <dxi-column dataField="documento" caption="Documento #" dataType="string"></dxi-column>
+        <dxi-column dataField="tipo_documento" caption="Tipo Documento" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="celular" caption="Celular" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="valor_unitario" caption="V.Unitario" dataType="number" [visible]="false" ></dxi-column>
+        <dxi-column dataField="cajas" caption="Cajas" dataType="number" [visible]="false" ></dxi-column>
+        <dxi-column dataField="piezas" caption="Piezas" dataType="number" [visible]="false" ></dxi-column>
+        <dxi-column dataField="m2" caption="m2" dataType="number" [visible]="false" ></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
+        <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+       
+        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+            <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+
+<div id="entregados" style="display: none;">
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="productosPendientesEntregados"
+            [showBorders]="true"
+            (onExporting)="onExporting3($event)"
+            (onExported)="onExported3($event)">
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-export [enabled]="true" fileName="Productos Entregados" [allowExportSelectedData]="true"></dxo-export>
+           
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxi-column dataField="id_Pedido" caption="Entrega N" dataType="string" sortOrder="desc"></dxi-column>
+            <dxi-column dataField="fecha"  caption="Fecha" dataType="string"></dxi-column>
+            <dxi-column dataField="documento" caption="Documento #" dataType="string"></dxi-column>
+            <dxi-column dataField="tipo_documento" caption="Tipo Documento" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+            <dxi-column dataField="celular" caption="Celular" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string"></dxi-column>
+            <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+            <dxi-column dataField="valor_unitario" caption="V.Unitario" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="cajasEntregadas" caption="Cajas" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="piezasEntregadas" caption="Piezas" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="m2Entregados" caption="m2" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
+            <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
+            <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+            <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+                <dxi-button icon="fa fa-eye" [onClick]="getCourseFile2"></dxi-button>   
+            </dxi-column>
+            <dxo-paging [pageSize]="12"></dxo-paging>
+            <dxo-pager
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[8, 12, 20]"
+            ></dxo-pager>
+        </dx-data-grid>
+</div>
+
+<div id="historial" style="display: none;">
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="docEntregasRealizadas"
+        [showBorders]="true">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="HistorialEntregas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="Ndocumento" caption="Entrega N" dataType="string" width="10%" sortOrder="desc"></dxi-column>
+        <dxi-column
+            dataField="fechaEntrega"
+            caption="Fecha Entrega"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="idDocumento"
+            caption="ID_Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="tipoDocumento"
+            caption="Tipo Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile3"></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+
+    <h4>Pendientes de eliminación</h4>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="docEntregasPendientes"
+        [showBorders]="true">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="HistorialEntregas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="Ndocumento" caption="Entrega N" dataType="string" width="10%" sortOrder="desc"></dxi-column>
+        <dxi-column
+            dataField="fechaEntrega"
+            caption="Fecha Entrega"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="idDocumento"
+            caption="ID_Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="tipoDocumento"
+            caption="Tipo Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile3"></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="20%" [visible]="true">
+            <dxi-button text="Eliminar" [onClick]="getCourseFile6"></dxi-button>   
+            <dxi-button text="Rechazar" [onClick]="getCourseFile5"></dxi-button>  
+              
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+    <h4>Entregas eliminadas</h4>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="docEntregasEliminadas"
+        [showBorders]="true">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="HistorialEntregas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="Ndocumento" caption="Entrega N" dataType="string" width="10%" sortOrder="desc"></dxi-column>
+        <dxi-column
+            dataField="fechaEntrega"
+            caption="Fecha Entrega"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="idDocumento"
+            caption="ID_Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="tipoDocumento"
+            caption="Tipo Documento"
+            dataType="string">
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile3"></dxi-button>    
+        </dxi-column>
+        <!-- <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button> 
+        </dxi-column> -->
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+<div id="entrega" style="display: none;">
+    <div class="row remiPro">
+        <div class="col-md-12 titulo" ><h5>ENTREGA DE PRODUCTOS</h5></div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6"><p>Documento #</p> </div>
+                <div class="col-md-6"><dx-number-box [(value)]="datoDocumento" ></dx-number-box></div>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6"><p>Tipo Documento</p> </div>
+                <div class="col-md-6"><dx-select-box #selectId [items]="menuDocumento" [value]="menuDocumento" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" (onValueChanged)="obtenerDocumento($event)">
+                </dx-select-box></div>
+            </div>
+        </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-3"><p>Observaciones</p> </div>
+                <div class="col-md-9"><dx-text-box [(value)]="observaciones" ></dx-text-box></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-1"></div>
+            <div class="col-md-10">
+                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
+                    <tr>
+                      <th class="text-center" rowspan="2">Producto</th>
+                      <th class="text-center" colspan="3" rowspan="1">Cant.Entregada</th>
+                     
+                      <th class="text-center" rowspan="2" >ID Entrega</th>
+                    </tr>
+                    <tr> 
+                     
+                      <th class="text-center" rowspan="1">C.</th>
+                      <th class="text-center" rowspan="1">P.</th>
+                      <th class="text-center" rowspan="1" >m2</th>
+            
+                    </tr>
+                    <tr *ngFor="let producto of productosEntregasSuc2; let id = index">
+                      <td>
+                        <span contenteditable="false" >{{producto.productoPorEntregar.producto.PRODUCTO}}</span>
+                      </td>
+                      <td>
+                        <span contenteditable="false" >{{producto.cajas}}</span>
+                      </td>
+                      <td>
+                          <span contenteditable="false" >{{producto.piezas}}</span>
+                      </td>
+                      <td>
+                          <span contenteditable="false" >{{producto.m2}}</span>
+                      </td>
+                      <td>
+                          <span contenteditable="false"  >{{producto.identrega}}</span>
+                      </td>
+                    
+                    </tr>
+                  </table>
+
+            </div>
+            <div class="col-md-1"></div>
+        </div>
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <dx-button class="bt2" [text]="'Generar Documento'" [type]="'success'" (onClick)="generarDocumento()">
+                </dx-button>
+            </div>
+            <div class="col-md-4"></div>
+        </div>
+    </div>
+
+    
+
+</div>
+
+
+<dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupvisible">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'> 
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>Producto</th>
+                                  <td>{{productoLeido.producto.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cajas</th>
+                                    <td>{{productoLeido.cajas}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Piezas</th>
+                                    <td>{{productoLeido.piezas}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Unidad/M2</th>
+                                    <td>{{productoLeido.cantM2}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <th>Cliente</th>
+                                    <td>{{productoLeido.cliente}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Celular</th>
+                                    <td>{{productoLeido.celular}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Documento</th>
+                                    <td>{{productoLeido.documento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Tipo Documento</th>
+                                    <td>{{productoLeido.tipo_documento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Sucursal</th>
+                                    <td>{{productoLeido.sucursal}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <td>{{productoLeido.usuario}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Valor Unitario</th>
+                                    <td>{{productoLeido.valor_unitario}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total</th>
+                                    <td>{{productoLeido.total}}</td>
+                                </tr>
+                               
+                              </table>
+                              <div id="mostrar" style="display: block;">
+                                <div style="text-align: center;">
+                                    <h6>Trazabilidad de Entregas</h6>
+                                </div>
+                                <dx-data-grid #datag2
+                                    id="gridContainer"
+                                    [dataSource]="productosEntregasSuc2"
+                                    [showBorders]="true">
+                                    <dxi-column
+                                        dataField="identrega"
+                                        caption="ID Entrega"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="cajas"
+                                        caption="Cajas"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="piezas"
+                                        caption="Piezas"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="fecha"
+                                        caption="Fecha"
+                                        dataType="string"
+                                        sortOrder="desc">
+                                    </dxi-column>
+                                   
+                                </dx-data-grid>
+                                </div>
+
+                              <div class="row" id ="ent" style="display: none;">
+                                <br>
+                                <div class="card">
+
+                               <br>
+                                <div style="text-align: center;">
+                                    <h6>Nueva Entrega Parcial</h6>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Cajas</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntCajas" [disabled]="false" [readOnly]="false"
+                                            (onChange)="calcularEquivalencia(productoLeido.producto)" >
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Piezas</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntPiezas" [disabled]="false" [readOnly]="false" 
+                                            (onChange)="calcularEquivalencia(productoLeido.producto)">
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Unidad/M2</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntM2" [disabled]="false" [readOnly]="true" >
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" > <dx-button  class="btn6" [text]="'Guardar'" [disabled]="btDesc"  (onClick)="guardarEntrega($event)" >
+                                        </dx-button></div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                                  
+                                  
+                              </div>
+                                <br><br>
+                              <div class="row">
+                                <div class="col-2"> </div>
+                                <div class="col-4">
+                                    <dx-button [text]="'Ent. Total'" [disabled]="entDir" class="btn6"  (onClick)="guardarEntregaDirecta($event)" >
+                                    </dx-button>
+                                </div>
+                                <div class="col-4">
+                                    <dx-button [text]="'Ent. Parcial'" class="btn6" (onClick)="verEntrega()" >
+                                    </dx-button>
+                                </div>
+                                <div class="col-2"> </div>
+                            
+                            </div>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+    </dx-popup>
+
+
+
+    <dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupvisible2">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'> 
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>Producto</th>
+                                  <td>{{productoLeido.producto.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Cajas</th>
+                                    <td>{{productoLeido.cajas}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Piezas</th>
+                                    <td>{{productoLeido.piezas}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Unidad/M2</th>
+                                    <td>{{productoLeido.cantM2}}</td>
+                                </tr>
+                                
+                                <tr>
+                                    <th>Cliente</th>
+                                    <td>{{productoLeido.cliente}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Celular</th>
+                                    <td>{{productoLeido.celular}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Documento</th>
+                                    <td>{{productoLeido.documento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Tipo Documento</th>
+                                    <td>{{productoLeido.tipo_documento}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Sucursal</th>
+                                    <td>{{productoLeido.sucursal}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Usuario</th>
+                                    <td>{{productoLeido.usuario}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Valor Unitario</th>
+                                    <td>{{productoLeido.valor_unitario}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Total</th>
+                                    <td>{{productoLeido.total}}</td>
+                                </tr>
+                               
+                              </table>
+                              <div id="mostrar" style="display: block;">
+                                <div style="text-align: center;">
+                                    <h6>Entregas Parciales</h6>
+                                </div>
+                                <dx-data-grid #datag2
+                                    id="gridContainer"
+                                    [dataSource]="productosEntregasSuc2"
+                                    [showBorders]="true">
+                                    <dxi-column
+                                        dataField="identrega"
+                                        caption="ID Entrega"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="cajas"
+                                        caption="Cajas"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="piezas"
+                                        caption="Piezas"
+                                        dataType="string">
+                                    </dxi-column>
+                                    <dxi-column
+                                        dataField="fecha"
+                                        caption="Fecha"
+                                        dataType="string"
+                                        sortOrder="desc">
+                                    </dxi-column>
+                                   
+                                </dx-data-grid>
+                                </div>
+
+                              <div class="row" id ="ent" style="display: none;">
+                                <br>
+                                <div class="card">
+
+                               <br>
+                                <div style="text-align: center;">
+                                    <h6>Nueva Entrega Parcial</h6>
+                                </div>
+                                
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Cajas</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntCajas" [disabled]="false" [readOnly]="false"
+                                            (onChange)="calcularEquivalencia(productoLeido.producto)" >
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Piezas</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntPiezas" [disabled]="false" [readOnly]="false" 
+                                            (onChange)="calcularEquivalencia(productoLeido.producto)">
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4">Unidad/M2</div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="cantidadEntM2" [disabled]="false" [readOnly]="true" >
+                                      </dx-number-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" > <dx-button  class="btn6" [text]="'Guardar'" [disabled]="btDesc"  (onClick)="guardarEntrega($event)" >
+                                        </dx-button></div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                </div>
+                            </div>
+                                  
+                                  
+                              </div>
+                                <br><br>
+                             
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+    </dx-popup>

@@ -1,6 +1,6 @@
 .productos{
     position: absolute;
-    margin-top: 155px;
+    margin-top: 185px;
     height: 180px;
 }
 
@@ -25,6 +25,15 @@ h5{
     width: 100% !important;
 }
 
+.tdoc{
+    margin-top: 1.5em;
+}
+
+.tdoc2{
+    margin-top: 1.5em; 
+    margin-right: 2em; 
+}
+
 .titlesCurrency{
     margin-top: 10px;
     margin-bottom: -12px;
@@ -36,5 +45,111 @@ h5{
 
 .dx-button{
     margin-right: 15px;
-
 }
+
+.label2{
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+
+
+
+
+::ng-deep .prueba2 /deep/ .dx-texteditor-input{
+    font-size: 26px;
+    text-align: center;
+    font-weight: bold;
+   
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;    
+  }
+
+.fondobt{
+    background-color: transparent;
+    border-color: transparent;
+    color: red;
+}
+
+.espacio{
+    margin-top: 1.5em;
+}
+
+
+.imgProducto2{
+    width: auto;
+    height: 400px;
+  }
+  
+  .imgProducto3{
+    width: auto;
+    height: 100px;
+  }
+
+
+
+
+.altura{
+    height: 200px;
+}
+
+
+
+.dx-field-item-content{
+    font-size: 20px;
+    background-color: blue; 
+}
+
+/* .prueba > .dxi-item {
+    font-size: 20px;
+    background-color: blue;
+}
+
+::ng-deep .dx-form {  
+    font-size: 30px;
+    background-color: blue;
+}  */ 
+
+/* ::ng-deep .prueba {  
+    text-align: center;
+    align-content: center;
+    font-size: 30px;
+    background-color: blue;
+} 
+
+::ng-deep .prueba2 {  
+    color: blue;
+} */
+
+
+
+.contenedorProductos{
+    margin-right: 20px;
+    text-align: center;
+}
+
+::ng-deep .altura1{
+    height: 200px;
+}
+
+::ng-deep .altura2{
+    height: 400px;
+}
+::ng-deep .altura3{
+    height: 600px;
+}
+::ng-deep .altura4{
+    height: 800px;
+}
+::ng-deep .altura5{
+    height: 1000px;
+}
+
+

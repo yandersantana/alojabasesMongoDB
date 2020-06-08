@@ -13,8 +13,17 @@ dx-form{
     margin-bottom: 5px;
 }
 
-h5{
-    font-size: 0.8em;
+
+
+.dx-theme-material-typography h5 {
+    //font-weight: 400;
+    font-size: 10px;
+  }
+
+  .fondobt{
+    background-color: transparent;
+    border-color: transparent;
+    color: red;
 }
 
 .row{
@@ -36,4 +45,13 @@ h5{
 
 .dx-button{
     margin-right: 15px;
+}
+
+.contenedorProductos{
+    margin-right: 50px;
+    text-align: center;
+}
+
+.contenedorPrincipal{
+    padding: 2em;
 }

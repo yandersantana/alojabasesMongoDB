@@ -1,0 +1,181 @@
+
+
+
+#gridContainer{
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-bottom: 2em;
+}
+
+#grid{
+    margin-top: 2em;
+}
+
+
+
+#botones{
+    background-color: green($color: #000000);
+}
+
+.titulos{
+    margin-top: 2em;
+    margin-bottom: 1em;
+}
+
+.ContFact{
+    margin-left: 2em;
+    margin-right: 2em;
+    margin-bottom: 2em;
+    text-align: center;
+    background-color: white;
+    padding: 3em;
+}
+
+.text1{
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 0.5rem;
+}
+
+
+ ::ng-deep .ContFact .dx-texteditor-input{
+  
+    text-align: center;
+}
+/*
+::ng-deep #gridContainer /deep/ .dx-button{
+    font-size: 50px;
+} */
+
+dx-link{
+    color: green($color: #000000);
+}
+
+
+.dx-data-row   {  
+    color: green;  
+} 
+
+
+.dx-command-edit .dx-link {
+    text-decoration: none;
+    font-size: 38px;
+    margin: 0 3px;
+}
+
+
+.dx-datagrid-form-buttons-container .dx-button {
+    margin-left: 10px;
+    margin-top: 10px;
+    background-color: green($color: #000000);
+  }
+
+  .dx-datagrid .dx-link {
+    color:red;
+  }
+
+  .btn2{
+background-color: green;
+  }
+
+  .alin2{
+      margin-right: 2em;
+      margin-bottom: 2em;
+  }
+
+  /* .dx-button-has-text /deep/ .dx-button-content {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+  } */
+
+  ::ng-deep .dx-button-has-text .dx-button-content {
+    background-color: green;
+    color: white;
+    font-weight: bold;
+  } 
+
+  .centrar {
+    text-align: center;
+   
+  }
+
+  .titleOrdenCompra{
+      font-weight: bold;
+      font-size: 1.2em;
+      text-align: center;
+  }
+
+  .error {
+    color: red;
+    font-size: 24px;
+  }
+
+  .espacio{
+     margin-bottom: 1.5em;
+      background-color: #eeeeee;
+      padding-top: 3em;
+      padding-bottom: 3em;
+  }
+
+
+.remiPro p{
+        font-weight: bold;
+        margin-top: 1em;
+        text-align: left;
+        
+}
+
+.alinearBoton{
+ text-align: left;
+ margin-bottom: 2em;
+}
+
+.contenedorPrincipal{
+    padding: 2em;
+}
+
+.titulo{
+    margin-bottom: 1em;
+    font-weight: bold;
+    text-align: center;
+    
+}
+h5{
+    font-size: 0.8em;
+}
+
+.detalle{
+    margin-right: 1em;
+    margin-bottom: 3em;
+}
+
+/* .dx-data-row /deep/ td.cls {  
+    text-align: left!important;  
+} */  
+
+.bt{
+    background-color: red;
+    color: white;
+}
+
+::ng-deep .bt .dx-icon {
+    font-size: 14px;
+    color: white;
+}
+
+.color{
+    text-align: right;
+    padding-right: 2em;
+}
+
+.btn-xs{
+    background-color: red;
+    border: red;
+    
+}
+
+.margen{
+    padding: 2em;
+}

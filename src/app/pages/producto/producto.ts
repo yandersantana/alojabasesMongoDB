@@ -1,3 +1,6 @@
+import { dxNumberBoxOptions } from 'devextreme/ui/number_box'
+import { producto } from '../ventas/venta'
+
 export class Producto{
     nombre : string
     clasificacion:string
@@ -15,6 +18,9 @@ export class Producto{
     marca:string
     usuario:string
     nombreComercial:string
+   /*  sucursal1:number
+    sucursal2:number
+    sucursal3:number */
 }
 
 export class ProductoDetalleVenta{
@@ -30,30 +36,164 @@ export class ProductoDetalleVenta{
     pedir:boolean
     entregar:boolean
     factura:number
+   
     constructor() {
         this.seleccionado = true
         this.iva = true
         this.pedir =false
         this.entregar=true
         this.cantidad=1
+        this.total=0
     }
 }
 export class ProductoDetalleCompra{
     seleccionado:boolean
     iva:boolean
-    nombreComercial:string
+    nombreComercial:producto
     rotacion:number
     disponible:number
     precio_cos:number
     cantidad:number
-    precio_comercial:number
-    dto:number
+    precio_compra:number
+    desct:number
     total:number
     orden_compra:number
+    solicitud_n:number
+    subtotal:number
+    subtIva:number
+    subtDet:number
+    subtDetP:number
+    equivalencia:string
+    descGeneral:number
+    descProducto:number
+    estado_remision:string
     constructor() {
         this.seleccionado = true
         this.iva = true
-        
-        this.cantidad=1
+        this.equivalencia="0C 0P"
+        this.cantidad=0
+        this.total=0
+        this.precio_compra=0
+        this.descGeneral=0
+        this.descProducto=0
+        this.estado_remision=" "
+    }
+}
+
+
+
+export class ProductoDetalleEntrega{ 
+    nombreComercial:producto
+    cantidadEntregada:number
+    cantidadEntregadapiezas:number
+    metros2:number
+    cantidadSolicitada:number
+    cantidadSolicitadacajas:number
+    cantidadSolicitadapiezas:number
+    observaciones:string
+    estado:string
+    cantidadDevuelta:number
+    cantidadDevueltapiezas:number
+    causaDevolucion:string
+    numeroOrden:number
+    numeroRemision:number
+    fecha:Date
+    precio:number
+    valorunitario:number
+    valortotal:number
+    estadoIngreso:string
+    descuentoGeneral:number
+    solicitud_compra:number
+    descuentoProducto:number
+    constructor() {
+        this.cantidadEntregada=0
+        this.cantidadEntregadapiezas=0
+        this.observaciones= "S/O"
+        this.cantidadDevuelta= 0
+        this.cantidadDevueltapiezas= 0
+        this.estado="Ok"
+        this.descuentoProducto=0
+        this.estadoIngreso="Ingresado"
+       
+    }
+}
+
+
+export class RemisionProductos{
+    num_orden:number
+    num_FactPro:string
+    fechaP: string
+    num_remEnt:string
+    fechaRecibo:string
+    id_remision:number
+    placa:string
+    nombre_transportador:string
+    nombre_recibe:string
+    sucursal:string
+    nombre_proveedor:string
+    estado:string
+    bodega:string
+    msjAdmin:string
+    total:number
+    constructor(){
+        this.estado="Ingresado"
+        this.nombre_recibe="q@q.com"
+        this.msjAdmin=""
+    } 
+}
+
+
+export class ControlProductos{
+    nombre_comercial:string
+    cantidadsolicitada:number
+    cantidadSolicitadacajas:string
+    cantidadSolicitadapiezas:string
+    cantidadentregada:number
+    cantidadentregadapiezas:number
+    cantidadDevuelta:number
+    cantidadDevueltapiezas:number
+    saldo:number
+    saldopiezas:number
+    saldom2:number
+    estado:string
+    fecha:Date
+    solicitud_orden:number
+    constructor(){
+        this.saldom2=0
+    }
+}
+
+export class PrecioProductos{
+    nombre_comercial:string
+    fecha:Date
+    precio:number
+    n_orden:number
+    constructor(){
+
+    }
+}
+
+export class bodega{
+    nombre:string
+    persona_responsable:string
+    id:number
+    direccion:string
+    sucursal:string
+    constructor(){
+
+    }
+}
+
+
+export class productosObsequio{
+    cantidad:number
+    cantidadpiezas:number
+    cantidadM2:number
+    producto:string
+    idfactura:string
+    proveedor:string
+    fecha:string
+    constructor(){
+
     }
 }

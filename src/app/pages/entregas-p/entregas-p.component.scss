@@ -1,0 +1,135 @@
+
+
+.imgProducto{
+    width: auto;
+    height: 50px;
+    }
+    
+    .centrarTD{
+        vertical-align: middle;
+        font-size: 1em;
+    }
+    
+    .centrarTD2{
+        vertical-align: middle;
+        font-size: 1em;
+    }
+    
+    .fondobt{
+        background-color: white;
+        border-color: white;
+        color: blue;
+    }
+    
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 5px;
+        text-align: left;    
+      }
+      .bt2{
+        background-color: green;
+        color: white;
+    }
+    
+    
+      .botones button{
+        background-color: #0061a9;
+        border-radius: 4px;
+        color: white;
+        width: 100%;
+        margin: 0.5em;
+        
+        }
+        
+        .botones button:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+          }
+        
+        .carIn{
+            margin-top: 0.5em;
+        }
+        
+        .espacio{
+            margin-top: 1.5em;
+        }
+        
+        .newr{
+         margin-top: 2em;
+         margin-bottom: 2em;
+        }
+        
+        .fomR{
+            margin: 2em;
+        }
+        
+        .btn2{
+            background-color: #0061a9;
+            color: white;
+            width: 100%;
+            margin-top: 3em;
+        }
+
+        .btn6{
+            background-color: #0061a9;
+            color: white;
+            width: 100%;
+            margin-bottom: 1em;
+        }
+
+
+
+.remiPro p{
+        font-weight: bold;
+        margin-top: 1em;
+        
+}
+
+.titulo{
+    margin-bottom: 1em;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+    
+}
+
+
+.guardRemision{
+    margin: 2em;
+   float: right;
+}
+
+.contenedorPrincipal{
+    padding: 2em;
+}
+
+.contenedorPrincipal2{
+    padding: 2em;
+    margin: 2em;
+}
+.titulos{
+    margin-top: 2em;
+    margin-left: 2em;
+    margin-right: 2em;
+  
+}
+
+.btn-xs{
+    background-color: red;
+    border: red;
+    text-align: right;
+}
+
+.mover{
+    text-align: right;
+}
+
+
+.obs{
+    padding-top: 2em;
+    padding-bottom: 2em;
+    padding-right: 1em;
+    padding-left: 1em;
+}

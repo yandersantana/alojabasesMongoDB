@@ -1,0 +1,64 @@
+
+
+.remiPro{
+    padding: 2em;
+    margin-top: 2em;
+    background-color: white;
+    margin-bottom: 2em;
+    }
+
+.remiPro p{
+        font-weight: bold;
+        margin-top: 1em;
+        
+}
+
+.titulo{
+    margin-bottom: 1em;
+    font-weight: bold;
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif;
+    text-align: center;
+    
+}
+
+::ng-deep .remiPro /deep/  .dx-texteditor-input{
+    text-align: center;
+}
+
+.guardRemision{
+    margin: 2em;
+   float: right;
+}
+
+.contenedorPrincipal{
+    padding: 2em;
+}
+
+.contenedorPrincipal2{
+    padding: 2em;
+    margin: 2em;
+}
+.titulos{
+    margin-top: 2em;
+    margin-left: 2em;
+    margin-right: 2em;
+  
+}
+
+.btn-xs{
+    background-color: red;
+    border: red;
+    text-align: right;
+}
+
+.mover{
+    text-align: right;
+}
+
+
+.obs{
+    padding-top: 2em;
+    padding-bottom: 2em;
+    padding-right: 1em;
+    padding-left: 1em;
+}

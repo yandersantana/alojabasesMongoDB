@@ -1,0 +1,676 @@
+<br>
+<div class="row remiPro titulos">
+    <div class="col-md-8"><div class="">
+        
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+<br>
+<div id="catalogo" style="display: block;">
+    <dx-data-grid id="gridContainer"
+    [dataSource]="productosCatalogoUso"
+    [columnAutoWidth]="true"
+    [showBorders]="true"
+    rowTemplate="rowTemplateName"
+    (onExporting)="onExporting($event)"
+    (onExported)="onExported($event)">
+    <dxo-filter-row [visible]="true" ></dxo-filter-row>
+    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+    <dxo-export [enabled]="true" fileName="catalogo" [allowExportSelectedData]="true"></dxo-export>
+    <dxi-column caption="Imagen" width="15%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
+    <dxi-column dataField="PRODUCTO" width="40%" caption="Producto" style="text-align: center;"></dxi-column>
+    <dxi-column dataField="CLASIFICA" width="15%" caption="Clasificación"></dxi-column>
+    <dxi-column dataField="P_CAJA" width="15%" caption="Piezas * Caja"></dxi-column>
+    <dxi-column dataField="M2" width="15%" caption="Metros * Caja"></dxi-column>
+    <dxi-column dataField="DIM" width="10%" caption="Dimensión"></dxi-column>
+
+    <dxi-column dataField="UNIDAD" caption="Unidad" [visible]="false"></dxi-column>
+    <dxi-column dataField="CAL"  caption="Cal" [visible]="false"></dxi-column>
+    <dxi-column dataField="CASA" caption="Casa" [visible]="false"></dxi-column>
+    <dxi-column dataField="TIPO" caption="Tipo" [visible]="false"></dxi-column>
+    <dxi-column dataField="ORIGEN" caption="Origen" [visible]="false"></dxi-column>
+    <dxi-column dataField="ESTADO" caption="Estado" [visible]="false"></dxi-column>
+   
+    <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
+    </dxi-column> -->
+ 
+
+    <tbody class="employee dx-row"  *dxTemplate="let employee of 'rowTemplateName'" >
+        <tr class="main-row">
+        <td rowspan="2" class="imgProducto" style="text-align: center;"><button (click)="mostrarPopup(employee.data.PRODUCTO)" class="btIm"><img class="imgProducto" [src]="employee.data.IMAGEN_PRINCIPAL"></button>
+        </td>
+            <td style="vertical-align: middle;" >{{employee.data.PRODUCTO}}</td>
+            <!-- <td style="font-size: 1.5em;text-align: center;font-weight: bold;">{{employee.data.CLASIFICA}}</td> -->
+            <td style="vertical-align: middle;">{{employee.data.CLASIFICA}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.P_CAJA}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.M2}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
+    </tbody>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 15, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+<!-- <div class="img-zoom-container">
+    <img id="myimage" src="../../../assets/Logo 01.png" width="300" height="240">
+    <div id="myresult" class="img-zoom-result"></div>
+  </div> -->
+  <!-- 
+  <embed width="191" height="207" name="plugin" src="https://fichasdecaligrafia.com/wp-content/uploads/2019/11/ejercicio_de_caligrafia_de_las_vocales_para_imprimir_en_pdf.pdf" type="application/pdf">
+ -->
+ <!-- <pdf-viewer [src]="src"
+              [original-size]="false"
+  ></pdf-viewer> -->
+
+<dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupvisible">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8 " id="gal" ><dx-gallery #gallery
+                            id="gallery"
+                            [dataSource]="imagenes"
+                            [height]="300"
+                            [loop]="true"
+                            [showNavButtons]="true"
+                            [showIndicator]="true"
+                        ></dx-gallery></div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="col-md-12" style="text-align: center;">
+                        <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="verGaleria(imagenes)" >Ver Galería
+                        </button>
+                    </div>
+                </div>
+                <br><br>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>PRODUCTO</th>
+                                  <td>{{catalogoLeido.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CLASIFICACIÓN</th>
+                                    <td>{{catalogoLeido.CLASIFICA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCIA</th>
+                                    <td>{{catalogoLeido.REFERENCIA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>UNIDAD</th>
+                                    <td>{{catalogoLeido.UNIDAD}}</td>
+                                </tr>
+                                <tr>
+                                    <th>DIMENSIONES</th>
+                                    <td>{{catalogoLeido.DIM}}</td>
+                                </tr>
+                                <tr>
+                                    <th>NOMBRE COMERCIAL</th>
+                                    <td>{{catalogoLeido.NOMBRE_COMERCIAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>P_CAJA</th>
+                                    <td>{{catalogoLeido.P_CAJA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>M2</th>
+                                    <td>{{catalogoLeido.M2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CAL</th>
+                                    <td>{{catalogoLeido.CAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CASA</th>
+                                    <td>{{catalogoLeido.CASA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>TIPO</th>
+                                    <td>{{catalogoLeido.TIPO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ORIGEN</th>
+                                    <td>{{catalogoLeido.ORIGEN}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ESTADO</th>
+                                    <td>{{catalogoLeido.ESTADO}}</td>
+                                </tr>
+                              </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+</dx-popup>
+
+
+<dx-popup
+    [width]="'70%'"
+    [height]="'80%'"
+    [showTitle]="true"
+    [title]="titulo"
+    [closeOnOutsideClick]="true"
+    [(visible)]="popupVi">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row">
+               
+                <div class="col-md-4">
+                    
+                    <div  *ngFor="let imagen of imagenesData; let id = index">
+                        
+                        <div class="col-md-12 espacio"><button (click)="enviar(id)"><img  class="imgProducto3 " src={{imagen}} alt=""></button></div>
+                   
+                    </div>
+               
+                </div>
+                
+               
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <pinch-zoom>
+                                <img  class="imgProducto2 " src={{imagenPrincipal}} alt="">
+                            </pinch-zoom>
+                           
+                        </div>
+                    </div>
+                   </div>
+              
+            </div>
+        </div>
+    </dx-scroll-view>
+    </div>
+   
+</dx-popup>
+</div>
+
+<div id="administracion" style="display: none;">
+
+
+    <div class="card mb-3">
+        <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Administración de Catálogo
+        </div>
+        <div class="card-body">
+    
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row botones">
+                      
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">Nuevo Producto</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">Editar/Eliminar</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">Productos Eliminados</button></div>
+                    </div>
+                </div>
+                <div class="col-md-10 card carIn">
+                    <div id="new" style="display: block;">
+                        <div class="row" class="fomR">
+                            <div style="text-align: center;"> <h2>NUEVO PRODUCTO</h2></div>
+                           
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-10">
+                                        <div class="row espacio" >
+                                            <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.PRODUCTO" name="PRODUCTO" class="form-control" value="{{catalogo2.CLASIFICA}} - {{catalogo2.NOMBRE_PRODUCTO}} - {{catalogo2.DIM}}" disabled="true" autocomplete="producto" required></div>
+                                        </div>
+                                        <div class="row espacio" >
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE PRODUCTO</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control" placeholder="Ingrese el producto" autocomplete="producto" required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CLASIFICACIÓN</div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-autocomplete
+                                                [items]="arrayClasif" 
+                                                [(value)]="catalogo2.CLASIFICA" >
+                                            </dx-autocomplete></div>
+                                        </div>
+                                       
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">REFERENCIA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.REFERENCIA" name="REFERENCIA" class="form-control" placeholder="Ingrese la referencia"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">UNIDAD</div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-autocomplete
+                                                [items]="arrayUnid" 
+                                                [(value)]="catalogo2.UNIDAD" 
+                                                (onChange)="buscarUnidad($event)">
+                                            </dx-autocomplete></div>
+                                           
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">DIM</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.DIM" name="DIM" class="form-control" placeholder="Ingrese las dimensiones"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE_COMERCIAL</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_COMERCIAL" name="NOMBRE_COMERCIAL" class="form-control" placeholder="Ingrese el nombre comercial"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">P_CAJA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.P_CAJA" name="P_CAJA" class="form-control" [disabled]="varPC" placeholder="Ingrese los productos por caja"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">M2</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.M2" name="M2" class="form-control"  [disabled]="varM2" placeholder="Ingrese los m2"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CAL</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.CAL" name="CAL" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CASA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.CASA" name="CASA" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">TIPO</div>
+                                            <div class="col-md-8">
+                                                <dx-select-box [items]="menuTipo" 
+                                                [(value)]="catalogo2.TIPO" 
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarTipo($event)"
+                                                ></dx-select-box>
+                                            </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">ORIGEN</div>
+                                            <div class="col-md-8">
+                                                <dx-select-box [items]="menuOrigen" 
+                                                [(value)]="catalogo2.ORIGEN" 
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarOrigen($event)"
+                                                ></dx-select-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">APLICACIÓN</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.APLICACION" name="APLICACIÓN" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">VIGENCIA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.VIGENCIA" name="VIGENCIA" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">FECHA PRODUCCCIÓN</div>
+                                            <div class="col-md-8">  <input type="date" [(ngModel)]="catalogo2.FEC_PRODUCCION" name="CASA" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CANTIDAD MÍNIMA</div>
+                                            <div class="col-md-8">  <input type="number" [(ngModel)]="catalogo2.CANT_MINIMA" name="CANT_MINIMA" class="form-control" placeholder="Opcional"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">ESTADO</div>
+                                            <div class="col-md-8">  
+                                                <dx-select-box [items]="menuEstado" 
+                                                [(value)]="catalogo2.ESTADO"
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarEstado($event)"
+                                                ></dx-select-box>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <label for="filePicker">Escoge una imagen:</label><br>
+                                                <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)">
+                                                <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
+                                                <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
+                                            </div>
+                                            <br>
+                                            <div>
+                                                <label for="filePicker">Escoge una imagen:</label><br>
+                                                <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)">
+                                                <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
+                                                <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div> 
+                                
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="newProducto()">Guardar</button></div>
+                                   
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+
+                    <div id="edit" style="display: none;">
+                        <div class="row" class="fomR">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-6" style="text-align: center;">
+                                        <div style="font-weight: bold;">PRODUCTO</div> 
+                                        <dx-autocomplete
+                                            [dataSource]="productosCatalogo"
+                                            placeholder=""
+                                            valueExpr="PRODUCTO"
+                                            [(value)]= "producto"
+                                            (onChange)="buscarProducto($event)"
+                                            >
+                                        </dx-autocomplete></div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                            <div class="col-md-12"> 
+                                <div class="row">
+                                    <div class="col-md-1"></div>
+                                    <div class="col-md-10">
+                                        <div class="row espacio" >
+                                            <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo2.CLASIFICA}} - {{catalogo2.NOMBRE_PRODUCTO}} - {{catalogo2.DIM}}" disabled="true" autocomplete="producto" required></div>
+                                        </div>
+                                        <div class="row espacio" >
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE PRODUCTO</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control" disabled="true"  placeholder="Ingrese el producto" autocomplete="producto" required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CLASIFICACIÓN</div>
+                                            <div class="col-md-8" style="text-align: center;"  ><dx-autocomplete
+                                                disabled="true"
+                                                [items]="arrayClasif" 
+                                                [(value)]="catalogo2.CLASIFICA" >
+                                            </dx-autocomplete></div>
+                                        </div>
+                                       
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">REFERENCIA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.REFERENCIA" name="REFERENCIA" class="form-control" placeholder="Ingrese la referencia"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">UNIDAD</div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-autocomplete
+                                                [items]="arrayUnid" 
+                                                [(value)]="catalogo2.UNIDAD" 
+                                                (onChange)="buscarUnidad($event)">
+                                            </dx-autocomplete></div>
+                                           
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">DIM</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.DIM" name="DIM" disabled="true" class="form-control" placeholder="Ingrese las dimensiones"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE_COMERCIAL</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_COMERCIAL" name="NOMBRE_COMERCIAL" class="form-control" placeholder="Ingrese el nombre comercial"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">P_CAJA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.P_CAJA" name="P_CAJA" class="form-control" [disabled]="varPC" placeholder="Ingrese los productos por caja"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">M2</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.M2" name="M2" class="form-control" [disabled]="varM2" placeholder="Ingrese los m2"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CAL</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.CAL" name="CAL" class="form-control" placeholder="Ingrese la cal"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CASA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.CASA" name="CASA" class="form-control" placeholder="Ingrese la casa"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">TIPO</div>
+                                            <div class="col-md-8">
+                                                <dx-select-box [items]="menuTipo" 
+                                                [(value)]="catalogo2.TIPO"
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarTipo($event)"
+                                                ></dx-select-box>
+                                            </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">ORIGEN</div>
+                                            <div class="col-md-8">
+                                                <dx-select-box [items]="menuOrigen" 
+                                                [(value)]="catalogo2.ORIGEN"
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarOrigen($event)"
+                                                ></dx-select-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">APLICACIÓN</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.APLICACION" name="APLICACIÓN" class="form-control" placeholder="Ingrese la aplicación"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">VIGENCIA</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.VIGENCIA" name="VIGENCIA" class="form-control" placeholder="Ingrese la vigencia"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">FECHA PRODUCCCIÓN</div>
+                                            <div class="col-md-8">  <input type="date" [(ngModel)]="catalogo2.FEC_PRODUCCION" name="CASA" class="form-control" placeholder="Ingrese la casa"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">CANTIDAD MÍNIMA</div>
+                                            <div class="col-md-8">  <input type="number" [(ngModel)]="catalogo2.CANT_MINIMA" name="CANT_MINIMA" class="form-control" placeholder="Ingrese la cantidad mínima"  required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">ESTADO</div>
+                                            <div class="col-md-8">  
+                                                <dx-select-box [items]="menuEstado" 
+                                                [(value)]="catalogo2.ESTADO"
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="asignarEstado($event)"
+                                                ></dx-select-box>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div>
+                                                <label for="filePicker">Escoge una imagen:</label><br>
+                                                <input type="file" id="filePicker" (change)="handleFileSelect($event)">
+                                            </div>
+                                            <div>
+                                                <label for="filePicker">Escoge una imagen:</label><br>
+                                                <input type="file" id="filePicker" (change)="handleFileSelect($event)">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-1"></div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-3"><button class="btn btn2" type="button" (click)="updateProducto()">Actualizar</button></div>
+                                    <div class="col-md-3"><button class="btn btn2" type="button" (click)="deleteProducto()">Eliminar</button></div>
+                                    <div class="col-md-3"></div>
+                                </div>
+                            </div>
+                            
+                        </div>
+                        
+                    </div>
+
+                    <div id="delete" style="display: none;">
+                        <div style="text-align: center;">
+                            <h4>Productos Eliminados</h4>
+                        </div>
+                        
+                        <dx-data-grid id="gridContainer"
+                            [dataSource]="productosCatalogoElim"
+                            [columnAutoWidth]="true"
+                            [showBorders]="true"
+                            rowTemplate="rowTemplateName"
+                            (onExporting)="onExporting($event)"
+                            (onExported)="onExported($event)">
+                            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                            <dxo-export [enabled]="true" fileName="catalogo" [allowExportSelectedData]="true"></dxo-export>
+                            <dxi-column caption="Imagen" width="15%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
+                            <dxi-column dataField="PRODUCTO" width="40%" caption="Producto" style="text-align: center;"></dxi-column>
+                            <dxi-column dataField="CLASIFICA" width="15%" caption="Clasificación"></dxi-column>
+                            <dxi-column dataField="P_CAJA" width="15%" caption="Piezas * Caja" [visible]="false"></dxi-column>
+                            <dxi-column dataField="M2" width="15%" caption="Metros * Caja" [visible]="false"></dxi-column>
+                            <dxi-column dataField="DIM" width="10%" caption="Dimensión"></dxi-column>
+
+                            <dxi-column dataField="UNIDAD" caption="Unidad" [visible]="false"></dxi-column>
+                            <dxi-column dataField="CAL"  caption="Cal" [visible]="false"></dxi-column>
+                            <dxi-column dataField="CASA" caption="Casa" [visible]="false"></dxi-column>
+                            <dxi-column dataField="TIPO" caption="Tipo" [visible]="false"></dxi-column>
+                            <dxi-column dataField="ORIGEN" caption="Origen" [visible]="false"></dxi-column>
+                            <dxi-column dataField="ESTADO" caption="Estado" [visible]="false"></dxi-column>
+                            <dxi-column dataField="bt" caption="Acciones" [visible]="true"></dxi-column>
+                        
+                            <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
+                            </dxi-column> -->
+                        
+
+                            <tbody class="employee dx-row"  *dxTemplate="let employee of 'rowTemplateName'" >
+                                <tr class="main-row">
+                                <td rowspan="2" class="imgProducto" style="text-align: center;"><button (click)="mostrarPopup2(employee.data.PRODUCTO)" class="btIm"><img class="imgProducto" [src]="employee.data.IMAGEN_PRINCIPAL"></button>
+                                </td>
+                                    <td style="vertical-align: middle;" >{{employee.data.PRODUCTO}}</td>
+                                    <!-- <td style="font-size: 1.5em;text-align: center;font-weight: bold;">{{employee.data.CLASIFICA}}</td> -->
+                                    <td style="vertical-align: middle;">{{employee.data.CLASIFICA}}</td>
+                                    <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
+                                    <td style="vertical-align: middle;text-align: center;"><button class="btn btn4" (click)="restaurar(employee.data.PRODUCTO)">Restaurar</button></td>
+                            </tbody>
+                            <dxo-paging [pageSize]="12"></dxo-paging>
+                            <dxo-pager
+                                [showPageSizeSelector]="true"
+                                [allowedPageSizes]="[8, 15, 20]"
+                            ></dxo-pager>
+                        </dx-data-grid>
+
+                        <dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupvisible2">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8 " id="gal" ><dx-gallery #gallery
+                            id="gallery"
+                            [dataSource]="imagenes"
+                            [height]="300"
+                            [loop]="true"
+                            [showNavButtons]="true"
+                            [showIndicator]="true"
+                        ></dx-gallery></div>
+                        <div class="col-md-2"></div>
+                    </div>
+                   <!--  <div class="col-md-12" style="text-align: center;">
+                        <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="verGaleria(imagenes)" >Ver Galería
+                        </button>
+                    </div> -->
+                </div>
+                <br><br>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>PRODUCTO</th>
+                                  <td>{{catalogoLeido.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CLASIFICACIÓN</th>
+                                    <td>{{catalogoLeido.CLASIFICA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCIA</th>
+                                    <td>{{catalogoLeido.REFERENCIA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>UNIDAD</th>
+                                    <td>{{catalogoLeido.UNIDAD}}</td>
+                                </tr>
+                                <tr>
+                                    <th>DIMENSIONES</th>
+                                    <td>{{catalogoLeido.DIM}}</td>
+                                </tr>
+                                <tr>
+                                    <th>NOMBRE COMERCIAL</th>
+                                    <td>{{catalogoLeido.NOMBRE_COMERCIAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>P_CAJA</th>
+                                    <td>{{catalogoLeido.P_CAJA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>M2</th>
+                                    <td>{{catalogoLeido.M2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CAL</th>
+                                    <td>{{catalogoLeido.CAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CASA</th>
+                                    <td>{{catalogoLeido.CASA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>TIPO</th>
+                                    <td>{{catalogoLeido.TIPO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ORIGEN</th>
+                                    <td>{{catalogoLeido.ORIGEN}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ESTADO</th>
+                                    <td>{{catalogoLeido.ESTADO}}</td>
+                                </tr>
+                              </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+</dx-popup>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        </div>
+</div>

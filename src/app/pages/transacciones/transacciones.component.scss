@@ -1,0 +1,28 @@
+
+
+.transacciones{
+    margin: 2em;
+}
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid black;
+    text-align: left;
+    padding: 8px;
+  }
+
+.colbot{
+    background-color: green;
+}
+.mover{
+    text-align: right;
+}
+
+/* ::ng-deep .dx-datagrid-rowsview .dx-row > td, .dx-datagrid-rowsview .dx-row > tr > td {  
+  background-color: #96c8a2;  
+ }  */ 

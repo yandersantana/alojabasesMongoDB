@@ -1,0 +1,98 @@
+
+
+
+
+h5{
+    font-size: 0.8em;
+}
+
+.espacio{
+    margin-bottom: 1.5em;
+}
+
+
+
+.productos{
+    position: absolute;
+    margin-top: 330px;
+    height: 180px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;    
+  }
+
+.fondobt{
+    background-color: transparent;
+    border-color: transparent;
+    color: red;
+}
+
+
+dx-form{
+    position: absolute;
+}
+
+.contenedorProductos{
+    margin-right: 50px;
+    text-align: center;
+}
+
+.dx-button.dx-button-success{
+    background-color: darkseagreen;
+}
+
+.dx-button{
+    margin-right: 15px;
+}
+
+.alinearBoton{
+    text-align: left;
+    margin-bottom: 1.5em;
+}
+
+::ng-deep .altura1{
+    height: 200px;
+}
+
+::ng-deep .altura2{
+    height: 400px;
+}
+::ng-deep .altura3{
+    height: 600px;
+}
+::ng-deep .altura4{
+    height: 800px;
+}
+::ng-deep .altura5{
+    height: 1000px;
+}
+
+
+::ng-deep .prueba2 /deep/ .dx-texteditor-input{
+    font-size: 26px;
+    text-align: center;
+    font-weight: bold;
+   
+}
+.espacio{
+    margin-top: 1.5em;
+}
+
+
+
+.imgProducto2{
+    width: auto;
+    height: 400px;
+  }
+  
+.imgProducto3{
+    width: auto;
+    height: 100px;
+}
+

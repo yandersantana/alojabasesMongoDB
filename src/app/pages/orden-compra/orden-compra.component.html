@@ -1,0 +1,471 @@
+
+<div class="row alin2 titulos">
+    <div class="col-md-8"><div class="">
+        <!-- <h4>Solicitudes de Ordenes de Compra</h4> -->
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+<!-- <div class=" tdco2">
+    
+           
+</div> 
+ -->
+<div id="ordnormal" style="display: block;">
+
+
+ <div class="titulos">
+    <h4>Solicitudes de Ordenes de Compra</h4>
+</div>
+<dx-data-grid id="gridContainer"
+    [dataSource]="ordenesCompraPendientes"
+    [showBorders]="true"
+    [remoteOperations]="true">
+    <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+    <dxi-column
+        dataField="documento"
+        caption="Solicitud #"
+        dataType="string"
+        sortOrder="desc">
+    </dxi-column>
+    <dxi-column
+        dataField="sucursal.nombre"
+        caption="Sucursal"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="proveedor.nombre_proveedor"
+        caption="Proveedor"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="tipo"
+        caption="Tipo"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="total"
+        dataType="string">
+    </dxi-column>
+    <dxi-column type="buttons"  caption="Ver">
+        
+        <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>
+      
+           
+    </dxi-column>
+    <dxi-column type="buttons" caption="Opciones" id="botones">
+        <dxi-button text="Aprobar" [onClick]="aceptarOrden"></dxi-button>
+        <dxi-button text="Rechazar" [onClick]="rechazarOrden"></dxi-button>
+        <!-- <dxi-button text="Rechazar" [onClick]="rechazarOrden"></dxi-button> -->
+        
+    </dxi-column>
+    
+    
+    <dxi-column dataField="estado" [groupIndex]="0"></dxi-column>
+    <dxo-grouping #expand [autoExpandAll]="true">
+    </dxo-grouping>
+    
+    
+    <dxo-paging [pageSize]="5"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+
+<div class="titulos">
+    <h4>Solicitudes rechazadas</h4>
+</div>
+
+<dx-data-grid id="gridContainer"
+    [dataSource]="ordenesCompraRechazadas"
+    [showBorders]="true"
+    [remoteOperations]="true">
+    <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-filter-row 
+    [visible]="true" ></dxo-filter-row>
+   
+    <dxo-export [enabled]="true" fileName="ordenesCompraRechazadas" [allowExportSelectedData]="true"></dxo-export>
+    <dxi-column
+        dataField="documento"
+        caption="Solicitud #"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="sucursal.nombre"
+        caption="Sucursal"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="proveedor.nombre_proveedor"
+        caption="Proveedor"
+        dataType="string">
+    </dxi-column>
+  
+   
+    <dxi-column
+    dataField="msjAdmin"
+    caption="Motivo de Rechazo"
+    [width]="30+'%'"
+    dataType="string">
+    
+</dxi-column>
+<dxi-column type="buttons"  caption="Ver">     
+    <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>          
+</dxi-column>
+  <!--   <dxi-column type="buttons"  caption="Comentario">
+        
+        <dxi-button icon="fa fa-comments" hint="Comentarios" [onClick]="mostrarmensaje"></dxi-button>
+      
+           
+    </dxi-column> -->
+    
+    <dxi-column dataField="estado" [groupIndex]="0"></dxi-column>
+    <dxo-grouping #expand [autoExpandAll]="true">
+    </dxo-grouping>
+    
+    
+    <dxo-paging [pageSize]="5"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+
+
+<div class="titulos">
+    <h4>Ordenes de compra</h4>
+</div>
+<dx-data-grid id="gridContainer"
+    [dataSource]="ordenesCompraAprobadas"
+    [showBorders]="true"
+    [remoteOperations]="true"
+    (onExporting)="onExporting2($event)"
+    (onExported)="onExported2($event)">
+    <dxo-filter-row 
+    [visible]="true" ></dxo-filter-row>
+   
+    <dxo-export [enabled]="true" fileName="ordenesCompraAprobadas" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+    <dxi-column
+        dataField="n_orden"
+        caption="Orden #"
+        dataType="string"
+        sortOrder="desc">
+    </dxi-column>
+    <dxi-column
+        dataField="documento"
+        caption="Solicitud #"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="sucursal.nombre"
+        caption="Sucursal"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="proveedor.nombre_proveedor"
+        caption="Proveedor"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+    dataField="total"
+    dataType="string">
+</dxi-column>
+    <dxi-column
+        dataField="fechaAP"
+        dataType="date">
+    </dxi-column>
+    <dxi-column
+        dataField="estadoOrden"
+        caption="Estado"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="usuario"
+        caption="Usuario"
+        dataType="string"
+        [visible]="false">
+    </dxi-column>
+    <dxi-column
+        dataField="usuarioAuth"
+        caption="Usuario Autoriza"
+        dataType="string"
+        [visible]="false">
+    </dxi-column>
+    <dxi-column type="buttons"  caption="Ver">
+        <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
+    </dxi-column>
+    
+    <dxo-grouping #expand [autoExpandAll]="true">
+    </dxo-grouping>
+
+    
+    
+    
+    <dxo-paging [pageSize]="5"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+</div>
+
+
+<div id="orddirecta" style="display: none;">  
+    <div class="titulos">
+        <h4>Ordenes de compra Directas</h4>
+    </div>
+    <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectas2"
+        [showBorders]="true"
+        [remoteOperations]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+    
+        <dxo-export [enabled]="true" fileName="ordenesCompraAprobadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="n_orden"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Solicitud #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaAP"
+            dataType="date">
+        </dxi-column>
+        <dxi-column
+            dataField="estadoOrden"
+            caption="Estado"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="usuario"
+            caption="Usuario"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="usuarioAuth"
+            caption="Usuario Autoriza"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Anular" width="10%">
+            <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
+        </dxi-column>
+        
+        <dxo-grouping #expand [autoExpandAll]="true">
+        </dxo-grouping>
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+
+
+    <div class="titulos">
+        <h4>Pendientes de Anulación</h4>
+    </div>
+    <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectasRec"
+        [showBorders]="true"
+        [remoteOperations]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+    
+        <dxo-export [enabled]="true" fileName="ordenesCompraAprobadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="n_orden"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Solicitud #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaAP"
+            dataType="date">
+        </dxi-column>
+        <dxi-column
+            dataField="estadoOrden"
+            caption="Estado"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="usuario"
+            caption="Usuario"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="usuarioAuth"
+            caption="Usuario Autoriza"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Acciones" width="15%">
+            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button> 
+            <dxi-button text="Rechazar" [onClick]="getCourseFile6"></dxi-button>      
+        </dxi-column>
+        
+        <dxo-grouping #expand [autoExpandAll]="true">
+        </dxo-grouping>
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+
+
+    <div class="titulos">
+        <h4>Ordenes Eliminadas</h4>
+    </div>
+    <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectasEl"
+        [showBorders]="true"
+        [remoteOperations]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+    
+        <dxo-export [enabled]="true" fileName="ordenesCompraEliminadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="n_orden"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Solicitud #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaAP"
+            dataType="date">
+        </dxi-column>
+        <dxi-column
+            dataField="estadoOrden"
+            caption="Estado"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="usuario"
+            caption="Usuario"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="usuarioAuth"
+            caption="Usuario Autoriza"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
+        </dxi-column>
+        <!-- <dxi-column type="buttons"    dataField="bt2"  caption="Acciones" width="15%">
+            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button> 
+            <dxi-button text="Rechazar" [onClick]="getCourseFile6"></dxi-button>      
+        </dxi-column> -->
+        
+        <dxo-grouping #expand [autoExpandAll]="true">
+        </dxo-grouping>
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>

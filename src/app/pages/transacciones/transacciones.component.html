@@ -1,21 +1,86 @@
-<dx-data-grid 
-    id="gridContainer"
-    [dataSource]="transacciones"
-    [showBorders]="true">    
-    <dxo-paging [pageSize]="10"></dxo-paging>
-    <dxo-pager 
-        [showPageSizeSelector]="true"
-        [allowedPageSizes]="[5, 10, 20]"
-        [showInfo]="true">
-    </dxo-pager>
+<div class="transacciones">
+    <div class="mover">
+        <button class="btn btn-primary colbot" (click)="mostrarpopup()" >
+            <i class="fa fa-question"></i>
+        </button>
+    </div>
+    <dx-data-grid #data2
+        id="gridContainer"
+        [dataSource]="transacciones"
+        [showBorders]="true"
+        
+        (onExporting)="onExporting($event)"
+        (onExported)="onExported($event)"
+        (onRowPrepared)="onRowPrepared($event)">   
+        <dxo-paging [pageSize]="10"></dxo-paging>
+        <dxo-pager 
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[5, 10, 20]"
+            [showInfo]="true">
+        </dxo-pager>
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Transacciones" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="idTransaccion" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="fecha_transaccion"  [visible]="false"></dxi-column>
+        <dxi-column dataField="fecha_mov"></dxi-column>
+        <dxi-column dataField="sucursal"></dxi-column>
+        <dxi-column dataField="tipo_transaccion"></dxi-column>
+        <dxi-column dataField="bodega"  [visible]="false"></dxi-column>
+        <dxi-column dataField="documento" dataType="number"></dxi-column>
+        <dxi-column dataField="orden_compra" caption="Orden N"></dxi-column>
+        <dxi-column dataField="factPro" [visible]="true" caption="Remision" dataType="number"></dxi-column>
+        <dxi-column dataField="producto" width="25%"></dxi-column>
+        <dxi-column dataField="cajas"  dataType="number"></dxi-column>
+        <dxi-column dataField="piezas"  dataType="number"></dxi-column>
+        <dxi-column dataField="cantM2" caption="Cantidad" [visible]="false"  dataType="number"></dxi-column>
+        <dxi-column dataField="valor" dataType="number" caption="V.Unitario" [visible]="false" ></dxi-column>
+        <dxi-column dataField="totalsuma"   dataType="number"></dxi-column>
+
+        <dxi-column dataField="usu_autorizado"  [visible]="false"></dxi-column>
+        <dxi-column dataField="cliente"  [visible]="false"></dxi-column>
+        <dxi-column dataField="proveedor"  [visible]="false"></dxi-column>
+        <dxi-column dataField="movimiento"  [visible]="false"></dxi-column>
+        <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
+        <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
+       <!--  <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling> -->
+    </dx-data-grid>
+
+
+
+    <div>
+        <dx-popup [width]="600" [height]="400" [showTitle]="true" title="Ayuda" [dragEnabled]="false"
+            [closeOnOutsideClick]="true" [(visible)]="popupvisible">
+            <table>
+                <tr>
+                <th>Tipo</th>
+                <th>Columna Tipo</th>
+                <th>Columna Remisión</th>
+                </tr>
+                <tr>
+                <td>compra</td>
+                <td>Artículos ingresados de remisiones</td>
+                <td>Pertenece número de remisión</td>
+                </tr>
+                <tr>
+                <td>compra_obs</td>
+                <td>Artículos de obsequios</td>
+                <td>Pertenece número de remisión</td>
+                </tr>
+                <tr>
+                <td>venta_not</td>
+                <td>Ventas generados tipo Nota de Venta</td>
+                <td>Pertenece número Nota de Venta</td>
+                </tr>
+                <tr>
+                <td>venta_fact</td>
+                <td>Ventas generadas tipo Facturas</td>
+                <td>Pertenece número Factura</td>
+                </tr>
+            </table>
+        </dx-popup>
+    </div>
+
     
-    <dxi-column dataField="marca_temporal"></dxi-column>
-    <dxi-column dataField="fecha"></dxi-column>
-    <dxi-column dataField="sucursal"></dxi-column>
-    <dxi-column dataField="transaccion"></dxi-column>
-    <dxi-column dataField="documento"></dxi-column>
-    <dxi-column dataField="producto"></dxi-column>
-    <dxi-column dataField="cajas"></dxi-column>
-    <dxi-column dataField="piezas"></dxi-column>
-</dx-data-grid>
+</div>
 

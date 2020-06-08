@@ -11,6 +11,17 @@ export class producto {
         PRODUCTO: string
         REFERENCIA: string
         UNIDAD: string
+        cantidad: number
+        precio: number
+        porcentaje_ganancia: number
+        nombre_comercial:string
+        sucursal1:number
+        sucursal2:number
+        sucursal3:number
+        suc1Pendiente:number
+        suc2Pendiente:number
+        suc3Pendiente:number
+        bodegaProveedor:number
         constructor(
             ) {
     }
@@ -30,13 +41,24 @@ export class venta {
         total: number
         tipo_documento_emitido: string
         factura_id : number
+        descuento: number
+        subtotal:number=0
+        tipoDocumentoVenta:string
+        subtP2:number
+        subtP1:number
+        subtIva:number
+        sucursal:string
+        
         constructor() {
         this.pedir = false
         this.iva = true
         this.seleccionado = true
         this.entregar = false
-        this.cantidad = 1 
+        this.cantidad = 0 
+        this.descuento=0
+        this.total=0
         this.producto = new producto()
+
     }
 }
 
@@ -46,22 +68,37 @@ export class cliente {
         ruc: string
         direccion: string
         celular: string
-        constructor(
+        tventa: string
+        constructor( 
             ) { }
+            
+            
 }
 export class factura {
         documento_n : number
-        sucursal : sucursal
+        sucursal : string
         fecha: Date
+        fecha2:string
         total: number = 0
         username: string
         cliente: cliente
-        tipo_venta: number
+        tipo_venta: string
+        tipo_cliente: string
         observaciones: string
-        coste_transporte: number
+        coste_transporte: number=0
+        dni_comprador:string
+        totalDescuento:number=0
+        tipoDocumento:string
+        cotizacion:number
+        subtotalF1:number
+        subtotalF2:number
+        totalIva:number
+        totalDescuentos:number
+        estado:string
         constructor(
             ) { 
-                this.cliente = new cliente()
+                this.estado="CONTABILIZADA"
+                //this.cliente = new cliente()
     }
 }
 
@@ -102,6 +139,7 @@ export class compra {
         dcto: number
         total: number
         orden_compra: orden_compra
+        referencia: string
         constructor(
             ) { 
                 
@@ -141,9 +179,15 @@ export class cotizacion{
         tipo_venta: number
         observaciones: string
         coste_transporte: number
+        n_documento:number
+        venta: venta
+        productos:Object
+        producto: producto
         constructor(
             ){
-                this.cliente=new cliente()
+                this.venta = new venta()
+                //this.venta = new venta()
+                //this.cliente=new cliente()
             }
 }
 
@@ -157,4 +201,36 @@ export class cotizado {
             ){
 
             }
+}
+
+
+export class productosPendientesEntrega{
+    id_Pedido:number
+    fecha:string
+    cliente:string
+    celular	:string
+    producto:producto	
+    documento:number	
+    sucursal:string	
+    cajas:number
+    piezas:number
+    cantM2:number
+    cajasPen:number
+    piezasPen:number
+    cantM2Pen:number
+    cajasEntregadas:number
+    piezasEntregadas:number
+    m2Entregados:number
+    valor_unitario:number	
+    total:number
+    usuario:string
+    fechaEntrega:string
+    estado:string
+    tipo_documento:string
+    constructor(){
+        this.cajasEntregadas=0
+        this.piezasEntregadas=0
+        this.m2Entregados=0
+    }
+
 }

@@ -1,31 +1,79 @@
-<div class="row">
-<div class="col-4">
-    <h3>Ventas</h3>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3"><h6>Sucursal</h6></div>
+        <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+            [value]="sucursalesDefault[0]" 
+            [readOnly]="false" 
+            [disabled]="false"
+            (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
+            <div class="col-md-5"></div>
 </div>
-<!-- <div class="col-4">
-    <dx-select-box [items]="sucursales" 
-    [value]="sucursales[0]" 
-    [readOnly]="false" 
-    [disabled]="false"></dx-select-box>
-</div> --><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
+</div>
+<br>
+
+
+<div class="row" style="margin-bottom: 1.5em;">
+    <div class="col-4">
+        <h3>Ventas</h3>
+    </div>
+    <div class="col-6 tdoc">
+        <div class="row">
+            <div class="col-md-6"><h6>Tipo de Venta</h6></div>
+            <div class="col-md-6"> <dx-select-box [items]="tipoDocumentos" 
+                [value]="tipoDocumentos[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                (onValueChanged)="obtenerTipoDocumento($event)"></dx-select-box></div>
+        </div>
+        
+       
+    </div>
+    <div class="col-2 ">
+        <div class=" tdco2">
+            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2">
+            </dx-button>
+                   
+        </div>
+        
+               
+    </div><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
+</div>
+<div id="buscar">
+    <div id="myDIV" style="display: none; margin-bottom: 1em;">
+        <div class="dx-field row">
+            <div class="col-md-4">
+                <div class="dx-field-label label2">N/ Cotizacion</div>
+                <div class="dx-field-value">
+                    <dx-text-box [(value)]="Ncotizacion"></dx-text-box>
+                    
+                </div>
+                
+            
+            </div>
+            <div class="col-md-2">
+                <dx-button icon="fa fa-search" (onClick)="buscarCotizacion()"></dx-button>
+            </div>
+        </div>
+        </div>
 </div>
 <!--BOTONES DE ACCION-->
 <div class="row">
     <div class="col-4">
-        <dx-button [text]="'Generar Cotizacion'" [type]="'success'">
+        <dx-button [text]="'Generar Cotizacion'" [type]="'success'" (onClick)="generarCotizacion($event)" [disabled]="botonCotizacion">
         </dx-button>
     </div>
     <div class="col-4">
-        <dx-button [text]="'Generar Nota de venta'" [type]="'success'">
+        <dx-button [text]="'Generar Nota de venta'" [type]="'success'" (onClick)="generarNotaDeVenta($event)" [disabled]="botonNotaVenta">
         </dx-button>
     </div>
     <div class="col-4">
-        <dx-button [text]="'Generar Factura'" [type]="'success'" (onClick)="generarFactura($event)">
+        <dx-button [text]="'Generar Factura'" [type]="'success'" (onClick)="generarFactura($event)" [disabled]="botonFactura">
         </dx-button>
     </div>
 </div>
 
 <!--ENCABEZADO DEL FORMULARIO-->
+<div class="prueba">
 <dx-form id="form" #ventasForm [(formData)]="factura" [readOnly]="false" [colCount]="3" [width]="1000">
     <dxi-item itemType="group" [colCount]="3" [colSpan]="3">
         <dxi-item dataField="fecha" [editorOptions]="{ placeholder: 'Fecha'}">
@@ -41,10 +89,10 @@
             <dxo-label [visible]="false"></dxo-label>
 
         </dxi-item>
-        <dxi-item dataField="username" [editorOptions]="{ placeholder: 'Vendedor'}">
-            <dxo-label [visible]="false"></dxo-label>
+        <dxi-item dataField="username" [editorOptions]="{ placeholder: 'Vendedor',disabled:true }"  >
+            <dxo-label [visible]="false" cssClass="prueba2"></dxo-label>
         </dxi-item>
-        <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}">
+        <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
             <dxo-label
             location="left"
             alignment="right"> <!-- or "left" | "center" -->
@@ -52,78 +100,154 @@
         </dxi-item>
     </dxi-item>
         <dxi-item dataField="cliente.cliente_nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
-           <!--  <dx-autocomplete
+            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
+            <dxo-label [visible]="false"></dxo-label>
+            <dx-autocomplete #data2
             [dataSource]="clientes"
             placeholder="Nombre del cliente"
-            valueExpr="nombre"
+            valueExpr="cliente_nombre"
+            [(value)]= "mensaje"
             (onChange)="setClienteData($event)">
-        </dx-autocomplete> -->
-            <dxo-label [visible]="false"></dxo-label>
+        </dx-autocomplete>
         </dxi-item>
     
     <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
-        <dxi-item dataField="cliente.t_cliente" [editorOptions]="{ placeholder: 'Tcliente'}" [colSpan]="1">
-            <dxo-label [visible]="false"></dxo-label>
+        <dxi-item dataField="tipo_cliente" [editorOptions]="{ placeholder: 'Tcliente', disabled:true }" [colSpan]="1" >
+            <dxo-label [visible]="false" ></dxo-label>
         </dxi-item>
-        <dxi-item dataField="cliente.tventa" [editorOptions]="{ placeholder: 'Tventa'}" [colSpan]="1">
-            <dxo-label [visible]="false"></dxo-label>
+        <dxi-item dataField="tipo_venta" [editorOptions]="{ placeholder: 'Tventa', disabled:true}" [colSpan]="1" >
+            
+            <dxo-label [visible]="false"> </dxo-label>
+           
         </dxi-item>
     </dxi-item>
-    <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}">
-        <dxo-label [visible]="false"></dxo-label>
+    <dxi-item itemType="group" [colCount]="3" [colSpan]="1">
+      
+        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}" [colSpan]="2"  >
+            <dxi-validation-rule
+            type= "pattern"
+            pattern= '^[0-9]{10,15}$'
+            message="El Ruc debe ser tipo  y minimo 10 caracteres">
+        </dxi-validation-rule>
+            <dxo-label [visible]="false" ></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="">
+            <dx-button
+                        type="normal"
+                        [width]="100"
+                        icon="fa fa-user"
+                        (onClick)="buscarCliente($event)">
+                    </dx-button>
+        </dxi-item>
+    
     </dxi-item>
+   
+    
     <dxi-item dataField="cliente.direccion" [editorOptions]="{ placeholder: 'Direccion'}">
+        <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
     <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}">
+        <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
+    <!-- <div style="width: 20px;">
+        <dx-button
+                        stylingMode="contained"
+                        text="Contained"
+                        type="normal"
+                        [width]="120"
+                        (onClick)="buscarCliente($event)">
+                    </dx-button>
+    </div> -->
 
-
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-
+    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
+    <dxi-item #espacio itemType="group"  [colSpan]="3"  [name]="espacio">
+        <dxi-item itemType="empty" [colSpan]="3" ></dxi-item>
+       
+      
+    </dxi-item>
+    
+    
     <dxi-item itemType="group" [colSpan]="3">
         <dxi-item *ngFor="let p of productosVendidos;let i = index"></dxi-item>
     </dxi-item>
 
 
-
-    <dxi-item dataField="costeTransporte" [editorOptions]="{ placeholder: 'Coste Transporte'}" [colSpan]="1">
-        <dxo-label [visible]="false"></dxo-label>
-    </dxi-item>
-    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-    <dxi-item dataField="observaciones" [editorOptions]="{ placeholder: 'Observaciones'}" [colSpan]="1">
-        <dxo-label [visible]="false"></dxo-label>
-    </dxi-item>
-    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+    <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
+      
+        <dxi-item dataField="coste_transporte" [editorOptions]="{ placeholder: 'Cost/Transporte'}" [colSpan]="1" onChange="calcularTotalFacturaconTransporte($event)">
+            <dxo-label
+            location="left"
+            alignment="right"> <!-- or "left" | "center" -->
+        </dxo-label>
+        </dxi-item>
+        <dxi-item dataField="">
+            <dx-button
+                        type="normal"
+                        [width]="80"
+                        icon="fa fa-car"
+                        (onClick)="calcularTransporte()">
+                    </dx-button>
+                    <dx-check-box [(value)]="costoTr" [readOnly]="true">
+                    </dx-check-box>
+        </dxi-item>
     
-    <dxi-item  [editorOptions]="{ disabled: true }" dataField="total" [colSpan]="1"></dxi-item>
+    </dxi-item>
+    
+    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+    <dxi-item dataField="observaciones" [editorOptions]="{ placeholder: 'Observaciones'}" [colSpan]="2" >
+        <dxo-label
+            location="left"
+            alignment="right"> <!-- or "left" | "center" -->
+        </dxo-label>
+       
+    </dxi-item>
+    <dxi-item  [editorOptions]="{ disabled: true }" dataField="total" [colSpan]="1" cssClass="prueba2">
+        <dxo-label
+            location="left"
+            alignment="left"> <!-- or "left" | "center" -->
+        </dxo-label>
+    </dxi-item>
+    <dxi-item itemType="empty" [colSpan]="2" ></dxi-item>
+    <dxo-label [visible]="false"></dxo-label>
+    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
+    <dxo-label [visible]="false"></dxo-label>
+    
+    
 </dx-form>
+</div>
 
 <div class="productos">
+    
     <dx-button [text]="'Añadir producto'" [type]="'success'" [disabled]="newButtonEnabled"
         (onClick)="anadirProducto($event)">
     </dx-button>
     <dx-button [text]="'Ver calculadora'" [type]="'success'" (onClick)="verCalculadora($event)">
     </dx-button>
-    <div class="row titlesCurrency">
+    <div class="row titlesCurrency contenedorProductos">
         <div class="col-1">
-            <div class="row">
-                <div class="col-6">
+            <div class="row" style="position: absolute;text-align: left;">
+                <div class="col-4">
                     <h5>Select</h5>
                 </div>
-                <div class="col-6">
+                <div class="col-4" style="text-align: center;">
                     <h5>Iva</h5>
                 </div>
+            <div class="col-4" style="text-align:left">
+                    <h5 style="text-align: left">Img</h5>
+                </div>
+               
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <h5>Producto</h5>
         </div>
         <div class="col-2">
@@ -147,42 +271,64 @@
             <h5>Precio venta</h5>
         </div>
         <div class="col-1">
+            <h5>Dscto.(%)</h5>
+        </div>
+       <!--  <div class="col-md-2">
+            <div class="row">
+            <div class="col-md-4"><h5>Cantidad (m2/uni.)</h5></div>
+            <div class="col-md-4"> <h5>Precio venta</h5></div>
+            <div class="col-md-4"> <h5>Dscto.(%)</h5></div></div>
+
+        </div> -->
+        <div class="col-1">
             <h5>Total</h5>
         </div>
         <div class="col-1">
             <div class="row">
-                <div class="col-4" style="padding: unset;">
+                <div class="col-4" >
                     <h5>Pedir</h5>
 
                 </div>
-                <div class="col-4" style="padding: unset;">
-                    <h5>Entre</h5>
+                <div class="col-4" >
+                    <h5 style="text-align: center;">Entre</h5>
                 </div>
-                <div class="col-4" style="padding: unset;">
-                    <h5>Elimi</h5>
+                <div class="col-4" >
+                    <h5></h5>
                 </div>
             </div>
         </div>
     </div>
-    <div *ngFor="let p of productosVendidos;let i = index">
+    <div *ngFor="let p of productosVendidos;let i = index" class="contenedorProductos">
         <div class="row altura">
             <div class="col-1">
-                <div class="row">
-                    <div class="col-6">
+                <div class="row" style="position: absolute;text-align: left;">
+                    <div class="col-md-3">
                         <dx-check-box [(value)]="p.seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
                         </dx-check-box>
                     </div>
-                    <div class="col-6">
-                        <dx-check-box [value]="p.iva"></dx-check-box>
+                    <div class="col-md-3">
+                        <dx-check-box [(value)]="p.iva" (onValueChanged)="carcularTotalProducto($event, i)" [readOnly]="selectAct"></dx-check-box>
                     </div>
+                    <div class="col-md-3" style="text-align: left">
+                        <button class="fondobt" (click)="mostrarPopup($event,i)" >
+                            <i class="fa fa-eye"></i>
+                        </button>
+                    </div>
+                    
                 </div>
             </div>
-            <div class="col-4">
-                <dx-select-box [items]="productos" [(value)]="p.producto.REFERENCIA" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
-                    valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+            <div class="col-3">
+                <dx-select-box [items]="productos" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
+                    valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint={{p.producto.PRODUCTO}}>
                 </dx-select-box>
             </div>
+             <!--   <div class="col-4">
+                    <dx-select-box [items]="productos" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
+                    valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint="hh">
+                </dx-select-box>
+                </div> -->
             <div class="col-2">
                 <div class="row">
                     <div class="col-6" >
@@ -191,6 +337,7 @@
                     <div class="col-6">
                         <dx-text-box [(value)]="p.precio_min" [disabled]="true" [readOnly]="true"></dx-text-box>
                     </div>
+                    
                 </div>
             </div>
             <div class="col-1">
@@ -208,6 +355,26 @@
                 </dx-number-box>
             </div>
             <div class="col-1">
+                <dx-number-box [(value)]="p.descuento" [disabled]="false" [readOnly]="false"
+                (onChange)="calcularDescuento($event, i)">
+                </dx-number-box>
+            </div>
+
+            <!-- <div class="col-md-2">
+                <div class="row">
+                    <div class="col-md-4"><dx-number-box [(value)]="p.cantidad" [disabled]="false" [readOnly]="false"
+                        (onChange)="calcularEquivalencia($event, i)"  (onChange)="calcularDisponibilidadProducto($event, i)" (onChange)="carcularTotalProducto($event, i)"
+                        (onFocusIn)="setSelectedProducto(i)" >
+                    </dx-number-box></div>
+                    <div class="col-md-4"> <dx-number-box [(value)]="p.precio_venta" [disabled]="false" [readOnly]="false"
+                        (onChange)="carcularTotalProducto($event, i)" [min]="p.precio_min">
+                    </dx-number-box></div>
+                    <div class="col-md-4"><dx-number-box [(value)]="p.descuento" [disabled]="false" [readOnly]="false"
+                        (onChange)="calcularDescuento($event, i)">
+                        </dx-number-box></div>
+                </div>
+            </div> -->
+            <div class="col-1">
                 <dx-number-box [value]="p.total" [disabled]="false" [readOnly]="false">
                 </dx-number-box>
             </div>
@@ -218,7 +385,7 @@
 
                     </div>
                     <div class="col-4" style="padding: unset;">
-                        <dx-check-box [value]="p.entregar"></dx-check-box>
+                        <dx-check-box [(value)]="p.entregar" (onValueChanged)="cambiarestado($event, i)"></dx-check-box>
                     </div>
                     <div class="col-4" style="padding: unset;">
                         <i class="dx-icon-close" (click)="deleteProductoVendido(i)"></i>
@@ -226,29 +393,271 @@
                     </div>
                 </div>
             </div>
+           
 
         </div>
 
     </div>
+    
 </div>
 
 
 
+<dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupvisible">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8"><dx-gallery #gallery
+                            id="gallery"
+                            [dataSource]="imagenes"
+                            [height]="300"
+                            
+                            [loop]="true"
+                            [showNavButtons]="true"
+                            [showIndicator]="true"
+                        ></dx-gallery></div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="col-md-12" style="text-align: center;">
+                        <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="verGaleria(imagenes)" >Ver Galería
+                        </button>
+                    </div>
+                </div>
+                <br><br>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>PRODUCTO</th>
+                                  <td>{{catalogoLeido.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CLASIFICACIÓN</th>
+                                    <td>{{catalogoLeido.CLASIFICA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCIA</th>
+                                    <td>{{catalogoLeido.REFERENCIA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>UNIDAD</th>
+                                    <td>{{catalogoLeido.UNIDAD}}</td>
+                                </tr>
+                                <tr>
+                                    <th>DIMENSIONES</th>
+                                    <td>{{catalogoLeido.DIM}}</td>
+                                </tr>
+                                <tr>
+                                    <th>NOMBRE COMERCIAL</th>
+                                    <td>{{catalogoLeido.NOMBRE_COMERCIAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>P_CAJA</th>
+                                    <td>{{catalogoLeido.P_CAJA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>M2</th>
+                                    <td>{{catalogoLeido.M2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CAL</th>
+                                    <td>{{catalogoLeido.CAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CASA</th>
+                                    <td>{{catalogoLeido.CASA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>TIPO</th>
+                                    <td>{{catalogoLeido.TIPO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ORIGEN</th>
+                                    <td>{{catalogoLeido.ORIGEN}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ESTADO</th>
+                                    <td>{{catalogoLeido.ESTADO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>DISPONIBILIDAD</th>
+                                    <td style="font-weight: bold;">{{disponibilidadProducto}}</td>
+                                </tr>
+                              </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+    </dx-popup>
+ 
 
-<dx-popup [width]="350" [height]="400" [showTitle]="true" title="Calculadora" [dragEnabled]="false"
-    [closeOnOutsideClick]="true" [(visible)]="visibleCalculadora">
-    <div *ngIf="sePuedeCalcular">
-        <h5>Convertor de m2 a cajas</h5>
-        <label>Cajas</label>
-        <dx-number-box [(value)]="cantidad" [showClearButton]="true" [disabled]="false" [readOnly]="false"
-            (onKeyDown)="calcularMetros($event)">
-        </dx-number-box>
-        <label for="">Metros2</label>
-        <dx-text-box [(value)]="valorEnM2" [disabled]="false" [readOnly]="false"></dx-text-box>
-        <br>
+    <dx-popup
+    [width]="'70%'"
+    [height]="'80%'"
+    [showTitle]="true"
+    [title]="titulo"
+    [closeOnOutsideClick]="true"
+    [(visible)]="popupVi">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row">
+               
+                <div class="col-md-4">
+                    
+                    <div  *ngFor="let imagen of imagenesData; let id = index">
+                        
+                        <div class="col-md-12 espacio"><button (click)="enviar(id)"><img  class="imgProducto3 " src={{imagen}} alt=""></button></div>
+                   
+                    </div>
+               
+                </div>
+                
+               
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <pinch-zoom>
+                                <img  class="imgProducto2 " src={{imagenPrincipal}} alt="">
+                            </pinch-zoom>
+                           
+                        </div>
+                    </div>
+                   </div>
+              
+            </div>
+        </div>
+    </dx-scroll-view>
     </div>
-    <div *ngIf="!sePuedeCalcular">
-        <span>No hay ningun producto añadido a la factura.</span>
-    </div>
+   
+</dx-popup>
+
+
+<dx-popup [width]="500" [height]="500" [showTitle]="true" title="Calculadora" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="visibleCalculadora" class="row">
+        <div class="row">
+            <div class="col-md-6"></div>
+            <div class="col-md-6"> <dx-select-box [items]="tipoConversiones" 
+                [value]="tipoConversiones[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                (onValueChanged)="opcionMenu($event)"></dx-select-box></div>
+        </div>
+        <br><br>
+
+        <div id="op1" style="display: block;">
+            <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+
+            <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
+            [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora($event)" 
+            valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+            </dx-select-box>
+            <div class="row">
+            <div class="col-md-6">
+                <br>
+                <label for="">Cajas</label>
+                <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="false"
+                (onChange)="calcularMetros($event)">
+                </dx-number-box>
+                <label for="">Piezas</label>
+                <dx-text-box [(value)]="valorEnM2" class="calT" (onKeyDown)="calcularMetros($event)" (onChange)="calcularMetros($event)" [disabled]="false" [readOnly]="false"></dx-text-box>
+                <br>   
+            </div>
+    
+            <div class="col-md-6" style="text-align: center;">
+                <br>
+                <br>
+                <h4>m2</h4>
+                <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="true"
+                        (onKeyDown)="calcularMetros($event)" class="tot">
+                    </dx-number-box></div>
+                </div>
+     
+                <dx-number-box [(value)]="calp" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                [visible]="false">
+                    </dx-number-box>
+                <dx-number-box [(value)]="calmetros" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                [visible]="false"  >
+                </dx-number-box>
+        </div>
+
+        <div id="op2" style="display: none;">
+            <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+
+            <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
+            [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora2($event)"  (onChange)="calcularMetros2($event)" 
+            valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+            </dx-select-box>
+            <div class="row">
+                <div class="col-md-6" style="text-align: center;">
+                    <br>
+                    <br>
+                    <h4>m2</h4>
+                    <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="false"
+                    (onChange)="calcularMetros2($event)" class="tot">
+                        </dx-number-box></div>
+            <div class="col-md-6">
+                <br>
+                <label for="">Cajas</label>
+                <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="true"
+                >
+                </dx-number-box>
+                <label for="">Piezas</label>
+                <dx-text-box [(value)]="valorEnM2" class="calT" [disabled]="false" [readOnly]="true"></dx-text-box>
+                <br>   
+            </div>
+    
+            
+            </div>
+            
+
+                <dx-number-box [(value)]="calp" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                [visible]="false">
+                    </dx-number-box>
+                <dx-number-box [(value)]="calmetros" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                [visible]="false"  >
+                </dx-number-box>
+        </div>
+        <div >
+            <div class="col-md-12" style="text-align: center;">
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <table style="text-align: center;">
+                            <tr>
+                            <th>M2/Caja</th>
+                            <th>Piezas/Caja</th>
+                            </tr>
+                            <tr>
+                            <td style="text-align: center;">{{calmetros}}</td>
+                            <td style="text-align: center;">{{calp}}</td>
+                           
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="col-md-3"></div>
+                   
+                </div>
+                
+            </div>
+          
+        </div>
+        
+  
+       
 
 </dx-popup>

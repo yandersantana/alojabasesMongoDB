@@ -1,0 +1,625 @@
+<br><br>
+<div class="row alin2">
+    <div class="col-md-8"><div class="">
+       <!--  <h4>Facturas / Proveedor</h4> -->
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+<div class="ContFact " id="op1">
+    <div><h4>Facturas / Proveedor</h4></div>
+    <div class="row">
+        <div class="col-md-4 text1">Orden de Compra
+        </div>
+        <div class="col-md-2 text1">Factura Proveedor N</div>
+        <div class="col-md-2 text1">Fecha</div>
+        <div class="col-md-2 text1">Fecha Expiracion</div>
+        <div class="col-md-2 text1">Total</div>
+       <!--  <div class="col-md-2 text1">Acciones</div> -->
+        
+    
+        <div class="col-md-4">
+            <div class="row" style="text-align: center;">
+                <div class="col-md-6" >
+                    <div class="row" style="text-align: right">
+                        <!-- <div class="col-md-2"><h5>#</h5></div> -->
+                        <div class="col-md-12"> <dx-number-box [(value)]="datoNsolicitud"  (onChange)="validarSolicitud()" ></dx-number-box></div>
+                    </div>
+                </div>
+                <div class="col-md-6"><dx-button
+                    class="button-info"
+                    text="Detalles"
+                    [disabled]="newButtonEnabled2"
+                    (onClick)="obtenerDatos()">
+                </dx-button></div>
+            </div>   
+        </div>
+        <div class="col-md-2"><dx-text-box [(value)]="datoNFact"></dx-text-box></div>
+        <div class="col-md-2"><dx-date-box [(value)]="now2" type="date"></dx-date-box></div>
+        <div class="col-md-2"><dx-date-box [(value)]="now3" type="date"></dx-date-box> </div>
+        <div class="col-md-2"><dx-number-box [(value)]="datoTotal"></dx-number-box></div>
+        
+    
+    </div>
+
+
+    <div id="grid">
+        <!-- <dx-select-box id="select-prefix"
+            [dataSource]="['All', 'Dr.', 'Mr.', 'Mrs.', 'Ms.']"
+            placeholder= "Select title"
+            [value]="prefix"
+            (onValueChanged)="filterSelected($event)">
+        </dx-select-box> -->
+        <div style="text-align: left;">
+            <h6>Seleccione los productos facturados</h6>
+        </div>
+        <div  style="text-align: left;">
+        <dx-button
+            text="Limpiar Selección"
+            [disabled]="!selectedRows?.length"
+            (onClick)="grid.instance.clearSelection()">
+        </dx-button>
+        </div>
+        <dx-data-grid #grid
+            id="grid-container"
+            [dataSource]="productosComprados3"
+            keyExpr="nombreComercial.PRODUCTO"
+            [(selectedRowKeys)]="selectedRows"
+            (onSelectionChanged)="selectionChangedHandler()"
+            [showBorders]="true"
+            >    
+    
+            <dxo-selection
+                mode="multiple">
+            </dxo-selection>
+          
+           
+        <dxi-column
+            dataField="nombreComercial.PRODUCTO"
+            caption="Producto"
+            dataType="string">
+        </dxi-column>
+        <dxo-scrolling mode="virtual"></dxo-scrolling>
+        </dx-data-grid>
+        <div class="selected-data">
+            <span class="caption">Productos seleccionados:</span>
+            <span>
+                {{grid.selectedRowKeys ? (grid.instance.getSelectedRowsData() | stringifyEmplyees) : 'No hay artículos seleccionados'}}
+            </span>
+        </div>
+    </div>
+    <div class="col-md-12" style="text-align: right;"><dx-button
+        [disabled]="newButtonEnabled2"
+                            class="button-info"
+                            text="Registrar"
+                            (onClick)="guardarFacturaProveedor()">
+                        </dx-button></div>
+    
+    <div><br>
+        <br>
+        <br>
+        <br>
+        <br></div>
+   
+</div>
+
+
+
+<div class="ContFact" id="op2" style="display: none;">
+    <div><h4>Control Facturas</h4></div>
+    <div class="row espacio">
+        <div class="col-md-3"><h6>Orden de compra</h6></div>
+        <div class="col-md-2"> <dx-number-box [(value)]="NordenFact"></dx-number-box></div>
+        <div class="col-md-2"><dx-button
+                                class="button-info"
+                                text="Buscar"
+                                (onClick)="llenarTabla()">
+                            </dx-button></div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-md-4">
+            <div class="titleOrdenCompra"><p>Total Orden/Compra</p></div>
+            <div><p>{{totalOrden}}</p> </div>
+
+            <div class="titleOrdenCompra"><p>Saldo Pendiente</p></div>
+            <div><p>{{totalsuma}}</p> </div>
+
+            <div class="titleOrdenCompra"><p>Estado</p></div>
+            <div id="divestado"><p>{{estadoOrden}}</p> </div><!-- 
+            <div id="error-message"></div> -->
+        
+        </div>
+    
+    <div class="col-md-8">
+            <div class="color">
+                <button class="btn btn-primary btn-xs" (click)="mostrarEliminar()" >
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="facturaProveedorBus"
+            [showBorders]="true">
+            
+            <dxi-column
+                dataField="id"
+                caption="Id"
+                [visible]="false">
+            </dxi-column>
+            <dxi-column
+                dataField="nFactura"
+                caption="Fact. Proveedor">
+            </dxi-column>
+        
+            <dxi-column
+                dataField="fecha"
+                dataType="date">
+            </dxi-column>
+            <dxi-column
+                dataField="total"
+                alignment="right"  >
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="15%" [visible]="false">
+                <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
+            </dxi-column>
+
+            <dxo-summary>
+            
+                <dxi-total-item
+                    column="total"
+                    summaryType="sum"
+                    valueFormat="currency"
+                    displayFormat="Total: {0}">
+                </dxi-total-item>
+            </dxo-summary>
+            <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-pager
+                        [showPageSizeSelector]="true"
+                        [allowedPageSizes]="[8, 12, 20]"
+                    ></dxo-pager>
+            </dx-data-grid>
+    </div>
+</div>
+
+        <div>
+            <div class="card mb-3"> 
+                <div class="card-header">
+                    TABLA DE INFORMACIÓN
+                </div>
+            <br>
+            <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <div class="row" style="text-align: center;">
+
+                            <div class="col-md-2" style="font-weight: bold;">Proveedor</div>
+                            <div class="col-md-4">{{proveedor}}</div>
+        
+                            <div class="col-md-2" style="font-weight: bold;">Sucursal</div>
+                            <div class="col-md-4">{{sucursal}}</div>
+        
+                            <div class="col-md-2" style="font-weight: bold;">Usuario</div>
+                            <div class="col-md-4">{{usuario}}</div>
+        
+                            <div class="col-md-2" style="font-weight: bold;">Total</div>
+                            <div class="col-md-4">{{total}}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-1"></div>
+                    
+
+<br>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-1"></div>
+                            <div class="col-md-10">
+                                <br><br>
+                                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
+                                    <tr>
+                                      <th class="text-center" >Producto</th>
+                                      <th class="text-center" >Cantidad</th>
+                                      <th class="text-center"  >Total</th>
+                                    </tr>
+                                    
+                                    <tr *ngFor="let producto of productosComprados3; let id = index">
+                                      <td>
+                                        <span contenteditable="false" >{{producto.nombreComercial.PRODUCTO}}</span>
+                                      </td>
+                                      <td>
+                                        <span contenteditable="false" >{{producto.cantidad}}</span>
+                                      </td>
+                                      <td>
+                                          <span contenteditable="false" >{{producto.total}}</span>
+                                      </td>
+                                    </tr>
+                                  </table>
+                            </div>
+                            <div class="col-md-1"></div>
+                       
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+        </div>
+           
+</div>
+
+<div id="op3" style="display: none;">
+    
+    <div class="ContFact" id="busqueda">
+        <div class="row remiPro">
+            <div class="col-md-12 titulo" ><h2>Pago a Proveedores</h2></div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Cheque No</p> </div>
+                    <div class="col-md-8"><dx-text-box [(value)]="n_cheque" ></dx-text-box></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>N° Pago</p> </div>
+                    <div class="col-md-8"><dx-number-box [(value)]=" facturaNp2" [readOnly]="true" ></dx-number-box></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Fecha Factura</p> </div>
+                    <div class="col-md-8"><dx-date-box [(value)]="fecha_factura" type="date"></dx-date-box></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Fecha Pago</p> </div>
+                    <div class="col-md-8"><dx-date-box [(value)]="fecha_pago" type="date"></dx-date-box></div>
+                   
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Cuenta</p> </div>
+                    <div class="col-md-8"><dx-number-box [(value)]=" n_cuenta" [readOnly]="false" ></dx-number-box></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Banco</p> </div>
+                    <div class="col-md-8"><dx-text-box [(value)]="nombre_banco" [readOnly]="false" ></dx-text-box></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Beneficiario</p> </div>
+                    <div class="col-md-8"><!-- <dx-text-box [(value)]="beneficiario" [readOnly]="true" ></dx-text-box> -->
+                    <dx-autocomplete
+                            [dataSource]="proveedores"
+                            placeholder="Proveedor"
+                            valueExpr="nombre_proveedor"
+                            [(value)]= "beneficiario"
+                            (onChange)="setProveedor($event)"
+                            >
+                        </dx-autocomplete></div>
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="row">
+                    <div class="col-md-4"><p>Valor</p> </div>
+                    <div class="col-md-8"><dx-number-box [(value)]="valor" [readOnly]="true" ></dx-number-box></div>
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="detalle">
+            <div class="alinearBoton">
+                <dx-button icon="plus" [type]="'success'" [disabled]="false"
+                (onClick)="anadirDetallePago($event)">
+            </dx-button>
+            </div>
+            
+            <div class="row ">
+                <div class="col-2">
+                    <h5>Ord/Compra</h5>
+                </div>
+                <div class="col-2">
+                    <h5>Factura Proveedor #</h5>
+                </div>
+                <div class="col-2">
+                    <h5>Fecha/Vencimiento</h5>
+                </div>
+                <div class="col-1">
+                    <h5>Valor</h5>
+                </div>
+                <div class="col-1">
+                    <h5>No/conf.</h5>
+                </div>
+                <div class="col-1">
+                    <h5>Total</h5>
+                </div>
+                <div class="col-3">
+                    <div class="row">
+                        <div class="col-md-10"> <h5>Observaciones</h5></div>
+                        <div class="col-md-2"> <h5>Eliminar</h5></div>
+                    </div>
+                </div>
+               
+            </div>
+            <div *ngFor="let p of detallePago;let i = index">
+                <div class="row altura">
+                    <div class="col-2">
+                        <dx-select-box #selectId [items]="ordenes3" [value]="ordenes3" [readOnly]="false" [disabled]="false"
+                            [searchEnabled]="true" 
+                            valueExpr="n_orden" displayExpr="n_orden" (onValueChanged)="obtenerFactP($event,i)">
+                        </dx-select-box>
+                    </div>
+                    <div class="col-2">
+                        <dx-select-box #selectId [items]="factProvPagos" [value]="factProvPagos" [readOnly]="false" [disabled]="false"
+                            [searchEnabled]="true" 
+                            valueExpr="nFactura" displayExpr="nFactura" (onValueChanged)="obtenerDatosFactP($event,i)">
+                        </dx-select-box>
+                    </div>
+                    <div class="col-2">
+                        <dx-text-box [(value)]="p.fecha_vencimiento" [disabled]="false" [readOnly]="true"></dx-text-box>                
+                    </div>
+                    <div class="col-1">
+                        <dx-number-box [(value)]="p.valor" [disabled]="false" [readOnly]="true"></dx-number-box>
+                    </div>
+                    <div class="col-1">
+                        <dx-number-box [(value)]="p.no_conformidad" [disabled]="false" [readOnly]="false" (onChange)="carcularTotalPago($event, i)" ></dx-number-box>
+                    </div>
+                    <div class="col-1">
+                        <dx-number-box [(value)]="p.total" [disabled]="false" [readOnly]="true"></dx-number-box>
+                    </div>
+                    <div class="col-3">
+                        <div class="row">
+                            <div class="col-md-10"><dx-text-box [(value)]="p.observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                            <div class="col-md-2"> <dx-button icon="clear" color="white" class="bt" (onClick)="deleteFila(i)" ></dx-button></div>
+                        </div>   
+                    </div>
+                   
+                    
+                </div>
+        
+            </div>
+           
+        </div>
+
+
+
+
+        <div class="centrar">
+            <dx-button
+                            class="btn2"
+                            text="Guardar"
+                            (onClick)="guardarPagoProveedor()">
+                        </dx-button>
+        </div>
+
+
+        </div>
+
+        <div>
+            <div style="text-align: center;">
+                <h4>Relación cheques girados</h4>
+            </div>
+           
+            <dx-data-grid id="gridContainer"
+            [dataSource]="detallePago2"
+            [showBorders]="true"
+            (onExporting)="onExporting($event)"
+            (onExported)="onExported($event)">
+            <dxo-filter-row 
+            [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel 
+                [visible]="true" 
+                [width]="240" 
+                placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="DetallePagosFacturas" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column
+                dataField="idPago"
+                caption="Pago#"
+                cssClass= "cls"
+                sortOrder="desc"
+                >
+            </dxi-column>
+        
+            <dxi-column
+                dataField="n_cheque"
+                dataType="string"
+                >
+            </dxi-column>
+            <dxi-column
+                dataField="nombre_banco"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="beneficiario"
+                dataType="string" 
+                > 
+            </dxi-column>
+            <dxi-column
+                dataField="fact_proveedor"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="orden_compra"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="fecha_vencimiento"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="valor"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="no_conformidad"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="total"
+                dataType="string" 
+                [visible]="true"> 
+            </dxi-column>
+            <dxi-column
+                dataField="observaciones"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+
+            
+
+           
+            <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-pager
+                        [showPageSizeSelector]="true"
+                        [allowedPageSizes]="[8, 12, 20]"
+                    ></dxo-pager>
+                </dx-data-grid>
+        </div>
+</div>
+
+
+<div id="op4" style="display: none;">
+    <div><h4>Facturas ingresadas</h4></div>
+    <div class="margen">
+        <dx-data-grid #grid
+        id="grid-container"
+        [dataSource]="facturaProveedor2"
+        [showBorders]="true"> 
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Facturas_Ingresadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="id" caption="ID" width="10%" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="nSolicitud" caption="Orden" width="10%"></dxi-column>
+        <dxi-column dataField="nFactura" caption="Factura #" width="10%"></dxi-column>
+        <dxi-column dataField="productos" caption="Productos" width="45%"></dxi-column>
+        <dxi-column dataField="total" caption="Total" width="25%"></dxi-column>
+        <dxo-paging [pageSize]="8"></dxo-paging>
+        <dxo-pager 
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[5, 10, 20]"
+            [showInfo]="true">
+        </dxo-pager>              
+    </dx-data-grid>
+    </div>
+    
+
+
+    <h4>Pendientes de eliminación </h4>
+            
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="facturaProveedorBus2"
+        [showBorders]="true">
+        <dxi-column
+            dataField="id"
+            caption="Id"
+            [visible]="true"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fecha"
+            dataType="date">
+        </dxi-column>
+        <dxi-column
+            dataField="nFactura"
+            caption="Fact. Proveedor">
+        </dxi-column>
+        <dxi-column
+            dataField="nSolicitud"
+            caption="Orden #">
+        </dxi-column>
+        <dxi-column
+            dataField="productos"
+            caption="Productos"
+            width="40%">
+        </dxi-column>
+    
+        <dxi-column
+            dataField="total"
+            alignment="right"  >
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+        </dxi-column>
+
+        <dxi-column type="buttons" dataField="bt2" caption="Anular" width="10%" [visible]="true">
+            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button>   
+        </dxi-column>
+
+        <dxo-paging [pageSize]="5"></dxo-paging>
+                <dxo-pager
+                    [showPageSizeSelector]="true"
+                    [allowedPageSizes]="[8, 12, 20]"
+                ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+
+
+
+<dx-popup
+        [width]="300"
+        [height]="250"
+        [showTitle]="true"
+        title="Información"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupVisible">
+        <div *dxTemplate="let data of 'content'">
+           
+            <p>
+                Proveedor:
+                <span>{{ordenDeCompra3.proveedor.nombre_proveedor}}</span>
+            </p>
+            <p>
+                Sucursal:
+                <span>{{ordenDeCompra3.sucursal.nombre}}</span>
+            </p>
+            <p>
+                Solicitud:
+                <span>{{ordenDeCompra3.documento}}</span>
+            </p>
+            <p>
+                Total:
+                <span>{{ordenDeCompra3.total}}</span>
+            </p>
+        </div>
+    </dx-popup>
+
+    <dx-popup
+    #centrar
+        [width]="300"
+        [height]="250"
+        [showTitle]="true"
+        title="Motivo de Rechazo"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupVisible2">
+        <p>
+            Escriba el motivo de rechazo:
+            <dx-text-box [(value)]="textoArea" [disabled]="false" [readOnly]="false"></dx-text-box>
+        </p>
+        <div class="centrar">
+            <dx-button
+                            class="btn2"
+                            text="Ok"
+                            (onClick)="cerrarPopup()">
+                        </dx-button>
+        </div>
+    </dx-popup>
+
+

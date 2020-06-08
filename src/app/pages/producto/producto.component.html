@@ -1,4 +1,4 @@
-<!--><div class="container">
+<!--<div class="container">
     <h2>Generar Producto</h2>
     <dx-form id="form" #productoForm [readOnly]="false" [colCount]="3" [width]="800">
 
@@ -67,3 +67,617 @@
     </ul>
 
 </div>-->
+
+<div class="row alin2 titulos">
+    <div class="col-md-8"><div class="">
+        <h4>Productos</h4>
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+
+
+<div class="contenedorPrincipal" id="busqueda">
+<div class="row remiPro">
+    <div class="col-md-12 titulo" ><h5>REMISIÓN DE PRODUCTOS</h5></div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Orden N</p> </div>
+            <div class="col-md-6"><dx-number-box [(value)]="datoNsolicitud"  (onValueChanged)="cargarFacturas()" ></dx-number-box></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>ID-Remision</p> </div>
+            <div class="col-md-6"><dx-number-box [(value)]="Id_remision" [readOnly]="true" ></dx-number-box></div>
+        </div>
+    </div>
+   <!-- ******* Fila******* -->
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Factura Proveedor</p> </div>
+            <div class="col-md-6"> <dx-select-box #selectId [items]="facturaProveedor2" [value]="facturaProveedor2" [readOnly]="false" [disabled]="false"
+                [searchEnabled]="true" 
+                valueExpr="nFactura" displayExpr="nFactura"  (onValueChanged)="obtenerDatosFactura($event)">
+            </dx-select-box></div>
+            <!-- <div class="col-md-6"><dx-number-box [(value)]="NfactProveedor" ></dx-number-box></div> -->
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Placa vehiculo transportador</p> </div>
+            <div class="col-md-6"><dx-text-box [(value)]="placa" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+        </div>
+    </div>
+    	
+    
+    	
+     <!-- ******* Fila******* -->
+     <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Fecha</p> </div>
+            <div class="col-md-6"> <dx-date-box [(value)]="fecha1" [type]="'date'" [showClearButton]="true" >
+                <dx-validator>
+                    <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
+                </dx-validator>
+            </dx-date-box></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Nombre Transportador</p> </div>
+            <div class="col-md-6"><dx-text-box [(value)]="nombre_transportador" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+        </div>
+    </div>
+
+     <!-- ******* Fila******* -->
+     <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>No Remision Proveedor</p> </div>
+            <div class="col-md-6"><dx-text-box [(value)]="nremisionEnt" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Sucursal</p> </div>
+            <div class="col-md-6"> <dx-select-box [items]="locales" [value]="locales[1]" [readOnly]="false" [disabled]="false"
+                [searchEnabled]="true" 
+                valueExpr="nombre" displayExpr="nombre" (onValueChanged)="obtenerDatosSucursal($event)">
+            </dx-select-box></div>
+        </div>
+    </div>
+
+     <!-- ******* Fila******* -->
+     <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Fecha de Recibo</p> </div>
+            <div class="col-md-6"> <dx-date-box [(value)]="fechaRecibo" [type]="'date'" [showClearButton]="true" >
+                <dx-validator>
+                    <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
+                </dx-validator>
+            </dx-date-box></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Bodega</p> </div>
+            <div class="col-md-6"> <dx-select-box [items]="bodegas2" [value]="bodegas2" [readOnly]="false" [disabled]="false"
+                [searchEnabled]="true" 
+                valueExpr="nombre" displayExpr="nombre" (onValueChanged)="obtenerDatosBodega($event)">
+            </dx-select-box></div>
+        </div>
+    </div>
+
+    <!-- ******* Fila******* -->
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Nombre quien recibe</p> </div>
+            <div class="col-md-6"><dx-text-box [(value)]="nombre_recibe" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="row">
+            <div class="col-md-6"><p>Entrega Parcial</p> </div>
+            <div class="col-md-6"> 
+                <div class="row">
+                    <div class="col-md-6" style="padding-top: 1em;"><dx-check-box [(value)]="checkSi" (onValueChanged)="cambiarEstadoSeleccionado($event)">
+                    </dx-check-box></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    <div class="row">
+    <div class="col-md-6">  <dx-button icon="plus" text="Ver Ingresos" (onClick)="ocultar()" class="tdoc2"></dx-button>
+        <dx-button icon="plus" text="Obsequios" (onClick)="ocultar2()" class="tdoc2"></dx-button></div>
+        <!-- <dx-button icon="plus" text="pruebas" (onClick)="actualizarProductossolicitados()" class="tdoc2"></dx-button> -->
+   
+    
+    <div class="col-md-6" style="text-align: right;"> <!--  <dx-button icon="plus" text="Ver Historial" (onClick)="mostrarHistorial()" class="tdoc2"></dx-button> --></div>
+    </div>
+    <div id="ayuda" style="display: none;" class="remiPro">
+        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
+          <tr>
+            <th class="text-center" rowspan="2">Producto</th>
+            <th class="text-center" colspan="3" rowspan="1">Cant.Facturada</th>
+            <th class="text-center" colspan="2" rowspan="1" >Cant.Ingresada</th>
+            <th class="text-center" colspan="2" rowspan="1">Cant.Devuelta</th>
+            <th class="text-center" colspan="2" rowspan="1" style="background-color: #dddddd;">Saldo</th>
+            <th class="text-center" rowspan="2" >Estado</th>
+          </tr>
+          <tr> 
+            <th class="text-center" rowspan="1" >m2</th>
+            <th class="text-center" rowspan="1">C.</th>
+            <th class="text-center" rowspan="1">P.</th>
+            <th class="text-center" rowspan="1">C.</th>
+            <th class="text-center" rowspan="1">P.</th>
+            <th class="text-center" rowspan="1">C.</th>
+            <th class="text-center" rowspan="1">P.</th>
+            <th class="text-center" rowspan="1" style="background-color: #dddddd;">C.</th>
+            <th class="text-center" rowspan="1" style="background-color: #dddddd;">P.</th>
+          </tr>
+          <tr *ngFor="let producto of productosControlFinal; let id = index">
+            <td>
+              <span contenteditable="false" >{{producto.nombre_comercial}}</span>
+            </td>
+            <td>
+              <span contenteditable="false" >{{producto.cantidadsolicitada}}</span>
+            </td>
+            <td>
+                <span contenteditable="false" >{{producto.cantidadSolicitadacajas}}</span>
+            </td>
+            <td>
+                <span contenteditable="false" >{{producto.cantidadSolicitadapiezas}}</span>
+            </td>
+            <td>
+              <span contenteditable="false" >{{producto.cantidadentregada}}</span>
+            </td>
+            <td>
+                <span contenteditable="false" >{{producto.cantidadentregadapiezas}}</span>
+              </td>
+            <td>
+                <span contenteditable="false" >{{producto.cantidadDevuelta}}</span>
+              </td>
+            <td>
+                <span contenteditable="false" >{{producto.cantidadDevueltapiezas}}</span>
+            </td>
+            <td style="background-color: #dddddd;">
+                <span contenteditable="false"  >{{producto.saldo}}</span>
+            </td>
+            <td style="background-color: #dddddd;">
+                <span contenteditable="false"  >{{producto.saldopiezas}}</span>
+            </td>
+            <td>
+              <span contenteditable="false" >{{producto.estado}}</span>
+            </td>
+          </tr>
+        </table>
+      </div>
+
+     
+
+      <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Productos solicitados</h5>
+        <div class="card-body">
+          <div id="table" class="table-editable">
+            <span class="table-add float-right mb-3 mr-2">
+              <a class="text-success" >
+              
+              </a>
+            </span>
+            <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                <!-- <tr>
+                    <th class="text-center" ></th>
+                    <th colspan="2" class="text-center">Sum: $180</th>
+                  </tr> -->
+              <tr>
+                <th class="text-center" rowspan="2">Producto</th>
+                <!-- <th class="text-center"></th> -->
+                <th class="text-center" colspan="2">Cant.rec</th>
+                <!-- <th class="text-center" rowspan="2">Estado</th> -->
+                <th class="text-center" colspan="2">Cant.Devolucion</th>
+                <th class="text-center" rowspan="2" style="width: 12%;">Estado/Causa</th>
+                <th class="text-center" rowspan="2" style="width: 15%;">Observaciones</th>
+              </tr>
+              <tr> 
+              <!--   <th class="text-center">Cant.Fact</th> -->
+                <th class="text-center" >Cajas </th>
+                <th class="text-center">Piezas </th>
+               <!--  <th class="text-center">m2 </th> -->
+                <th class="text-center" >Cajas </th>
+                <th class="text-center">Piezas </th>
+                
+              </tr>
+              <tr *ngFor="let producto of productosEntregados; let id = index">
+                <td>
+                  <span contenteditable="false" >{{producto.nombreComercial.PRODUCTO}}</span>
+                </td>
+               <!--  <td>
+                  <span contenteditable="false" >{{producto.cantidadSolicitada}}</span>
+                </td> -->
+                <td>
+                  <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregada', $event)" >{{producto.cantidadEntregada}}</span>
+                </td>
+                <td>
+                  <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregadapiezas', $event)" >{{producto.cantidadEntregadapiezas}}</span>
+                </td>
+               <!--  <td>
+                    <span contenteditable="false" >{{producto.metros2}}</span>
+                  </td> -->
+                <!-- <td>
+                    <dx-select-box [items]="menuEstadoRecibo" 
+                    [value]="menuEstadoRecibo[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="actualizarEstadoRec(id,$event)"
+                    ></dx-select-box>
+                </td> -->
+                <td>
+                  <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevuelta', $event)">{{producto.cantidadDevuelta}}</span>
+                </td>
+                <td>
+                    <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevueltapiezas', $event)">{{producto.cantidadDevueltapiezas}}</span>
+                </td>
+                <td>
+                    <dx-select-box [items]="menuEstadoRecibo" 
+                    [value]="menuEstadoRecibo[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="actualizarEstadoRec(id,$event)"
+                    ></dx-select-box>
+                </td>
+                <td>
+                    <span contenteditable="true" (blur)="actualizarDato(id, 'observaciones', $event)">{{producto.observaciones}}</span>
+                </td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+  <div id="obsequios" style="display: none;">
+    <dx-button icon="plus"  (onClick)="nuevoObsequio()" class="tdoc2"></dx-button>
+    <div class="row" style="margin: 2em;text-align: center;">
+        <div class="col-md-8 card obs">
+
+       <div class="row"><div class="col-md-12"><h6>OBSEQUIOS</h6></div></div>
+      <div class="row">
+          <div class="col-md-2">Cajas</div>
+          <div class="col-md-2">Piezas</div>
+          <div class="col-md-6">Producto</div>
+          <div class="col-md-2">Elim</div>
+      </div>
+
+      <div *ngFor="let p of productosObsequios;let i = index" style="text-align: center;margin-top: 1em;">
+        <div class="row ">
+            <div class="col-md-2"><dx-number-box [(value)]="p.cantidad"   ></dx-number-box></div>
+            <div class="col-md-2"><dx-number-box [(value)]="p.cantidadpiezas"></dx-number-box></div>
+            <div class="col-md-6"> <dx-select-box [items]="productos" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
+                [searchEnabled]="true"  
+                valueExpr="PRODUCTO" displayExpr="PRODUCTO" >
+            </dx-select-box></div>
+            <div class="col-md-2"><dx-button icon="clear" (onClick)="eliminarobsequio(i)" ></dx-button></div>
+        </div>
+
+    </div>
+</div>
+</div>
+
+  </div>
+
+<div class="guardRemision">
+    <dx-button
+    [disabled]="newButtonEnabled2"
+    class="btn2"
+    text="Guardar Remisión"
+    (onClick)="guardarRemision()">
+</dx-button>
+</div>
+
+
+</div>
+
+<!-- <div id="historial" style="display: none;"  class="remiPro">
+    <dx-data-grid id="gridContainer"
+    [dataSource]="productosControl"
+    [showBorders]="true"
+    >
+    
+    <dxi-column
+        dataField="fecha"
+        caption="Fecha"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="nombre_comercial"
+        caption="Nombre comercial"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="cantidadDevuelta"
+        caption="Devoluciones"
+        dataType="string">
+    </dxi-column>
+    <dxi-column
+        dataField="cantidadentregada"
+        caption="Cantidad entregada"
+        dataType="string">
+    </dxi-column>
+  
+  <dxi-column dataField="nombre_comercial" [groupIndex]="0"></dxi-column>
+    <dxo-grouping #expand [autoExpandAll]="true">
+    </dxo-grouping> 
+    <dxo-summary>
+        <dxi-group-item
+        column="cantidadentregada"
+        summaryType="sum"
+        displayFormat="Total: {0}"
+        [showInGroupFooter]="true">
+        </dxi-group-item>
+        <dxi-group-item
+        column="cantidadDevuelta"
+        summaryType="sum"
+        displayFormat="Total: {0}"
+        [showInGroupFooter]="true">
+        </dxi-group-item>
+    </dxo-summary>
+    
+    
+    <dxo-paging [pageSize]="10"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+</div>
+ -->
+<div id="historial" style="display: none;"  class=" contenedorPrincipal2 ">
+    <div style="text-align: center;">
+        <h4>Historial de Remisiones</h4>
+    </div>
+     
+    <div >
+        <div class="option" style="text-align: right;margin-bottom: 1em;">
+            <dx-check-box 
+                text="Filtrar columnas" 
+                [(value)]="showFilterRow" 
+                (onValueChanged)="clearFilter()"></dx-check-box>
+            </div>
+        </div>
+       <!--  <dx-button icon="fa fa-trash" class="btn btn-primary btn-xs" (onClick)="mostrarEliminar()" ></dx-button> -->
+        <!-- <button class="btn btn-primary btn-xs" ng-click="mostrarEliminar()" >
+            <i class="fa fa-trash"></i> -->
+            <div class="mover">
+                <button class="btn btn-primary btn-xs" (click)="mostrarEliminar()" >
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+           
+           
+        <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="remisionesAprobadas"
+        [showBorders]="true"
+        (onExporting)="onExporting($event)"
+        (onExported)="onExported($event)">
+        <dxo-filter-row 
+        [visible]="showFilterRow" ></dxo-filter-row>
+        
+        <dxo-search-panel 
+        [visible]="true" 
+       
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
+        <dxo-export [enabled]="true" fileName="Remisiones" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="id_remision"
+            caption="Remisión N"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaP"
+            caption="Fecha"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="num_orden"
+            caption="Orden #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+        dataField="nombre_proveedor"
+        caption="Nombre Proveedor"
+        dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="num_FactPro"
+            caption="Factura Proveedor"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            caption="Total"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_recibe"
+            caption="Nombre /Recibe"
+            dataType="string"
+            [visible]="false">
+         </dxi-column>
+        
+        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="false">
+            <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+        <br>
+        <br>
+        <br>
+        <br>
+        <h5>Remisiones por eliminar</h5>
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="remisionesRechazadas"
+            [showBorders]="true"
+            (onExporting)="onExporting($event)"
+            (onExported)="onExported($event)">
+        <dxo-filter-row 
+        [visible]="showFilterRow" ></dxo-filter-row>
+       
+        <dxo-search-panel 
+        [visible]="true" 
+       
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Remisiones" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="id_remision"
+            caption="Remisión N"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaP"
+            caption="Fecha"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="num_orden"
+            caption="Orden #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_proveedor"
+            caption="Nombre Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="num_FactPro"
+            caption="Factura Proveedor"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="msjAdmin"
+            caption="Motivo de anulación"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal"
+            caption="sucursal"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_recibe"
+            caption="Nombre /Recibe"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        
+        <dxi-column type="buttons"  caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Eliminar" width="10%" >
+            <dxi-button icon="clear" [onClick]="getCourseFile2"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Rechazar" width="10%" >
+            <dxi-button text="Denegar" [onClick]="getCourseFile6"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+
+
+
+
+    <br>
+        <br>
+        <br>
+        <br>
+        <h5>Remisiones Eliminadas</h5>
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="remisionesEliminadas"
+            [showBorders]="true"
+            (onExporting)="onExporting($event)"
+            (onExported)="onExported($event)">
+        <dxo-filter-row 
+        [visible]="showFilterRow" ></dxo-filter-row>
+       
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Remisiones Eliminadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="id_remision"
+            caption="Remisión N"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fechaP"
+            caption="Fecha"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="num_orden"
+            caption="Orden #"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_proveedor"
+            caption="Nombre Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="msjAdmin"
+            caption="Motivo de eliminación"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_recibe"
+            caption="Nombre /Recibe"
+            dataType="string"
+            [visible]="false">
+        </dxi-column> 
+        <dxi-column type="buttons"  caption="Ver" width="15%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+    
+</div>
+ 
+
+  
+
+

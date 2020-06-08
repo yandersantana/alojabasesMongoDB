@@ -1,0 +1,364 @@
+
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-3"><h6>Sucursal</h6></div>
+        <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+            [value]="sucursalesDefault[0]" 
+            [readOnly]="false" 
+            [disabled]="false"
+            (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
+            <div class="col-md-5"></div>
+</div>
+</div>
+
+
+<div class="row alin2 titulos" style="margin-top: 1em;margin-right: 1em;">
+    <div class="col-md-8"><div class="">
+    </div></div>
+    <div class="col-md-4"> <dx-select-box [items]="menu1" 
+        [value]="menu1[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box></div>
+</div>
+
+
+
+
+<div id="traslados" style="display: block;">
+    <div class="row">
+        <div class="col-md-10"> <span>Administrador  </span><dx-check-box [(value)]="seleccion" (onValueChanged)="mostrarC($event)"></dx-check-box></div>  
+    </div>
+    <div class="row remiPro">
+        <div class="col-md-12 titulo" ><h4>Traslados de Productos</h4></div>
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6"><p>Nombre/Transportista</p> </div>
+                <div class="col-md-6">
+                    <dx-autocomplete
+                            [dataSource]="transportistas"
+                            placeholder=""
+                            valueExpr="nombre"
+                            [(value)]= "nombre_transportista"
+                            (onChange)="setTransportista($event)"
+                            >
+                        </dx-autocomplete></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Identificación</p> </div>
+                <div class="col-md-6"><dx-text-box [(value)]="identificacion" [readOnly]="false" ></dx-text-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Celular</p> </div>
+                <div class="col-md-6"><dx-number-box [(value)]="celular" [readOnly]="false" ></dx-number-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Tipo/Vehículo</p> </div>
+                <div class="col-md-6"><dx-text-box [(value)]="tipo_vehiculo" [readOnly]="false" ></dx-text-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Placa vehiculo transportador</p> </div>
+                <div class="col-md-6"><dx-text-box [(value)]="placa" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+            </div>
+        </div>
+
+    
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-md-6"><p>ID-Traslado</p> </div>
+                <div class="col-md-6" style="margin-bottom: 1em;"><dx-number-box [(value)]="id2" [readOnly]="true" class="id"></dx-number-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Sucursal de Origen</p> </div>
+                <div class="col-md-6"><dx-select-box #selectId [items]="locales" [(value)]="sucursal_origen" [readOnly]="varL" [disabled]="false"
+                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosSucursalOrigen($event)">
+                </dx-select-box></div>
+               <!--  <div class="col-md-6"><dx-select-box #selectId [items]="locales" [value]="locales" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre" >
+                </dx-select-box> -->
+            </div>
+            <div class="row" >
+                <div class="col-md-6" style="padding-left: 4rem;"><p>Bodega origen</p> </div>
+                <div class="col-md-6"><dx-select-box #selectId [items]="bodegasorigen" [value]="bodegasorigen" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosBodegaOrigen($event)">
+                </dx-select-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6"><p>Sucursal Destino</p> </div>
+                <div class="col-md-6"><dx-select-box #selectId [items]="locales2" [value]="locales2" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosSucursalDestino($event)">
+                </dx-select-box></div>
+            </div>
+            <div class="row">
+                <div class="col-md-6" style="padding-left: 4rem;"><p>Bodega destino</p> </div>
+                <div class="col-md-6"><dx-select-box #selectId [items]="bodegasdestino" [value]="bodegasdestino" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosBodegaDestino($event)">
+                </dx-select-box></div>
+            </div>
+        
+        </div>
+    
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-3"><p>Observaciones</p> </div>
+                <div class="col-md-9"><dx-text-box [(value)]="observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+            </div>
+        </div>
+        
+    </div>
+
+    <div class="remiPro">
+        <div class="detalle">
+            <div class="titcent row" >
+                <div class="alinearBoton col-md-4" >
+                    <dx-button icon="plus" [type]="'success'" [disabled]="false" (onClick)="anadirProducto($event)">
+                </dx-button>
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <h6>Detalle Productos</h6>
+                </div>
+                <div class="col-md-4">
+
+                </div>
+            </div>
+            
+            <div class="row titulosT">
+                <div class="col-4">
+                    <h5>Producto</h5>
+                </div>
+                <div class="col-2">
+                    <h5>Tipo</h5>
+                </div>
+                
+                <div class="col-1">
+                    <h5>Cajas</h5>
+                </div>
+                <div class="col-1">
+                    <h5>Piezas</h5>
+                </div>
+                <div class="col-3">
+                    <h5>Observaciones</h5>
+                </div>
+                <div class="col-1">
+                    <div class="row">
+                        <div class="col-md-12"> <h5>Eliminar</h5></div>
+                    </div>
+                </div>
+            
+            </div>
+            <div *ngFor="let p of detalleTraslados;let i = index" style="text-align: center;margin-top: 1em;">
+                <div class="row altura">
+                    <div class="col-4">
+                        <dx-select-box [items]="productosTraslado" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
+                        [searchEnabled]="true"  
+                        valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesProducto($event,i)">
+                    </dx-select-box>
+                   
+                    </div>
+                    <div class="col-2">
+                    <dx-text-box [(value)]="p.tipo" [disabled]="false" [readOnly]="true"></dx-text-box>
+                    </div>
+                   
+                    <div class="col-1">
+                        <dx-number-box [(value)]="p.cajas" [disabled]="false" [readOnly]="false" (onChange)="validarCantidad(i)"></dx-number-box>
+                    </div>
+                    <div class="col-1">
+                        <dx-number-box [(value)]="p.piezas" [disabled]="textpiezas1" [readOnly]="false" (onChange)="validarCantidad(i)"></dx-number-box>
+                    </div>
+                    <div class="col-3">
+                        <dx-text-box [(value)]="p.observaciones" [disabled]="false" [readOnly]="false"></dx-text-box>
+                    </div>
+                    <div class="col-1" >
+                        <dx-button icon="clear" color="white" class="bt" (onClick)="deleteProducto(i)"></dx-button> 
+                    </div>   
+                </div>
+        
+            </div>
+        
+        </div>
+    </div>
+
+    <div style="text-align: center">
+        <dx-button
+                        class="button-info bt2"
+                        text="Guardar"
+                        [disabled]="false"
+                        (onClick)="guardarTraslado()">
+                    </dx-button>
+
+                    
+    </div>
+
+   
+
+</div>
+
+<div id="existencias" class="remiPro" style="display: none;">
+    <br>
+    <h4>Productos sucursal matriz</h4>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="productos"
+        [showBorders]="true">
+      
+        <dxi-column
+            dataField="PRODUCTO"
+            caption="PRODUCTO"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="cantidad"
+            caption="Cantidad"
+            dataType="string">
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+    <br>
+    <h4>Productos sucursal Jujan</h4>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="productos2"
+        [showBorders]="true">
+      
+        <dxi-column
+            dataField="PRODUCTO"
+            caption="PRODUCTO"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="cantidad"
+            caption="Cantidad"
+            dataType="string">
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+<div id="historial" style="display: none;">
+    <div class="mover">
+        <button class="btn btn-primary btn-xs" (click)="mostrarEliminar()" >
+            <i class="fa fa-trash"></i>
+        </button>
+    </div>
+    <dx-data-grid #datag3
+        id="gridContainer"
+        [dataSource]="trasladosG"
+        [showBorders]="true">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="id"
+            caption="Traslado N"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fecha"
+            caption="Fecha"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal_origen.nombre"
+            caption="Sucursal Origen"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal_destino.nombre"
+            caption="Sucursal Destino"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_transportista"
+            caption="Transportista"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+       
+        
+       <!--  <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
+            <dxi-button text="Descargar" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column> -->
+        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="false">
+            <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+
+    <br>
+    <br>
+    <br>
+    <div style="text-align: center;"><h6>Traslados Pendientes de Eliminación</h6></div>
+    <dx-data-grid 
+        id="gridContainer"
+        [dataSource]="trasladosGR"
+        [showBorders]="true">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="TrasladosAnulados" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="id"
+            caption="Traslado N"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="fecha"
+            caption="Fecha"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal_origen.nombre"
+            caption="Sucursal Origen"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal_destino.nombre"
+            caption="Sucursal Destino"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column
+            dataField="nombre_transportista"
+            caption="Transportista"
+            dataType="string"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+        </dxi-column>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>

@@ -10,7 +10,7 @@ export class ParametrizacionesService {
 
 
  //private URL = 'http://localhost:3000/parametrizaciones'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+ private URL = 'http://104.248.14.190:3000/parametrizaciones';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newParametrizacion(parametrizacion){

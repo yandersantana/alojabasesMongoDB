@@ -10,7 +10,7 @@ export class SucursalesService {
 
   empresa: Producto[];
 // private URL = 'http://localhost:3000/sucursales'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+ private URL = 'http://104.248.14.190:3000/sucursales';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newSucursal(sucursal){

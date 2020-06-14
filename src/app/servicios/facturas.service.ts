@@ -11,7 +11,7 @@ export class FacturasService {
 
   facturas: factura[];
  //private URL = 'http://localhost:3000/facturas'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+ private URL = 'http://104.248.14.190:3000/facturas';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newFactura(facturas){

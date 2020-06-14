@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 export class ProductosCompradosService {
 
 // private URL = 'http://localhost:3000/productosComprados'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+ private URL = 'http://104.248.14.190:3000/productosComprados';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newProductoComprado(productoComp){

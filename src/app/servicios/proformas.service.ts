@@ -10,7 +10,7 @@ export class ProformasService {
 
   facturas: factura[];
  //private URL = 'http://localhost:3000/proformas'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+ private URL = 'http://104.248.14.190:3000/proformas';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newProforma(proforma){

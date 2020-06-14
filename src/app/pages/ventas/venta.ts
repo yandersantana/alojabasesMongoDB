@@ -2,6 +2,7 @@ import { Producto } from '../producto/producto'
 
 
 export class producto {
+        _id:string
         CAL: string
         CASA: string
         CLASIFICA: string
@@ -63,6 +64,7 @@ export class venta {
 }
 
 export class cliente {
+        _id:string
         cliente_nombre: string
         t_cliente: string
         ruc: string
@@ -233,4 +235,21 @@ export class productosPendientesEntrega{
         this.m2Entregados=0
     }
 
+}
+
+
+
+export class contadoresDocumentos{
+    _id:string
+    facturaMatriz_Ndocumento:number
+    facturaSucursal1_Ndocumento:number
+    facturaSucursal2_Ndocumento:number
+    proformas_Ndocumento:number
+    notasVenta_Ndocumento:number
+    transacciones_Ndocumento:number
+    ordenesCompra_Ndocumento:number
+    ordenesCompraAprobadas_Ndocumento:number
+    constructor(){
+
+    }
 }

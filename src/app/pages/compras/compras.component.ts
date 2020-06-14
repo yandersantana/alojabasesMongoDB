@@ -11,11 +11,24 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import { style } from '@angular/animations';
 import Swal from 'sweetalert2';
 import { element } from 'protractor';
-import { sucursal, proveedor, producto } from '../ventas/venta';
-import { DatePipe } from '@angular/common';
+import { sucursal, proveedor, producto, contadoresDocumentos } from '../ventas/venta';
+import { DatePipe, JsonPipe } from '@angular/common';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { catalogo } from '../catalogo/catalogo';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ProductosVendidosService } from 'src/app/servicios/productos-vendidos.service';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { CatalogoService } from 'src/app/servicios/catalogo.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { ProveedoresService } from 'src/app/servicios/proveedores.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { ProductosCompradosService } from 'src/app/servicios/productos-comprados.service';
+import { HttpClient } from '@angular/common/http';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 @Component({
   selector: 'app-compras',
   templateUrl: './compras.component.html',
@@ -87,6 +100,7 @@ export class ComprasComponent implements OnInit {
   imagenes:string[]
   titulo:string=""
   productosCatalogo:catalogo[]=[]
+  contadores:contadoresDocumentos[]
   valorEnM2:number=0
   calp:number=0
   imagenPrincipal:string
@@ -94,10 +108,12 @@ export class ComprasComponent implements OnInit {
   imagenesData:string[]
   calmetros:number=0
   caltotal:number=0
+  correo:string=""
   cantidadcal: number=0
   disponibilidadProducto:string=""
   popupvisible:boolean=false
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth) {
+  usuarioLogueado:user
+  constructor(public authenService: AuthenService,public transaccionesService: TransaccionesService,public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService, public proveedoresService:ProveedoresService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
     this.ordenDeCompra = new OrdenDeCompra()
     this.ordenDeCompra.fecha = this.now.toDateString()  
     this.ordenDeCompra.fechaEntrega = new Date().toDateString()
@@ -109,56 +125,133 @@ export class ComprasComponent implements OnInit {
     this.ordenDeCompra.usuario = sessionStorage.getItem('user')
   }
 
-  
-  //se ejecuta apenas se carga la pantalla
+
   ngOnInit() {
-    /* this.db.collection('/productos').valueChanges().subscribe((data:Producto[]) => {
-      this.productos = data
-      //this.generarNombresProductos()
-      console.log(this.productos)
-    }) */
-    this.getProductos()
-    this.getParametrizaciones()
-    this.getProductosCatalogo()
-    this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
+    this.cargarUsuarioLogueado()
+    this.traerProductos()
+    this.traerParametrizaciones()
+    this.traerProductosCatalogo()
+    this.traerSucursales()
+    this.traerProveedores()
+    this.traerContadoresDocumentos()
+    /* this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
       this.compras = data
 
-    })
+    }) */
 
+  
 
+/* 
     this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
       if(data != null)
         this.proveedores = data
 
-    })
+    }) */
 
-    this.db.collection('/OrdenesCompraGlobal').doc('matriz').valueChanges().subscribe(data => {
+   /*  this.db.collection('/OrdenesCompraGlobal').doc('matriz').valueChanges().subscribe(data => {
       console.log(data)
       if(data != null)
         this.ordenDeCompra.documento = data['n_documento']+1
 
 
-    })
+    }) */
 
-    this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
+   /*  this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
       this.locales = []
       locales.forEach((nt: any) => {
         this.locales.push(nt.payload.doc.data());
       })
     });;
 
-    this.ordenDeCompra.contacto=this.afAuth.auth.currentUser.email
-    
+    this.ordenDeCompra.contacto=this.afAuth.auth.currentUser.email */
+   // this.incrementable()
   }
 
-  getProductosCatalogo(){
+  /* async incrementable(){
+    const data = await this.http.get('http://localhost:3000/contadores/getContadores').toPromise();
+    console.log("Data: " + JSON.stringify(data)); 
+  } */
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            this.ordenDeCompra.usuario = this.usuarioLogueado[0].username
+            console.log("fff "+this.usuarioLogueado[0].rol)
+            if( this.usuarioLogueado[0].rol == "Administrador"){
+              var z = document.getElementById("admin");
+                  z.style.display = "block";
+            }else{
+             // alert("entre por falso")
+            }
+
+          },
+          err => {
+          }
+        )
+    });
+  }
+
+  traerProveedores(){
+    this.proveedoresService.getProveedor().subscribe(res => {
+      this.proveedores = res as Proveedor[];
+   })
+  }
+  
+  traerSucursales(){
+    this.sucursalesService.getSucursales().subscribe(res => {
+      this.locales = res as Sucursal[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      this.llenarPR()
+      this.llenarComboProductos()
+   })
+  }
+
+  traerProductosCatalogo(){
+    this.catalogoService.getCatalogo().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
+   })
+  }
+
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  async traerContadoresDocumentos(){
+    await this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.ordenDeCompra.documento =this.contadores[0].ordenesCompra_Ndocumento+1
+      //this.asignarIDdocumentos()
+   })
+  }
+
+  asignarIDdocumentos(){
+   // this.ordenDeCompra.documento =this.contadores[0].ordenesCompra_Ndocumento+1
+    this.ordenDeCompra.documento =this.contadores[0].ordenesCompra_Ndocumento+1
+  }
+
+  
+
+  /* getProductosCatalogo(){
     this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
       this.productosCatalogo = data
     })
-  }
+  } */
 
 
-  async getProductos() {
+  /* async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -170,15 +263,15 @@ export class ComprasComponent implements OnInit {
       this.llenarPR()
       this.llenarComboProductos()
     });;
-  }
+  } */
 
-  getParametrizaciones(){
+  /* getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
   llenarComboProductos(){
     this.productosActivos.forEach(element=>{
@@ -257,13 +350,13 @@ setSelectedProducto(i:number){
         if (element.PRODUCTO == e.value) {
           switch (this.ordenDeCompra.sucursal.nombre) { 
          
-            case "Milagro":
+            case "matriz":
               this.productosComprados[i].disponible = element.sucursal1
               break;
-            case "Naranjito":
+            case "sucursal1":
               this.productosComprados[i].disponible = element.sucursal2
               break;
-            case "El Triunfo":
+            case "sucursal2":
               this.productosComprados[i].disponible = element.sucursal3
                 break;
             default:
@@ -1276,6 +1369,67 @@ cambiarEstadoSeleccionado(e){
     
   }
 
+  crearProveedor(){
+    console.log("mostrando lcint"+JSON.stringify(this.ordenDeCompra.proveedor))
+    if(this.ordenDeCompra.proveedor._id) {
+      this.proveedoresService.updateProveedor(this.ordenDeCompra.proveedor).subscribe(
+        res => {
+          console.log(res + "entre por si");
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    } else {
+      this.proveedoresService.newProveedor(this.ordenDeCompra.proveedor).subscribe(
+        res => {
+          console.log(res + "entre por si");
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+  }
+
+  guardarOrden(){
+    //console.log("tart "+JSON.stringify(this.ordenDeCompra))
+    this.ordenesService.newOrden(this.ordenDeCompra).subscribe(
+      res => {
+        console.log(res + "entre por si");
+        this.actualizarFactureroOrden()
+        this.crearPDF()
+      },
+      err => {
+        Swal.fire({
+          title: err.error,
+          text: 'Revise e intente nuevamente',
+          icon: 'error'
+        })
+      }) 
+  }
+
+  actualizarFactureroOrden(){
+    this.contadores[0].ordenesCompra_Ndocumento = this.ordenDeCompra.documento
+    this.contadoresService.updateContadoresIDOrdenes(this.contadores[0]).subscribe(
+      res => {
+        console.log(res + "entre por si");
+      },
+      err => {
+        Swal.fire({
+          title: err.error,
+          text: 'Revise e intente nuevamente',
+          icon: 'error'
+        })
+      })
+  }
+
 
 
 
@@ -1299,11 +1453,6 @@ cambiarEstadoSeleccionado(e){
     if(contpro>=1 &&bandera){
       console.log("entre aqui sin validar")
     this.ordenDeCompra.proveedor.nombre_proveedor= this.mensaje2
-    //var mySimpleFormat2: Pipe
-    //mySimpleFormat = this.pipe.transform(this.now2, 'MM/dd/yyyy');
-    //this.guardarProductos()
-    //this.ordenDeCompra.productoDetalle= this.productosComprados[0]
-    //.ordenDeCompra.proveedor=new Proveedor()
     this.ordenDeCompra.fecha = this.now.toLocaleDateString()
     this.ordenDeCompra.fechaEntrega = this.now3.toLocaleDateString()
     this.ordenDeCompra.costeUnitaTransport=this.costeUnitaTransport
@@ -1315,7 +1464,7 @@ cambiarEstadoSeleccionado(e){
     }
     
     this.ordenDeCompra.otrosDescuentosGen=this.otrosDescuentosGen
-   
+    this.ordenDeCompra.productosComprados=this.productosComprados
     this.ordenDeCompra.estado="Pendiente"
     if(this.comprasForm.instance.validate().isValid){
       let grabar = true
@@ -1325,20 +1474,8 @@ cambiarEstadoSeleccionado(e){
       });
       this.setearNFactura()
       new Promise<any>((resolve, reject) => {
-        //if(grabar)
-          this.db
-            .collection("/proveedores")
-            .doc(this.ordenDeCompra.proveedor.ruc).set({ ...this.ordenDeCompra.proveedor })
-            .then(res => { }, err => reject(err));
-        this.db
-          .collection("/ordenesDeCompra")
-          .doc(this.ordenDeCompra.documento.toString()).set({ ...Object.assign({},this.ordenDeCompra )})
-          .then(res => { }, err => reject(err));
-        this.db
-          .collection("/OrdenesCompraGlobal")
-          .doc("matriz").set({ n_documento:this.ordenDeCompra.documento })
-          .then(res => { }, err => reject(err));
-          
+        this.crearProveedor()
+        this.guardarOrden()
         this.productosComprados.forEach(element => {
           element.orden_compra = 0
           element.solicitud_n = this.ordenDeCompra.documento
@@ -1346,10 +1483,39 @@ cambiarEstadoSeleccionado(e){
           element.descProducto=element.desct
           var cant=0
           cant= element.nombreComercial.bodegaProveedor+ element.cantidad
-          this.db.collection("/productos").doc(element.nombreComercial.PRODUCTO).update({ "bodegaProveedor" :cant })
-          .then(res => { }, err => alert(err));
-          this.db.collection("/productosComprados").add({ ...element })
-          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => alert(err));
+          element.nombreComercial.bodegaProveedor=cant
+          if(this.seleccion){
+          }else{
+            this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe(
+              res => {
+                console.log(res + "entre por si");
+              },
+              err => {
+                Swal.fire({
+                  title: err.error,
+                  text: 'Revise e intente nuevamente',
+                  icon: 'error'
+                })
+              })
+          }
+          
+           /*  this.productosCompradosService.newProductoComprado(element).subscribe(
+              res => {
+                console.log(res + "entre por si");
+                contVal++,this.contadorValidaciones(contVal) 
+              },
+              err => {
+                Swal.fire({
+                  title: err.error,
+                  text: 'Revise e intente nuevamente',
+                  icon: 'error'
+                })
+              }) */
+
+         /*  this.db.collection("/productos").doc(element.nombreComercial.PRODUCTO).update({ "bodegaProveedor" :cant })
+          .then(res => { }, err => alert(err)); */
+          /* this.db.collection("/productosComprados").add({ ...element })
+          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => alert(err)); */
          
         });
       });

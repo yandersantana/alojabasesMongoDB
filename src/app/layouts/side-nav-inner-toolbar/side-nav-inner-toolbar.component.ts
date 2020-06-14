@@ -6,8 +6,10 @@ import { DxScrollViewModule, DxScrollViewComponent } from 'devextreme-angular/ui
 import { DxToolbarModule } from 'devextreme-angular/ui/toolbar';
 import { CommonModule } from '@angular/common';
 
-import { navigation } from '../../app-navigation';
+import { navigation, navigationAdmin } from '../../app-navigation';
 import { Router, NavigationEnd } from '@angular/router';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from 'src/app/pages/user/user';
 
 @Component({
   selector: 'app-side-nav-inner-toolbar',
@@ -16,12 +18,20 @@ import { Router, NavigationEnd } from '@angular/router';
 })
 export class SideNavInnerToolbarComponent implements OnInit {
   @ViewChild(DxScrollViewComponent, { static: true }) scrollView: DxScrollViewComponent;
-  menuItems = navigation;
+  menuItems
+  
+ // menuItemsAdmin = navigationAdmin;
   selectedRoute = '';
 
   menuOpened: boolean;
   temporaryMenuOpened = false;
-
+  user = {
+    name: '',
+    lastname: '',
+    email: '',
+    image: '',
+    rol: ""
+  } 
   @Input()
   title: string;
 
@@ -29,8 +39,8 @@ export class SideNavInnerToolbarComponent implements OnInit {
   menuRevealMode = 'expand';
   minMenuSize = 0;
   shaderEnabled = false;
-
-  constructor(private screen: ScreenService, private router: Router) { }
+ correo:string=""
+  constructor(private screen: ScreenService, private router: Router,public authenService:AuthenService) { }
 
   ngOnInit() {
     this.menuOpened = this.screen.sizes['screen-large'];
@@ -44,6 +54,39 @@ export class SideNavInnerToolbarComponent implements OnInit {
     this.screen.changed.subscribe(() => this.updateDrawer());
 
     this.updateDrawer();
+    this.crearPerfil()
+  }
+
+  crearPerfil() {
+    console.log("si entre a buscar")
+    if (localStorage.getItem("maily") != '') {
+      this.correo = localStorage.getItem("maily");
+
+    }
+    this.authenService.returnUserRol().subscribe((ordenes: user[]) => {
+      new Promise<any>((resolve, reject) => {
+        ordenes.forEach((nt) => {
+        
+          if (nt.email == this.correo) {
+            this.user.name = nt.name;
+            this.user.rol = nt.rol
+            this.buscarRol()
+            //this.imagePath = "../../../assets/img/brand/perfil-avatar-hombre-icono-redondo_24640-14044.jpg"
+          }
+        })
+      })
+    })
+
+  }
+
+  buscarRol(){
+    if(this.user.rol == "Administrador"){
+      this.menuItems=navigationAdmin
+     // alert("es admin")
+    }else{
+      this.menuItems=navigation
+      //alert("es usuario")
+    }
   }
 
   updateDrawer() {

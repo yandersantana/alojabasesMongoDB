@@ -7,19 +7,18 @@
         <dx-button [text]="'Generar Solicitud de Compra'" [type]="'success'" (onClick)="generarSolicitudDeCompra($event)">
         </dx-button>
     </div>
-    <div class="col-md-6" style="text-align: right;">
-        <div class="row">
-            <div class="col-md-10"> <span>Compra directa  </span><dx-check-box [(value)]="seleccion" (onValueChanged)="mostrarC($event)"></dx-check-box></div>  
+   
+        <div id="admin" class="col-md-6" style="text-align: right;display: none;">
+            <div class="row">
+                <div class="col-md-10"> <span>Compra directa  </span><dx-check-box [(value)]="seleccion" (onValueChanged)="mostrarC($event)"></dx-check-box></div>  
+            </div>
+            <div id="esconder"  style="display: none;">
+                <div class="row" style="text-align: right;">
+                <div class="col-md-6"> Factura Proveedor</div>
+                <div class="col-md-4"> <dx-text-box [(value)]="factproveedor" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+            </div>
+            </div>  
         </div>
-        <div id="esconder"  style="display: none;">
-            <div class="row" style="text-align: right;">
-            <div class="col-md-6"> Factura Proveedor</div>
-            <div class="col-md-4"> <dx-text-box [(value)]="factproveedor" [disabled]="false" [readOnly]="false"></dx-text-box></div>
-        </div>
-        </div>
-       
-       
-    </div>
 </div>
 
 

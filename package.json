@@ -8,6 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
+    "dev": "nodemon server/index.js",
     "build-themes": "devextreme build",
     "postinstall": "npm run build-themes"
   },
@@ -29,6 +30,8 @@
     "devextreme-angular": "^19.2.7",
     "devextreme-schematics": "^1.1.13",
     "firebase": "^7.14.2",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.18",
     "ng-connection-service": "^1.0.4",
     "ngx-pinch-zoom": "^2.4.4",
     "ngx-spinner": "^8.1.0",

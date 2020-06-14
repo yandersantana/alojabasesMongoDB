@@ -1,13 +1,9 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable } from 'rxjs';
-import { CalculadoraComponent } from './calculadora/calculadora.component';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { compra } from '../compras/compra';
+import { compra, Sucursal } from '../compras/compra';
 import { DxFormComponent, RenderData } from 'devextreme-angular';
 import { transaccion } from '../transacciones/transacciones';
 import { ConsolidadoComponent } from '../consolidado/consolidado.component';
-import { factura, cliente, venta, producto, cotizacion, productosPendientesEntrega } from './venta';
+import { factura, cliente, venta, producto, cotizacion, productosPendientesEntrega, sucursal, contadoresDocumentos } from './venta';
 import { PdfMakeWrapper, Ul, Cell } from 'pdfmake-wrapper';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
@@ -29,6 +25,19 @@ import { ParametrizacionComponent } from '../parametrizacion/parametrizacion.com
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { catalogo } from '../catalogo/catalogo';
+import { VentasService } from '../../servicios/ventas.service';
+import { ProductoService } from '../../servicios/producto.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { CatalogoService } from 'src/app/servicios/catalogo.service';
+import { ClienteService } from 'src/app/servicios/cliente.service';
+import { FacturasService } from 'src/app/servicios/facturas.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { ProductosVendidosService } from 'src/app/servicios/productos-vendidos.service';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ProformasService } from 'src/app/servicios/proformas.service';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -84,7 +93,7 @@ export class VentasComponent implements OnInit {
   visibleCalculadora: boolean = false
   valorEnM2:number=0
   pdf:PdfMakeWrapper = new PdfMakeWrapper()
-  sucursales:string[]
+  sucursales:sucursal[]
   nCotizacionFact:string
 
   //tipoDocumentos:string[]
@@ -157,11 +166,10 @@ tipoConversiones: string[] = [
 //calculadoras
 popupvisible:boolean=false
 productosCatalogo:catalogo[]=[]
-variablesucursal:string="Milagro"
 calp:number=0
 selectAct:boolean=false
 imagenes:string[]
-
+correo:string=""
 calmetros:number=0
 caltotal:number=0
 numeroID:number=0
@@ -169,13 +177,13 @@ contR=this.numeroID
 disponibilidadProducto:string=""
 parametrizaciones:parametrizacionsuc[]=[]
 parametrizacionSucu:parametrizacionsuc
-
+contadores:contadoresDocumentos[]
   mySimpleFormat = this.pipe.transform(this.now2, 'MM/dd/yyyy');
   fechaMaxima2 = new Date(this.now3.setDate(this.now.getDate() + 7));
   mySimpleFormat2 = this.pipe.transform(this.fechaMaxima2, 'MMM / d / y');
-  //mySimpleFormat2:string
+  usuarioLogueado:user
 
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
+  constructor(public ventaService: VentasService,public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = new Date()
@@ -184,7 +192,7 @@ parametrizacionSucu:parametrizacionsuc
     this.minDate = this.now
     
     this.productosVendidos.push(new venta)
-    this.sucursales = []
+    //this.sucursales = []
     this.factura.coste_transporte= 0
     this.factura.fecha2= this.mySimpleFormat
  
@@ -194,18 +202,18 @@ parametrizacionSucu:parametrizacionsuc
   
   //se ejecuta apenas se carga la pantalla
   ngOnInit() {
-    //this.getCotizaciones()
-    this.getProductos()
-   
-    this.getFactureros()
-    this.getSucursales()
-    this.getProductosCatalogo()
-    this.getIDPendientes()
-    this.getClientes()
-    this.getFacturas()
-    this.getIDTransacciones()
-   this.getParametrizaciones()
-    this.factura.username = sessionStorage.getItem('user')
+   this.cargarUsuarioLogueado()
+   this.traerSucursales()
+   this.traerContadoresDocumentos()
+   this.traerClientes()
+   this.traerProductos()
+   this.traerFacturas()
+   this.traerParametrizaciones()
+   this.traerProformas()
+   this.traerProductosCatalogo()
+
+   //this.crearClientes()
+   // this.factura.username = sessionStorage.getItem('user')
     this.factura.tipo_venta="Normal"
     this.factura.tipo_cliente="C"
     this.tDocumento= "Factura"
@@ -214,16 +222,123 @@ parametrizacionSucu:parametrizacionsuc
     this.nCotizacionFact= " "
   }
 
-
-  getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
+  cargarUsuarioLogueado() {
+    console.log("dddddd entre")
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            this.factura.username=this.usuarioLogueado[0].username
+            this.factura.sucursal=this.usuarioLogueado[0].sucursal
+            console.log("sss "+ this.factura.sucursal)
+          },
+          err => {
+          }
+        )
+    });
   }
+
   
-  async getSucursales() {
+
+  traerSucursales(){
+    this.sucursalesService.getSucursales().subscribe(res => {
+      this.sucursales = res as sucursal[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      this.llenarPR()
+      this.llenarComboProductos()
+   })
+  }
+
+  traerProductosCatalogo(){
+    this.catalogoService.getCatalogo().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
+   })
+  }
+
+  traerClientes(){
+    this.clienteService.getCliente().subscribe(res => {
+      this.clientes = res as cliente[];
+   })
+  }
+
+  traerProformas(){
+    this.proformasService.getProformas().subscribe(res => {
+      this.proformas = res as factura[];
+   })
+  }
+
+  traerFacturas(){
+    this.facturasService.getFacturas().subscribe(res => {
+      this.facturas = res as factura[];
+   })
+  }
+
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerProductosVendidos(){
+    this.productosVenService.getProductoVendido().subscribe(res => {
+      this.productosVendidos2 = res as venta[];
+   })
+  }
+
+
+  async traerContadoresDocumentos(){
+    console.log("estoy trayendo")
+    await this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.asignarIDdocumentos()
+   })
+  }
+
+  asignarIDdocumentos(){
+    switch (this.factura.sucursal) {
+      case "matriz":
+        this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+        this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+        break;
+      case "sucursal1":
+        this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
+        this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
+        break;
+      case "sucursal2":
+        this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
+        this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
+        break;
+      default:
+        break;
+    }
+        
+    
+    this.number_transaccion = this.contadores[0].transacciones_Ndocumento
+     
+  }
+
+  
+
+ /*  async getFacturas() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('facturas').snapshotChanges().subscribe((facturas) => {
+      this.facturas = []
+      facturas.forEach((element:any) => {
+        this.facturas.push(element.payload.doc.data())        
+      });
+    });;
+  } */
+  
+ /*  async getSucursales() {
     
     await this.db.collection('factureros').snapshotChanges().subscribe((sucursales) => {
       
@@ -231,6 +346,19 @@ parametrizacionSucu:parametrizacionsuc
         this.sucursales.push(nt.payload.doc.id)
       })
     });;
+  } */
+
+
+
+
+  //desde aqui empieza /********************* */
+
+ /*  getParametrizaciones(){
+    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
+      if(data != null)
+        this.parametrizaciones = data
+
+    })
   }
 
   async getTransacciones(){
@@ -247,56 +375,6 @@ parametrizacionSucu:parametrizacionsuc
   }
 
 
-  async getIDTransacciones() {
-    
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  }
-
-  async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      new Promise<any>((resolve, reject) => {
-        productos.forEach((nt: any) => {
-          this.productosActivos.push(nt.payload.doc.data());
-        })
-      })
-      this.llenarPR()
-      this.llenarComboProductos()
-    });;
-  }
-
-
-
-  async getFactureros() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('factureros').doc('matriz').snapshotChanges().subscribe((facturero) => {
-      console.log(facturero.payload.data())
-
-      this.factura.documento_n = facturero.payload.data()['n_factura']+1;
-      this.numeroFactura2=facturero.payload.data()['n_factura']+1;
-    });;
-  }
-
-  async getProformas() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('proformas').doc('matriz').snapshotChanges().subscribe((proformas) => {
-      console.log(proformas.payload.data())
-      this.factura.documento_n = proformas.payload.data()['n_documento']+1;    
-    });;
-  }
-
-  async getNotasVenta() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('notasVentasGlobal').doc('matriz').snapshotChanges().subscribe((notasventa) => {
-      console.log(notasventa.payload.data())
-      this.factura.documento_n = notasventa.payload.data()['n_documento']+1;    
-    });;
-  }
-
   async getIDPendientes() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productosPendientesEntregaID').doc('matriz').snapshotChanges().subscribe((notasventa) => {
@@ -305,47 +383,6 @@ parametrizacionSucu:parametrizacionsuc
       //alert("yo lei el "+this.numeroID)
     });;
   }
-
-  getProductosCatalogo(){
-    this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
-      this.productosCatalogo = data
-    })
-  }
-
-  async getClientes() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('clientes').snapshotChanges().subscribe((clientes) => {
-      this.clientes = []
-      clientes.forEach((element:any) => {
-        this.clientes.push(element.payload.doc.data())        
-      });
-    });;  
-  }
-
-
-  async getFacturas() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('facturas').snapshotChanges().subscribe((facturas) => {
-      this.facturas = []
-      facturas.forEach((element:any) => {
-        this.facturas.push(element.payload.doc.data())        
-      });
-    });;
-  }
-
-
-  async getCotizaciones() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('cotizaciones').snapshotChanges().subscribe((proformas) => {
-      this.proformas = []
-      proformas.forEach((element:any) => {
-        this.proformas.push(element.payload.doc.data())  
-        
-      });
-     
-    });;
-  }
-
 
   async getProductosVendidosCotizaciones() {
     //REVISAR OPTIMIZACION
@@ -357,19 +394,137 @@ parametrizacionSucu:parametrizacionsuc
       });
       //console.log("proforma# "+this.proformas.length)
     });;
+  } */
+
+
+
+
+
+
+
+  /* async getIDTransacciones() {
+    
+    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
+      console.log(transacciones.payload.data())
+      this.number_transaccion = transacciones.payload.data()['documento_n'];    
+    });;
   }
+ */
+  /* async getProductos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
+      this.productos = []
+      new Promise<any>((resolve, reject) => {
+        productos.forEach((nt: any) => {
+          this.productosActivos.push(nt.payload.doc.data());
+        })
+      })
+      this.llenarPR()
+      this.llenarComboProductos()
+    });;
+  } */
+
+
+
+ /*  async getFactureros() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('factureros').doc('matriz').snapshotChanges().subscribe((facturero) => {
+      console.log(facturero.payload.data())
+
+      this.factura.documento_n = facturero.payload.data()['n_factura']+1;
+      this.numeroFactura2=facturero.payload.data()['n_factura']+1;
+    });;
+  } */
+
+  /* async getProformas() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('proformas').doc('matriz').snapshotChanges().subscribe((proformas) => {
+      console.log(proformas.payload.data())
+      this.factura.documento_n = proformas.payload.data()['n_documento']+1;    
+    });;
+  } */
+
+ /*  async getNotasVenta() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('notasVentasGlobal').doc('matriz').snapshotChanges().subscribe((notasventa) => {
+      console.log(notasventa.payload.data())
+      this.factura.documento_n = notasventa.payload.data()['n_documento']+1;    
+    });;
+  } */
+
+ 
+
+ /*  getProductosCatalogo(){
+    this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
+      this.productosCatalogo = data
+    })
+  } */
+
+  /* async getClientes() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('clientes').snapshotChanges().subscribe((clientes) => {
+      this.clientes = []
+      clientes.forEach((element:any) => {
+        this.clientes.push(element.payload.doc.data())        
+      });
+    });;  
+  } */
+
+
+ 
+
+
+ /*  async getCotizaciones() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('cotizaciones').snapshotChanges().subscribe((proformas) => {
+      this.proformas = []
+      proformas.forEach((element:any) => {
+        this.proformas.push(element.payload.doc.data())  
+        
+      });
+     
+    });;
+  }
+ */
+
+  
+    asignarIDFactura(tipoFac:string){
+      switch (tipoFac) {
+        case "Factura":
+          switch (this.factura.sucursal) {
+            case "matriz":
+              this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+              this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+              break;
+            case "sucursal1":
+              this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
+              this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
+              break;
+            case "sucursal2":
+              this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
+              this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
+              break;
+            default:
+              break;
+          } 
+          break;
+        case "Nota de Venta":
+          this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
+          break;
+        case "Cotización":
+          this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
+          break;
+        default:
+          break;
+      }
+      
+    }
 
 
   anadirProducto = (e) => {
-    //console.log("entre por aqui a añadir producto")
     this.newButtonEnabled = true
-    //this.htmlStr = 'asasas';
-   
-    //this.htmlStr="<dxi-item itemType='empty' [colSpan]='3'></dxi-item>";
-   // this.dataContainer.items.length
-  //console.log( "88888"+x.length)
-  this.contadoProductos=0
-  this.productosVendidos.forEach(element=>{
+    this.contadoProductos=0
+    this.productosVendidos.forEach(element=>{
     this.contadoProductos++
   })
     
@@ -432,13 +587,11 @@ stringIsNumber(s) {
   //VA A COGER SIEMPRE EL ULTIMO
 
 obtenerTipoDocumento(e){
-  //console.log("entre tipo docu" +e.value)
-  //console.log(this.tipoDocumentos[e]);
   if(e.value == "Factura"){
     this.botonFactura= false
     this.botonNotaVenta= true
     this.botonCotizacion= true
-    this.getFactureros();
+    this.asignarIDFactura(e.value);
     this.tDocumento= e.value
     this.factura.tipoDocumento= e.value
     
@@ -447,14 +600,14 @@ obtenerTipoDocumento(e){
     this.botonNotaVenta= false
     this.botonCotizacion= true
     this.selectAct=true
-    this.getNotasVenta();
+    this.asignarIDFactura(e.value);
     this.tDocumento= e.value
     this.factura.tipoDocumento= e.value
   }else if(e.value == "Cotización"){
     this.botonFactura= true
     this.botonNotaVenta= true
     this.botonCotizacion= false
-    this.getProformas();
+    this.asignarIDFactura(e.value);
     this.tDocumento= e.value
     this.factura.tipoDocumento= e.value
     this.productosVendidos.forEach(element=>{
@@ -582,16 +735,16 @@ setSelectedProducto(i:number){
     if(cont<=1){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
-          switch (this.variablesucursal) {
-            case "Milagro":
+          switch (this.factura.sucursal) {
+            case "matriz":
               this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
               this.productosVendidos[i].producto = element
               break;
-            case "Naranjito":
+            case "sucursal1":
               this.productosVendidos[i].disponible = element.sucursal2+element.suc2Pendiente
               this.productosVendidos[i].producto = element
               break;
-            case "El Triunfo":
+            case "sucursal2":
               this.productosVendidos[i].disponible = element.sucursal3+element.suc3Pendiente
               this.productosVendidos[i].producto = element
                 break;
@@ -662,9 +815,9 @@ setSelectedProducto(i:number){
       
       
         asignarsucursalD(e){
-          this.variablesucursal= e.value
-          console.log("Pertenece a "+this.variablesucursal)
-          this.factura.sucursal= this.variablesucursal
+          this.factura.sucursal= e.value
+          console.log("Pertenece a "+this.factura.sucursal)
+          this.factura.sucursal= this.factura.sucursal
         }
       
         buscarCliente(e){
@@ -779,8 +932,9 @@ var resultado = this.diferenciaEntreDiasEnDias(dia1, dia2);
 alert(resultado); */
 
 
-this.getCotizaciones()
-this.getProductosVendidosCotizaciones()
+//this.getCotizaciones()
+//this.getProductosVendidosCotizaciones()
+this.traerProductosVendidos()
     var x = document.getElementById("myDIV");
   if (x.style.display === "none") {
     x.style.display = "block";
@@ -961,16 +1115,16 @@ buscarCantidadesPRODUCTOS(){
   this.productosVendidos.forEach(element=>{
     this.productos.forEach(element2=>{
       if(element.producto.PRODUCTO == element2.PRODUCTO){
-        switch (this.variablesucursal) {
-          case "Milagro":
+        switch (this.factura.sucursal) {
+          case "matriz":
             element.disponible=element2.sucursal1
             //this.compararCantidad(element.producto.PRODUCTO, element.disponible,contP)
             console.log("ennntrree")
             break;
-          case "Naranjito":
+          case "sucursal1":
             element.disponible=element2.sucursal2
             break;
-          case "El Triunfo":
+          case "sucursal2":
             element.disponible=element2.sucursal3
               break;
           default:
@@ -1087,21 +1241,21 @@ console.log("entre a actualizar")
  new Promise<any>((resolve, reject) => {
   this.productosVendidos.forEach(element=>{
     console.log("voy a imprimir el elemento "+JSON.stringify(element))
-    switch (this.variablesucursal) {
-      case "Milagro":
+    switch (this.factura.sucursal) {
+      case "matriz":
         resta =0
         resta =element.producto.sucursal1-element.cantidad
-        this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
+        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
-      case "Naranjito":
+      case "sucursal1":
         resta =0
         resta =element.producto.sucursal2-element.cantidad
-        this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal2" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
+        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal2" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
-      case "El Triunfo":
+      case "sucursal2":
         resta =0
         resta =element.producto.sucursal3-element.cantidad
-        this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal3" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
+        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal3" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
           break;
       default:
     }
@@ -1347,7 +1501,7 @@ var tipoDoc:boolean=false
       this.mostrarMensaje()
   }else if(this.tDocumento == "Cotización"){
       this.textoTipoDocumento= "PROFORMA 001-001-000"
-      this.textoTipoDocumento2= "ed.producto.nombre_comercial"
+      this.textoTipoDocumento2= "ed.producto.PRODUCTO"
       const documentDefinition = this.getDocumentDefinitionCotizacion();
       pdfMake.createPdf(documentDefinition).download('Proforma '+this.factura.documento_n, function() {  });
       this.mostrarMensaje2()
@@ -2528,7 +2682,7 @@ var tipoDoc:boolean=false
         this.productoPendienteE.fechaEntrega=" "
         this.productoPendienteE.id_Pedido=this.numeroID++
         this.productoPendienteE.producto=element.producto
-        this.productoPendienteE.sucursal=this.variablesucursal
+        this.productoPendienteE.sucursal=this.factura.sucursal
         this.productoPendienteE.usuario="q@q.com"
         this.productoPendienteE.valor_unitario=element.precio_venta
         this.productoPendienteE.total=resta*element.precio_venta
@@ -2536,25 +2690,25 @@ var tipoDoc:boolean=false
        
         console.log("llelgggggggoooo el " +this.productoPendienteE.id_Pedido )
         new Promise<any>((resolve, reject) => {
-          switch (this.variablesucursal) {
-            case "Milagro":
+          switch (this.factura.sucursal) {
+            case "matriz":
               sumad=resta+element.producto.suc1Pendiente
-              this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc1Pendiente" :sumad})
+              //this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc1Pendiente" :sumad})
               break;
-            case "Naranjito":
+            case "sucursal1":
               sumad=resta+element.producto.suc2Pendiente
-              this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc2Pendiente" :sumad})
+              //this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc2Pendiente" :sumad})
               break;
-            case "El Triunfo":
+            case "sucursal2":
               sumad=resta+element.producto.suc3Pendiente
-              this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc3Pendiente" :sumad})
+             // this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc3Pendiente" :sumad})
                 break;
             default:
           }
-          this.db.collection("/productosPendientesEntrega").doc(""+this.productoPendienteE.id_Pedido).set({ ...Object.assign({}, this.productoPendienteE) })
+          /* this.db.collection("/productosPendientesEntrega").doc(""+this.productoPendienteE.id_Pedido).set({ ...Object.assign({}, this.productoPendienteE) })
           .then(res => {console.log("listo")}, err => reject(err));
           this.db.collection("/productosPendientesEntregaID").doc("matriz").set({ documento_n:this.numeroID})
-          .then(res => { }, err => reject(err));
+          .then(res => { }, err => reject(err)); */
         
         })
 
@@ -2563,10 +2717,163 @@ var tipoDoc:boolean=false
 
     buscarDatosSucursal(){
       this.parametrizaciones.forEach(element=>{
-        if(element.sucursal == this.variablesucursal){
+        if(element.sucursal == this.factura.sucursal){
           this.parametrizacionSucu= element
         }
       })
+    }
+
+    crearCliente(){
+      console.log("mostrando lcint"+JSON.stringify(this.factura.cliente))
+      if(this.factura.cliente._id) {
+        this.clienteService.updateCliente(this.factura.cliente).subscribe(
+          res => {
+            console.log(res + "entre por si");
+          },
+          err => {
+            Swal.fire({
+              title: err.error,
+              text: 'Revise e intente nuevamente',
+              icon: 'error'
+            })
+          })
+      } else {
+        this.clienteService.newCliente(this.factura.cliente).subscribe(
+          res => {
+            console.log(res + "entre por si");
+          },
+          err => {
+            Swal.fire({
+              title: err.error,
+              text: 'Revise e intente nuevamente',
+              icon: 'error'
+            })
+          })
+      }
+    }
+  
+    guardarFactura(){
+      this.facturasService.newFactura(this.factura).subscribe(
+        res => {
+          console.log(res + "entre por si");
+          this.actualizarFacturero()
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+
+    guardarFactura2(){
+      this.facturasService.newFactura(this.factura).subscribe(
+        res => {
+          console.log(res + "entre por si");
+          this.actualizarFactureroNotasVenta()
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+
+
+    guardarCotización(){
+      this.proformasService.newProforma(this.factura).subscribe(
+        res => {
+          console.log(res + "entre por si");
+          this.actualizarFactureroProformas()
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+
+    error(){
+      Swal.fire({
+        title: "Error",
+        text: 'Revise e intente nuevamente',
+        icon: 'error'
+      })
+    }
+
+
+    actualizarFacturero(){
+      
+      switch (this.factura.sucursal) {
+        case "matriz":
+          this.contadores[0].facturaMatriz_Ndocumento = this.factura.documento_n
+         
+          this.contadoresService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          break;
+        case "sucursal1":
+          this.contadores[0].facturaSucursal1_Ndocumento = this.factura.documento_n
+        
+          this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          break;
+        case "sucursal2":
+          this.contadores[0].facturaSucursal2_Ndocumento = this.factura.documento_n
+       
+          this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          break;
+        default:
+          break;
+      }
+      
+    }
+
+    actualizarFactureroNotasVenta(){
+      this.contadores[0].notasVenta_Ndocumento = this.factura.documento_n
+      this.contadoresService.updateContadoresIDNotasVenta(this.contadores[0]).subscribe(
+        res => {
+          console.log(res + "entre por si");
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+
+    actualizarFactureroProformas(){
+      this.contadores[0].proformas_Ndocumento = this.factura.documento_n
+      this.contadoresService.updateContadoresIDProformas(this.contadores[0]).subscribe(
+        res => {
+          console.log(res + "entre por si");
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+
+    actualizarIDTransacciones(){
+     /*  this.contadores[0].transacciones_Ndocumento = this.factura.documento_n
+      this.contadoresService.updateContadoresIDFactura(this.contadores[0]).subscribe(
+        res => {
+          console.log(res + "entre por si");
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        }) */
     }
 
   generarFactura(e) {
@@ -2585,7 +2892,7 @@ var tipoDoc:boolean=false
     this.factura.documento_n = this.numeroFactura2
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje
-    this.factura.sucursal= this.variablesucursal
+    this.factura.sucursal= this.factura.sucursal
     this.guardarDatosCliente()
     this.setearNFactura()
     this.factura.dni_comprador= this.factura.cliente.ruc
@@ -2600,7 +2907,9 @@ var tipoDoc:boolean=false
       this.factura.cliente= this.factura.cliente
 
       new Promise<any>((resolve, reject) => { 
-          this.db
+        this.crearCliente()
+        this.guardarFactura()
+          /* this.db
             .collection("/clientes")
             .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
             .then(res => { }, err => reject(err));
@@ -2612,20 +2921,31 @@ var tipoDoc:boolean=false
           this.db
             .collection("/factureros")
             .doc("matriz").set({ n_factura:this.factura.documento_n })
-            .then(res => { }, err => reject(err));
+            .then(res => { }, err => reject(err)); */
         
 
         this.productosVendidos.forEach(element => {
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
-          this.db.collection("/productosVendidos").add({ ... element})
-          .then(res => { }, err => reject(err));
+          /* this.db.collection("/productosVendidos").add({ ... element})
+          .then(res => { }, err => reject(err)); */
+
+          this.productosVenService.newProductoVendido(element).subscribe(
+            res => {
+              console.log(res + "entre por si");
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
         
           this.transaccion = new transaccion()
-          //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
           this.transaccion.fecha_transaccion=this.factura.fecha.toLocaleString()
-          this.transaccion.sucursal=this.variablesucursal
+          this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"
           this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
@@ -2641,20 +2961,46 @@ var tipoDoc:boolean=false
           this.transaccion.usu_autorizado="q@q.com"
           this.transaccion.usuario="q@q.com"
           this.transaccion.idTransaccion=this.number_transaccion++
-          this.transaccion.cliente=this.factura.cliente.cliente_nombre
+          this.transaccion.cliente=this.factura.cliente.cliente_nombre  
+          this.traerContadoresDocumentos()
+
+          this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+            res => {
+              console.log(res + "entre por siff");
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                res => {
+                  console.log(res + "entre por si");
+                  contVal++,this.contadorValidaciones(contVal)
+                },
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
           //this.getIDTransacciones()
 
-          this.db.collection("/transacciones")
+         /*  this.db.collection("/transacciones")
           .add({ ...this.transaccion })
           .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
           this.db
             .collection("/transacciones_ID")
             .doc("matriz").set({ documento_n:this.number_transaccion })
-            .then(res => { }, err => reject(err));
+            .then(res => { }, err => reject(err)); */
         });
         
       });
-      this.getFactureros();
+      //this.getFactureros();
       //this.crearPDF();
     }else{
         Swal.fire(
@@ -2676,7 +3022,7 @@ var tipoDoc:boolean=false
       if(this.productosVendidos.length==i){
         this.actualizarProductos()
           console.log("recien termine")
-         // this.crearPDF()
+          this.crearPDF()
           
       }else{
         console.log("no he entrado "+i)
@@ -2696,10 +3042,10 @@ var tipoDoc:boolean=false
     });
     if(contpro>=1 &&bandera){
     //this.factura.documento_n = this.numeroFactura2
-    this.factura.sucursal= this.variablesucursal
+   
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje
-    this.factura.sucursal= this.variablesucursal
+  
     this.guardarDatosCliente()
     this.factura.dni_comprador= this.factura.cliente.ruc
     if(this.ventasForm.instance.validate().isValid){
@@ -2712,8 +3058,25 @@ var tipoDoc:boolean=false
 
       this.factura.cliente= this.factura.cliente
       new Promise<any>((resolve, reject) => {
+        this.crearCliente()
+        this.guardarCotización()
+        this.productosVendidos.forEach(element => {
+          element.factura_id = this.factura.documento_n
+          this.productosVenService.newProductoVendido(element).subscribe(
+            res => {
+              console.log(res + "entre por si");
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
+        });
+       
    //     if(grabar)
-        this.db
+        /* this.db
         .collection("/clientes")
         .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
         .then(res => { }, err => reject(err));
@@ -2730,9 +3093,9 @@ var tipoDoc:boolean=false
           element.factura_id = this.factura.documento_n
           this.db.collection("/productosVendidos").add({ ... element})
           .then(res => { }, err => reject(err));
-        });
+        }); */
       });
-      this.getProformas();
+     // this.getProformas();
     this.crearPDF();
     }else{
       Swal.fire(
@@ -2766,7 +3129,7 @@ var tipoDoc:boolean=false
     });
     if(contpro>=1 &&bandera){
    // this.factura.documento_n = this.numeroFactura2
-   this.factura.sucursal= this.variablesucursal
+  
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje
     this.guardarDatosCliente()
@@ -2781,32 +3144,28 @@ var tipoDoc:boolean=false
 
       this.factura.cliente= this.factura.cliente
       new Promise<any>((resolve, reject) => {
-        //if(grabar)
         this.setearNFactura()
-        this.db
-        .collection("/clientes")
-        .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
-        .then(res => { }, err => reject(err));
-        //console.log("los datos"+this.factura.cliente.cliente_nombre)
-        this.db
-        .collection("/notas_venta")
-        .doc(this.factura.documento_n.toString()).set({ ...Object.assign({}, this.factura) })
-        .then(res => { }, err => reject(err));
-        this.db
-        .collection("/notasVentasGlobal")
-        .doc("matriz").set({ n_documento:this.factura.documento_n })
-        .then(res => { }, err => reject(err));
+        this.crearCliente()
+        this.guardarFactura2()
         this.productosVendidos.forEach(element => {
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
-          this.db.collection("/productosVendidos").add({ ... element})
-          .then(res => { }, err => reject(err));
-        //  this.actualizarProductos()
+          this.productosVenService.newProductoVendido(element).subscribe(
+            res => {
+              console.log(res + "entre por si");
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
           this.transaccion.fecha_transaccion=this.factura.fecha.toLocaleString()
-          this.transaccion.sucursal=this.variablesucursal
+          this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"
           this.transaccion.valor=element.precio_venta
@@ -2824,20 +3183,35 @@ var tipoDoc:boolean=false
           this.transaccion.usuario=this.factura.username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre
-          //this.getIDTransacciones()
-
-          this.db.collection("/transacciones")
-          .add({ ...this.transaccion })
-          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-          this.db
-            .collection("/transacciones_ID")
-            .doc("matriz").set({ documento_n:this.number_transaccion })
-            .then(res => { }, err => reject(err));
+          this.traerContadoresDocumentos()
+          this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+            res => {
+              console.log(res + "entre por siff");
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                res => {
+                  console.log(res + "entre por si");
+                  contVal++,this.contadorValidaciones(contVal)
+                },
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
         });
        
       });
-      this.getNotasVenta();
-      //this.crearPDF();  
+
     }else{
       Swal.fire(
         'Error',
@@ -2859,8 +3233,8 @@ var tipoDoc:boolean=false
     //esto es del consolidado
 
     comenzarConsolidado(){
-      this.getProductos()
-      this.getTransacciones()
+      //this.getProductos()
+     // this.getTransacciones()
     }
   
   
@@ -3042,7 +3416,7 @@ var tipoDoc:boolean=false
         m2s1=parseInt(element.cantidadM2.toFixed(0))
         m2s2=parseInt(element.cantidadM2b2.toFixed(0))
         m2s3=parseInt(element.cantidadM2b3.toFixed(0))
-        this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
+       // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
       })
     }
 

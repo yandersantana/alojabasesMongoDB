@@ -7,6 +7,8 @@ import { CommonModule } from '@angular/common';
 
 import { navigation } from '../../app-navigation';
 import { Router, NavigationEnd } from '@angular/router';
+import { user } from 'src/app/pages/user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-side-nav-outer-toolbar',
@@ -16,6 +18,7 @@ import { Router, NavigationEnd } from '@angular/router';
 export class SideNavOuterToolbarComponent implements OnInit {
   @ViewChild(DxScrollViewComponent, { static: true }) scrollView: DxScrollViewComponent;
   menuItems = navigation;
+  menuItemsAdmin = navigation;
   selectedRoute = '';
 
   menuOpened: boolean;
@@ -23,15 +26,23 @@ export class SideNavOuterToolbarComponent implements OnInit {
 
   @Input()
   title: string;
-
+  user = {
+    name: '',
+    lastname: '',
+    email: '',
+    image: '',
+    rol: ""
+  } 
   menuMode = 'shrink';
   menuRevealMode = 'expand';
   minMenuSize = 0;
   shaderEnabled = false;
+  correo:string=""
 
-  constructor(private screen: ScreenService, private router: Router) { }
+  constructor(private screen: ScreenService,public authenService:AuthenService, private router: Router) { }
 
   ngOnInit() {
+    console.log("ddddlll")
     this.menuOpened = this.screen.sizes['screen-large'];
 
     this.router.events.subscribe(val => {
@@ -43,6 +54,36 @@ export class SideNavOuterToolbarComponent implements OnInit {
     this.screen.changed.subscribe(() => this.updateDrawer());
 
     this.updateDrawer();
+    this.crearPerfil()
+  }
+
+
+  crearPerfil() {
+    console.log("si entre a buscar")
+    if (localStorage.getItem("maily") != '') {
+      this.correo = localStorage.getItem("maily");
+
+    }
+    this.authenService.returnUserRol().subscribe((ordenes: user[]) => {
+      new Promise<any>((resolve, reject) => {
+        ordenes.forEach((nt) => {
+        
+          if (nt.email == this.correo) {
+            this.user.name = nt.name;
+            this.user.rol = nt.rol
+            this.buscarRol()
+            //this.imagePath = "../../../assets/img/brand/perfil-avatar-hombre-icono-redondo_24640-14044.jpg"
+          }
+        })
+      })
+    })
+
+  }
+
+  buscarRol(){
+    if(this.user.rol == "Administrador"){
+      alert("es admin")
+    }
   }
 
   updateDrawer() {

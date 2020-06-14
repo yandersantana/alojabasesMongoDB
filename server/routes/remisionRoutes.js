@@ -1,0 +1,64 @@
+const { Router } = require('express');
+const router = Router();
+const Remision = require('../models/remision')
+
+router.get('/getRemisiones', async (req, res) => {
+    const remisiones = await Remision.find();
+    res.send(remisiones)      
+})
+
+router.put('/update/:id', async (req, res,next) => {
+    const { id } = req.params;
+    const remision = {
+        num_orden: req.body.num_orden,
+        num_FactPro: req.body.num_FactPro,
+        fechaP: req.body.fechaP,
+        num_remEnt: req.body.num_remEnt,
+        fechaRecibo:req.body.fechaRecibo,
+        id_remision:req.body.id_remision,
+        placa:req.body.placa,
+        nombre_transportador:req.body.nombre_transportador,
+        nombre_recibe:req.body.nombre_recibe,
+        sucursal:req.body.sucursal,
+        nombre_proveedor:req.body.nombre_proveedor,
+        estado:req.body.estado,
+        bodega:req.body.bodega,
+        msjAdmin:req.body.msjAdmin,
+        total:req.body.total
+    };
+    await Remision.findByIdAndUpdate(id, {$set: remision}, {new: true});
+    res.json({status: 'Ìndice Actualizado'});  
+})
+
+
+router.delete('/delete/:id', async (req, res,next) => {
+    await Remision.findByIdAndRemove(req.params.id);
+    res.json({status: 'Remision Eliminado'});
+})
+
+
+router.post('/newProveedor', async (req, res) => {
+    //const { index_name, index_description, index_type,index_length } = req.body;
+    const newRemision= new Indexes({ 
+        num_orden: req.body.num_orden,
+        num_FactPro: req.body.num_FactPro,
+        fechaP: req.body.fechaP,
+        num_remEnt: req.body.num_remEnt,
+        fechaRecibo:req.body.fechaRecibo,
+        id_remision:req.body.id_remision,
+        placa:req.body.placa,
+        nombre_transportador:req.body.nombre_transportador,
+        nombre_recibe:req.body.nombre_recibe,
+        sucursal:req.body.sucursal,
+        nombre_proveedor:req.body.nombre_proveedor,
+        estado:req.body.estado,
+        bodega:req.body.bodega,
+        msjAdmin:req.body.msjAdmin,
+        total:req.body.total
+        });
+    await newRemision.save();
+    res.json({status: 'Remision creada'});
+});
+
+
+module.exports = router;

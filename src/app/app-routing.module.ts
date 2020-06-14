@@ -91,6 +91,8 @@ import { ConsolidadoComponent } from './pages/consolidado/consolidado.component'
 import { RegistrosVentasComponent } from './pages/registros-ventas/registros-ventas.component';
 import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
 import { ParametrizacionComponent } from './pages/parametrizacion/parametrizacion.component';
+import { UserComponent } from './pages/user/user.component';
+import { VerifyAuthGuard } from './verify-auth.guard';
 
 
 const routes: Routes = [
@@ -146,8 +148,16 @@ const routes: Routes = [
   },
   {
     path: 'parametrizacion',
+    canActivate: [ AuthGuardService ],
+    data: { roles: ['Administrador'] } ,
     component: ParametrizacionComponent,
-    canActivate: [ AuthGuardService ]
+    
+  },
+  {
+    path: 'usuarios',
+    canActivate: [ AuthGuardService ],
+    data: { roles: ['Administrador'] } ,
+    component: UserComponent
   },
   {
     path: 'proveedores',

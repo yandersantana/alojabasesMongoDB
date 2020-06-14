@@ -4,13 +4,18 @@ import { auth } from  'firebase/app';
 import { AngularFireAuth } from  "@angular/fire/auth";
 import { User } from  'firebase';
 import { Session } from 'protractor';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from 'src/app/pages/user/user';
 
 @Injectable()
 export class AuthService {
   user: User;
   loggedIn:boolean;
+  user2 = { email: '',
+  password: ''
 
-  constructor(private router: Router, public  afAuth:  AngularFireAuth) {
+  }
+  constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
     if(sessionStorage.getItem("logged") == undefined){
       sessionStorage.setItem("logged", false.toString())
     }
@@ -26,12 +31,14 @@ export class AuthService {
     })
   }
 
-  async logIn(login: string, passord: string) {
+  async logIn(login: string, password: string) {
+     this.user2.email=login
+    this.user2.password=password
     try{
-      var result = await this.afAuth.auth.signInWithEmailAndPassword(login, passord)
+      var result = await this.authenService.signIn(this.user2)
       this.loggedIn = true;
       sessionStorage.setItem("logged", this.loggedIn.toString())
-      sessionStorage.setItem("user", login)
+      
       this.router.navigate(['/']);
     }catch(e){
       alert("Credenciales incorrectas")
@@ -54,8 +61,8 @@ export class AuthService {
 
 @Injectable()
 export class AuthGuardService implements CanActivate {
-    constructor(private router: Router, private authService: AuthService) {}
-
+    constructor(private router: Router, private authService: AuthService, public authenService:AuthenService) {}
+    role = ''
     canActivate(route: ActivatedRouteSnapshot): boolean {
         const isLoggedIn = this.authService.isLoggedIn;
         const isLoginForm = route.routeConfig.path === 'login-form';
@@ -67,6 +74,32 @@ export class AuthGuardService implements CanActivate {
 
         if (!isLoggedIn && !isLoginForm) {
             this.router.navigate(['/login-form']);
+        }
+
+        if (isLoggedIn) {
+          //alert("entre")
+          this.authenService.returnUserRol().subscribe((ordenes: user[]) => {
+            new Promise<any>((resolve, reject) => {
+              ordenes.forEach((nt) => {
+                this.role = nt.rol
+               console.log("sx "+this.role)
+                if (route.data.roles && route.data.roles.indexOf(this.role) === -1) {
+                  // role not authorised so redirect to home page
+                  this.router.navigate(['/dashboard']);
+                  return false;
+                }
+    
+    
+    
+              })
+    
+            })
+          })
+    
+          console.log(this.role)
+          return true;
+        }else{
+         // alert("ll")
         }
 
         return isLoggedIn || isLoginForm;

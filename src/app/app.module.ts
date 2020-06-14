@@ -33,6 +33,8 @@ import { FormsModule } from '@angular/forms';
 import { PinchZoomModule } from 'ngx-pinch-zoom';
 import { ParametrizacionComponent } from './pages/parametrizacion/parametrizacion.component';
 import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
+import { HttpClientModule } from '@angular/common/http';
+import { UserComponent } from './pages/user/user.component';
 
 
 @NgModule({
@@ -56,6 +58,7 @@ import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
     RegistrosVentasComponent,
     ParametrizacionComponent,
     EntregasPComponent,
+    UserComponent,
   ],
   imports: [
     BrowserModule,
@@ -65,6 +68,7 @@ import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
     FooterModule,
     LoginFormModule,
     AppRoutingModule,
+    HttpClientModule,
     DxButtonModule,
     DxTextBoxModule,
     DxFormModule,

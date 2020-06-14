@@ -11,33 +11,82 @@ type = "ball-beat"
 
 <dx-validation-group #validateLogin>
     <div class="login-header">
-        <!--<div class="title">Constructor</div>-->
         <img src="../../../../assets/Logo 01.png" alt="" class="img-thumbnail">
     </div>
     <div class="dx-field">
-        <dx-text-box [(value)]="login" placeholder="Usuario o email" width="100%">
+        <dx-text-box [(value)]="login" placeholder="Usuario o email" width="100%" >
             <dx-validator>
-                <dxi-validation-rule type="required" message="Usuario es requerido"></dxi-validation-rule>
+                <dxi-validation-rule type="required" message="Usuario es requerido" ></dxi-validation-rule>
             </dx-validator>
         </dx-text-box>
     </div>
     <div class="dx-field">
-        <dx-text-box mode="password" [(value)]="password" placeholder="Contraseña" width="100%" (onEnterKey)="onLoginClick($event)">
+        <dx-text-box mode="password" [(value)]="password" placeholder="Contraseña" width="100%" (onEnterKey)="signIn($event)">
             <dx-validator>
                 <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
             </dx-validator>
         </dx-text-box>
     </div>
-    <!--<div class="dx-field">
-        <dx-check-box [value]="false" text="Remember me"></dx-check-box>
-    </div>-->
+   
     <div class="dx-field">
-        <dx-button type="default" text="Iniciar sesion" (onClick)="onLoginClick($event)" width="100%"></dx-button>
+        <dx-button type="default" text="Iniciar sesion"  width="100%" (onClick)="signIn($event)"></dx-button>
     </div>
-    <!--<div class="dx-field">
-        <a routerLink="/recovery">Forgot password ?</a>
-    </div>
-    <div class="dx-field">
-        <dx-button type="normal" text="Create an account" width="100%"></dx-button>
-    </div>-->
 </dx-validation-group>
+
+
+<!-- 
+ <div class="app-body">
+    <main class="main d-flex align-items-center">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 mx-auto ">
+            <div class="card-group">
+              <div class="card p-4">
+                <div class="card-body">
+                  <form  #f="ngForm" (ngSubmit)="signIn(f)"> 
+                    <h1>Iniciar Sesión</h1>
+                    <p class="text-muted">
+                      Iniciar sesión en su cuenta</p>
+                    <div class="input-group mb-3">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-user" ></i></span>
+                      </div>
+                      <input type="email" id="email" #email="ngModel"  [(ngModel)]="user.email" name="email" class="form-control" placeholder="Correo Electronico" autocomplete="email"
+                        required>
+                        
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="email.touched && !email.valid">
+                      <div *ngIf="email.errors.required">Escriba su correo</div>                    
+                    </div>
+                    <div class="input-group mb-4">
+                      <div class="input-group-prepend">
+                        <span class="input-group-text"><i class="icon-lock"></i></span>
+                      </div>
+                      <input type="password" id="password" #password="ngModel"  [(ngModel)]="user.password" name="password"  class="form-control" placeholder="Contraseña" autocomplete="current-password"
+                        required>
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="password.touched && !password.valid">
+                      <div *ngIf="password.errors.required">Escriba la contraseña</div>                    
+                    </div>
+                    <div class="row" style="text-align: center;">
+                      <div class="col-12">
+                        <button  class="btn btn-primary px-4" style="background-color: #0061a9;" >Iniciar</button>
+                      </div>
+                      <div class="col-12 " >
+                        <button  class="btn btn-link px-0">¿Olvidaste tu contraseña?</button>
+                      </div>
+                    </div>
+                    <div class="alert alert-danger" role="alert" *ngIf="isError">
+                      <p>{{loginError}}</p>                      
+                    </div>
+                  </form>
+                 
+                </div>
+              </div>
+            
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div> -->

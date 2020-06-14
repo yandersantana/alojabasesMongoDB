@@ -10,28 +10,28 @@
                 <div class="col-md-2">
                     <div class="row botones">
                       
-                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">Milagro</button></div>
-                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">Naranjito</button></div>
-                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">El Triunfo</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">Matriz</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">Sucursal1</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">Sucursal2</button></div>
                     </div>
                 </div>
                 <div class="col-md-10 card carIn">
                     <div  style="display: block;">
                         <div class="row" class="fomR">
                             <div class="col-md-12" style="text-align: right;"><button class="btn"  type="button" (click)="desbloquear()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></div>
-                            <div id="op1" style="text-align: center;display: block;"> <h2>Sucursal Milagro</h2></div>
-                            <div id="op2" style="text-align: center;display: none"> <h2>Sucursal Naranjito</h2></div>
-                            <div id="op3" style="text-align: center;display: none;"> <h2>Sucursal El Triunfo</h2></div>
+                            <div id="op1" style="text-align: center;display: block;"> <h2>Sucursal {{parametroSuc.nombre}}</h2></div>
+                            <div id="op2" style="text-align: center;display: none"> <h2>Sucursal {{parametroSuc.nombre}}</h2></div>
+                            <div id="op3" style="text-align: center;display: none;"> <h2>Sucursal {{parametroSuc.nombre}}</h2></div>
 
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-2"></div>
                                
                                     <div class="col-md-8">
-                                       <!--  <div class="row espacio" >
+                                        <div class="row espacio" >
                                             <div class="col-md-4" style="text-align: left;">Sucursal:</div>
-                                            <div class="col-md-8">{{locales.nombre}}</div>
-                                        </div> -->
+                                            <div class="col-md-8"><input type="text" [(ngModel)]="parametroSuc.nombre" name="nombre" [disabled]="varDis" class="form-control" placeholder="Nombre Sucursal" autocomplete="nombre" required></div>
+                                        </div>
 
                                         <div class="row espacio" >
                                             <div class="col-md-4" style="text-align: left;">RUC:</div>

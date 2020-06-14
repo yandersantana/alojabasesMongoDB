@@ -1,6 +1,7 @@
 
 
 export class catalogo{
+    _id:number
     PRODUCTO:string
     NOMBRE_PRODUCTO:string
     CLASIFICA:string

@@ -1,6 +1,7 @@
 //import { Producto } from '../producto/producto'
 
 import { producto } from '../ventas/venta'
+import { ProductoDetalleCompra } from '../producto/producto'
 
 export class compra{
     cantidad:number
@@ -13,6 +14,7 @@ export class compra{
 }
 
 export class OrdenDeCompra{
+    _id:string
     fecha:string
     usuario:string
     usuarioAth:string
@@ -44,6 +46,7 @@ export class OrdenDeCompra{
     factPro:string
     estadoOrden:string
     estadoIngreso:string
+    productosComprados:ProductoDetalleCompra[]=[]
     constructor(){
         //this.proveedor = new Proveedor()
         this.sucursal = new Sucursal()
@@ -61,6 +64,7 @@ export class OrdenDeCompra{
 }
 
 export class Proveedor{
+    _id:string
     nombre_proveedor:string
     ruc:string
     direccion:string
@@ -71,6 +75,7 @@ export class Proveedor{
     }
 }
 export class Sucursal{
+    sucursalTipo:string
     nombre:string
     contacto:string
     celular:string
@@ -81,7 +86,7 @@ export class Sucursal{
     }
 }
 
-export class ProductoDetalleCompra{
+/* export class ProductoDetalleCompra{
     seleccionado:boolean
     iva:boolean
     nombreComercial:producto
@@ -96,9 +101,10 @@ export class ProductoDetalleCompra{
     constructor() {
        this.rotacion=0
     }
-}
+} */
 
 export class Producto {
+    _id:string
     CAL: string
     CASA: string
     CLASIFICA: string

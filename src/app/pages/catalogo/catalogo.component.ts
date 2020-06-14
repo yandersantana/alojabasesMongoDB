@@ -1,7 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
 import { NgForm } from '@angular/forms';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { catalogo, opcionesCatalogo } from './catalogo';
 import { element } from 'protractor';
 import { on, trigger, off } from "devextreme/events";
@@ -11,6 +9,9 @@ import { DxGanttComponent, DxGalleryComponent } from 'devextreme-angular';
 import { ENGINE_METHOD_STORE } from 'constants';
 import { R3TargetBinder } from '@angular/compiler';
 import { NumericRule } from 'devextreme/ui/validation_engine';
+import { CatalogoService } from '../../servicios/catalogo.service';
+import { ProductoService } from '../../servicios/producto.service';
+import { OpcionesCatalogoService } from '../../servicios/opciones-catalogo.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -86,32 +87,46 @@ export class CatalogoComponent implements OnInit {
   elementRef
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
-  /* @ViewChild('canvas', { static: true })
-  canvas: ElementRef<HTMLCanvasElement>;  
   
-  private ctx: CanvasRenderingContext2D; */
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
     this.nuevoProducto= new producto()
-//this.ctx = this.canvas.nativeElement.getContext('2d');
+
   }
 
   ngOnInit() {
-    this.getOpcionesCatalogo()
+   /*  this.getOpcionesCatalogo()
     this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
       new Promise<any>((resolve, reject) => {
         this.productosCatalogo = data
       })
       this.separarProductos()
-    })
+    }) */
 
     //this.verGaleria()
+    this.traerProductosCatalogo()
+    this.traerOpcionesCatalogo()
+
   }
 
 
-  async getOpcionesCatalogo(){
+  traerProductosCatalogo(){
+    this.catalogoService.getCatalogo().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
+      this.separarProductos()
+   })
+  }
+
+  traerOpcionesCatalogo(){
+    this.opcionesService.getOpciones().subscribe(res => {
+      this.opcionesCatalogo = res as opcionesCatalogo[];
+      this.llenarCombos()
+   })
+  }
+
+  /* async getOpcionesCatalogo(){
     await this.db.collection('/opcionesCatalogo').snapshotChanges().subscribe((opciones) => {
       new Promise<any>((resolve, reject) => {
         opciones.forEach((nt: any) => {
@@ -120,7 +135,7 @@ export class CatalogoComponent implements OnInit {
       })
       this.llenarCombos()
     });;
-  }
+  } */
 
   buscarUnidad(e){
     console.log("entr aqui ")
@@ -149,6 +164,7 @@ export class CatalogoComponent implements OnInit {
 
 
   llenarCombos(){
+    console.log("entre qii")
     this.opcionesCatalogo.forEach(element=>{
       console.log(JSON.stringify(element))
          this.arrayUnid= element.arrayUnidades
@@ -225,7 +241,18 @@ export class CatalogoComponent implements OnInit {
     }
 
     new Promise<any>((resolve, reject) => {
-      this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).set({ ...this.nuevoProducto }).then(res => {this.mostrarMensaje() }, err => reject(err));
+      this.productoService.newProducto(this.nuevoProducto).subscribe(
+        res => {
+          console.log(res + "entre por si");
+          this.mostrarMensaje()
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
     }) 
   }
 
@@ -239,7 +266,19 @@ export class CatalogoComponent implements OnInit {
       //this.catalogo2.IMAGEN[0]=+this.base64textString
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
-        this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).set({ ...this.catalogo2 }).then(res => { this.crearNuevoProducto()}, err =>{reject(err) , this.mensajeError()} );
+        this.catalogoService.newCatalogo(this.catalogo2).subscribe(
+          res => {
+            console.log(res + "entre por si");
+            this.crearNuevoProducto()
+          },
+          err => {
+            Swal.fire({
+              title: err.error,
+              text: 'Revise e intente nuevamente',
+              icon: 'error'
+            })
+          })
+        //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).set({ ...this.catalogo2 }).then(res => { this.crearNuevoProducto()}, err =>{reject(err) , this.mensajeError()} );
       }) 
 
     }else{
@@ -263,6 +302,13 @@ export class CatalogoComponent implements OnInit {
   }
 
   comparardatos(){
+   
+   /*  this.opcionesService.newOpciones(this.opcionesCatalogo).subscribe(
+      res => {
+        console.log(res);
+      },
+      err => { console.log(err); this.mensajeError() }
+    ) */
     var cont=0
     this.arrayUnid.forEach(element=>{
       if(element == this.catalogo2.UNIDAD){
@@ -274,7 +320,13 @@ export class CatalogoComponent implements OnInit {
 
     if(cont==0){
       this.arrayUnid.push(this.catalogo2.UNIDAD)
-        this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayUnidades":this.arrayUnid})
+      this.opcionesService.updateOpciones(this.opcionesCatalogo[0]).subscribe(
+        res => {
+          console.log(res);
+        },
+        err => { console.log(err); this.mensajeError() }
+      )
+       // this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayUnidades":this.arrayUnid})
     }
   }
 
@@ -290,7 +342,13 @@ export class CatalogoComponent implements OnInit {
 
     if(cont==0){
       this.arrayClasif.push(this.catalogo2.CLASIFICA)
-        this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayClasificación":this.arrayClasif})
+      this.opcionesService.updateOpciones(this.opcionesCatalogo[0]).subscribe(
+        res => {
+          console.log(res);
+        },
+        err => { console.log(err); this.mensajeError() }
+      )
+        //this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayClasificación":this.arrayClasif})
     }
   }
 
@@ -382,29 +440,37 @@ _handleReaderLoaded(readerEvt) {
 
   actualizarEstado(){
     new Promise<any>((resolve, reject) => {
-      this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":this.catalogo2.ESTADO}).then(res => { }, err => reject(err));
+      //this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":this.catalogo2.ESTADO}).then(res => { }, err => reject(err));
     }) 
   }
 
   cambiarEstado(){
     new Promise<any>((resolve, reject) => {
-      this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":"INACTIVO"}).then(res => {this.mostrarMensajeEliminación()}, err => reject(err));
+      //this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":"INACTIVO"}).then(res => {this.mostrarMensajeEliminación()}, err => reject(err));
     }) 
   }
 
   cambiarEstado2(producto:string){
     new Promise<any>((resolve, reject) => {
-      this.db.collection("/productos").doc(producto).update({"ESTADO":"ACTIVO"}).then(res => {this.mostrarMensajeRestauración()}, err => reject(err));
+      //this.db.collection("/productos").doc(producto).update({"ESTADO":"ACTIVO"}).then(res => {this.mostrarMensajeRestauración()}, err => reject(err));
     }) 
   }
 
 
   updateProducto(){
+    console.log("JSON "+JSON.stringify(this.catalogo2))
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
-        this.actualizarEstado()
-        this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({ ...this.catalogo2 }).then(res => { this.mostrarMensaje()}, err => reject(err));
+       // this.actualizarEstado()
+        this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
+          res => {
+            console.log(res);
+            this.mostrarMensaje()
+          },
+          err => { console.log(err); this.mensajeError() }
+        )
+       // this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({ ...this.catalogo2 }).then(res => { this.mostrarMensaje()}, err => reject(err));
       })
     }else{
       Swal.fire({
@@ -420,7 +486,7 @@ _handleReaderLoaded(readerEvt) {
   deleteProducto(){
     new Promise<any>((resolve, reject) => {
       this.mensajeGuardando()
-      this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({"estado2":"Eliminado"}).then(res => { this.cambiarEstado()}, err => reject(err));
+      //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({"estado2":"Eliminado"}).then(res => { this.cambiarEstado()}, err => reject(err));
     })
   }
 
@@ -439,7 +505,7 @@ _handleReaderLoaded(readerEvt) {
     this.catalogo.TIPO = "Original"
     this.catalogo.ORIGEN = "Nacional"
     this.catalogo.ESTADO = "INACTIVO"
-    this.db.collection("/catalogo").doc(1+"").set({ ...this.catalogo });
+    //this.db.collection("/catalogo").doc(1+"").set({ ...this.catalogo });
   }
 
 
@@ -534,7 +600,7 @@ _handleReaderLoaded(readerEvt) {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
           this.mensajeGuardando()
-          this.db.collection("/catalogo").doc(producto).update({"estado2":"Activo"}).then(res => { this.cambiarEstado2(producto)}, err => reject(err));
+         // this.db.collection("/catalogo").doc(producto).update({"estado2":"Activo"}).then(res => { this.cambiarEstado2(producto)}, err => reject(err));
         })
       }
     })

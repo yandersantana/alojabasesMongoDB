@@ -1,27 +1,32 @@
 import { Component, OnInit, Pipe, PipeTransform ,ViewChild} from '@angular/core';
 import { DxFormModule, DxDataGridComponent } from 'devextreme-angular';
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable, from } from 'rxjs';
-import { AngularFireAuth } from 'angularfire2/auth';
+
 import {  OrdenDeCompra, Producto } from '../compras/compra';
 import { DxDataGridModule } from "devextreme-angular";
 import pdfMake from 'pdfmake/build/pdfmake';
 
-import { AlertsService } from 'angular-alert-module';
 import {  ProductoDetalleVenta ,ProductoDetalleCompra } from '../producto/producto';
 import { FacturaProveedor, PagoProveedor,DetallePagoProveedor }  from './ordencompra';
 import { Proveedor }  from '../compras/compra';
-import {formatDate} from '@angular/common';
-//import {Inject, LOCALE_ID, Pipe, PipeTransform} from '@angular/core';
-import { firestore } from 'firebase/app';
-import Timestamp = firestore.Timestamp;
-import { DxPopupModule, DxButtonModule, DxTemplateModule } from 'devextreme-angular';
+
 import Swal from 'sweetalert2';
 import { DxSelectBoxModule, DxListModule ,DxListComponent} from 'devextreme-angular';
 import { DatePipe } from '@angular/common';
-import { element } from 'protractor';
+
 import { transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ProductosCompradosService } from 'src/app/servicios/productos-comprados.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { CatalogoService } from 'src/app/servicios/catalogo.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { producto, contadoresDocumentos, orden_compra } from '../ventas/venta';
+import { ProveedoresService } from 'src/app/servicios/proveedores.service';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 
 //import { ConsoleReporter } from 'jasmine';
@@ -99,7 +104,6 @@ valor:number=0
 beneficiario: string
 
 
-
 employees: ProductoDetalleCompra;
 proveedores:Proveedor[] = []
 parametrizaciones:parametrizacionsuc[]=[]
@@ -117,60 +121,136 @@ facturaNp2:number=0
 //now = Date.now();
 textoDes:string
 pipe = new DatePipe('en-US');
+contadores:contadoresDocumentos[]
 mySimpleFormat 
 textoArea:string
 newButtonEnabled2:boolean = true
 NordenFact:number=0
 menu1: string[] = [
-  "Ord. Compra",
-  "Ord. Compra Directas"
+  "Ordenes de Compra",
+  "Ordenes de Compras Directas"
 ];
 numOrden:number=0
 selectionChangedBySelectbox: boolean;
 prefix: string;
 transaccion:transaccion
+opadmin:boolean=false
 number_transaccion:number=0
-productos:Producto[]=[]
-//tasks: DataSource;
+productos:producto[]=[]
+correo:string
+usuarioLogueado:user
 selectedRows: string[];
 transacciones:transaccion[]=[]
 selectAllModeVlaue: string = "page";
 selectionModeValue: string = "all";
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
-expensesCollection3: AngularFirestoreCollection<transaccion>;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
+  constructor(public transaccionesService: TransaccionesService,public authenService:AuthenService, public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService,public proveedoresService:ProveedoresService, public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
     
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
     this.usuariologueado=sessionStorage.getItem('user')
-    /* setTimeout(() => {
-      console.log("hello");
-      this.obtenerOrdenes()
-    }, 4000); */
+
    }
 
   ngOnInit() {
-    this.getOrdenCompra()
-    this.getProductosComprados()
-    this.getfacturasProveedor()
-    this.getFacturasProveedor()
-    this.getPagosProveedor()
-    this.getProductos()
-    this.getIDTransacciones()
-    this.getTransacciones()
-    this.getParametrizaciones()
+    //this.getOrdenCompra()
+    //this.getProductosComprados()
+    //this.getProductos()
+    //this.getIDTransacciones()
+    //this.getTransacciones()
+    //this.getParametrizaciones()
   
-    this.db.collection('/ordenCompraAprobadasGlobal').doc('matriz').valueChanges().subscribe(data => {
+    /* this.db.collection('/ordenCompraAprobadasGlobal').doc('matriz').valueChanges().subscribe(data => {
       console.log(data)
       if(data != null)
         this.nordenCompra = data['n_documento']+1
 
-    })
-
+    }) */
+    this.cargarUsuarioLogueado()
+    this.traerContadoresDocumentos()
+    this.traerParametrizaciones()
+    this.traerProductos()
+    this.traerProductosComprados()
+    this.traerOrdenesCompra()
   }
 
-  async getProductos() {
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            console.log("fff "+JSON.stringify(this.usuarioLogueado))
+            console.log("fff "+this.usuarioLogueado[0].rol)
+            if( this.usuarioLogueado[0].rol == "Administrador"){
+/*               var z = document.getElementById("opadmin");
+                  z.style.display = "block"; */
+                  this.opadmin=true
+            }else{
+             // alert("entre por falso")
+            }
+
+          },
+          err => {
+          }
+        )
+    });
+  }
+
+
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productos = res as producto[];
+   })
+  }
+
+
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerOrdenesCompra(){
+    this.ordenesService.getOrden().subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+      this.obtenerOrdenes()
+   })
+  }
+
+  traerProductosComprados(){
+    this.productosCompradosService.getProductoComprados().subscribe(res => {
+      this.productosComprados = res as ProductoDetalleCompra[];
+      //alert("ha")
+   })
+  }
+
+  traerTransacciones(){
+    this.transaccionesService.getTransaccion().subscribe(res => {
+      this.transacciones = res as transaccion[];
+   })
+  }
+
+  async traerContadoresDocumentos(){
+    await this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.asignarIDdocumentos()
+   })
+  }
+
+  asignarIDdocumentos(){
+    this.number_transaccion =this.contadores[0].transacciones_Ndocumento
+    this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento
+  }
+
+
+
+  /* async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -178,49 +258,49 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
         this.productos.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getIDTransacciones() {
+  /* async getIDTransacciones() {
     
     await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccion = transacciones.payload.data()['documento_n'];    
     });;
-  }
+  } */
 
 
-  getParametrizaciones(){
+ /*  getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
-  getProveedores(){
+  /* getProveedores(){
     this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
       if(data != null)
         this.proveedores = data
     })
-  }
+  } */
 
-  getDetalleFacturas(){
+  /* getDetalleFacturas(){
     this.db.collection('/pagosFacturasProveedor').valueChanges().subscribe((data:DetallePagoProveedor[]) => {
       if(data != null)
         this.detallePago2 = data
 
     })
-  }
+  } */
 
-  getTransacciones(){
+  /* getTransacciones(){
     this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
       this.transacciones = data
   
     })
-  }
+  } */
 
 
-  async getfacturasProveedor() {
+ /*  async getfacturasProveedor() {
     //REVISAR OPTIMIZACION
     await this.db.collection('/contadorFactProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
@@ -236,9 +316,9 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
       this.facturaNp2 = contador.payload.data()['n_documento']+1;  
       console.log("conttttt"+ this.facturaNp)  
     });;
-  }
+  } */
 
-  async getOrdenCompra() {
+ /*  async getOrdenCompra() {
     
     await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
       new Promise<any>((resolve, reject) => {
@@ -252,8 +332,8 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
       console.log("kjkj"+ordenes.length)
     });;
   }
-
-  async getProductosComprados() {
+ */
+  /* async getProductosComprados() {
     
     await this.db.collection('productosComprados').snapshotChanges().subscribe((productoC) => {
       
@@ -264,10 +344,10 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
       console.log("kjkj"+productoC.length)
     });;
 
-  }
+  } */
 
 
-  async getFacturasProveedor() {
+ /*  async getFacturasProveedor() {
     
     await this.db.collection('facturasProveedor').snapshotChanges().subscribe((productoC) => {
       
@@ -278,7 +358,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
      
     });;
 
-  }
+  } */
 
   limpiarArreglo(){
     var cont=0
@@ -292,19 +372,6 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
     }
   }
 
-  validar(){
-    var vali=this.getOrdenCompra()
-    console.log("ddddd "+vali)
-  }
-
-  llenarFacturasPendientes(){
-    this.facturaProveedor2.forEach(element=>{
-      if(element.estado2=="rechazada"){
-          this.facturaProveedorBus2.push(element)
-      }
-    })
-  }
-  
 
   validarSolicitud(){
     this.limpiarArreglo()
@@ -451,10 +518,17 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
     })
   }
 
+  errorMensaje(){
+    Swal.fire({
+      title: "Error al guardar",
+      text: 'Revise e intente nuevamente',
+      icon: 'error'
+    })
+  }
+
   eliminarTransacciones(e){
-    this.transacciones.forEach(element=>{
+   /*  this.transacciones.forEach(element=>{
       if(element.documento== e.documento+""){
-     //  this.db.collection('/transacciones').doc(data).delete()
      console.log("entre con el "+element.idTransaccion)
        this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
        this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
@@ -463,7 +537,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
          });
        });
       }
-    })
+    }) */
 
     this.actualizarProductos2(e)
    }
@@ -522,17 +596,19 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
            new Promise<any>((resolve, reject) => {
             switch (e.sucursal.nombre) {
               case "Milagro":
-                this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos}).then(res => { }, err => reject(err));
+                element.nombreComercial.sucursal1=sumaProductos
+                this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                 break;
               case "Naranjito":
-                this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos}).then(res => {}, err => reject(err));
+                element.nombreComercial.sucursal2=sumaProductos
+                this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                 break;
               case "El Triunfo":
-                this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {}, err => reject(err));
+                element.nombreComercial.sucursal3=sumaProductos
+                this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                   break;
               default:
             }
-
            })
          }
         })     
@@ -596,7 +672,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
 
   rechzarAnulacion(e:any){
     var data2=""
-    data2=e.documento+""
+    data2=e._id
     console.log("data2 "+data2)
     
     /*   console.log("entre por "+e.nFactura)
@@ -611,14 +687,22 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
       }).then((result) => {
         if (result.value) {
           new Promise<any>((resolve, reject) => {
-            this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Ingresada"}).then(res => {  Swal.fire({
+           /*  this.ordenesService.updateOrdenEstado(data2, "Ingresada").subscribe( res => {Swal.fire({
               title: 'Correcto',
               text: 'Se restableció a la lista de ordenes de compra',
               icon: 'success',
               confirmButtonText: 'Ok'
             }).then((result) => {
               window.location.reload()
-            }) }, err => alert(err));
+            })}, err => {this.errorMensaje()}) */
+            /* this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Ingresada"}).then(res => {  Swal.fire({
+              title: 'Correcto',
+              text: 'Se restableció a la lista de ordenes de compra',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              window.location.reload()
+            }) }, err => alert(err)); */
           })
             
            
@@ -646,7 +730,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Anulada" , "estadoOrden" :"ANULADO"})
+        /* this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Anulada" , "estadoOrden" :"ANULADO"})
         this.eliminarTransacciones(e)
         Swal.fire({
           title: 'Correcto',
@@ -655,7 +739,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
           confirmButtonText: 'Ok'
         }).then((result) => {
           window.location.reload()
-        })
+        }) */
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -683,7 +767,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-          this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Eliminada"}) 
+          /* this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Eliminada"}) 
           Swal.fire({
             title: 'Correcto',
             text: 'Un administrador aprobará su anulación',
@@ -692,7 +776,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
           }).then((result) => {
             window.location.reload()
             //this.asignarValores()
-          })
+          }) */
        
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           Swal.fire(
@@ -708,8 +792,6 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
 
   aceptarOrden = (e) => {  
     this.actualizarOrdenPos(e.row.data)
-   
-    //this.cargarOrdenCompra(e.row.data)  
   }
 
   rechazarOrden = (e) => {  
@@ -720,7 +802,7 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
 
   confirmarM(e,ord:number){
     if(e.tipo == "Entregado"){
-      this.db.collection('/ordenesDeCompra').doc(e.documento+"").update({"estadoOrden":"COMPLETO"})
+     // this.db.collection('/ordenesDeCompra').doc(e.documento+"").update({"estadoOrden":"COMPLETO"})
       this.actualizarProductos(e , ord)
       
     }else{
@@ -754,18 +836,13 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
         var est:string="Aprobado"
         var num:string
         var tim=0
-        num=e.documento+""
+        num=e._id
 
         new Promise<any>((resolve, reject) => {
-          this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra, "usuarioAuth":this.usuariologueado, "estadoOrden":"PENDIENTE"}).then(res => {console.log("jjjjj") }, err => alert(err));
-          this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra}).then(res => { this.confirmarM(e ,this.nordenCompra )}, err => alert(err));
-          /* if(e.tipo == "Entregado"){
-            this.actualizarProductos(e)
-            tim=30000
-          }else{
-            tim=10000
-           // alert("no hay nada")
-          } */
+          this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"PENDIENTE").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
+          /* this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra, "usuarioAuth":this.usuariologueado, "estadoOrden":"PENDIENTE"}).then(res => {console.log("jjjjj") }, err => alert(err));
+          this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra}).then(res => { this.confirmarM(e ,this.nordenCompra )}, err => alert(err)); */
+          
         })
         //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "secuencia": "En Proceso"})
        
@@ -861,8 +938,16 @@ expensesCollection3: AngularFirestoreCollection<transaccion>;
     }).then((result) => {
       if (result.value) {
         var num:string
-        num=e.documento+""
-         this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value,"estadoOrden":"PENDIENTE"})  
+        num=e._id+""
+        this.ordenesService.updateOrdenEstadoRechazo(num, "Rechazado", result.value, "PENDIENTE").subscribe( res => {Swal.fire({
+          title: 'Correcto',
+          text: 'Se restableció a la lista de ordenes de compra',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })}, err => {this.errorMensaje()})
+         //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value,"estadoOrden":"PENDIENTE"})  
          let timerInterval
          Swal.fire({
            title: 'Guardando !',
@@ -1090,95 +1175,6 @@ anadirDetallePago = (e) => {
   }
 
 
-  guardarFacturaProveedor(){
-    
-    var cont=0
-    this.facturaProveedorBus.forEach(element=>{
-      cont++
-    })
-    console.log("mostrando antes"+this.productosComprados2.length)
-    if(cont>=0){
-      this.facturaProveedorBus.forEach(element=>{
-        this.facturaProveedorBus.splice(0)
-        this.totalsuma2=0
-      })
-      
-      console.log("mostrando"+this.facturaProveedorBus.length)
-    }
-
-    //var totalsuma2=0
-    let saldoFaltante=0
-    this.facturaProveedor.fecha= this.now2.toLocaleDateString()
-    this.facturaProveedor.fechaExpiracion= this.now3.toLocaleDateString()
-    this.facturaProveedor.nSolicitud= this.datoNsolicitud
-    this.facturaProveedor.nFactura= this.datoNFact
-    this.facturaProveedor.total= this.datoTotal
-    this.facturaProveedor.productos= this.selectedRows
-    this.facturaProveedor.id=this.facturaNp
-
-    //desde aqui comienza
-    this.facturaProveedor2.forEach(element=>{
-      if(this.datoNsolicitud==element.nSolicitud){
-          this.facturaProveedorBus.push(element)
-      }
-    })
-    this.asignarValor()
-    this.facturaProveedorBus.forEach(element=>{
-        this.totalsuma2=element.total+this.totalsuma2   //300
-    })
-
-    this.ordenesCompraAprobadas.forEach(element=>{
-      if(this.datoNsolicitud == element.n_orden){
-            this.totalOrden=element.total  
-            this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
-      }
-    })
-    console.log("El totalsuma2 es"+this.totalsuma2)
-    console.log("El total de esta orden es"+this.totalOrden)
-    
-    this.totalsuma=this.totalOrden-this.totalsuma2
-    console.log("El total suma "+this.totalsuma)
-    saldoFaltante=this.totalsuma -this.facturaProveedor.total
-    console.log("El saldo faltante ees "+saldoFaltante)
-    // aqui termina
-    if(this.selectedRows != undefined){
-      if(this.facturaProveedor.total > this.totalsuma){
-        //alert("el saldo ingresado es superior")
-        Swal.fire(
-          'Error!',
-          'El saldo ingresado es superior al saldo',
-          'error'
-        )
-      }else if(this.facturaProveedor.total <= this.totalsuma){
-        let datoNFact:string
-        datoNFact=this.facturaNp+""
-        this.db.collection('/facturasProveedor').doc(datoNFact).set({...Object.assign({},this.facturaProveedor )}) ;
-        this.db
-            .collection("/contadorFactProveedor")
-            .doc("matriz").set({ n_documento:this.facturaNp })
-            .then(res => { });
-        
-        this.getfacturasProveedor()
-        //alert("correcto se guardo")
-        Swal.fire(
-          'Ok!',
-          'Factura registrada con éxito',
-          'success'
-        ).then(function(result) {
-          window.location.reload()
-        });
-      }
-
-    }else{
-      Swal.fire(
-        'Error!',
-        'No ha seleccionado productos',
-        'error'
-      )
-
-    }
-    
-  }
   setProveedor(e){
     var cont=0
     this.detallePago.forEach(element=>{
@@ -1200,86 +1196,11 @@ anadirDetallePago = (e) => {
   }
 
 
-  guardarPagoProveedor(){
-    this.pago_proveedor.fecha_factura=this.fecha_factura.toLocaleDateString()
-    this.pago_proveedor.fecha_pago=this.fecha_pago.toLocaleDateString()
-    this.pago_proveedor.fecha_transaccion= this.fecha_transaccion.toLocaleDateString()
-    this.pago_proveedor.n_cheque=this.n_cheque
-    this.pago_proveedor.n_cuenta= this.n_cuenta
-    this.pago_proveedor.nombre_banco= this.nombre_banco
-    this.pago_proveedor.valor= this.valor
-
-    if( this.pago_proveedor.n_cheque!=undefined &&  this.pago_proveedor.n_cuenta!=undefined  && this.pago_proveedor.nombre_banco!=undefined && 
-    this.pago_proveedor.valor!=0){
-      console.log("cheque "+this.pago_proveedor.n_cheque)
-      console.log("cuenta "+this.pago_proveedor.n_cuenta)
-      console.log("banco "+this.pago_proveedor.nombre_banco)
-      console.log("valor "+this.pago_proveedor.valor)
-      console.log("si entre")
-      new Promise<any>((resolve, reject) => {
-        var num5=this.facturaNp2+""
-        this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
-        this.db
-              .collection("/pagoProveedor")
-              .doc("matriz").set({ n_documento:this.facturaNp2 })
-              .then(res => { });
-        this.detallePago.forEach(element => {
-                element.beneficiario = this.pago_proveedor.beneficiario
-                element.nombre_banco= this.pago_proveedor.nombre_banco
-                element.n_cheque = this.pago_proveedor.n_cheque
-                element.idPago= this.facturaNp2
-                this.db.collection("/pagosFacturasProveedor").add({ ...element })
-                .then(res => { }, err => alert(err));
-              });       
-        this.actualizarFacturas()
-        this.getPagosProveedor()
-      });
-      let timerInterval
-      Swal.fire({
-        title: 'Guardando !',
-        html: 'Procesando',
-        timer: 2000,
-        timerProgressBar: true,
-        onBeforeOpen: () => {
-          Swal.showLoading()
-          timerInterval = setInterval(() => {
-            const content = Swal.getContent()
-            if (content) {
-              const b = content.querySelector('b')
-              
-            }
-          }, 100)
-        },
-        onClose: () => {
-          clearInterval(timerInterval)
-        }
-      }).then((result) => {
-        if (result.dismiss === Swal.DismissReason.timer) {
-                Swal.fire({
-                    title: 'Correcto',
-                    text: 'Se ha guardado su pago',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    window.location.reload()
-                  })
-        }
-      })
-
-    }else{
-      Swal.fire({
-        title: 'Error',
-        text: 'Error al guardar revise nuevamente',
-        icon: 'error',
-      })
-    }    
-  }
-
   actualizarFacturas(){
     var dato=""
     this.detallePago.forEach(element=>{
       dato=element.id_factura+""
-      this.db.collection('/facturasProveedor').doc(dato).update({"estado" :"Cancelado"})
+      //this.db.collection('/facturasProveedor').doc(dato).update({"estado" :"Cancelado"})
       //this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
       
     })
@@ -1291,12 +1212,12 @@ anadirDetallePago = (e) => {
     
 
     switch (e.value) {
-      case  "Ord. Compra":
+      case  "Ordenes de Compra":
         x.style.display = "block";
         y.style.display="none";
        
        break;
-      case "Ord. Compra Directas":
+      case "Ordenes de Compras Directas":
         x.style.display = "none";
         y.style.display="block";
        
@@ -1378,31 +1299,33 @@ anadirDetallePago = (e) => {
       if(element.documento==orden_n){
         console.log("si encontre...222"+ orden_n)
          this.ordenDeCompra2 = element
+         console.log("hhh "+JSON.stringify(this.ordenDeCompra2))
          this.numOrden= element.documento
          if(element.n_orden>0){
           this.numOrden= element.n_orden
           this.textoDes= "ORDEN / COMPRA 001-000"
         }
+        
+        this.cargarValoresFactura()
+        
+        console.log("yaaa"+  this.productosComprados2.length)
          
       }     
     })
-
-    this.productosComprados.forEach(element=>{
-      if(element.solicitud_n == orden_n){
-        this.productosComprados2.push(element)
-      }
-    })
-
+    
     this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.ordenDeCompra2.sucursal.nombre){
         this.parametrizacionSucu= element
       }
     })
 
-    console.log("voy a mostrar elementos de la factura detalles "+this.ordenDeCompra2.TotalIva +" total "+ this.ordenDeCompra2.documento )
-    console.log("estoy mostrando elementos productos" +this.productosComprados2.length)
-    this.cargarValoresFactura()
-    this.crearPDF(this.textoDes)
+    this.productosCompradosService.getProductoCompradosDocumento(orden_n).subscribe(res => {
+      this.productosComprados2= this.ordenDeCompra2.productosComprados
+      this.crearPDF(this.textoDes)
+   })
+
+
+    
 
   }
 
@@ -1933,19 +1856,19 @@ anadirDetallePago = (e) => {
 
   generarSolicitudDeCompra(e) {
     new Promise<any>((resolve, reject) => {
-      this.db
+      /* this.db
         .collection("/ordenesDeCompraAprobadas")
         .doc(this.ordenDeCompra2.documento.toString()).set({ ...Object.assign({},this.ordenDeCompra2 )})
         .then(res => { }, err => reject(err));
       this.db
         .collection("/ordenCompraAprobadasGlobal")
         .doc("matriz").set({ n_documento:this.ordenDeCompra2.documento })
-        .then(res => { }, err => reject(err));
+        .then(res => { }, err => reject(err)); */
       this.productosComprados.forEach(element => {
         element.orden_compra = this.ordenDeCompra2.documento
         console.log("asigneee"+element.orden_compra)
-        this.db.collection("/productosComprados").add({ ...element })
-        .then(res => { }, err => alert(err));
+        /* this.db.collection("/productosComprados").add({ ...element })
+        .then(res => { }, err => alert(err)); */
 
       });
     });
@@ -1954,6 +1877,7 @@ anadirDetallePago = (e) => {
 
 
     actualizarProductos(e:any , ord:number){
+      this.traerContadoresDocumentos()
       var cont=0
       var contVal=0
     this.productosComprados2.forEach(element=>{
@@ -1965,97 +1889,129 @@ anadirDetallePago = (e) => {
       })
     }
     var orden_n=e.documento
-    this.productosComprados.forEach(element=>{
+   /*  this.productosComprados.forEach(element=>{
       if(element.solicitud_n == orden_n){
         this.productosComprados2.push(element)
       }
     })
-      console.log("entre a actualizar")
-       var sumaProductos =0
-       var num1:number=0
-       var num2:number=0
-       var num3:number=0
-       
-        var contIng:number=0
-        var entre:boolean=true     
-          this.productosComprados2.forEach(element=>{
-            this.productos.forEach(elemento1=>{
-              if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
-               switch (e.sucursal.nombre) {
-                case "Milagro":
-                  num1=element.cantidad
-                  num2=elemento1.sucursal1
-                  sumaProductos =Number(num1) + Number(num2)
-                  break;
-                case "Naranjito":
-                  num1=element.cantidad
-                  num2=elemento1.sucursal2
-                  sumaProductos =Number(num1) + Number(num2)
-                  break;
-                case "El Triunfo":
-                  num1=element.cantidad
-                  num2=elemento1.sucursal3
-                  sumaProductos =Number(num1) + Number(num2)
-                    break;
-                default:
-              }
-              }
-           })
-           if(entre){
-             console.log("entre porque el contador esta en "+contIng)
-            var sum2=0
-             new Promise<any>((resolve, reject) => {
-              switch (e.sucursal.nombre) {
-                case "Milagro":
-                  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos, "precio":element.precio_compra}).then(res => { }, err => reject(err));
-                  break;
-                case "Naranjito":
-                  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos, "precio":element.precio_compra}).then(res => {}, err => reject(err));
-                  break;
-                case "El Triunfo":
-                  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos, "precio":element.precio_compra}).then(res => {}, err => reject(err));
-                    break;
-                default:
-              }
+ */
+    this.ordenesService.getOrdenbyID(e._id)
+        .subscribe(
+          res => {
+         this.ordenDeCompra2 = res as OrdenDeCompra
+         this.productosComprados2= this.ordenDeCompra2.productosComprados
+         console.log("entre aqui y hay "+ this.productosComprados2.length)
+         var sumaProductos =0
+         var num1:number=0
+         var num2:number=0
+         var num3:number=0
+         
+          var contIng:number=0
+          var entre:boolean=true    
+              this.productosComprados2.forEach(element=>{
+                this.productos.forEach(elemento1=>{
+                  if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
+                  switch (e.sucursal.nombre) {
+                    case "matriz":
+                      num1=element.cantidad
+                      num2=elemento1.sucursal1
+                      sumaProductos =Number(num1) + Number(num2)
+                      
+                      break;
+                    case "sucursal1":
+                      num1=element.cantidad
+                      num2=elemento1.sucursal2
+                      sumaProductos =Number(num1) + Number(num2)
+                      
+                      break;
+                    case "sucursal2":
+                      num1=element.cantidad
+                      num2=elemento1.sucursal3
+                      sumaProductos =Number(num1) + Number(num2)
+                     
+                        break;
+                    default:
+                  }
+                  }
+              })
+              if(entre){
+                console.log("entre porque el contador esta en "+contIng)
+                var sum2=0
+                new Promise<any>((resolve, reject) => {
+                  switch (e.sucursal.nombre) {
+                    case "matriz":
+                      this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                      break;
+                    case "sucursal1":
+                      this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                      break;
+                    case "sucursal2":
+                    this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                        break;
+                    default:
+                  }
 
-           /*  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"cantidad" :sumaProductos, "precio":element.precio_compra})  */  
-            this.transaccion = new transaccion()
-            //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
-            this.transaccion.fecha_mov=new Date().toLocaleDateString()
-            this.transaccion.fecha_transaccion=new Date().toLocaleString()
-            this.transaccion.sucursal=e.sucursal.nombre
-            this.transaccion.valor=element.precio_compra
-            this.transaccion.totalsuma=element.total-(element.total*(element.descGeneral/100))
-            this.transaccion.bodega="bodega1"
-            this.transaccion.orden_compra=ord-1
-            this.transaccion.documento=e.documento
-            sum2=element.precio_compra-(element.precio_compra*(element.descProducto/100))
-            this.transaccion.valor=sum2-(sum2*(element.descGeneral/100))
-            this.transaccion.cantM2=element.cantidad
-            this.transaccion.producto=element.nombreComercial.PRODUCTO
-            this.transaccion.cajas=Math.trunc(element.cantidad / element.nombreComercial.M2);
-            this.transaccion.piezas=(Math.trunc(element.cantidad *element.nombreComercial.P_CAJA / element.nombreComercial.M2) - (Math.trunc(element.cantidad / element.nombreComercial.M2) * element.nombreComercial.P_CAJA));
-            this.transaccion.observaciones=e.observaciones
-            this.transaccion.movimiento=1
-            this.transaccion.tipo_transaccion="compra-dir"
-            this.transaccion.usu_autorizado="q@q.com"
-            this.transaccion.usuario="q@q.com"
-            this.transaccion.factPro=""
-            this.transaccion.idTransaccion=this.number_transaccion++
-            this.transaccion.proveedor= e.proveedor.nombre_proveedor
-            //this.getIDTransacciones()
-  
-            this.db.collection("/transacciones")
-            .add({ ...this.transaccion })
-            .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-            this.db
-              .collection("/transacciones_ID")
-              .doc("matriz").set({ documento_n:this.number_transaccion })
-              .then(res => { }, err => reject(err));
-                             
-             })
-           }
-          })     
+              /*  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"cantidad" :sumaProductos, "precio":element.precio_compra})  */  
+                this.transaccion = new transaccion()
+                this.transaccion.fecha_mov=new Date().toLocaleDateString()
+                this.transaccion.fecha_transaccion=new Date().toLocaleString()
+                this.transaccion.sucursal=e.sucursal.nombre
+                this.transaccion.valor=element.precio_compra
+                this.transaccion.totalsuma=element.total-(element.total*(element.descGeneral/100))
+                this.transaccion.bodega="bodega1"
+                this.transaccion.orden_compra=ord-1
+                this.transaccion.documento=e.documento
+                sum2=element.precio_compra-(element.precio_compra*(element.descProducto/100))
+                this.transaccion.valor=sum2-(sum2*(element.descGeneral/100))
+                this.transaccion.cantM2=element.cantidad
+                this.transaccion.producto=element.nombreComercial.PRODUCTO
+                this.transaccion.cajas=Math.trunc(element.cantidad / element.nombreComercial.M2);
+                this.transaccion.piezas=(Math.trunc(element.cantidad *element.nombreComercial.P_CAJA / element.nombreComercial.M2) - (Math.trunc(element.cantidad / element.nombreComercial.M2) * element.nombreComercial.P_CAJA));
+                this.transaccion.observaciones=e.observaciones
+                this.transaccion.movimiento=1
+                this.transaccion.tipo_transaccion="compra-dir"
+                this.transaccion.usu_autorizado="q@q.com"
+                this.transaccion.usuario="q@q.com"
+                this.transaccion.factPro=""
+                this.transaccion.idTransaccion=this.number_transaccion++
+                this.transaccion.proveedor= e.proveedor.nombre_proveedor
+                
+                this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+                  res => {
+                    this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+                    this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                      res => {
+                        contVal++,this.contadorValidaciones(contVal)
+                      },
+                      err => {
+                        Swal.fire({
+                          title: "Error al guardar",
+                          text: 'Revise e intente nuevamente',
+                          icon: 'error'
+                        })
+                      })
+                  },err => {
+                  })
+              /*  this.db.collection("/transacciones")
+                .add({ ...this.transaccion })
+                .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
+                this.db
+                  .collection("/transacciones_ID")
+                  .doc("matriz").set({ documento_n:this.number_transaccion })
+                  .then(res => { }, err => reject(err)); */
+                                
+                })
+              }
+              })   
+
+          },
+          err => {
+          }
+        )
+
+       
+        
+            
       }
 
 

@@ -15,7 +15,7 @@ import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
 import { TransaccionesComponent } from './pages/transacciones/transacciones.component';
-import {DatePipe} from '@angular/common';
+import {DatePipe, LocationStrategy, HashLocationStrategy} from '@angular/common';
 
 import { AlertsModule } from 'angular-alert-module';
 import { OrdenCompraComponent ,StringifyEmployeesPipe} from './pages/orden-compra/orden-compra.component';
@@ -96,7 +96,11 @@ import { UserComponent } from './pages/user/user.component';
   exports:[
     CatalogoComponent,
   ],
-  providers: [AuthService, ScreenService, AppInfoService],
+  providers: [AuthService, ScreenService, AppInfoService,{
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy,
+  }],
+  
   bootstrap: [AppComponent]
 })
 export class AppModule { }

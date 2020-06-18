@@ -73,6 +73,29 @@ router.put('/updateEstadoAprobado/:id/:estado/:orden/:usuario/:estado2', async (
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateEstadoOrden/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateEstadoOrden2/:factura/:estado', async (req, res,next) => {
+    console.log("sssssssssss")
+    const { factura } = req.params;
+    const { estado } = req.params;
+    console.log("aqui esta "+factura + " y "+estado)
+    await OrdenCompra.findOneAndUpdate({documento:factura}, {$set: { estadoOrden:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateEstadoOrden/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.delete('/delete/:id', async (req, res,next) => {
     await OrdenCompra.findByIdAndRemove(req.params.id);
     res.json({status: 'Factura Eliminada'});

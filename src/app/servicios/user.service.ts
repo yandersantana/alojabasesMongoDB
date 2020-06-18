@@ -11,7 +11,7 @@ export class UserService {
   usuarios: user[];
   role = ''
   userEmail = '';
- // private URL = 'http://localhost:3000/usuario';
+  //private URL = 'http://localhost:3000/usuario';
   private URL = 'http://104.248.14.190:3000/usuario';
   constructor(private http: HttpClient, private router: Router, private authenService: AuthenService, ) { }
 

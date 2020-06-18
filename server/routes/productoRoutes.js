@@ -70,6 +70,28 @@ router.put('/updateProductoSuc3Dir/:id/:cantidad/:precio', async (req, res,next)
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+
+router.put('/updateProductoPenSuc1/:id/:num', async (req, res,next) => {
+    const { id } = req.params;
+    const { num } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {suc1Pendiente:num}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateProductoPenSuc2/:id/:num', async (req, res,next) => {
+    const { id } = req.params;
+    const { num } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {suc2Pendiente:num}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateProductoPenSuc3/:id/:num', async (req, res,next) => {
+    const { id } = req.params;
+    const { num } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {suc3Pendiente:num}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateProductoSuc1/:id', async (req, res,next) => {
     const { id } = req.params;
     await Producto.findByIdAndUpdate(id, {$set: {sucursal1:req.body.sucursal1}}, {new: true});

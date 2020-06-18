@@ -6,6 +6,9 @@ import { producto, productosPendientesEntrega } from '../ventas/venta';
 import { transaccion } from '../transacciones/transacciones';
 import { element } from 'protractor';
 import { inventario, invFaltanteSucursal } from './consolidado';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
 
 @Component({
   selector: 'app-consolidado',
@@ -32,26 +35,46 @@ export class ConsolidadoComponent implements OnInit {
   productosPendientesNoEN:productosPendientesEntrega[]=[]
   
 
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) { 
+  constructor(public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
   
   }
 
   ngOnInit() {
-    this.getProductos()
-    this.getTransacciones()
-   // this.getProductosPendientes()
+   this.traerProductos()
+    this.traerTransacciones()
+   this.traerProductosPendientes()
   }
 
-  async getProductos() {
+  traerTransacciones(){
+    this.transaccionesService.getTransaccion().subscribe(res => {
+      this.transacciones = res as transaccion[];
+      this.cargarDatos()
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productos = res as producto[];
+   })
+  }
+
+  traerProductosPendientes(){
+    this.productosPendientesService.getProductoPendiente().subscribe(res => {
+      this.productosPendientes = res as productosPendientesEntrega[];
+      this.separarEntregas()
+   })
+  }
+
+  /* async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       productos.forEach((nt: any) => {
         this.productos.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getTransacciones(){
+  /* async getTransacciones(){
     await this.db.collection('transacciones').snapshotChanges().subscribe((ordenes) => {
       new Promise<any>((resolve, reject) => {
         ordenes.forEach((nt: any) => {
@@ -62,9 +85,9 @@ export class ConsolidadoComponent implements OnInit {
       console.log("kjkj"+this.transacciones.length)
       this.cargarDatos()
     });;
-  }
+  } */
 
-  async getProductosPendientes() {
+  /* async getProductosPendientes() {
     await this.db.collection('productosPendientesEntrega').snapshotChanges().subscribe((productos) => {
       new Promise<any>((resolve, reject) => {
         productos.forEach((nt: any) => {
@@ -73,7 +96,7 @@ export class ConsolidadoComponent implements OnInit {
       }) 
       this.separarEntregas()
     });;
-  }
+  } */
 
 
   separarEntregas(){
@@ -87,8 +110,8 @@ export class ConsolidadoComponent implements OnInit {
 
 
   comenzarConsolidado(){
-    this.getProductos()
-    this.getTransacciones()
+    this.traerProductos()
+    this.traerTransacciones()
   }
 
 
@@ -105,7 +128,7 @@ export class ConsolidadoComponent implements OnInit {
       console.log( this.productos[index].PRODUCTO)
 
       this.transacciones.forEach(element=>{
-        if(element2.PRODUCTO==element.producto && element.sucursal=="Milagro"){
+        if(element2.PRODUCTO==element.producto && element.sucursal=="matriz"){
           switch (element.tipo_transaccion) {
             case "devolucion":
               contCajas=Number(element.cajas)+contCajas
@@ -147,7 +170,7 @@ export class ConsolidadoComponent implements OnInit {
             console.log("el 22"+element2.PRODUCTO + " tiene"+element.cajas)
           }   
         
-        }else if(element2.PRODUCTO==element.producto && element.sucursal=="Naranjito"){
+        }else if(element2.PRODUCTO==element.producto && element.sucursal=="sucursal1"){
           switch (element.tipo_transaccion) {
             case "devolucion":
               contCajas2=Number(element.cajas)+contCajas2
@@ -191,7 +214,7 @@ export class ConsolidadoComponent implements OnInit {
           } 
           console.log("el "+element2.PRODUCTO + " tiene"+element.cajas)
           console.log("el 22"+element2.PRODUCTO + " tiene"+contCajas2)  
-        }else if(element2.PRODUCTO==element.producto && element.sucursal=="El Triunfo"){
+        }else if(element2.PRODUCTO==element.producto && element.sucursal=="sucursal2"){
           switch (element.tipo_transaccion) {
             case "devolucion":
               contCajas3=Number(element.cajas)+contCajas3
@@ -285,7 +308,7 @@ export class ConsolidadoComponent implements OnInit {
       m2s1=parseInt(element.cantidadM2.toFixed(0))
       m2s2=parseInt(element.cantidadM2b2.toFixed(0))
       m2s3=parseInt(element.cantidadM2b3.toFixed(0))
-      this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
+     // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
     })
   }
 
@@ -324,9 +347,10 @@ export class ConsolidadoComponent implements OnInit {
       element.totalb1=parseFloat((element.cantidadM2*element.producto.precio).toFixed(2))
       element.totalb2=parseFloat((element.cantidadM2b2*element.producto.precio).toFixed(2))
       element.totalb3=parseFloat((element.cantidadM2b3*element.producto.precio).toFixed(2))
+    //alert("sss "+ element.cantidadM2b3)
     })
     this.sumarProductosRestados()
-   this.cambiarValores()
+     this.cambiarValores()
    
    this.controlarInventario()
    }
@@ -340,7 +364,7 @@ export class ConsolidadoComponent implements OnInit {
         this.invetarioFaltante1.cantidadPiezas= element.cantidadPiezas
         this.invetarioFaltante1.cantidadM2= element.cantidadCajas
         this.invetarioFaltante1.totalb1= element.totalb1
-        this.invetarioFaltante1.sucursal= "Milagro"
+        this.invetarioFaltante1.sucursal= "Matriz"
         this.invetarioFaltante.push(this.invetarioFaltante1)
       }
        if(element.cantidadM2b2 <0){
@@ -350,7 +374,7 @@ export class ConsolidadoComponent implements OnInit {
         this.invetarioFaltante1.cantidadPiezas= element.cantidadPiezas2
         this.invetarioFaltante1.cantidadM2= element.cantidadCajas2
         this.invetarioFaltante1.totalb1= element.totalb2
-        this.invetarioFaltante1.sucursal= "Naranjito"
+        this.invetarioFaltante1.sucursal= "Sucursal 1"
         this.invetarioFaltante.push(this.invetarioFaltante1)
       }
        if(element.cantidadM2b3 <0){
@@ -360,7 +384,7 @@ export class ConsolidadoComponent implements OnInit {
         this.invetarioFaltante1.cantidadPiezas= element.cantidadPiezas3
         this.invetarioFaltante1.cantidadM2= element.cantidadCajas3
         this.invetarioFaltante1.totalb1= element.totalb3
-        this.invetarioFaltante1.sucursal= "El Triunfo"
+        this.invetarioFaltante1.sucursal= "Sucursal 2"
         this.invetarioFaltante.push(this.invetarioFaltante1)
       }
      })

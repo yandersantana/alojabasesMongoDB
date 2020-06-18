@@ -146,9 +146,14 @@
             id="gridContainer"
             [dataSource]="facturaProveedorBus"
             [showBorders]="true">
+            <dxi-column
+                dataField="_id"
+                caption="Id"
+                [visible]="false">
+             </dxi-column>
             
             <dxi-column
-                dataField="id"
+                dataField="idF"
                 caption="Id"
                 [visible]="false">
             </dxi-column>
@@ -502,7 +507,7 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Facturas_Ingresadas" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column dataField="id" caption="ID" width="10%" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="idF" caption="ID" width="10%" sortOrder="desc"></dxi-column>
         <dxi-column dataField="nSolicitud" caption="Orden" width="10%"></dxi-column>
         <dxi-column dataField="nFactura" caption="Factura #" width="10%"></dxi-column>
         <dxi-column dataField="productos" caption="Productos" width="45%"></dxi-column>
@@ -525,7 +530,7 @@
         [dataSource]="facturaProveedorBus2"
         [showBorders]="true">
         <dxi-column
-            dataField="id"
+            dataField="idF"
             caption="Id"
             [visible]="true"
             sortOrder="desc">

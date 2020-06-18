@@ -3,23 +3,25 @@ import { Producto, bodega, productosObsequio } from './producto';
 import { Observable } from 'rxjs';
 import { DxFormComponent , DxSelectBoxComponent, DxDataGridComponent} from 'devextreme-angular';
 import {  OrdenDeCompra, Sucursal } from '../compras/compra';
-import {  producto } from '../ventas/venta';
+import {  producto, contadoresDocumentos } from '../ventas/venta';
 import {  FacturaProveedor } from '../orden-compra/ordencompra';
 import {  ProductoDetalleEntrega ,ProductoDetalleCompra ,RemisionProductos,ControlProductos,PrecioProductos } from '../producto/producto';
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
 import { transaccion } from '../transacciones/transacciones';
-import { DxDataGridModule } from "devextreme-angular";
-
-import { AngularFireAuth } from 'angularfire2/auth';
-import { element, Key } from 'protractor';
-import { convertActionBinding } from '@angular/compiler/src/compiler_util/expression_converter';
-import { IfStmt } from '@angular/compiler';
-import dxSelectBox from 'devextreme/ui/select_box';
-import { isGeneratedFile } from '@angular/compiler/src/aot/util';
-import { FirebaseApp } from 'angularfire2';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { BodegaService } from 'src/app/servicios/bodega.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ProductosObsequioService } from 'src/app/servicios/productos-obsequio.service';
+import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { RemisionesService } from 'src/app/servicios/remisiones.service';
+import { ProductosIngresadosService } from 'src/app/servicios/productos-ingresados.service';
 
 
 @Component({
@@ -62,6 +64,7 @@ export class ProductoComponent implements OnInit {
   uniMedida:string[] = ['Unidad', 'Metros2','Juego']
   estadoAct:string[] = ['Activo', 'Inactivo',]
   locales: Sucursal[] = []
+  nuevaBodega:bodega
   bodegas: bodega[] = []
   bodegas2: bodega[] = []
   menuDevolucion: string[] = [
@@ -127,16 +130,17 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
    transacciones:transaccion[]=[]
    showFilterRow: boolean;
    solicitudOrdenC:number=0
+   contadores:contadoresDocumentos[]=[]
   //db=firebase.firestore();
   @ViewChild('selectId') selectBox: DxSelectBoxComponent;
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid: DxDataGridComponent;
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
   @ViewChild("productoForm", { static: false }) dxForm: DxFormComponent
-  expensesCollection: AngularFirestoreCollection<ProductoDetalleEntrega>;
+ /*  expensesCollection: AngularFirestoreCollection<ProductoDetalleEntrega>;
   expensesCollection2: AngularFirestoreCollection<ProductoDetalleCompra>;
-  expensesCollection3: AngularFirestoreCollection<transaccion>;
-  constructor(private db: AngularFirestore) {
+  expensesCollection3: AngularFirestoreCollection<transaccion>; */
+  constructor(public parametrizacionService:ParametrizacionesService,public productosObservice:ProductosObsequioService, public productosIngresadoService:ProductosIngresadosService, public remisionesService:RemisionesService, public facturasProveedorService:FacturasProveedorService, public transaccionesService:TransaccionesService ,public productoService:ProductoService,public productosObsequioService:ProductosObsequioService, public bodegasService:BodegaService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService) {
     setTimeout(() => {
       console.log("hello");
     }, 3000);
@@ -144,71 +148,163 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.remisionProducto = new RemisionProductos()
     //this.productosObsequios.push(new productosObsequio())
     this.showFilterRow=true
-    this.expensesCollection = this.db.collection('/productosIngresados');
+   /*  this.expensesCollection = this.db.collection('/productosIngresados');
     this.expensesCollection2 = this.db.collection('/productosComprados');
-    this.expensesCollection3 = this.db.collection('/transacciones');
-    this.items = db.collection('/productos').valueChanges()
+    this.expensesCollection3 = this.db.collection('/transacciones'); */
+    /* this.items = db.collection('/productos').valueChanges() */
     console.log(this.items)
   }
 
   ngOnInit() {
-    this.getProductosComprados()
-    this.getCompras()
-    this.getNumeroRemision()
-    this.getProdcutosIngresados()
-    this.getProductos()
-    this.getFacturasProveedor()
-    this.getRemisiones()
-    this.getIDTransacciones()
-    this.getbodegas()
-    this.getProductosObs()
-    this.getTransacciones()
-    this.getParametrizaciones()
-    this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
+    //this.getProductosComprados()
+    //this.getCompras()
+  //  this.getNumeroRemision()
+   // this.getProdcutosIngresados()
+   // this.getProductos()
+    //this.getFacturasProveedor()
+    //this.getRemisiones()
+   // this.getIDTransacciones()
+    //this.getbodegas()
+   // this.getProductosObs()
+    //this.getTransacciones()
+    //this.getParametrizaciones()
+    /* this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
       this.locales = []
       locales.forEach((nt: any) => {
         this.locales.push(nt.payload.doc.data());
       })
-    });;
+    });; */
+    //this.traerProductosObsequio()
+    this.traerBodegas()
+    this.traerProductos()
+    this.traerOrdenesCompra()
+    this.traerTransacciones()
+    this.traerParametrizaciones()
+    this.traerSucursales()
+    this.traerContadoresDocumentos()
+    this.traerfacturasProveedor()
+    this.traerBodegas()
+    this.traerProductosIngresados()
   }
 
-  click(e) {
-    if (this.dxForm.instance.validate().isValid) {
-      this.db.collection('/productos').add(this.dxForm.formData).then(_ => { alert("Se ha añadido un producto"); this.dxForm.instance.resetValues() })
-    }
+  crearBodega(){
+    this.nuevaBodega=new bodega
+    this.nuevaBodega.nombre = "bodega1"
+    this.nuevaBodega.direccion = "García Moreno #1203 entre 9 de Octubre y, Calle Rocafuerte, Garcia Moreno, Milagro 091703"
+    this.nuevaBodega.persona_responsable = "Juan Alberto"
+    this.nuevaBodega.sucursal = "matriz"
+    this.bodegasService.newBodegas(this.nuevaBodega).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
 
   }
 
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
 
-  getParametrizaciones(){
+  traerSucursales(){
+    this.sucursalesService.getSucursales().subscribe(res => {
+      this.locales = res as Sucursal[];
+   })
+  }
+
+  traerOrdenesCompra(){
+    this.ordenesService.getOrden().subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+   })
+  }
+
+  traerfacturasProveedor(){
+    this.facturasProveedorService.getFacturasProveedor().subscribe(res => {
+      this.facturaProveedor = res as FacturaProveedor[];
+   })
+  }
+
+  traerBodegas(){
+    this.bodegasService.getBodegas().subscribe(res => {
+      this.bodegas = res as bodega[];
+   })
+  }
+
+  traerProductosObsequio(){
+    this.productosObsequioService.getProductosObsequio().subscribe(res => {
+      this.productosObsequiosBase = res as productosObsequio[];
+   })
+  }
+
+  traerProductosIngresados(){
+    this.productosIngresadoService.getProductosIngresados().subscribe(res => {
+      this.productosEntregadosBase = res as ProductoDetalleEntrega[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productos = res as producto[];
+      
+   })
+  }
+
+  traerTransacciones(){
+    this.transaccionesService.getTransaccion().subscribe(res => {
+      this.transacciones = res as transaccion[];
+   })
+  }
+
+  traerRemisiones(){
+    this.remisionesService.getRemisiones().subscribe(res => {
+      this.remisiones = res as RemisionProductos[];
+      this.asignarValores()
+   })
+  }
+
+
+   traerContadoresDocumentos(){
+    console.log("estoy trayendo")
+    this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.asignarIDdocumentos()
+   })
+  }
+
+  asignarIDdocumentos(){
+    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+  
+
+
+ /*  getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
   }
-
+ */
  
   
 
-  getNumeroRemision(){
+/*   getNumeroRemision(){
     this.db.collection('/remisionProductos').doc('matriz').valueChanges().subscribe(data => {
       //console.log(data)
       if(data != null)
         this.Id_remision = data['documento_n']+1
         
     })
-  }
+  } */
 
-  getbodegas(){
+  /* getbodegas(){
     this.db.collection('/bodegas').valueChanges().subscribe((data:bodega[]) => {
       if(data != null)
         this.bodegas = data
 
     })
-  }
+  } */
 
-  async getRemisiones(){
+  /* async getRemisiones(){
     await this.db.collection('remisionProductos').snapshotChanges().subscribe((ordenes) => {
       new Promise<any>((resolve, reject) => {
         ordenes.forEach((nt: any) => {
@@ -217,34 +313,34 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
       }) 
       this.asignarValores()
     });;
-  }
+  } */
  
 
-  getCompras(){
+  /* getCompras(){
     this.db.collection('/ordenesDeCompra').valueChanges().subscribe((data:OrdenDeCompra[]) => {
       if(data != null)
         this.ordenesCompra = data
 
     })
-  }
+  } */
 
-  getFacturasProveedor(){
+  /* getFacturasProveedor(){
     this.db.collection('/facturasProveedor').valueChanges().subscribe((data:FacturaProveedor[]) => {
       if(data != null)
         this.facturaProveedor = data
 
     })
-  }
+  } */
 
-  getProdcutosIngresados(){
+ /*  getProdcutosIngresados(){
     this.db.collection('/productosIngresados').valueChanges().subscribe((data:ProductoDetalleEntrega[]) => {
       if(data != null)
         this.productosEntregadosBase = data
 
     })
-  }
+  } */
 
-  async getProductos() {
+  /* async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -252,9 +348,9 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
         this.productos.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getProductosObs() {
+  /* async getProductosObs() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productosObsequio').snapshotChanges().subscribe((productos2) => {
       this.productos2 = []
@@ -262,24 +358,24 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
         this.productosObsequiosBase.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getIDTransacciones() {
+ /*  async getIDTransacciones() {
     
     await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccion = transacciones.payload.data()['documento_n'];    
     });;
-  }
+  } */
 
-  getTransacciones(){
+  /* getTransacciones(){
     this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
       this.transacciones = data
   
     })
-  }
+  } */
  
-  async getProductosComprados() {
+  /* async getProductosComprados() {
     console.log("aqui entreee")
     await this.db.collection('/productosComprados').snapshotChanges().subscribe((productoC) => {
       
@@ -290,7 +386,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
       console.log("productoscomprados"+productoC.length)
       console.log("productoscomprados33"+this.productosComprados.length)
     });;
-  }
+  } */
 
   getCourseFile = (e) => {  
     this.cargarDatosRemisión(e.row.data)  
@@ -323,8 +419,8 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
        // var num:string
         var data2=""
          data2=e.id_remision+""
-//this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value})  
-         this.db.collection('/remisionProductos').doc( data2).update({"estado" :"Rechazada","msjAdmin":result.value})
+         this.remisionesService.updateRechazarRemision(e,"Rechazada",result.value).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+         //this.db.collection('/remisionProductos').doc( data2).update({"estado" :"Rechazada","msjAdmin":result.value})
          let timerInterval
          Swal.fire({
            title: 'Guardando !',
@@ -394,17 +490,17 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
         if(element.nombreComercial.PRODUCTO == element2.PRODUCTO){
           suma=element.metros2
           switch (e.sucursal) {
-            case "Milagro":
+            case "Matriz":
               if(suma>element2.sucursal1){
                 contIn++
               }
               break;
-            case "Naranjito":
+            case "sucursal1":
               if(suma>element2.sucursal2){
                 contIn++
               }
               break;
-            case "El Triunfo":
+            case "sucursal2":
               if(suma>element2.sucursal3){
                 contIn++
               }
@@ -465,7 +561,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
 
     this.facturaProveedor.forEach(element=>{
       if(element.nSolicitud == e.num_orden && element.nFactura== e.num_FactPro){
-        this.ifFacturaP= element.id+""
+        this.ifFacturaP= element.idF+""
         console.log("el numero es "+this.ifFacturaP)
       }
     })
@@ -486,8 +582,12 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
          
           var entre:boolean=true
           console.log("extraje la remision "+e.id_remision)
-          this.db.collection('/remisionProductos').doc(data).update({"estado":"Eliminada"})
-          this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Por Ingresar"});
+          this.remisionesService.updateEstado(e,"Eliminada").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+
+          //pendiente de realizar
+         /*  this.facturasProveedorService.updateEstado3(e,"Por Ingresar").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")}) */
+          //this.db.collection('/remisionProductos').doc(data).update({"estado":"Eliminada"})
+          //this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Por Ingresar"});
           this.productosEntregadosBase.forEach(element=>{
             if(element.numeroRemision == e.id_remision){
                 console.log("encontre elllll "+element.numeroOrden+" prod "+element.nombreComercial)
@@ -503,19 +603,19 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
                 num3=element.cantidadDevuelta
                 sumaProductos = Number(num2)-Number(num1)+Number(num3) 
                 switch (e.sucursal) {
-                  case "Milagro":
+                  case "matriz":
                     num1=element.cantidadEntregada
                     num2=elemento1.sucursal1
                     num3=element.cantidadDevuelta
                     sumaProductos = Number(num2)-Number(num1)+Number(num3) 
                     break;
-                  case "Naranjito":
+                  case "sucursal1":
                     num1=element.cantidadEntregada
                     num2=elemento1.sucursal2
                     num3=element.cantidadDevuelta
                     sumaProductos = Number(num2)-Number(num1)+Number(num3)
                     break;
-                  case "El Triunfo":
+                  case "sucursal2":
                     num1=element.cantidadEntregada
                     num2=elemento1.sucursal3
                     num3=element.cantidadDevuelta
@@ -527,28 +627,30 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
            }) 
            if(entre){
             switch (e.sucursal) {
-              case "Milagro":
-                this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos})
+              case "matriz":
+                element.nombreComercial.sucursal1=sumaProductos
+                this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+               // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos})
                 break;
-              case "Naranjito":
-                this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos})
+              case "sucursal1":
+                element.nombreComercial.sucursal1=sumaProductos
+                this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+               //// this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos})
                 break;
-              case "El Triunfo":
-                this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos})
+              case "sucursal2":
+                element.nombreComercial.sucursal1=sumaProductos
+                this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+               // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos})
                   break;
               default:
             }
             
-            this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', element.numeroRemision));
-            //console.log("sss "+(this.expensesCollection.snapshotChanges()))
+           /*  this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', element.numeroRemision));
             this.expensesCollection.get().toPromise().then(function(querySnapshot) {
               querySnapshot.forEach(function(doc) {
-                //doc.ref.delete();
-               /*  console.log("console  "+doc.ref)
-               console.log("el doc es "+JSON.stringify(doc)) */
                doc.ref.update({"estadoIngreso":"Eliminado"})
               });
-            }).then(res => { console.log("termine1")}, err => reject(err));;
+            }).then(res => { console.log("termine1")}, err => reject(err));; */
            }
           })
           this.actualizarEstados(e)
@@ -575,25 +677,25 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
      if(element.factPro== num+""){
     //  this.db.collection('/transacciones').doc(data).delete()
     console.log("entre con el "+element.idTransaccion)
-      this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
+      /* this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
       this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
           doc.ref.delete();
         });
-      });
+      }) */;
      }
    })
   }
 
   eliminarP(){
    // let query = db.collection('productosIngresados').where('facilityId', '==', facilityId).where('ownerId', '==', ownerId);
-    this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', 108));
+    /* this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', 108));
     console.log("sss "+(this.expensesCollection.snapshotChanges()))
     this.expensesCollection.get().toPromise().then(function(querySnapshot) {
       querySnapshot.forEach(function(doc) {
         doc.ref.delete();
       });
-    });
+    }); */
   }
 
   cargarDatosRemisión(e: any){
@@ -678,14 +780,14 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
 new Promise<any>((resolve, reject) => {
   this.productosControlFinal.forEach(element=>{
     console.log("kkk "+JSON.stringify(element))
-    this.expensesCollection2 = this.db.collection('/productosComprados', ref => ref.where('solicitud_n', '==', element.solicitud_orden).where('nombreComercial.PRODUCTO', '==', element.nombre_comercial));
+    /* this.expensesCollection2 = this.db.collection('/productosComprados', ref => ref.where('solicitud_n', '==', element.solicitud_orden).where('nombreComercial.PRODUCTO', '==', element.nombre_comercial)); */
    // console.log("sss "+(this.expensesCollection.snapshotChanges()))}
    console.log("actualice 1")
-    this.expensesCollection2.get().toPromise().then(function(querySnapshot) {
+    /* this.expensesCollection2.get().toPromise().then(function(querySnapshot) {
       querySnapshot.forEach(function(doc) {
         doc.ref.update({"estado_remision":element.estado});
       });
-    });
+    }); */
   })
 }) 
   var contEstados=0
@@ -708,12 +810,14 @@ new Promise<any>((resolve, reject) => {
 console.log("si entre verdadero" + this.solicitudNOrden)
    // alert("entre "+this.solicitudNOrden)
     new Promise<any>((resolve, reject) => {
-      this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
+     // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
+      this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }else{
     console.log("entre a falso" +this.solicitudNOrden)
     new Promise<any>((resolve, reject) => {
-      this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"PARCIAL"})
+     // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"PARCIAL"})
+      this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }
 
@@ -793,17 +897,25 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       new Promise<any>((resolve, reject) => {
         this.setearNFactura2()
         this.actualizarProductossolicitados()
-      this.db.collection('/remisionProductos').doc(num).set({...Object.assign({},this.remisionProducto )}) ;
-        this.db.collection('/remisionProductos').doc("matriz").update({"documento_n" :this.Id_remision});
-        this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Ingresada"});
+      //this.db.collection('/remisionProductos').doc(num).set({...Object.assign({},this.remisionProducto )}) ;
+       // this.db.collection('/remisionProductos').doc("matriz").update({"documento_n" :this.Id_remision});
+        
+       //por revisar esta de aqui abajo
+        //this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Ingresada"});
+
+        this.remisionesService.newRemision(this.remisionProducto).subscribe( res => {
+          this.contadores[0].contRemisiones_Ndocumento=this.Id_remision
+          this.contadoresService.updateContadoresIDRemisiones(this.contadores[0]).subscribe( res => {},err => {})
+        },err => {})
         if(this.productosObsequios.length >0){
           this.productosObsequios.forEach(element => {
             element.fecha = new Date().toLocaleDateString()
             element.idfactura= this.remisionProducto.num_FactPro
             element.proveedor=this.remisionProducto.nombre_proveedor
             console.log(JSON.stringify(element))
-            this.db.collection("/productosObsequio").add({ ...Object.assign({}, element)})
-            .then(res => { }, err => reject(err));
+            /* this.db.collection("/productosObsequio").add({ ...Object.assign({}, element)})
+            .then(res => { }, err => reject(err)); */
+            this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {})
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=this.remisionProducto.fechaP
               this.transaccion.fecha_transaccion=new Date().toLocaleString()
@@ -826,14 +938,29 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.transaccion.idTransaccion=this.number_transaccion++
               //this.getIDTransacciones()
     
-              this.db.collection("/transacciones")
+              /* this.db.collection("/transacciones")
               .add({ ...this.transaccion })
               .then(res => { }, err => reject(err));
               this.db
                 .collection("/transacciones_ID")
                 .doc("matriz").set({ documento_n:this.number_transaccion })
-                .then(res => { }, err => reject(err));
-            //  this.registrarProductosObsequio()
+                .then(res => { }, err => reject(err)); */
+
+
+                this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
+                  this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+                  this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                    res => {
+                    },
+                    err => {
+                      Swal.fire({
+                        title: "Error al guardar",
+                        text: 'Revise e intente nuevamente',
+                        icon: 'error'
+                      })
+                    })
+                },err => {
+                })
           });
         }
         var suma2P=0
@@ -841,8 +968,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.productosEntregados.forEach(element => {
             var sum2=0
             console.log("lll "+JSON.stringify(element))
-            this.db.collection("/productosIngresados").add({ ...Object.assign({}, element)})
-            .then(res => { console.log("logrado" + contacoincidencias),contacoincidencias++}, err => reject(err));
+/*             this.db.collection("/productosIngresados").add({ ...Object.assign({}, element)})
+            .then(res => { console.log("logrado" + contacoincidencias),contacoincidencias++}, err => reject(err)); */
+            this.productosIngresadoService.newProductoIngresado(element).subscribe( res => {console.log("logrado" + contacoincidencias),contacoincidencias++}, err => {alert("error")})
             this.transaccion = new transaccion()
             //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
             this.transaccion.fecha_mov=this.remisionProducto.fechaP
@@ -873,17 +1001,30 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
   
-            this.db.collection("/transacciones")
+            /* this.db.collection("/transacciones")
             .add({ ...this.transaccion })
             .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
             this.db
               .collection("/transacciones_ID")
               .doc("matriz").set({ documento_n:this.number_transaccion })
-              .then(res => { }, err => reject(err));
+              .then(res => { }, err => reject(err)); */
+
+              this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
+                  this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+                  this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                    res => {
+                      contVal++,this.contadorValidaciones(contVal)
+                    },
+                    err => {
+                      Swal.fire({
+                        title: "Error al guardar",
+                        text: 'Revise e intente nuevamente',
+                        icon: 'error'
+                      })
+                    })
+                },err => {
+                })
           })
-          
-         
-         
         }).then(res => { console.log("finalice")});;
        // this.actualizarProductos()
         //this.crearPDF2()
@@ -937,11 +1078,13 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     })
     if(contEstados==this.productosComprados3.length){
       new Promise<any>((resolve, reject) => {
-        this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
+       // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
+       this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
       })
     }else{
       new Promise<any>((resolve, reject) => {
-        this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
+        this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+        //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
       })
     }
     
@@ -992,20 +1135,27 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
             cantDis= elemento1.bodegaProveedor-parseInt(element.metros2.toFixed(0))
              // alert("dd "+cantDis)
-              this.db.collection("/productos").doc(element.nombreComercial.PRODUCTO).update({ "bodegaProveedor" :cantDis })
-              .then(res => { }, err => alert(err));
+              /* this.db.collection("/productos").doc(element.nombreComercial.PRODUCTO).update({ "bodegaProveedor" :cantDis })
+              .then(res => { }, err => alert(err)); */
+              this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");},err => {
+                  Swal.fire({
+                    title: err.error,
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
             switch (this.remisionProducto.sucursal) {
-              case "Milagro":
+              case "matriz":
                 num1=parseInt((element.metros2).toFixed(0))
                 num2=elemento1.sucursal1
                 sumaProductos =Number(num1) + Number(num2)
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 num1=parseInt((element.metros2).toFixed(0))
                 num2=elemento1.sucursal2
                 sumaProductos =Number(num1) + Number(num2)
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 num1=parseInt((element.metros2).toFixed(0))
                 num2=elemento1.sucursal3
                 sumaProductos =Number(num1) + Number(num2)
@@ -1027,16 +1177,28 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         new Promise<any>((resolve, reject) => {
          
           switch (this.remisionProducto.sucursal) {
-            case "Milagro":
+            /* case "matriz":
               this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
               break;
-            case "Naranjito":
+            case "sucursal1":
               this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
               break;
-            case "El Triunfo":
+            case "sucursal2":
               this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
                 break;
-            default:
+            default: */
+
+
+              case "matriz":
+                this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
+                break;
+              case "sucursal1":
+                this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
+                break;
+              case "sucursal2":
+              this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
+                  break;
+              default:
           }
         })
        
@@ -1094,7 +1256,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-          this.db.collection('/remisionProductos').doc( data2).update({"estado" :"Ingresado"})
+          //this.db.collection('/remisionProductos').doc( data2).update({"estado" :"Ingresado"})
+          this.remisionesService.updateEstado(e,"Ingresado").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
           Swal.fire({
             title: 'Correcto',
             text: 'Se realizó su proceso con éxito',
@@ -1117,8 +1280,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
   actualizarDatos3(){
     this.productosEntregados.forEach(element => {
-      this.db.collection("/productosIngresados").add({ ...Object.assign({}, element)})
-      .then(res => { });
+      this.productosIngresadoService.newProductoIngresado(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      /* this.db.collection("/productosIngresados").add({ ...Object.assign({}, element)})
+      .then(res => { }); */
       this.actualizarProductos()
     });
   }
@@ -1178,7 +1342,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     
     this.facturaProveedor.forEach(element => {
       if(element.nFactura==e.value){
-        this.ifFacturaP=element.id+""
+        this.ifFacturaP=element.idF+""
         console.log(element.total)
         this.remisionProducto.total=element.total
       }
@@ -1300,9 +1464,11 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     console.log("encontre ennnnn "+contre)
     if(contre-1 <= 0){
       console.log("accctttt" +this.solicitudOrdenC)
-      this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PENDIENTE"})
+      //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PENDIENTE"})
+      this.ordenesService.updateEstadoOrden2(this.solicitudOrdenC,"PENDIENTE").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     }else{
-      this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
+      //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
+      this.ordenesService.updateEstadoOrden2(this.solicitudOrdenC,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     }
     Swal.close()
     Swal.fire({
@@ -1379,6 +1545,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         this.solicitudNOrden=element.documento
           solicitud=element.documento
           this.solNum= element.documento
+          this.productosSolicitados=element.productosComprados
           //bandera=false
       }
     })
@@ -1392,7 +1559,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     })
     console.log("el "+num)
     console.log("el arreglo es"+arregloProductos)
-    for (let index = 0; index < arregloProductos.length; index++) {
+    /* for (let index = 0; index < arregloProductos.length; index++) {
       this.productosComprados.forEach(element=>{
         if(element.solicitud_n == solicitud){
             if(arregloProductos[index] == element.nombreComercial.PRODUCTO){
@@ -1402,7 +1569,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         }
     })
       
-    }
+    } */
 
    this.productosSolicitados.forEach(element=>{
      console.log("producto.... "+JSON.stringify(element))

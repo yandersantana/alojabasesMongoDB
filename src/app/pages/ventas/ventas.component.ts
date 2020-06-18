@@ -38,6 +38,8 @@ import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.se
 import { ProformasService } from 'src/app/servicios/proformas.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
+import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
+import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -183,7 +185,7 @@ contadores:contadoresDocumentos[]
   mySimpleFormat2 = this.pipe.transform(this.fechaMaxima2, 'MMM / d / y');
   usuarioLogueado:user
 
-  constructor(public ventaService: VentasService,public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
+  constructor(public ventaService: VentasService,public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = new Date()
@@ -322,7 +324,7 @@ contadores:contadoresDocumentos[]
     }
         
     
-    this.number_transaccion = this.contadores[0].transacciones_Ndocumento
+    this.number_transaccion = this.contadores[0].transacciones_Ndocumento+1
      
   }
 
@@ -1245,16 +1247,22 @@ console.log("entre a actualizar")
       case "matriz":
         resta =0
         resta =element.producto.sucursal1-element.cantidad
+        element.producto.sucursal1=resta
+        this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
         //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
       case "sucursal1":
         resta =0
         resta =element.producto.sucursal2-element.cantidad
+        element.producto.sucursal2=resta
+        this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
         //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal2" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
       case "sucursal2":
         resta =0
         resta =element.producto.sucursal3-element.cantidad
+        element.producto.sucursal3=resta
+        this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
         //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal3" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
           break;
       default:
@@ -2693,18 +2701,23 @@ var tipoDoc:boolean=false
           switch (this.factura.sucursal) {
             case "matriz":
               sumad=resta+element.producto.suc1Pendiente
+              this.productoService.updateProductoPendienteSucursal1(element.producto,sumad ).subscribe( res => {console.log(res + "entre por si");}, err => {})
               //this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc1Pendiente" :sumad})
               break;
             case "sucursal1":
               sumad=resta+element.producto.suc2Pendiente
+              this.productoService.updateProductoPendienteSucursal2(element.producto,sumad).subscribe( res => {console.log(res + "entre por si");}, err => {})
               //this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc2Pendiente" :sumad})
               break;
             case "sucursal2":
               sumad=resta+element.producto.suc3Pendiente
+              this.productoService.updateProductoPendienteSucursal3(element.producto,sumad).subscribe( res => {console.log(res + "entre por si");}, err => {})
              // this.db.collection("/productos").doc(""+element.producto.PRODUCTO).update({"suc3Pendiente" :sumad})
                 break;
             default:
           }
+
+          this.productosPendientesService.newProductoPendiente(this.productoPendienteE).subscribe( res => {console.log(res + "entre por si");},err => {this.error()})
           /* this.db.collection("/productosPendientesEntrega").doc(""+this.productoPendienteE.id_Pedido).set({ ...Object.assign({}, this.productoPendienteE) })
           .then(res => {console.log("listo")}, err => reject(err));
           this.db.collection("/productosPendientesEntregaID").doc("matriz").set({ documento_n:this.numeroID})
@@ -2714,6 +2727,8 @@ var tipoDoc:boolean=false
 
       }
     }
+
+    
 
     buscarDatosSucursal(){
       this.parametrizaciones.forEach(element=>{
@@ -2753,6 +2768,7 @@ var tipoDoc:boolean=false
     }
   
     guardarFactura(){
+      this.factura.productosVendidos=this.productosVendidos
       this.facturasService.newFactura(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");
@@ -2768,7 +2784,8 @@ var tipoDoc:boolean=false
     }
 
     guardarFactura2(){
-      this.facturasService.newFactura(this.factura).subscribe(
+      this.factura.productosVendidos=this.productosVendidos
+      this.notasVentService.newNotaVenta(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");
           this.actualizarFactureroNotasVenta()
@@ -2923,14 +2940,14 @@ var tipoDoc:boolean=false
             .doc("matriz").set({ n_factura:this.factura.documento_n })
             .then(res => { }, err => reject(err)); */
         
-
+        this.traerContadoresDocumentos()
         this.productosVendidos.forEach(element => {
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
           /* this.db.collection("/productosVendidos").add({ ... element})
           .then(res => { }, err => reject(err)); */
 
-          this.productosVenService.newProductoVendido(element).subscribe(
+        /*   this.productosVenService.newProductoVendido(element).subscribe(
             res => {
               console.log(res + "entre por si");
             },
@@ -2940,7 +2957,7 @@ var tipoDoc:boolean=false
                 text: 'Revise e intente nuevamente',
                 icon: 'error'
               })
-            })
+            }) */
         
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
@@ -2962,12 +2979,12 @@ var tipoDoc:boolean=false
           this.transaccion.usuario="q@q.com"
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre  
-          this.traerContadoresDocumentos()
+          
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
               console.log(res + "entre por siff");
-              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
                   console.log(res + "entre por si");
@@ -3116,6 +3133,8 @@ var tipoDoc:boolean=false
 
 
   generarNotaDeVenta(e) {
+    
+    this.traerContadoresDocumentos()
     this.buscarDatosSucursal()
     this.mostrarMensaje()
     var contVal=0
@@ -3150,17 +3169,6 @@ var tipoDoc:boolean=false
         this.productosVendidos.forEach(element => {
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
-          this.productosVenService.newProductoVendido(element).subscribe(
-            res => {
-              console.log(res + "entre por si");
-            },
-            err => {
-              Swal.fire({
-                title: err.error,
-                text: 'Revise e intente nuevamente',
-                icon: 'error'
-              })
-            })
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
@@ -3183,11 +3191,11 @@ var tipoDoc:boolean=false
           this.transaccion.usuario=this.factura.username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre
-          this.traerContadoresDocumentos()
+          
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
               console.log(res + "entre por siff");
-              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
                   console.log(res + "entre por si");

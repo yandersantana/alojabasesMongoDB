@@ -27,7 +27,8 @@ router.put('/update/:id', async (req, res,next) => {
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
         totalDescuentos:req.body.totalDescuentos,
-        estado:req.body.estado
+        estado:req.body.estado,
+        productosVendidos:req.body.productosVendidos
     };
     console.log("llegue hasta aquu")
     await Factura.findByIdAndUpdate(id, {$set: facturas}, {new: true});
@@ -61,7 +62,8 @@ router.post('/newFactura', async (req, res) => {
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
         totalDescuentos:req.body.totalDescuentos,
-        estado:req.body.estado
+        estado:req.body.estado,
+        productosVendidos:req.body.productosVendidos
     });
     console.log("llegue hasta aqui")
     await Newfacturas.save();

@@ -22,6 +22,13 @@ import { DxSelectBoxModule, DxListModule ,DxListComponent} from 'devextreme-angu
 import { DatePipe } from '@angular/common';
 import { element } from 'protractor';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { ProveedoresService } from 'src/app/servicios/proveedores.service';
+import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { DetallePagoService } from 'src/app/servicios/detalle-pago.service';
+import { contadoresDocumentos } from '../ventas/venta';
+import { PagoProveedorService } from 'src/app/servicios/pago-proveedor.service';
 
 
 //import { ConsoleReporter } from 'jasmine';
@@ -127,7 +134,7 @@ sucursal:string=""
 usuario:string=""
 total:number=0
 
-
+contadores:contadoresDocumentos[]=[]
 selectedRows: string[];
 selectAllModeVlaue: string = "page";
 selectionModeValue: string = "all";
@@ -135,60 +142,89 @@ selectionModeValue: string = "all";
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
 //@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
-    setTimeout(() => {
-      console.log("hello");
-      //this.obtenerOrdenes()
-    }, 4000);
+  constructor( public contadoresService:ContadoresDocumentosService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
+
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
    }
 
   ngOnInit() {
-    this.getOrdenCompra()
-    this.getProductosComprados()
-    this.getfacturasProveedor()
+   /*  this.getfacturasProveedor()
     this.getFacturasProveedor()
-    this.getPagosProveedor()
-    
+    this.getPagosProveedor() */
+    //this.traerPagosFacturasProveedor()
+    this.traerProveedores()
+    this.traerFacturasProveedor()
+    this.traerContadoresDocumentos()
+    this.traerOrdenesCompra()
+    this.traerPagosFacturasProveedor()
+  }
+
   
-    this.db.collection('/ordenCompraAprobadasGlobal').doc('matriz').valueChanges().subscribe(data => {
-      console.log(data)
-      if(data != null)
-        this.nordenCompra = data['n_documento']+1
 
-    })
+  traerProveedores(){
+    this.proveedoresService.getProveedor().subscribe(res => {
+      this.proveedores = res as Proveedor[];
+   })
+  }
 
+  async traerContadoresDocumentos(){
+    await this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.facturaNp=this.contadores[0].contFacturaProveedor_Ndocumento+1
+      this.facturaNp2=this.contadores[0].pagoProveedor_Ndocumento+1
+      //this.asignarIDdocumentos()
+   })
+  }
+
+  traerOrdenesCompra(){
+    this.ordenesService.getOrden().subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+      this.obtenerOrdenes()
+   })
+  }
+
+  traerPagosFacturasProveedor(){
+    this.detallePagoService.getDetallePagos().subscribe(res => {
+      this.detallePago2 = res as DetallePagoProveedor[];
+
+   })
+  }
+
+  traerFacturasProveedor(){
+    this.facturasProveedorService.getFacturasProveedor().subscribe(res => {
+      this.facturaProveedor2 = res as FacturaProveedor[];
+   })
   }
 
 
-  getProveedores(){
+  /* getProveedores(){
     this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
       if(data != null)
         this.proveedores = data
 
     })
-  }
+  } */
 
-  getDetalleFacturas(){
+ /*  getDetalleFacturas(){
     this.db.collection('/pagosFacturasProveedor').valueChanges().subscribe((data:DetallePagoProveedor[]) => {
       if(data != null)
         this.detallePago2 = data
 
     })
-  }
+  } */
 
 
-  async getfacturasProveedor() {
+/*   async getfacturasProveedor() {
     //REVISAR OPTIMIZACION
     await this.db.collection('/contadorFactProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
       this.facturaNp = contador.payload.data()['n_documento']+1;  
       console.log("conttttt"+ this.facturaNp)  
     });;
-  }
+  } */
 
-  async getPagosProveedor() {
+ /*  async getPagosProveedor() {
     //REVISAR OPTIMIZACION
     await this.db.collection('/pagoProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
@@ -196,8 +232,8 @@ selectionModeValue: string = "all";
       console.log("conttttt"+ this.facturaNp)  
     });;
   }
-
-  async getOrdenCompra() {
+ */
+  /* async getOrdenCompra() {
     
     await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
     
@@ -211,9 +247,9 @@ selectionModeValue: string = "all";
       
     });;
    
-  }
+  } */
 
-  async getProductosComprados() {
+  /* async getProductosComprados() {
     
     await this.db.collection('productosComprados').snapshotChanges().subscribe((productoC) => {
       
@@ -224,10 +260,10 @@ selectionModeValue: string = "all";
       console.log("kjkj"+productoC.length)
     });;
 
-  }
+  } */
 
 
-  async getFacturasProveedor() {
+ /*  async getFacturasProveedor() {
     
     await this.db.collection('facturasProveedor').snapshotChanges().subscribe((productoC) => {
       
@@ -238,7 +274,7 @@ selectionModeValue: string = "all";
      
     });;
 
-  }
+  } */
 
   limpiarArreglo(){
     var cont=0
@@ -252,10 +288,6 @@ selectionModeValue: string = "all";
     }
   }
 
-  validar(){
-    var vali=this.getOrdenCompra()
-    console.log("ddddd "+vali)
-  }
 
   
   limpiarArreglo6(){
@@ -308,23 +340,25 @@ selectionModeValue: string = "all";
       }
     })
 
-    this.productosComprados.forEach(element=>{
+  /*   this.productosComprados.forEach(element=>{
         if(element.solicitud_n == solicitud){
           this.productosComprados3.push(element)
         }
-    })
+    }) */
 
 
 
     var flag:boolean=true
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.datoNsolicitud == element.n_orden){
+        //alert("si encontre")
         this.newButtonEnabled2=false
+        this.productosComprados3=element.productosComprados
         console.log("es correcto")
         flag=false
       }
     })
-   this.mostrarError()
+   //this.mostrarError()
   }
 
   mostrarError(){
@@ -406,15 +440,16 @@ selectionModeValue: string = "all";
           this.proveedor= element.proveedor.nombre_proveedor
           this.sucursal= element.sucursal.nombre
           this.usuario=element.usuario
-          this.total=element.total       
+          this.total=element.total   
+          this.productosComprados3=element.productosComprados    
       }
     })
 
-    this.productosComprados.forEach(element=>{
+   /*  this.productosComprados.forEach(element=>{
       if(element.solicitud_n == solicitud){
         this.productosComprados3.push(element)
       }
-    })
+    }) */
 
   }
 
@@ -443,6 +478,7 @@ selectionModeValue: string = "all";
     this.ordenesCompra.forEach(element=>{
       if(element.estado=="Aprobado" && element.n_orden>=0){
         this.ordenesCompraAprobadas.push(element)
+       // alert("entre aqui")
       }
       console.log("orden "+element.n_orden)
     })
@@ -513,14 +549,15 @@ selectionModeValue: string = "all";
     var contadoEn=0
     Swal.fire({
       title: 'Rechazar Eliminación',
-      text: "Se rechazará la eliminación de pago #"+e.id,
+      text: "Se rechazará la eliminación de pago #"+e.idF,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/facturasProveedor').doc( e.id+"").update({"estado2" :"aceptada"})
+        this.facturasProveedorService.updateEstado2(e,"aceptada").subscribe( res => {}, err => {alert("error")})
+        //this.db.collection('/facturasProveedor').doc( e.id+"").update({"estado2" :"aceptada"})
         Swal.fire({
           title: 'Correcto',
           text: 'Se realizó con éxito',
@@ -544,17 +581,21 @@ selectionModeValue: string = "all";
     var contadoEn=0
     Swal.fire({
       title: 'Eliminar Factura asociada',
-      text: "Se eliminará definitivamente el pago #"+e.id,
+      text: "Se eliminará definitivamente el pago #"+e.idF,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/facturasProveedor').doc( e.id+"").delete()
-        /* if( this.facturaProveedorBus.length-1 <=0){
-          this.db.collection('/ordenesDeCompra').doc(this.num_documento+"").update({"estadoOrden" :"PENDIENTE"})
-        } */
+        this.facturasProveedorService.deleteFacturasProveedor(e).subscribe( res => {}, err => {alert("error")})
+        //this.db.collection('/facturasProveedor').doc( e.id+"").delete()
+         if( this.facturaProveedorBus.length-1 <=0){
+          this.ordenesCompraService.updateEstadoOrden(e,"PENDIENTE").subscribe( res => {
+            
+          }, err => {alert("error")})
+          //this.db.collection('/ordenesDeCompra').doc(this.num_documento+"").update({"estadoOrden" :"PENDIENTE"})
+        } 
        
           
         
@@ -581,25 +622,20 @@ selectionModeValue: string = "all";
 
   rechazarFactP(e:any){ 
     var data2=""
-    data2=e.id+""
+    data2=e.idF+""
     console.log("data2 "+data2)
-    /* this.facturaProveedorBus.forEach(element=>{
-      if(element.nFactura){
-
-      }
-    }) */
-      console.log("entre por "+e.nFactura)
-      this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
       Swal.fire({
         title: 'Eliminar Factura asociada',
-        text: "Desea eliminar el la factura #"+e.id,
+        text: "Desea eliminar el la factura #"+e.idF,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si',
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-         
+         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
+         this.facturasProveedorService.updateEstado2(e ,"rechazada").subscribe( res => {}, err => {alert("error")})
+        
           Swal.fire({
             title: 'Correcto',
             text: 'Un administrador aprobará su eliminación de pago',
@@ -649,8 +685,8 @@ selectionModeValue: string = "all";
         var num:string
         num=e.documento+""
         //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "secuencia": "En Proceso"})
-        this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra})
-        this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra})
+       // this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra})
+       // this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra})
        
 
 
@@ -747,7 +783,7 @@ selectionModeValue: string = "all";
       if (result.value) {
         var num:string
         num=e.documento+""
-         this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value})  
+         //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value})  
          let timerInterval
          Swal.fire({
            title: 'Guardando !',
@@ -940,7 +976,7 @@ anadirDetallePago = (e) => {
         this.detallePago[i].fecha_vencimiento = element.fechaExpiracion
         this.detallePago[i].valor = element.total
         this.detallePago[i].total = element.total
-        this.detallePago[i].id_factura = element.id
+        this.detallePago[i].id_factura = element.idF
       }
     })
     this.calcularTotalPagos()
@@ -988,7 +1024,7 @@ anadirDetallePago = (e) => {
     this.facturaProveedor.nFactura= this.datoNFact
     this.facturaProveedor.total= this.datoTotal
     this.facturaProveedor.productos= this.selectedRows
-    this.facturaProveedor.id=this.facturaNp
+    this.facturaProveedor.idF=this.facturaNp
 
     //desde aqui comienza
     this.facturaProveedor2.forEach(element=>{
@@ -1028,14 +1064,18 @@ anadirDetallePago = (e) => {
             let datoNFact:string
             datoNFact=this.facturaNp+""
            //alert("ddd "+this.facturaProveedor.documento_solicitud)
-            
-            this.db.collection('/facturasProveedor').doc(datoNFact).set({...Object.assign({},this.facturaProveedor )}).then(res => { }) ;
-            this.db
+           this.facturasProveedorService.newFacturaProveedor(this.facturaProveedor).subscribe( res => {
+            this.contadores[0].contFacturaProveedor_Ndocumento=this.facturaNp
+            console.log("ddd "+JSON.stringify(this.contadores[0]))
+            this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( res => {this.confirmar()}, err => {alert("error")})
+           }, err => {alert("error")})
+           // this.db.collection('/facturasProveedor').doc(datoNFact).set({...Object.assign({},this.facturaProveedor )}).then(res => { }) ;
+          /*   this.db
                 .collection("/contadorFactProveedor")
                 .doc("matriz").set({ n_documento:this.facturaNp })
-                .then(res => {this.confirmar() });
+                .then(res => {this.confirmar() }); */
             
-            this.getfacturasProveedor()
+           // this.getfacturasProveedor()
          });
       }
 
@@ -1146,21 +1186,27 @@ anadirDetallePago = (e) => {
         }
       })
         var num5=this.facturaNp2+""
-        this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
-        this.db
+        this.pagoFacturaService.newPagoProveedor(this.pago_proveedor).subscribe( res => {
+          this.contadores[0].pagoProveedor_Ndocumento=this.facturaNp2
+          this.contadoresService.updateContadoresIDPagosproveedor(this.contadores[0]).subscribe( res => {}, err => {alert("error")})
+         }, err => {alert("error")})
+        //this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
+       /*  this.db
               .collection("/pagoProveedor")
               .doc("matriz").set({ n_documento:this.facturaNp2 })
-              .then(res => { });
+              .then(res => { }); */
+              this.actualizarFacturas()
         this.detallePago.forEach(element => {
                 element.beneficiario = this.pago_proveedor.beneficiario
                 element.nombre_banco= this.pago_proveedor.nombre_banco
                 element.n_cheque = this.pago_proveedor.n_cheque
                 element.idPago= this.facturaNp2
-                this.db.collection("/pagosFacturasProveedor").add({ ...element })
-                .then(res => { cont45++,this.mensajeConfi(cont45)}, err => alert(err));
+                this.detallePagoService.newDetallePago(element).subscribe( res => {cont45++,this.mensajeConfi(cont45)}, err => {alert("error")})
+                /* this.db.collection("/pagosFacturasProveedor").add({ ...element })
+                .then(res => { cont45++,this.mensajeConfi(cont45)}, err => alert(err)); */
               });       
-        this.actualizarFacturas()
-        this.getPagosProveedor()
+       
+        //this.getPagosProveedor()
       });
       
 
@@ -1194,7 +1240,10 @@ anadirDetallePago = (e) => {
     var dato=""
     this.detallePago.forEach(element=>{
       dato=element.id_factura+""
-      this.db.collection('/facturasProveedor').doc(dato).update({"estado" :"Cancelado"})
+
+      this.facturasProveedorService.updateEstado(dato,"Cancelado").subscribe( res => {}, err => {alert("error")})
+      //this.pagoFacturaService.newPagoProveedor(this.pago_proveedor).subscribe( res => {}, err => {alert("error")})
+     // this.db.collection('/facturasProveedor').doc(dato).update({"estado" :"Cancelado"})
       //this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
       
     })
@@ -1223,8 +1272,7 @@ anadirDetallePago = (e) => {
         break;
      
       case "Pagos Proveedor":
-        this.getProveedores()
-        this.getDetalleFacturas()
+        
         x.style.display = "none";
         y.style.display="none";
         z.style.display="block";

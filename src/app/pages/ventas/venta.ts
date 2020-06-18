@@ -1,4 +1,4 @@
-import { Producto } from '../producto/producto'
+import { Producto, ProductoDetalleVenta } from '../producto/producto'
 
 
 export class producto {
@@ -49,7 +49,7 @@ export class venta {
         subtP1:number
         subtIva:number
         sucursal:string
-        
+        productosVendidos:ProductoDetalleVenta[]=[]
         constructor() {
         this.pedir = false
         this.iva = true
@@ -97,6 +97,7 @@ export class factura {
         totalIva:number
         totalDescuentos:number
         estado:string
+        productosVendidos:venta[]=[]
         constructor(
             ) { 
                 this.estado="CONTABILIZADA"
@@ -249,6 +250,9 @@ export class contadoresDocumentos{
     transacciones_Ndocumento:number
     ordenesCompra_Ndocumento:number
     ordenesCompraAprobadas_Ndocumento:number
+    contFacturaProveedor_Ndocumento:number
+    contRemisiones_Ndocumento:number
+    pagoProveedor_Ndocumento:number
     constructor(){
 
     }

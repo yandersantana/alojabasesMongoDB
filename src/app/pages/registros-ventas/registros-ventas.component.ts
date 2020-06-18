@@ -9,6 +9,9 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import { element } from 'protractor';
 import { ProductoDetalleVenta } from '../producto/producto';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { FacturasService } from 'src/app/servicios/facturas.service';
+import { ProformasService } from 'src/app/servicios/proformas.service';
 
 @Component({
   selector: 'app-registros-ventas',
@@ -17,6 +20,7 @@ import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 })
 export class RegistrosVentasComponent implements OnInit {
   facturas:factura[]=[]
+  facturasTraidas:factura[]=[]
   notasVenta:factura[]=[]
   cotizaciones:factura[]=[]
   factura:factura
@@ -34,28 +38,48 @@ export class RegistrosVentasComponent implements OnInit {
   sIva12:number=0
   iva:number=0
   numeroFactura:string=""
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) { 
+  constructor(public parametrizacionService:ParametrizacionesService,public facturasService:FacturasService,public proformasService:ProformasService) { 
     this.factura = new factura()
   }
 
   ngOnInit() {
-    this.getFacturas()
+    /* this.getFacturas()
     this.getNotasVentas()
     this.getCotizaciones()
-    this.getProductosComprados()
-    this.getParametrizaciones()
+    this.getProductosComprados() */
+    this.traerParametrizaciones()
+    this.traerFacturas()
+    this.traerProformas()
+  }
+
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerFacturas(){
+    this.facturasService.getFacturas().subscribe(res => {
+      this.facturas = res as factura[];
+   })
+  }
+
+  traerProformas(){
+    this.proformasService.getProformas().subscribe(res => {
+      this.cotizaciones = res as factura[];
+   })
   }
 
 
-  getParametrizaciones(){
+ /*  getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
-  async getFacturas() {
+  /* async getFacturas() {
     await this.db.collection('facturas').snapshotChanges().subscribe((facturas) => {
       facturas.forEach((nt: any) => {
         this.facturas.push(nt.payload.doc.data());
@@ -69,9 +93,9 @@ export class RegistrosVentasComponent implements OnInit {
         this.notasVenta.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getCotizaciones() {
+ /*  async getCotizaciones() {
     await this.db.collection('cotizaciones').snapshotChanges().subscribe((cotizaciones) => {
       cotizaciones.forEach((nt: any) => {
         this.cotizaciones.push(nt.payload.doc.data());
@@ -87,7 +111,7 @@ export class RegistrosVentasComponent implements OnInit {
     });;
 
   }
-
+ */
 
   getCourseFile = (e) => {  
     this.cargarFactura(e.row.data)  
@@ -100,20 +124,26 @@ export class RegistrosVentasComponent implements OnInit {
   }
 
   cargarFactura(e){
+    this.limpiarArregloPFact()
    this.facturas.forEach(element=>{
      if(e.documento_n == element.documento_n){
       this.factura= element
+      this.productosVendidos2=this.factura.productosVendidos
      }
    })
-   this.limpiarArregloPFact()
+   
    this.productosVendidos.forEach(element=>{
      if(element.factura_id== e.documento_n && element.tipoDocumentoVenta=="Factura"){
       this.productosVendidos2.push(element)
      }
    })
    this.parametrizaciones.forEach(element=>{
+     console.log("las facturas es "+this.factura.sucursal)
     if(element.sucursal == this.factura.sucursal){
+      console.log("sii encontreee")
       this.parametrizacionSucu= element
+    }else{
+      console.log("no encontre")
     }
   })
    this.tDocumento="Factura"

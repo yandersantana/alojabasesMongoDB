@@ -27,6 +27,14 @@ export class OrdenesCompraService {
     return this.http.put(this.URL + `/update/${ordenes._id}`, ordenes); 
   }
 
+  updateEstadoOrden(ordenes,estado:string){
+    return this.http.put(this.URL + `/updateEstadoOrden/${ordenes._id}/${estado}`, ordenes); 
+  }
+
+  updateEstadoOrden2(orden:number,estado:string){
+    return this.http.put(this.URL + `/updateEstadoOrden2/${orden}/${estado}`, orden); 
+  }
+
   updateOrdenEstadoRechazo(id:string, variable:string , mensaje:string , estado2:string){
     return this.http.put(this.URL + `/updateEstadoRechazo/${id}/${variable}/${mensaje}/${estado2}`, variable); 
   }

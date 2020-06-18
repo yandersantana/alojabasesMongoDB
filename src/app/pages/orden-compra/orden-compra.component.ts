@@ -244,8 +244,8 @@ selectionModeValue: string = "all";
   }
 
   asignarIDdocumentos(){
-    this.number_transaccion =this.contadores[0].transacciones_Ndocumento
-    this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento
+    this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
+    this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento+1
   }
 
 
@@ -571,17 +571,17 @@ selectionModeValue: string = "all";
           this.productos.forEach(elemento1=>{
             if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
              switch (e.sucursal.nombre) {
-              case "Milagro":
+              case "matriz":
                 num1=element.cantidad
                 num2=elemento1.sucursal1
                 sumaProductos =Number(num2) - Number(num1)
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 num1=element.cantidad
                 num2=elemento1.sucursal2
                 sumaProductos =Number(num2) - Number(num1)
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 num1=element.cantidad
                 num2=elemento1.sucursal3
                 sumaProductos =Number(num2) - Number(num1)
@@ -595,15 +595,15 @@ selectionModeValue: string = "all";
           var sum2=0
            new Promise<any>((resolve, reject) => {
             switch (e.sucursal.nombre) {
-              case "Milagro":
+              case "matriz":
                 element.nombreComercial.sucursal1=sumaProductos
                 this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 element.nombreComercial.sucursal2=sumaProductos
                 this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 element.nombreComercial.sucursal3=sumaProductos
                 this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                   break;
@@ -801,6 +801,8 @@ selectionModeValue: string = "all";
   }
 
   confirmarM(e,ord:number){
+    this.contadores[0].ordenesCompraAprobadas_Ndocumento=ord
+    this.contadoresService.updateContadoresIDOrdenesAprobadas(this.contadores[0]).subscribe( res => {}, err => {this.errorMensaje()})
     if(e.tipo == "Entregado"){
      // this.db.collection('/ordenesDeCompra').doc(e.documento+"").update({"estadoOrden":"COMPLETO"})
       this.actualizarProductos(e , ord)
@@ -1151,7 +1153,7 @@ anadirDetallePago = (e) => {
         this.detallePago[i].fecha_vencimiento = element.fechaExpiracion
         this.detallePago[i].valor = element.total
         this.detallePago[i].total = element.total
-        this.detallePago[i].id_factura = element.id
+        this.detallePago[i].id_factura = element.idF
       }
     })
     this.calcularTotalPagos()
@@ -1877,7 +1879,7 @@ anadirDetallePago = (e) => {
 
 
     actualizarProductos(e:any , ord:number){
-      this.traerContadoresDocumentos()
+     // this.traerContadoresDocumentos()
       var cont=0
       var contVal=0
     this.productosComprados2.forEach(element=>{
@@ -1959,7 +1961,7 @@ anadirDetallePago = (e) => {
                 this.transaccion.valor=element.precio_compra
                 this.transaccion.totalsuma=element.total-(element.total*(element.descGeneral/100))
                 this.transaccion.bodega="bodega1"
-                this.transaccion.orden_compra=ord-1
+                this.transaccion.orden_compra=ord
                 this.transaccion.documento=e.documento
                 sum2=element.precio_compra-(element.precio_compra*(element.descProducto/100))
                 this.transaccion.valor=sum2-(sum2*(element.descGeneral/100))
@@ -1978,7 +1980,7 @@ anadirDetallePago = (e) => {
                 
                 this.transaccionesService.newTransaccion(this.transaccion).subscribe(
                   res => {
-                    this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+                    this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
                     this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                       res => {
                         contVal++,this.contadorValidaciones(contVal)

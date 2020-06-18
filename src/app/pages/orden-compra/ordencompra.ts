@@ -11,7 +11,7 @@ export class FacturaProveedor{
     estado:string
     estado2:string
     estado3:string
-    id:number
+    idF:number
     documento_solicitud:number
     constructor(){
       this.estado="PENDIENTE"
@@ -46,7 +46,7 @@ export class DetallePagoProveedor{
     valor:number
     no_conformidad:number
     total:number
-    observaciones:Number
+    observaciones:string
     id_factura:number
     constructor(){
         this.no_conformidad=0

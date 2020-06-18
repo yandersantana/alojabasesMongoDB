@@ -13,6 +13,8 @@ router.post('/newContadores', async (req, res) => {
         notasVenta_Ndocumento:req.body.notasVenta_Ndocumento,
         ordenesCompra_Ndocumento:req.body.ordenesCompra_Ndocumento,
         notasVenta_Ndocumento:req.body.notasVenta_Ndocumento,
+        contRemisiones_Ndocumento:req.body.contRemisiones_Ndocumento,
+        pagoProveedor_Ndocumento:req.body.pagoProveedor_Ndocumento,
         transacciones_Ndocumento: req.body.transacciones_Ndocumento});
     await newCont.save();
     res.json({status: 'Contador creado'});
@@ -41,6 +43,8 @@ router.put('/update/:id', async (req, res,next) => {
         notasVenta_Ndocumento:req.body.notasVenta_Ndocumento,
         ordenesCompra_Ndocumento:req.body.ordenesCompra_Ndocumento,
         ordenesCompraAprobadas_Ndocumento:req.body.ordenesCompraAprobadas_Ndocumento,
+        pagoProveedor_Ndocumento:req.body.pagoProveedor_Ndocumento,
+        contRemisiones_Ndocumento:req.body.contRemisiones_Ndocumento,
         transacciones_Ndocumento: req.body.transacciones_Ndocumento};
         
     await Contadores.findByIdAndUpdate(id, {$set: newContador}, {new: true});
@@ -72,6 +76,13 @@ router.put('/updateIdNotasVenta/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateIdRemisiones/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {contRemisiones_Ndocumento:req.body.contRemisiones_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
 router.put('/updateIdProformas/:id', async (req, res,next) => {
     const { id } = req.params;
     await Contadores.findByIdAndUpdate(id, {$set: {proformas_Ndocumento:req.body.proformas_Ndocumento}}, {new: true});
@@ -90,10 +101,31 @@ router.put('/updateIdOrdenesAprobadas/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateIdPagosProveedor/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {pagoProveedor_Ndocumento:req.body.pagoProveedor_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
+router.put('/updateIDFacturasProveedor/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {contFacturaProveedor_Ndocumento:req.body.contFacturaProveedor_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateIDPagoProveedor/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {contFacturaProveedor_Ndocumento:req.body.contFacturaProveedor_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
 
 
 router.put('/updateIdTransacciones/:id', async (req, res,next) => {
     const { id } = req.params;
+    console.log("llegue hasta aqui con "+req.body.transacciones_Ndocumento)
     await Contadores.findByIdAndUpdate(id, {$set: {transacciones_Ndocumento:req.body.transacciones_Ndocumento}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

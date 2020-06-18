@@ -34,10 +34,6 @@ export class ProductoService {
     return this.http.put(this.URL + `/updateBodega/${producto._id}`, producto); 
   }
 
-  updateProductoSucursal1(producto){
-    return this.http.put(this.URL + `/updateProductoSuc1/${producto._id}`, producto); 
-  }
-
   updateProductoSucursal1ComD(producto,suma:number, precio:number){
     return this.http.put(this.URL + `/updateProductoSuc1Dir/${producto._id}/${suma}/${precio}`, producto); 
   }
@@ -50,12 +46,28 @@ export class ProductoService {
     return this.http.put(this.URL + `/updateProductoSuc3Dir/${producto._id}/${suma}/${precio}`, producto); 
   }
 
+  updateProductoSucursal1(producto){
+    return this.http.put(this.URL + `/updateProductoSuc1/${producto._id}`, producto); 
+  }
+
   updateProductoSucursal2(producto){
     return this.http.put(this.URL + `/updateProductoSuc2/${producto._id}`, producto); 
   }
   
   updateProductoSucursal3(producto){
     return this.http.put(this.URL + `/updateProductoSuc3/${producto._id}`, producto); 
+  }
+
+  updateProductoPendienteSucursal1(producto , num:number){
+    return this.http.put(this.URL + `/updateProductoPenSuc1/${producto._id}/${num}`, producto); 
+  }
+
+  updateProductoPendienteSucursal2(producto, num:number){
+    return this.http.put(this.URL + `/updateProductoPenSuc2/${producto._id}/${num}`, producto); 
+  }
+  
+  updateProductoPendienteSucursal3(producto, num:number){
+    return this.http.put(this.URL + `/updateProductoPenSuc3/${producto._id}/${num}`, producto); 
   }
 
   

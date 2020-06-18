@@ -3,6 +3,7 @@ import { transaccion } from './transacciones';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { DxDataGridComponent } from 'devextreme-angular';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 
 @Component({
   selector: 'app-transacciones',
@@ -14,34 +15,24 @@ export class TransaccionesComponent implements OnInit {
  transacciones : transaccion[] = []
  popupvisible:boolean=false
  @ViewChild('datag2') dataGrid2: DxDataGridComponent;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth) { }
+  constructor(public transaccionesService: TransaccionesService) { }
 
   ngOnInit() {
-    this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
-      this.transacciones = data
-
-    })
+    this.traerTransacciones()
   }
+
+  traerTransacciones(){
+    this.transaccionesService.getTransaccion().subscribe(res => {
+      this.transacciones = res as transaccion[];
+   })
+  }
+
+
   mostrarpopup(){
     this.popupvisible=true
   }
 
   onRowPrepared(e) { 
-    //alert("antes") 
-   // if (e.rowElement == 'data' ) {  
-        // e.rowElement.style.backgroundColor = 'yellow';  
-        
-    // }  
-
-   /*  if (e.rowType === "data") {  
-      if (e.column.dataField === "tipo_transaccion") {  
-          if (e.data == "compra")  {
-            e.rowElement.style.backgroundColor = 'yellow';  
-          }
-              
-                
-          }  
-      }  */ 
   }
 
   onExporting (e) {

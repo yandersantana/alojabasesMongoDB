@@ -16,7 +16,7 @@ export class TransaccionesService {
   }
 
   getTransaccion(){ 
-    return this.http.get(this.URL+'/getTransaccion');
+    return this.http.get(this.URL+'/getTransacciones');
   }
 
   updateTransaccion(transaccion){

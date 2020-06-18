@@ -10,7 +10,7 @@ export class VentasService {
 
   venta: factura[];
  //private URL = 'http://localhost:3000/ventas'; //localhost
- private URL = 'http://104.248.14.190:3000/clientes';
+  private URL = 'http://104.248.14.190:3000/ventas';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newVenta(venta){
@@ -28,6 +28,5 @@ export class VentasService {
   deleteVenta(venta){
     return this.http.delete(this.URL + `/delete/${venta._id}`, venta); 
   }
-
-  
+    
 }

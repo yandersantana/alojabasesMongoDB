@@ -29,10 +29,21 @@ app.use('/sucursales', require('./routes/sucursalRoutes'));
 app.use('/contadores', require('./routes/contadoresRoutes'));
 app.use('/productosVendidos', require('./routes/productosVendidosRoutes'));
 app.use('/productosComprados', require('./routes/productosCompradosRoutes'));
+app.use('/productosPendientes', require('./routes/productosPendientesRoutes'));
 app.use('/transaccion', require('./routes/transaccionesRoutes'));
 app.use('/parametrizaciones', require('./routes/parametrizacionesRoutes'));
 app.use('/proveedores', require('./routes/proveedorRoutes'));
 app.use('/ordenesCompra', require('./routes/ordenCompraRoutes'));
+app.use('/notasVenta', require('./routes/notasventaRoutes'));
+app.use('/facturasProveedor', require('./routes/facturaProveedorRoutes'));
+app.use('/detallePago', require('./routes/detallePagoRoutes'));
+app.use('/pagoProveedor', require('./routes/pagoProveedorRoutes'));
+app.use('/bodegas', require('./routes/bodegasRoutes'));
+app.use('/remisiones', require('./routes/remisionRoutes'));
+app.use('/productosObsequio', require('./routes/productosObsequioRoutes'));
+app.use('/productosIngresados', require('./routes/productosIngresadosRoutes'));
+
+
 
 
 

@@ -1,0 +1,1 @@
+{"version":3,"file":"app-info.service.js","sourceRoot":"","sources":["../../../../../../src/app/shared/services/app-info.service.ts"],"names":[],"mappings":";AAAA,OAAO,EAAE,UAAU,EAAE,MAAM,eAAe,CAAC;AAG3C,IAAa,cAAc,GAA3B,MAAa,cAAc;IACzB,gBAAe,CAAC;IAEhB,IAAW,KAAK;QACd,OAAO,YAAY,CAAC;IACtB,CAAC;CACF,CAAA;AANY,cAAc;IAD1B,UAAU,EAAE;GACA,cAAc,CAM1B;SANY,cAAc"}

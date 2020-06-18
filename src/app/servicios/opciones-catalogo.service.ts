@@ -9,7 +9,7 @@ import { Producto } from '../pages/compras/compra';
 export class OpcionesCatalogoService {
 
   empresa: Producto[];
-// private URL = 'http://localhost:3000/opciones'; //localhost
+ //private URL = 'http://localhost:3000/opciones'; //localhost
  private URL = 'http://104.248.14.190:3000/opciones';
   constructor(public http: HttpClient, public router: Router ) { }
 

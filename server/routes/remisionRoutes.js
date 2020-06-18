@@ -1,6 +1,6 @@
 const { Router } = require('express');
 const router = Router();
-const Remision = require('../models/remision')
+const Remision = require('../models/remisionProducto')
 
 router.get('/getRemisiones', async (req, res) => {
     const remisiones = await Remision.find();
@@ -27,6 +27,21 @@ router.put('/update/:id', async (req, res,next) => {
         total:req.body.total
     };
     await Remision.findByIdAndUpdate(id, {$set: remision}, {new: true});
+    res.json({status: 'Ìndice Actualizado'});  
+})
+
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await Remision.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'Ìndice Actualizado'});  
+})
+
+router.put('/updateRechazarRemi/:id/:estado/:mensaje', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    const { mensaje } = req.params;
+    await Remision.findByIdAndUpdate(id, {$set: {estado:estado,msjAdmin:mensaje}}, {new: true});
     res.json({status: 'Ìndice Actualizado'});  
 })
 

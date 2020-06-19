@@ -175,6 +175,13 @@
         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
         <dxo-export [enabled]="true" fileName="Devoluciones" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column
+            dataField="_id"
+            caption="ID"
+            dataType="string"
+            [visible]="false" 
+          >
+        </dxi-column>
+        <dxi-column
             dataField="id_baja"
             caption="Devolucion N"
             dataType="string"

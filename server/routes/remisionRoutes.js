@@ -52,9 +52,9 @@ router.delete('/delete/:id', async (req, res,next) => {
 })
 
 
-router.post('/newProveedor', async (req, res) => {
+router.post('/newRemision', async (req, res) => {
     //const { index_name, index_description, index_type,index_length } = req.body;
-    const newRemision= new Indexes({ 
+    const newRemision= new Remision({ 
         num_orden: req.body.num_orden,
         num_FactPro: req.body.num_FactPro,
         fechaP: req.body.fechaP,

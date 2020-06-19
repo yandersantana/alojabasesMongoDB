@@ -5,11 +5,17 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AlertsService } from 'angular-alert-module';
 import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { producto } from '../ventas/venta';
+import { producto, contadoresDocumentos } from '../ventas/venta';
 import { Sucursal } from '../compras/compra';
 import { element } from 'protractor';
 import { transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { BajasService } from 'src/app/servicios/bajas.service';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 
 @Component({
   selector: 'app-bajas',
@@ -62,30 +68,74 @@ export class BajasComponent implements OnInit {
   "Aprobaciones",
   "Bajas Aprobadas"
   ];
-
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) { 
+  contadores:contadoresDocumentos[]=[]
+  constructor(public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
     this.baja = new baja
     this.productosBaja.push(new productosBajas)
   }
 
   ngOnInit() {
-    this.getIDBjas()
-    this.getProductos()
-    this.getLocales()
-    this.getBajas()
-    this.getProductosBajas()
-    this.getIDTransacciones()
-    this.getParametrizaciones()
+    //this.getIDBjas()
+    //this.getProductos()
+    //this.getLocales()
+    //this.getBajas()
+    //this.getProductosBajas()
+    //this.getIDTransacciones()
+    //this.getParametrizaciones()
+    this.traerParametrizaciones()
+    this.traerBajas()
+    this.traerSucursales()
+    this.traerParametrizaciones()
+    this.traerContadoresDocumentos()
+    this.traerProductos()
+    this.traerSucursales()
+    
   }
 
-  async getIDBjas() {
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerSucursales(){
+    this.sucursalesService.getSucursales().subscribe(res => {
+      this.locales = res as Sucursal[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      this.llenarComboProductos()
+   })
+  }
+
+  traerBajas(){
+    this.bajasService.getBajas().subscribe(res => {
+      this.bajas = res as baja[];
+   })
+  }
+
+  traerContadoresDocumentos(){
+    this.contadoresService.getContadores().subscribe(res => {
+      this.contadores = res as contadoresDocumentos[];
+      this.id_baja =this.contadores[0].contBajas_Ndocumento+1
+      this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
+
+      
+      //this.asignarIDdocumentos()
+   })
+  }
+
+  /* async getIDBjas() {
     await this.db.collection('/bajas_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
       this.id_baja = contador.payload.data()['documento_n']+1;  
     });;
   }
-
-  async getBajas() {
+ */
+  /* async getBajas() {
     await this.db.collection('bajas').snapshotChanges().subscribe((bajas) => {
       new Promise<any>((resolve, reject) => {
         bajas.forEach((nt: any) => {
@@ -94,33 +144,33 @@ export class BajasComponent implements OnInit {
       }).then(res => {}, err => alert(err));  
      
     });;
-  }
+  } */
 
 
-  async getIDTransacciones() {
+  /* async getIDTransacciones() {
     await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccion = transacciones.payload.data()['documento_n'];    
     });;
-  }
+  } */
 
-  async getProductosBajas() {    
+  /* async getProductosBajas() {    
     await this.db.collection('productosBaja').snapshotChanges().subscribe((productos) => {   
       productos.forEach((nt: any) => {
         this.productosBajaBase.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  getParametrizaciones(){
+ /*  getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
-  getLocales(){
+ /*  getLocales(){
     new Promise<any>((resolve, reject) => {
     this.db.collection('/locales').valueChanges().subscribe((data:Sucursal[]) => {
       if(data != null)
@@ -129,9 +179,9 @@ export class BajasComponent implements OnInit {
     console.log("hayyy"+this.locales.length)
   })
     
-  }
+  } */
 
-  async getProductos() {
+  /* async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -142,7 +192,7 @@ export class BajasComponent implements OnInit {
       })
       this.llenarComboProductos()
     });;
-  }
+  } */
 
   llenarComboProductos(){
     this.productosActivos.forEach(element=>{
@@ -197,14 +247,24 @@ export class BajasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-        this.db.collection('/bajas').doc(e.id_baja+"").update({"estado":"Rechazado"}).then(res => {  Swal.fire({
+          this.bajasService.updateEstadoBaja(e,"Rechazado").subscribe( res => {Swal.fire({
+            title: 'Correcto',
+            text: 'Se guardó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+       
+       
+         /*  this.db.collection('/bajas').doc(e.id_baja+"").update({"estado":"Rechazado"}).then(res => {  Swal.fire({
           title: 'Correcto',
           text: 'Se guardó con éxito',
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then((result) => {
           window.location.reload()
-        })}, err => alert(err));  
+        })}, err => alert(err));   */
        
       })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -229,8 +289,8 @@ export class BajasComponent implements OnInit {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
           this.mostrarMensaje()
-        this.db.collection('/bajas').doc(e.id_baja+"").update({"estado":"Aprobado"}).then(res => {  }, err => alert(err));  
-      this.realizarTransacciones(e)
+       // this.db.collection('/bajas').doc(e.id_baja+"").update({"estado":"Aprobado"}).then(res => {  }, err => alert(err));  
+       this.bajasService.updateEstadoBaja(e,"Aprobado").subscribe( res => {console.log("suuu"),this.realizarTransacciones(e)}, err => {alert("error")})
       })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -247,14 +307,11 @@ export class BajasComponent implements OnInit {
     this.bajas.forEach(element=>{
       if(element.id_baja == e.id_baja){
         this.bajaLeida=element
+        this.productosBajaLeido=element.productosBaja
       }
     })
 
-     this.productosBajaBase.forEach(element=>{
-       if(e.id_baja == element.baja_id){
-           this.productosBajaLeido.push(element)
-       }
-     })
+   
      new Promise<any>((resolve, reject) => {
        //alert("voy a "+ this.productosBajaLeido.length)
      this.productosBajaLeido.forEach(element=>{
@@ -277,12 +334,27 @@ export class BajasComponent implements OnInit {
         this.transaccion.usuario="q@q.com"
         this.transaccion.factPro=""
         this.transaccion.idTransaccion=this.number_transaccion++
-        this.db.collection("/transacciones")
+       /*  this.db.collection("/transacciones")
         .add({ ...this.transaccion })
         .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
         this.db.collection("/transacciones_ID").doc("matriz").set({ documento_n:this.number_transaccion })
-          .then(res => { }, err => reject(err));
-         
+          .then(res => { }, err => reject(err)); */
+          this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+            res => {
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                res => {
+                  contVal++,this.contadorValidaciones(contVal)
+                },
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },err => {
+            })
     })
   })
   }
@@ -311,17 +383,17 @@ export class BajasComponent implements OnInit {
             if(elemento1.PRODUCTO == element.producto.PRODUCTO){
              // contIng=0
              switch (this.bajaLeida.sucursal) {
-              case "Milagro":
+              case "matriz":
                 num1=parseInt(element.cantbajam2.toFixed(0))
                 num2=elemento1.sucursal1
                 sumaProductos = Number(num2)-Number(num1)
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 num1=parseInt(element.cantbajam2.toFixed(0))
                 num2=elemento1.sucursal2
                 sumaProductos =Number(num2)-Number(num1)
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 num1=parseInt(element.cantbajam2.toFixed(0))
                 num2=elemento1.sucursal3
                 sumaProductos =Number(num2)-Number(num1)
@@ -332,15 +404,22 @@ export class BajasComponent implements OnInit {
          })
          if(entre){
           switch (this.bajaLeida.sucursal) {
-            case "Milagro":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal1" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
+            case "matriz":
+              element.producto.sucursal1=sumaProductos
+              
+              this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal1" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
               break;
-            case "Naranjito":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal2" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+            case "sucursal1":
+              element.producto.sucursal2=sumaProductos
+              this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal2" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
               break;
-            case "El Triunfo":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
-               console.log("aaaaccctttuuuallice")
+            case "sucursal2":
+              //alert("entre")
+              element.producto.sucursal3=sumaProductos
+              this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
               break;
             default: 
           
@@ -403,15 +482,10 @@ export class BajasComponent implements OnInit {
       })
     }
 
-     this.productosBajaBase.forEach(element=>{
-       if(e.id_baja == element.baja_id){
-           //console.log(element.nombreComercial)
-           this.productosBajaLeido.push(element)
-       }
-     })
      this.bajas.forEach(element=>{
          if(element.id_baja == e.id_baja){
            this.bajaLeida=element
+           this.productosBajaLeido=element.productosBaja
          }
      })
      this.parametrizaciones.forEach(element=>{
@@ -866,18 +940,22 @@ export class BajasComponent implements OnInit {
       })
   }
 
+  mensajeCorrecto(){
+    Swal.close()
+    Swal.fire({
+      title: 'Baja Registrada',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      window.location.reload()
+    })
+  }
+
   contadorValidaciones3(i:number){
     if(this.productosBaja.length==i){
         console.log("recien termine")
-        Swal.close()
-        Swal.fire({
-          title: 'Baja Registrada',
-          text: 'Se ha guardado con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })
+      
     }else{
       console.log("no he entrado actualizar"+i)
     }
@@ -890,18 +968,23 @@ export class BajasComponent implements OnInit {
     this.baja.observaciones=this.observaciones
     this.baja.usuario=this.usuario
     this.baja.totalBajas=this.totalBajas
-
+    this.baja.productosBaja=this.productosBaja
    var contV=0
     if( this.baja.usuario!=undefined){
       this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
-        this.db.collection('/bajas').doc(this.baja.id_baja+"").set({...Object.assign({},this.baja )}) ;
-        this.db.collection('/bajas_ID').doc("matriz").update({"documento_n" :this.id_baja});
-        this.productosBaja.forEach(element => {
+        this.bajasService.newBajas(this.baja).subscribe( res => {
+          this.contadores[0].contBajas_Ndocumento=this.id_baja
+          this.contadoresService.updateContadoresIDBajas(this.contadores[0]).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
+        }, err => {alert("error")})
+
+        //this.db.collection('/bajas').doc(this.baja.id_baja+"").set({...Object.assign({},this.baja )}) ;
+        //this.db.collection('/bajas_ID').doc("matriz").update({"documento_n" :this.id_baja});
+        /* this.productosBaja.forEach(element => {
           element.baja_id=this.id_baja
           this.db.collection("/productosBaja").add({ ...Object.assign({}, element)})
           .then(resolve => {contV++,this.contadorValidaciones3(contV)}, err => reject(err));   
-          })
+          }) */
       })
     }else{
       alert("hay campos vacios")

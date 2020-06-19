@@ -9,6 +9,13 @@ router.get('/getProductosIngresados', async (req, res) => {
 
 
 
+router.put('/updateEstadoIngreso/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await ProductosIngresados.findByIdAndUpdate(id, {$set: {estadoIngreso:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const productosIngresados = {

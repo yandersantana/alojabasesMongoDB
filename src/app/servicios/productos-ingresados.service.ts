@@ -22,6 +22,10 @@ export class ProductosIngresadosService {
   updateProductoIngresado(productoIng){
     return this.http.put(this.URL + `/update/${productoIng._id}`, productoIng); 
   }
+
+  updateEstadoIngreso(productoIng, estado:string){
+    return this.http.put(this.URL + `/updateEstadoIngreso/${productoIng._id}/${estado}`, productoIng); 
+  }
   
 
   deleteProductoIngresado(productoIng){

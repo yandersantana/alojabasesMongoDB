@@ -80,12 +80,13 @@ router.put('/updateEstadoOrden/:id/:estado', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
-router.put('/updateEstadoOrden2/:factura/:estado', async (req, res,next) => {
-    console.log("sssssssssss")
-    const { factura } = req.params;
+router.put('/updateEstadoOrdenes2/:id/:estado', async (req, res,next) => {
+    console.log("sssssssssss" +JSON.stringify(req.body))
+    const { id } = req.params;
     const { estado } = req.params;
-    console.log("aqui esta "+factura + " y "+estado)
-    await OrdenCompra.findOneAndUpdate({documento:factura}, {$set: { estadoOrden:estado}}, {new: true});
+    //console.log("aqui esta "+orden + " y "+estado)
+    //await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
+    await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

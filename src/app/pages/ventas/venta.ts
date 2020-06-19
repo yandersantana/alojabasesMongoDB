@@ -252,6 +252,7 @@ export class contadoresDocumentos{
     ordenesCompraAprobadas_Ndocumento:number
     contFacturaProveedor_Ndocumento:number
     contRemisiones_Ndocumento:number
+    contBajas_Ndocumento:number
     pagoProveedor_Ndocumento:number
     constructor(){
 

@@ -44,7 +44,7 @@ app.use('/bodegas', require('./routes/bodegasRoutes'));
 app.use('/remisiones', require('./routes/remisionRoutes'));
 app.use('/productosObsequio', require('./routes/productosObsequioRoutes'));
 app.use('/productosIngresados', require('./routes/productosIngresadosRoutes'));
-
+app.use('/baja', require('./routes/bajasRoutes'));
 
 
 

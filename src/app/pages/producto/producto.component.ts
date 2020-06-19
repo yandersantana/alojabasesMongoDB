@@ -44,6 +44,7 @@ export class ProductoComponent implements OnInit {
   facturaProveedor2: FacturaProveedor[] = []
   facturaProveedor3: FacturaProveedor[] = []
   transaccion:transaccion
+  ordenleida:OrdenDeCompra
   productosControl: ControlProductos[] = []
   productosControlFinal: ControlProductos[] = []
   remisiones: RemisionProductos[] = []
@@ -184,6 +185,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.traerContadoresDocumentos()
     this.traerfacturasProveedor()
     this.traerBodegas()
+    this.traerRemisiones()
     this.traerProductosIngresados()
   }
 
@@ -490,7 +492,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
         if(element.nombreComercial.PRODUCTO == element2.PRODUCTO){
           suma=element.metros2
           switch (e.sucursal) {
-            case "Matriz":
+            case "matriz":
               if(suma>element2.sucursal1){
                 contIn++
               }
@@ -561,7 +563,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
 
     this.facturaProveedor.forEach(element=>{
       if(element.nSolicitud == e.num_orden && element.nFactura== e.num_FactPro){
-        this.ifFacturaP= element.idF+""
+        this.ifFacturaP= element._id
         console.log("el numero es "+this.ifFacturaP)
       }
     })
@@ -583,7 +585,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
           var entre:boolean=true
           console.log("extraje la remision "+e.id_remision)
           this.remisionesService.updateEstado(e,"Eliminada").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
-
+          this.facturasProveedorService.updateEstado3(this.ifFacturaP,"Por Ingresar").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
           //pendiente de realizar
          /*  this.facturasProveedorService.updateEstado3(e,"Por Ingresar").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")}) */
           //this.db.collection('/remisionProductos').doc(data).update({"estado":"Eliminada"})
@@ -644,7 +646,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
                   break;
               default:
             }
-            
+            this.productosIngresadoService.updateEstadoIngreso(element,"Eliminado").subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
            /*  this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', element.numeroRemision));
             this.expensesCollection.get().toPromise().then(function(querySnapshot) {
               querySnapshot.forEach(function(doc) {
@@ -675,8 +677,8 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   eliminarTransacciones(num:number){
    this.transacciones.forEach(element=>{
      if(element.factPro== num+""){
+      this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
     //  this.db.collection('/transacciones').doc(data).delete()
-    console.log("entre con el "+element.idTransaccion)
       /* this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
       this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
         querySnapshot.forEach(function(doc) {
@@ -793,11 +795,12 @@ new Promise<any>((resolve, reject) => {
   var contEstados=0
 
   
-  this.productosComprados.forEach(element=>{
+  /* this.productosComprados.forEach(element=>{
     if(element.solicitud_n == this.solNum){
       this.productosComprados3.push(element)
     }
-})
+}) */
+this.productosComprados3=this.productosComprados
   this.productosComprados3.forEach(element=>{
     console.log("tttttttttttt "+element.estado_remision)
     if(element.estado_remision == "COMPLETO"){
@@ -811,13 +814,15 @@ console.log("si entre verdadero" + this.solicitudNOrden)
    // alert("entre "+this.solicitudNOrden)
     new Promise<any>((resolve, reject) => {
      // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
-      this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+     //alert("aqui" +JSON.stringify(this.ordenleida))
+
+      this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }else{
     console.log("entre a falso" +this.solicitudNOrden)
     new Promise<any>((resolve, reject) => {
      // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"PARCIAL"})
-      this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }
 
@@ -902,7 +907,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         
        //por revisar esta de aqui abajo
         //this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Ingresada"});
-
+        this.facturasProveedorService.updateEstado3(this.ifFacturaP,"Ingresada").subscribe( res => {},err => {})
         this.remisionesService.newRemision(this.remisionProducto).subscribe( res => {
           this.contadores[0].contRemisiones_Ndocumento=this.Id_remision
           this.contadoresService.updateContadoresIDRemisiones(this.contadores[0]).subscribe( res => {},err => {})
@@ -1079,11 +1084,11 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     if(contEstados==this.productosComprados3.length){
       new Promise<any>((resolve, reject) => {
        // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
-       this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+       this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
       })
     }else{
       new Promise<any>((resolve, reject) => {
-        this.ordenesService.updateEstadoOrden2(this.solicitudNOrden,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+        this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
         //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
       })
     }
@@ -1342,8 +1347,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     
     this.facturaProveedor.forEach(element => {
       if(element.nFactura==e.value){
-        this.ifFacturaP=element.idF+""
+        this.ifFacturaP=element._id
         console.log(element.total)
+       // alert("xsxs "+JSON.stringify(element))
         this.remisionProducto.total=element.total
       }
     });
@@ -1465,10 +1471,10 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     if(contre-1 <= 0){
       console.log("accctttt" +this.solicitudOrdenC)
       //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PENDIENTE"})
-      this.ordenesService.updateEstadoOrden2(this.solicitudOrdenC,"PENDIENTE").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(e,"PENDIENTE").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     }else{
       //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
-      this.ordenesService.updateEstadoOrden2(this.solicitudOrdenC,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(e,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     }
     Swal.close()
     Swal.fire({
@@ -1543,33 +1549,37 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     this.ordenesCompra.forEach(element=>{
       if(element.n_orden == numero){
         this.solicitudNOrden=element.documento
+        this.ordenleida=element
+       // alert("hjhj "+JSON.stringify(this.ordenleida))
           solicitud=element.documento
           this.solNum= element.documento
-          this.productosSolicitados=element.productosComprados
+          this.productosComprados=element.productosComprados
           //bandera=false
       }
     })
+   // alert("KK "+JSON.stringify(this.productosComprados))
     
     var arregloProductos= []
     this.facturaProveedor2.forEach(element=>{
       if(num == element.nFactura){
           arregloProductos= element.productos
+          //alert("arreglo "+arregloProductos)
       }
   
     })
     console.log("el "+num)
     console.log("el arreglo es"+arregloProductos)
-    /* for (let index = 0; index < arregloProductos.length; index++) {
+    for (let index = 0; index < arregloProductos.length; index++) {
       this.productosComprados.forEach(element=>{
-        if(element.solicitud_n == solicitud){
             if(arregloProductos[index] == element.nombreComercial.PRODUCTO){
+              //alert("entre kk")
               this.productosSolicitados.push(element)
             }
           
-        }
+       
     })
       
-    } */
+    }
 
    this.productosSolicitados.forEach(element=>{
      console.log("producto.... "+JSON.stringify(element))

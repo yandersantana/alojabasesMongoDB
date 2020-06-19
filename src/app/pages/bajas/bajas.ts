@@ -10,6 +10,7 @@ export class baja{
     id_baja:number
     totalBajas:number
     estado:string
+    productosBaja:productosBajas[]=[]
     constructor(){
         this.estado="Pendiente"
     }

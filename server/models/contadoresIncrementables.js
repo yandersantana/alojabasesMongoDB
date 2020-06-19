@@ -13,7 +13,8 @@ const ContadoresSchema = new Schema({
     ordenesCompraAprobadas_Ndocumento: { type: Number, required: false},
     contFacturaProveedor_Ndocumento: { type: Number, required: false},
     contRemisiones_Ndocumento: { type: Number, required: false},
-    pagoProveedor_Ndocumento: { type: Number, required: false}
+    pagoProveedor_Ndocumento: { type: Number, required: false},
+    contBajas_Ndocumento: { type: Number, required: false}
 
     
     

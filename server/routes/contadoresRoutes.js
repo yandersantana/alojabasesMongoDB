@@ -76,6 +76,12 @@ router.put('/updateIdNotasVenta/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateIdBajas/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {contBajas_Ndocumento:req.body.contBajas_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateIdRemisiones/:id', async (req, res,next) => {
     const { id } = req.params;
     await Contadores.findByIdAndUpdate(id, {$set: {contRemisiones_Ndocumento:req.body.contRemisiones_Ndocumento}}, {new: true});

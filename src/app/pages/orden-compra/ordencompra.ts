@@ -1,6 +1,7 @@
 
 
 export class FacturaProveedor{
+    _id:string
     fecha:string
     fechaExpiracion:string
     nFactura:string

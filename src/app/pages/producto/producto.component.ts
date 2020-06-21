@@ -262,9 +262,8 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   }
 
 
-   traerContadoresDocumentos(){
-    console.log("estoy trayendo")
-    this.contadoresService.getContadores().subscribe(res => {
+  traerContadoresDocumentos(){
+  this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.asignarIDdocumentos()
    })

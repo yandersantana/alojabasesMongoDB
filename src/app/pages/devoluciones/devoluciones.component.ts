@@ -4,7 +4,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AlertsService } from 'angular-alert-module';
 import { devolucion, productosDevueltos } from './devoluciones';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { venta, factura, producto } from '../ventas/venta';
+import { venta, factura, producto, contadoresDocumentos } from '../ventas/venta';
 import { element } from 'protractor';
 import { ProductoDetalleVenta } from '../producto/producto';
 import Swal from 'sweetalert2';
@@ -14,6 +14,15 @@ import { transaccion } from '../transacciones/transacciones';
 import { ThrowStmt } from '@angular/compiler';
 import { OrdenDeCompra } from '../compras/compra';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { FacturasService } from 'src/app/servicios/facturas.service';
+import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { DevolucionesService } from 'src/app/servicios/devoluciones.service';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 
 @Component({
   selector: 'app-devoluciones',
@@ -79,14 +88,14 @@ productosVendidos:venta[]=[]
   productosVendidos2:venta[]=[]
   parametrizaciones:parametrizacionsuc[]=[]
 parametrizacionSucu:parametrizacionsuc
-
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) { 
+contadores:contadoresDocumentos[]=[]
+  constructor(public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
     this.devolucion = new devolucion
     this.productosDevueltos.push(new productosDevueltos)
   }
 
   ngOnInit() {
-    this.getIDDevolciones()
+   /*  this.getIDDevolciones()
     this.getFacturas()
     this.getnotasVenta()
     this.getProductosVendidos()
@@ -95,26 +104,83 @@ parametrizacionSucu:parametrizacionsuc
     this.getProductosDevueltos()
     this.getIDTransacciones()
     this.getOrdenCompra()
-    this.getParametrizaciones()
+    this.getParametrizaciones() */
+
+    this.traerDevoluciones()
+    this.traerFacturas()
+    this.traerNotasVenta()
+    this.traerContadoresDocumentos()
+    this.traerProductos()
+    this.traerOrdenesCompra()
+    this.traerParametrizaciones()
   }
 
-  getParametrizaciones(){
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productos = res as producto[];
+   })
+  }
+
+  traerOrdenesCompra(){
+    this.ordenesService.getOrden().subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+   })
+  }
+
+  traerFacturas(){
+    this.facturasService.getFacturas().subscribe(res => {
+      this.facturas = res as factura[];
+   })
+  }
+
+  traerNotasVenta(){
+    this.notasVentaService.getNotasVentas().subscribe(res => {
+      this.notas_venta = res as factura[];
+   })
+  }
+
+  traerDevoluciones(){
+    this.devolucionesService.getDevoluciones().subscribe(res => {
+      this.devoluciones = res as devolucion[];
+   })
+  }
+
+  traerContadoresDocumentos(){
+    this.contadoresService.getContadores().subscribe(res => {
+        this.contadores = res as contadoresDocumentos[];
+        this.asignarIDdocumentos()
+     })
+  }
+  
+  asignarIDdocumentos(){
+    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    this.id_devolucion=this.contadores[0].contDevoluciones_Ndocumento+1
+   // this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+ /*  getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
-  async getIDDevolciones() {
+ /*  async getIDDevolciones() {
     //REVISAR OPTIMIZACION
     await this.db.collection('/devoluciones_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
       this.id_devolucion = contador.payload.data()['documento_n']+1;  
     });;
-  }
+  } */
 
-  async getOrdenCompra() {
+  /* async getOrdenCompra() {
     await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
       new Promise<any>((resolve, reject) => {
         ordenes.forEach((nt: any) => {
@@ -122,17 +188,17 @@ parametrizacionSucu:parametrizacionsuc
         })
       }) 
     });;
-  }
+  } */
 
-  async getFacturas() {
+ /*  async getFacturas() {
     await this.db.collection('facturas').snapshotChanges().subscribe((facturas) => {
         facturas.forEach((nt: any) => {
           this.facturas.push(nt.payload.doc.data());    
         })
     });;
-  }
+  } */
 
-  async getProductos() {
+ /*  async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -141,8 +207,8 @@ parametrizacionSucu:parametrizacionsuc
       })
     });;
   }
-
-  async getDevoluciones() {
+ */
+ /*  async getDevoluciones() {
     //REVISAR OPTIMIZACION
     await this.db.collection('devoluciones').snapshotChanges().subscribe((devoluciones) => {
       new Promise<any>((resolve, reject) => {
@@ -152,53 +218,54 @@ parametrizacionSucu:parametrizacionsuc
       }).then(res => {}, err => alert(err));  
      
     });;
-  }
+  } */
 
-  async getnotasVenta() {
+ /*  async getnotasVenta() {
     await this.db.collection('notas_venta').snapshotChanges().subscribe((notas) => {
         notas.forEach((nt: any) => {
           this.notas_venta.push(nt.payload.doc.data());    
         })
     });;
-  }
+  } */
 
-  async getProductosVendidos() {    
+ /*  async getProductosVendidos() {    
     await this.db.collection('productosVendidos').snapshotChanges().subscribe((productosVendidos) => {   
       productosVendidos.forEach((nt: any) => {
         this.productosVendidos.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getProductosDevueltos() {    
+ /*  async getProductosDevueltos() {    
     await this.db.collection('productosDevueltos').snapshotChanges().subscribe((productos) => {   
       productos.forEach((nt: any) => {
         this.productosDevueltosBase.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getIDTransacciones() {
+  /* async getIDTransacciones() {
     await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccion = transacciones.payload.data()['documento_n'];    
     });;
-  }
+  } */
 
 
   obtenerDocumento(e){
     var bandera=true
     this.devolucion.tipo_documento=e.value
-    console.log("menu es "+e.value)
     if(e.value=="Factura"){
+      this.limpiarArreglo()
       this.facturas.forEach(element=>{
         if(element.documento_n == this.idDocumento){
           this.facturaTraida=element
+          this.productosVendidos2=element.productosVendidos
           this.cliente=element.cliente.cliente_nombre
           this.fecha_transaccion=element.fecha2
           this.sucursal=element.sucursal
           bandera=false
-          this.obtenerDetalleProductosFact()
+         // this.obtenerDetalleProductosFact()
         }
       })
       if(bandera){
@@ -209,13 +276,15 @@ parametrizacionSucu:parametrizacionsuc
       }
     }else if(e.value=="Nota de Venta"){
       this.notas_venta.forEach(element=>{
+        this.limpiarArreglo()
         if(element.documento_n == this.idDocumento){
           this.facturaTraida=element
           this.cliente=element.cliente.cliente_nombre
           this.fecha_transaccion=element.fecha2
           this.sucursal=element.sucursal
+          this.productosVendidos2=element.productosVendidos
           bandera=false
-          this.obtenerDetalleProductosNot()
+          //this.obtenerDetalleProductosNot()
         }
       })
       if(bandera){
@@ -380,27 +449,35 @@ parametrizacionSucu:parametrizacionsuc
     this.devolucion.id_devolucion=this.id_devolucion
     this.devolucion.totalDevolucion=this.total
     this.devolucion.num_documento=this.idDocumento
+    this.devolucion.productosDevueltos=this.productosDevueltos
     var contV=0
     var text=""
-    text=this.facturaTraida.observaciones+ "/ Documento Devolucion "+this.idDocumento
-    console.log("sdsdsdsd "+text)
+    text=this.facturaTraida.observaciones+ "/ Documento Devolucion "+this.id_devolucion
     if(this.devolucion.cliente!=undefined && this.devolucion.fecha!=undefined && this.devolucion.fecha_transaccion!=undefined){
       this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
-        this.db.collection('/devoluciones').doc(this.id_devolucion+"").set({...Object.assign({},this.devolucion )}) ;
-        this.db.collection('/devoluciones_ID').doc("matriz").update({"documento_n" :this.id_devolucion});
+       // this.db.collection('/devoluciones').doc(this.id_devolucion+"").set({...Object.assign({},this.devolucion )}) ;
+        //this.db.collection('/devoluciones_ID').doc("matriz").update({"documento_n" :this.id_devolucion});
+        this.devolucionesService.newDevolucion(this.devolucion).subscribe( res => {
+          this.contadores[0].contDevoluciones_Ndocumento=this.id_devolucion
+          this.contadoresService.updateContadoresDevoluciones(this.contadores[0]).subscribe( res => {},err => {})
+        },err => {})
         if(this.devolucion.tipo_documento=="Factura"){
-          this.db.collection('/facturas').doc(this.idDocumento+"").update({"observaciones" :text});
+          //this.db.collection('/facturas').doc(this.idDocumento+"").update({"observaciones" :text});
+          this.facturaTraida.observaciones=text
+          this.facturasService.updateFacturas(this.facturaTraida).subscribe( res => {this.confirmarDevolucion()},err => {alert("error")})
         }else if(this.devolucion.tipo_documento=="Nota de Venta"){
-          this.db.collection('/notas_venta').doc(this.idDocumento+"").update({"observaciones" :text});
+          this.facturaTraida.observaciones=text
+          this.notasVentaService.updateNotasVenta(this.facturaTraida).subscribe( res => {this.confirmarDevolucion()},err => {})
+          //this.db.collection('/notas_venta').doc(this.idDocumento+"").update({"observaciones" :text});
         }
        
-        this.productosDevueltos.forEach(element => {
+        /* this.productosDevueltos.forEach(element => {
           element.devolucion_id=this.id_devolucion
           this.db.collection("/productosDevueltos").add({ ...Object.assign({}, element)})
           .then(resolve => {contV++,this.contadorValidaciones3(contV)}, err => reject(err));
             
-          })
+          }) */
         //this.actualizarProductos()
         
       })
@@ -437,14 +514,15 @@ parametrizacionSucu:parametrizacionsuc
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-        this.db.collection('/devoluciones').doc(e.id_devolucion+"").update({"estado":"Rechazado"}).then(res => {  Swal.fire({
-          title: 'Correcto',
-          text: 'Se guardó con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => alert(err));  
+          this.devolucionesService.updateEstado(e,"Rechazado").subscribe( res => {Swal.fire({
+            title: 'Correcto',
+            text: 'Se guardó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })},err => {})
+        //this.db.collection('/devoluciones').doc(e.id_devolucion+"").update({"estado":"Rechazado"}).then(res => {  }, err => alert(err));  
        
       })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -457,16 +535,6 @@ parametrizacionSucu:parametrizacionsuc
     }) 
   }
 
-  /*
-Swal.fire({
-          title: 'Correcto',
-          text: 'Se aprobó con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })
-  */
 
   aceptarDevolucion(e:any){
     Swal.fire({
@@ -480,8 +548,9 @@ Swal.fire({
       if (result.value) {
         new Promise<any>((resolve, reject) => {
           this.mostrarMensaje()
-        this.db.collection('/devoluciones').doc(e.id_devolucion+"").update({"estado":"Aprobado"}).then(res => {  }, err => alert(err));  
-       this.realizarTransacciones(e)
+          this.devolucionesService.updateEstado(e,"Aprobado").subscribe( res => { this.realizarTransacciones(e)},err => {alert("error")})
+        //this.db.collection('/devoluciones').doc(e.id_devolucion+"").update({"estado":"Aprobado"}).then(res => {  }, err => alert(err));  
+      
       })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -521,14 +590,10 @@ Swal.fire({
     this.devoluciones.forEach(element=>{
       if(element.id_devolucion == e.id_devolucion){
         this.devolucioLeida=element
+        this.productosDevueltosCarga=element.productosDevueltos
       }
     })
 
-     this.productosDevueltosBase.forEach(element=>{
-       if(e.id_devolucion == element.devolucion_id){
-           this.productosDevueltosCarga.push(element)
-       }
-     })
      new Promise<any>((resolve, reject) => {
      this.productosDevueltosCarga.forEach(element=>{
         this.transaccion = new transaccion()
@@ -550,11 +615,15 @@ Swal.fire({
         this.transaccion.usuario="q@q.com"
         this.transaccion.factPro=this.devolucioLeida.num_documento+""
         this.transaccion.idTransaccion=this.number_transaccion++
-        this.db.collection("/transacciones")
+        /* this.db.collection("/transacciones")
         .add({ ...this.transaccion })
         .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
         this.db.collection("/transacciones_ID").doc("matriz").set({ documento_n:this.number_transaccion })
-          .then(res => { }, err => reject(err));
+          .then(res => { }, err => reject(err)); */
+          this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
+            this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+            this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {contVal++,this.contadorValidaciones(contVal)},err => {alert("error")})}
+            ,err => {})
          
     })
   })
@@ -586,18 +655,22 @@ Swal.fire({
     }
   }
 
+  confirmarDevolucion(){
+    Swal.fire({
+      title: 'Devolucion Registrada',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      window.location.reload()
+    })
+  }
+
   contadorValidaciones3(i:number){
     if(this.productosDevueltos.length==i){
         console.log("recien termine")
         Swal.close()
-        Swal.fire({
-          title: 'Devolucion Registrada',
-          text: 'Se ha guardado con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })
+       
     }else{
       console.log("no he entrado actualizar"+i)
     }
@@ -615,23 +688,16 @@ Swal.fire({
       })
     }
 
-     this.productosDevueltosBase.forEach(element=>{
-       if(e.id_devolucion == element.devolucion_id){
-           //console.log(element.nombreComercial)
-           this.productosDevueltosCarga.push(element)
-       }
-     })
      this.devoluciones.forEach(element=>{
          if(element.id_devolucion == e.id_devolucion){
            this.devolucioLeida=element
+           this.productosDevueltosCarga=element.productosDevueltos
          }
      })
 
-    this.productosDevueltosCarga.forEach(element=>{
-      console.log("datos "+JSON.stringify(element))
-    })
+    
     this.parametrizaciones.forEach(element=>{
-      if(element.sucursal == this.variablesucursal){
+      if(element.sucursal == this.devolucioLeida.sucursal){
         this.parametrizacionSucu= element
       }
     })
@@ -1099,17 +1165,17 @@ Swal.fire({
           this.productos.forEach(elemento1=>{
             if(elemento1.PRODUCTO == element.producto.PRODUCTO){
               switch (this.devolucioLeida.sucursal) {
-                case "Milagro":
+                case "matriz":
                   num1=parseInt(element.cantDevueltam2.toFixed(0))
                   num2=elemento1.sucursal1
                   sumaProductos = Number(num2)+Number(num1)
                   break;
-                case "Naranjito":
+                case "sucursal1":
                   num1=parseInt(element.cantDevueltam2.toFixed(0))
                   num2=elemento1.sucursal2
                   sumaProductos =Number(num2)+Number(num1)
                   break;
-                case "El Triunfo":
+                case "sucursal2":
                   num1=parseInt(element.cantDevueltam2.toFixed(0))
                   num2=elemento1.sucursal3
                   sumaProductos =Number(num2)+Number(num1)
@@ -1120,15 +1186,21 @@ Swal.fire({
          })
          if(entre){       
           switch (this.devolucioLeida.sucursal) {
-            case "Milagro":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal1" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
+            case "matriz":
+              element.producto.sucursal1=sumaProductos
+              this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {alert("error")})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal1" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
               break;
-            case "Naranjito":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal2" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+            case "sucursal1":
+              element.producto.sucursal2=sumaProductos
+              this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {alert("error")})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal2" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
               break;
-            case "El Triunfo":
-              this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
-               console.log("aaaaccctttuuuallice")
+            case "sucursal2":
+              //alert("entre aqui ")
+              element.producto.sucursal3=sumaProductos
+              this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => {alert("error")})
+              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
               break;
             default: 
           

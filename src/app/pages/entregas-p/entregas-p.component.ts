@@ -2,13 +2,19 @@ import { Component, OnInit } from '@angular/core';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AlertsService } from 'angular-alert-module';
-import { productosPendientesEntrega, producto } from '../ventas/venta';
+import { productosPendientesEntrega, producto, contadoresDocumentos } from '../ventas/venta';
 import { entregaProductos, documentoGenerado } from './entrega';
 import pdfMake from 'pdfmake/build/pdfmake';
 import Swal from 'sweetalert2';
 import { element } from 'protractor';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { ProductosEntregadosService } from 'src/app/servicios/productos-entregados.service';
+import { DocumentoGeneradoEntregaService } from 'src/app/servicios/documento-generado-entrega.service';
 
 @Component({
   selector: 'app-entregas-p',
@@ -66,22 +72,76 @@ export class EntregasPComponent implements OnInit {
   docEntregasRealizadas:documentoGenerado[]=[]
   docEntregasPendientes:documentoGenerado[]=[]
   docEntregasEliminadas:documentoGenerado[]=[]
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,private alerts: AlertsService) {
+  contadores:contadoresDocumentos[]=[]
+  constructor(public parametrizacionService:ParametrizacionesService,public documentoGeneradoService:DocumentoGeneradoEntregaService,
+    public productosEntregadosService:ProductosEntregadosService, public contadoresService:ContadoresDocumentosService, public productosPendientesService: ProductosPendientesService, public productoService:ProductoService ) {
     this.entregaProducto = new entregaProductos
     this.documentoG = new documentoGenerado
    }
 
   ngOnInit() {
-    this.getProductosPendientes()
+   /*  this.getProductosPendientes()
     this.getProductos()
     this.getProductosEntregados()
     this.getIDEntregas()
     this.getParametrizaciones()
     this.getDocumentog()
-    this.getEntregasDoc()
+    this.getEntregasDoc() */
+    this.traerContadoresDocumentos()
+    this.traerProductos()
+    this.traerProductosEntregados()
+    this.traerParametrizaciones()
+    this.traerProductosPendientesEntrega()
+    this.traerDocumentoGenerado()
   }
 
-  async getProductos() {
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productos = res as producto[];
+   })
+  }
+
+  traerProductosPendientesEntrega(){
+    this.productosPendientesService.getProductoPendiente().subscribe(res => {
+      this.productosPendientes = res as productosPendientesEntrega[];
+      this.separarEntregas()
+   })
+  }
+
+  traerProductosEntregados(){
+    this.productosEntregadosService.getProductosEntregados().subscribe(res => {
+      this.productosEntregasSuc = res as entregaProductos[];
+   })
+  }
+
+  traerDocumentoGenerado(){
+    this.documentoGeneradoService.getDocumentoGenerado().subscribe(res => {
+      this.docEntregas = res as documentoGenerado[];
+      this.asignarValores()
+   })
+  }
+
+  traerContadoresDocumentos(){
+    this.contadoresService.getContadores().subscribe(res => {
+        this.contadores = res as contadoresDocumentos[];
+        this.asignarIDdocumentos()
+     })
+  }
+  
+  asignarIDdocumentos(){
+    this.number_transaccionEnt=this.contadores[0].contProductosEntregadosSucursal_Ndocumento+1
+    this.idDoc=this.contadores[0].contDocumentoEntrega_Ndocumento+1
+   // this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+
+ /*  async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -89,9 +149,9 @@ export class EntregasPComponent implements OnInit {
         this.productos.push(nt.payload.doc.data());
       })
     });;
-  }
+  } */
 
-  async getProductosPendientes() {
+ /*  async getProductosPendientes() {
     await this.db.collection('productosPendientesEntrega').snapshotChanges().subscribe((productos) => {
       new Promise<any>((resolve, reject) => {
         productos.forEach((nt: any) => {
@@ -100,9 +160,9 @@ export class EntregasPComponent implements OnInit {
       }) 
       this.separarEntregas()
     });;
-  }
+  } */
 
-  async getProductosEntregados() {
+ /*  async getProductosEntregados() {
     await this.db.collection('productosEntregadosSucursal').snapshotChanges().subscribe((productos) => {
       new Promise<any>((resolve, reject) => {
         productos.forEach((nt: any) => {
@@ -110,32 +170,32 @@ export class EntregasPComponent implements OnInit {
         })
       }) 
     });;
-  }
+  } */
 
-  async getIDEntregas() {
+ /*  async getIDEntregas() {
     
     await this.db.collection('productosEntregadosSucursalID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccionEnt = transacciones.payload.data()['documento_n']+1;    
     });;
-  }
+  } */
 
-  async getDocumentog() {
+  /* async getDocumentog() {
     console.log("dnnnndte")
     await this.db.collection('documentoEntregaID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.idDoc = transacciones.payload.data()['documento_n']+1;    
       console.log("el documen "+this.idDoc)
     });;
-  }
+  } */
 
-  getParametrizaciones(){
+  /* getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
   /* getEntregasDoc(){
     this.db.collection('/documentoEntrega').valueChanges().subscribe((data:documentoGenerado[]) => {
@@ -145,7 +205,7 @@ export class EntregasPComponent implements OnInit {
     })
   } */
 
-  async getEntregasDoc() {
+ /*  async getEntregasDoc() {
     
     await this.db.collection('documentoEntrega').snapshotChanges().subscribe((traslados) => {
       new Promise<any>((resolve, reject) => {
@@ -155,7 +215,7 @@ export class EntregasPComponent implements OnInit {
       }) 
     this.asignarValores()
     });;
-  }
+  } */
 
   separarEntregas(){
     this.productosPendientes.forEach(element=>{
@@ -246,7 +306,7 @@ export class EntregasPComponent implements OnInit {
       }
     })
     switch (this.entregaProducto.productoPorEntregar.sucursal) {
-      case "Milagro":
+      case "matriz":
         if(this.productoL.sucursal1>=contM2t){
           this.autorizarEntrega()
         }else{
@@ -259,7 +319,7 @@ export class EntregasPComponent implements OnInit {
           })
         }
         break;
-      case "Naranjito":
+      case "sucursal1":
         if(this.productoL.sucursal2>=contM2t){
           this.autorizarEntrega()
         }else{
@@ -272,7 +332,7 @@ export class EntregasPComponent implements OnInit {
           })
         }
         break;
-      case "El Triunfo":
+      case "sucursal2":
         if(this.productoL.sucursal3>=contM2t){
           this.autorizarEntrega()
         }else{
@@ -302,7 +362,7 @@ export class EntregasPComponent implements OnInit {
     })
 
     switch (this.entregaProducto.productoPorEntregar.sucursal) {
-      case "Milagro":
+      case "matriz":
         if(this.productoL.sucursal1>=this.entregaProducto.m2){
           this.autorizarEntrega2()
         }else{
@@ -315,7 +375,7 @@ export class EntregasPComponent implements OnInit {
           })
         }
         break;
-      case "Naranjito":
+      case "sucursal1":
         if(this.productoL.sucursal2>=this.entregaProducto.m2){
           this.autorizarEntrega2()
         }else{
@@ -328,7 +388,7 @@ export class EntregasPComponent implements OnInit {
           })
         }
         break;
-      case "El Triunfo":
+      case "sucursal2":
         if(this.productoL.sucursal3>=this.entregaProducto.m2){
           this.autorizarEntrega2()
         }else{
@@ -425,9 +485,14 @@ export class EntregasPComponent implements OnInit {
     this.setearNFactura()
     new Promise<any>((resolve, reject) => {
       this.mostrarMensaje()
-        this.db.collection("/documentoEntrega").doc(this.idDoc+"").set({ ...Object.assign({}, this.documentoG)})
+       /*  this.db.collection("/documentoEntrega").doc(this.idDoc+"").set({ ...Object.assign({}, this.documentoG)})
         .then(resolve => {this.crearPDF3()}, err => reject(err));
-        this.db.collection('/documentoEntregaID').doc("matriz").update({"documento_n" :this.idDoc});   
+        this.db.collection('/documentoEntregaID').doc("matriz").update({"documento_n" :this.idDoc}); */   
+
+        this.documentoGeneradoService.newDocumentoGenerado(this.documentoG).subscribe( res => {
+          this.contadores[0].contDocumentoEntrega_Ndocumento=this.idDoc
+          this.contadoresService.updateContadoresIDDocumentoGenerado(this.contadores[0]).subscribe( res => {},err => {})
+        },err => {})
        
     })
     
@@ -442,18 +507,43 @@ export class EntregasPComponent implements OnInit {
       this.mostrarMensaje()
       if(this.cajasP2== 0 && this.piezasP2 == 0){
         this.actualizarPendientes()
-        this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"estado":"ENTREGADO", "cajas":this.cajasP2 , "piezas":this.piezasP2 , "cantM2":0 , "cajasEntregadas":this.productoLeido.cajas,
-      "piezasEntregadas":this.productoLeido.piezas, "m2Entregados":this.productoLeido.cantM2})
-        this.db.collection("/productosEntregadosSucursal").doc(this.number_transaccionEnt+"").set({ ...Object.assign({}, this.entregaProducto)})
-        .then(resolve => {this.actualizarPendientes()}, err => reject(err));   
-        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt});  
+        this.entregaProducto.productoPorEntregar.estado="ENTREGADO"
+        this.entregaProducto.productoPorEntregar.cajas=this.cajasP2
+        this.entregaProducto.productoPorEntregar.piezas=this.piezasP2
+        this.entregaProducto.productoPorEntregar.cantM2=0
+        this.entregaProducto.productoPorEntregar.cajasEntregadas=this.productoLeido.cajas
+        this.entregaProducto.productoPorEntregar.piezasEntregadas=this.productoLeido.piezas
+        this.entregaProducto.productoPorEntregar.m2Entregados=this.productoLeido.cantM2
+        this.productosPendientesService.updateProductoPendiente(this.entregaProducto.productoPorEntregar).subscribe( res => {},err => {})
+      this.productosEntregadosService.newProductoEntregado(this.entregaProducto).subscribe( res => {
+        this.actualizarPendientes(),
+        this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt
+        this.contadoresService.updateContadoresIDProductosEntregados(this.contadores[0]).subscribe( res => { },err => {})
+      },err => {})
+       /* this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"estado":"ENTREGADO", "cajas":this.cajasP2 , "piezas":this.piezasP2 , "cantM2":0 , "cajasEntregadas":this.productoLeido.cajas,
+      "piezasEntregadas":this.productoLeido.piezas, "m2Entregados":this.productoLeido.cantM2}) */
+        /* this.db.collection("/productosEntregadosSucursal").doc(this.number_transaccionEnt+"").set({ ...Object.assign({}, this.entregaProducto)})
+        .then(resolve => {this.actualizarPendientes()}, err => reject(err));  */  
+        //this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt});  
       }else{
+        this.entregaProducto.productoPorEntregar.cajas=this.cajasP2
+        this.entregaProducto.productoPorEntregar.piezas=this.piezasP2
+        this.entregaProducto.productoPorEntregar.cantM2=this.restam2
+        this.entregaProducto.productoPorEntregar.cajasEntregadas=this.productoLeido.cajas
+        this.entregaProducto.productoPorEntregar.piezasEntregadas=this.productoLeido.piezas
+        this.entregaProducto.productoPorEntregar.m2Entregados=this.productoLeido.cantM2
+        this.productosPendientesService.updateProductoPendiente(this.entregaProducto).subscribe( res => {},err => {})
+      this.productosEntregadosService.newProductoEntregado(this.entregaProducto).subscribe( res => {
+        this.actualizarPendientes(),
+        this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt
+        this.contadoresService.updateContadoresIDProductosEntregados(this.contadores[0]).subscribe( res => { },err => {})
+      },err => {})
         
-        this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"cajas":this.cajasP2 , "piezas":this.piezasP2 , "cantM2":this.restam2 , "cajasEntregadas":this.productoLeido.cajas,
+        /* this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"cajas":this.cajasP2 , "piezas":this.piezasP2 , "cantM2":this.restam2 , "cajasEntregadas":this.productoLeido.cajas,
         "piezasEntregadas":this.productoLeido.piezas, "m2Entregados":this.productoLeido.cantM2})
         this.db.collection("/productosEntregadosSucursal").doc(this.number_transaccionEnt+"").set({ ...Object.assign({}, this.entregaProducto)})
         .then(resolve => {this.actualizarPendientes()}, err => reject(err));   
-        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt});   
+        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt}); */   
       }  
     })
   }
@@ -464,17 +554,20 @@ export class EntregasPComponent implements OnInit {
     this.productos.forEach(element=>{
         if(element.PRODUCTO == this.entregaProducto.productoPorEntregar.producto.PRODUCTO){
           switch (this.entregaProducto.productoPorEntregar.sucursal) {
-            case "Milagro":
+            case "matriz":
               resta=element.suc1Pendiente-this.entregaProducto.m2
-              this.db.collection('/productos').doc(element.PRODUCTO).update({"suc1Pendiente" :resta});
+              this.productoService.updateProductoPendienteSucursal1(element,resta).subscribe( res => { },err => {})
+             // this.db.collection('/productos').doc(element.PRODUCTO).update({"suc1Pendiente" :resta});
               break;
-            case "Naranjito":
+            case "sucursal1":
               resta=element.suc2Pendiente-this.entregaProducto.m2
-              this.db.collection('/productos').doc(element.PRODUCTO).update({"suc2Pendiente" :resta});
+              this.productoService.updateProductoPendienteSucursal2(element,resta).subscribe( res => { },err => {})
+              //this.db.collection('/productos').doc(element.PRODUCTO).update({"suc2Pendiente" :resta});
               break;
-            case "El Triunfo":
+            case "sucursal2":
               resta=element.suc3Pendiente-this.entregaProducto.m2
-              this.db.collection('/productos').doc(element.PRODUCTO).update({"suc3Pendiente" :resta});
+              this.productoService.updateProductoPendienteSucursal3(element,resta).subscribe( res => { },err => {})
+              //this.db.collection('/productos').doc(element.PRODUCTO).update({"suc3Pendiente" :resta});
               break;
             default:  
          }
@@ -491,11 +584,27 @@ export class EntregasPComponent implements OnInit {
     console.log("entre a a ctualizar el "+cont)
     new Promise<any>((resolve, reject) => {
       this.mostrarMensaje()
-        this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"estado":"ENTREGADO", "cajas":0 , "piezas":0 , "cantM2":0, "cajasEntregadas":this.productoLeido.cajas,
+      this.entregaProducto.productoPorEntregar.estado="ENTREGADO"
+      this.entregaProducto.productoPorEntregar.cajas=0
+      this.entregaProducto.productoPorEntregar.piezas=0
+      this.entregaProducto.productoPorEntregar.cantM2=0
+      this.entregaProducto.productoPorEntregar.cajasEntregadas=this.productoLeido.cajas
+      this.entregaProducto.productoPorEntregar.piezasEntregadas=this.productoLeido.piezas
+      this.entregaProducto.productoPorEntregar.m2Entregados=this.productoLeido.cantM2
+      this.productosPendientesService.updateProductoPendiente(this.entregaProducto).subscribe( res => {},err => {})
+    this.productosEntregadosService.newProductoEntregado(this.entregaProducto).subscribe( res => {
+      this.actualizarPendientes(),
+      this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt
+      this.contadoresService.updateContadoresIDProductosEntregados(this.contadores[0]).subscribe( res => { },err => {})
+    },err => {})
+      
+
+
+       /*  this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"estado":"ENTREGADO", "cajas":0 , "piezas":0 , "cantM2":0, "cajasEntregadas":this.productoLeido.cajas,
         "piezasEntregadas":this.productoLeido.piezas, "m2Entregados":this.productoLeido.cantM2})
         this.db.collection("/productosEntregadosSucursal").doc(this.number_transaccionEnt+"").set({ ...Object.assign({}, this.entregaProducto)})
         .then(resolve => {this.actualizarPendientes()}, err => reject(err));
-        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt});   
+        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt}); */   
        
     })
   }
@@ -600,14 +709,23 @@ export class EntregasPComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"PENDIENTE"}).then(res => {  Swal.fire({
+        this.documentoGeneradoService.updateEstado(e,"PENDIENTE").subscribe( res => {Swal.fire({
           title: 'Correcto',
           text: 'Un administrador aprobará su solicitud',
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then((result) => {
           window.location.reload()
-        })}, err => alert(err));  
+        }) },err => {})
+
+       /*  this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"PENDIENTE"}).then(res => {  Swal.fire({
+          title: 'Correcto',
+          text: 'Un administrador aprobará su solicitud',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })}, err => alert(err));   */
        
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -630,14 +748,22 @@ export class EntregasPComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"ENTREGADO"}).then(res => {  Swal.fire({
+        this.documentoGeneradoService.updateEstado(e,"ENTREGADO").subscribe( res => {Swal.fire({
           title: 'Correcto',
           text: 'Se realizó su proceso con éxito',
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then((result) => {
           window.location.reload()
-        })}, err => alert(err));  
+        }) },err => {})
+      /*   this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"ENTREGADO"}).then(res => {  Swal.fire({
+          title: 'Correcto',
+          text: 'Se realizó su proceso con éxito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })}, err => alert(err)); */  
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -659,8 +785,9 @@ export class EntregasPComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"ELIMINADO"}).then(res => {  this.actualizarProductos(e)
-        }, err => alert(err));  
+        this.documentoGeneradoService.updateEstado(e,"ELIMINADO").subscribe( res => {this.actualizarProductos(e) },err => {})
+       /*  this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"ELIMINADO"}).then(res => {  this.actualizarProductos(e)
+        }, err => alert(err)); */  
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -689,27 +816,32 @@ export class EntregasPComponent implements OnInit {
       var contIng:number=0
       var entre:boolean=true     
       new Promise<any>((resolve, reject) => {
-        this.db.collection('/productosPendientesEntrega').doc(this.productosEntregasSuc2[0].productoPorEntregar.id_Pedido+"").update({ "estado" :"PENDIENTE" , "cajas":this.productosEntregasSuc2[0].productoPorEntregar.cajasPen,
-      "piezas":this.productosEntregasSuc2[0].productoPorEntregar.piezasPen, "cantM2":this.productosEntregasSuc2[0].productoPorEntregar.cantM2Pen}).then(res => {}, err => alert(err)); 
+        this.productosEntregasSuc2[0].productoPorEntregar.estado="PENDIENTE"
+        this.productosEntregasSuc2[0].productoPorEntregar.cajas=this.productosEntregasSuc2[0].productoPorEntregar.cajasPen
+        this.productosEntregasSuc2[0].productoPorEntregar.piezas=this.productosEntregasSuc2[0].productoPorEntregar.piezasPen
+        this.productosEntregasSuc2[0].productoPorEntregar.cantM2=this.productosEntregasSuc2[0].productoPorEntregar.cantM2Pen
+        this.productosPendientesService.updateProductoPendiente( this.productosEntregasSuc2[0].productoPorEntregar).subscribe( res => {},err => {})
+        /* this.db.collection('/productosPendientesEntrega').doc(this.productosEntregasSuc2[0].productoPorEntregar.id_Pedido+"").update({ "estado" :"PENDIENTE" , "cajas":this.productosEntregasSuc2[0].productoPorEntregar.cajasPen,
+      "piezas":this.productosEntregasSuc2[0].productoPorEntregar.piezasPen, "cantM2":this.productosEntregasSuc2[0].productoPorEntregar.cantM2Pen}).then(res => {}, err => alert(err));  */
         this.productosEntregasSuc2.forEach(element=>{
           this.productos.forEach(elemento1=>{
             if(elemento1.PRODUCTO == element.productoPorEntregar.producto.PRODUCTO){
               switch (this.productosEntregasSuc2[0].productoPorEntregar.sucursal) {
-                case "Milagro":
+                case "matriz":
                   num1=parseInt(element.m2.toFixed(0))
                   num2=elemento1.sucursal1
                   num3=elemento1.suc1Pendiente
                   sumaProductos = Number(num2)+Number(num1)
                   sumaDeuda = Number(num3)+Number(num1)
                   break;
-                case "Naranjito":
+                case "sucursal1":
                   num1=parseInt(element.m2.toFixed(0))
                   num2=elemento1.sucursal2
                   num3=elemento1.suc1Pendiente
                   sumaProductos = Number(num2)+Number(num1)
                   sumaDeuda = Number(num3)+Number(num1)
                   break;
-                case "El Triunfo":
+                case "sucursal2":
                   num1=parseInt(element.m2.toFixed(0))
                   num2=elemento1.sucursal3
                   num3=elemento1.suc1Pendiente
@@ -722,19 +854,25 @@ export class EntregasPComponent implements OnInit {
          })
          if(entre){       
           switch (this.productosEntregasSuc2[0].productoPorEntregar.sucursal) {
-            case "Milagro":
-              this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
-              this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({ "suc1Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
+            case "matriz":
+              this.productosEntregadosService.updateEstado(element,"PENDIENTE").subscribe( res => {},err => {})
+              this.productoService.updateProductoPendienteSucursal1(element.productoPorEntregar.producto,sumaDeuda).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing) },err => {})
+              //this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
+              //this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({ "suc1Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err)); 
               
               break;
-            case "Naranjito":
-              this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
-              this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({"suc2Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+            case "sucursal1":
+              this.productosEntregadosService.updateEstado(element,"PENDIENTE").subscribe( res => {},err => {})
+              this.productoService.updateProductoPendienteSucursal2(element.productoPorEntregar.producto,sumaDeuda).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing) },err => {})
+              //this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
+              //this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({"suc2Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
               break;
-            case "El Triunfo":
-              this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
-              this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({"suc3Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
-               console.log("aaaaccctttuuuallice")
+            case "sucursal2":
+              this.productosEntregadosService.updateEstado(element,"PENDIENTE").subscribe( res => {},err => {})
+              this.productoService.updateProductoPendienteSucursal3(element.productoPorEntregar.producto,sumaDeuda).subscribe( res => {cont2ing++, this.contadorValidaciones2(cont2ing)},err => {})
+              //this.db.collection('/productosEntregadosSucursal').doc(element.identrega+"").update({ "estado" :"PENDIENTE"}).then(res => {}, err => alert(err)); 
+              //this.db.collection('/productos').doc(element.productoPorEntregar.producto.PRODUCTO).update({"suc3Pendiente" :sumaDeuda}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+              // console.log("aaaaccctttuuuallice")
               break;
             default: 
           

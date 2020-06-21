@@ -37,6 +37,11 @@ export class ContadoresDocumentosService {
     return this.http.put(this.URL + `/updateIdFacturaSuc1/${contadores._id}`, contadores); 
   }
 
+  updateContadoresTraslados(contadores){
+    return this.http.put(this.URL + `/updateIdTraslados/${contadores._id}`, contadores); 
+  }
+
+  
   updateContadoresIDFacturaSuc2(contadores){
     return this.http.put(this.URL + `/updateIdFacturaSuc2/${contadores._id}`, contadores); 
   }
@@ -57,6 +62,10 @@ export class ContadoresDocumentosService {
     return this.http.put(this.URL + `/updateIdRemisiones/${contadores._id}`, contadores); 
   }
 
+  updateContadoresDevoluciones(contadores){
+    return this.http.put(this.URL + `/updateIdDevoluciones/${contadores._id}`, contadores); 
+  }
+
   updateContadoresIDOrdenesAprobadas(contadores){
     return this.http.put(this.URL + `/updateIdOrdenesAprobadas/${contadores._id}`, contadores); 
   }
@@ -68,6 +77,14 @@ export class ContadoresDocumentosService {
   updateContadoresIDBajas(contadores){
     return this.http.put(this.URL + `/updateIdBajas/${contadores._id}`, contadores); 
   }
+
+  updateContadoresIDDocumentoGenerado(contadores){
+    return this.http.put(this.URL + `/updateIdDocumentoEntrega/${contadores._id}`, contadores); 
+  }
+
+  updateContadoresIDProductosEntregados(contadores){
+    return this.http.put(this.URL + `/updateIdProductosEntregados/${contadores._id}`, contadores); 
+  } 
 
   updateContadoresIDFacturasProveedor(contadores){
     console.log("sad "+JSON.stringify(contadores))

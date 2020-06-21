@@ -10,6 +10,7 @@ import { factura } from '../pages/ventas/venta';
 export class FacturasService {
 
   facturas: factura[];
+
  //private URL = 'http://localhost:3000/facturas'; //localhost
  private URL = 'http://104.248.14.190:3000/facturas';
   constructor(public http: HttpClient, public router: Router ) { }
@@ -24,6 +25,11 @@ export class FacturasService {
 
   updateFacturas(facturas){
     return this.http.put(this.URL + `/update/${facturas._id}`, facturas); 
+  }
+
+  updateFacturasObervaciones(idFact:string,observaciones:string){
+    console.log("sdsd sss "+idFact +"sds "+observaciones)
+    return this.http.put(this.URL + `/update2/${idFact}/${observaciones}`, idFact); 
   }
 
   deleteFacturas(facturas){

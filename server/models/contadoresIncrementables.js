@@ -14,9 +14,11 @@ const ContadoresSchema = new Schema({
     contFacturaProveedor_Ndocumento: { type: Number, required: false},
     contRemisiones_Ndocumento: { type: Number, required: false},
     pagoProveedor_Ndocumento: { type: Number, required: false},
-    contBajas_Ndocumento: { type: Number, required: false}
-
-    
+    contDevoluciones_Ndocumento: { type: Number, required: false},
+    contTraslados_Ndocumento: { type: Number, required: false},
+    contBajas_Ndocumento: { type: Number, required: false},
+    contDocumentoEntrega_Ndocumento:{ type: Number, required: false},
+    contProductosEntregadosSucursal_Ndocumento:{ type: Number, required: false}
     
 },{
     timestamps:true

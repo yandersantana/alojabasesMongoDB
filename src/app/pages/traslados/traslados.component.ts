@@ -4,7 +4,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { detalleTraslados, traslados, transportista, productosSucursal } from './traslados';
 import { Sucursal } from '../compras/compra';
 import { bodega } from '../producto/producto';
-import { producto, sucursal } from '../ventas/venta';
+import { producto, sucursal, contadoresDocumentos } from '../ventas/venta';
 import { transaccion } from '../transacciones/transacciones';
 import { element } from 'protractor';
 import { JsonPipe } from '@angular/common';
@@ -14,6 +14,16 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import { threadId } from 'worker_threads';
 import dxSelectBox from 'devextreme/ui/select_box';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
+import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
+import { SucursalesService } from 'src/app/servicios/sucursales.service';
+import { BodegaService } from 'src/app/servicios/bodega.service';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
+import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { TransportistaService } from 'src/app/servicios/transportista.service';
+import { TrasladosService } from 'src/app/servicios/traslados.service';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 @Component({
   selector: 'app-traslados',
@@ -63,15 +73,15 @@ export class TrasladosComponent implements OnInit {
 
     parametrizaciones:parametrizacionsuc[]=[]
     parametrizacionSucu:parametrizacionsuc
-
+    contadores:contadoresDocumentos[]=[]
     variablesucursal:string=""
     var1:string="matriz"
     facturaNp:number=0
 
     sucursalesDefault: string[] = [
-      "Milagro",
-      "Naranjito",
-      "El Triunfo"
+      "matriz",
+      "sucursal1",
+      "sucursal2"
     ];
 
     menuUnidades: string[] = [
@@ -83,44 +93,135 @@ export class TrasladosComponent implements OnInit {
 
     menu1: string[] = [
       "Traslados",
-      "Historial Traslados",
-      "Existencias Productos"
+      "Historial Traslados"
+     
     ];
+    correo:string=""
+    usuarioLogueado:user
+    // "Existencias Productos"
     @ViewChild('datag3') dataGrid2: DxDataGridComponent;
     @ViewChild('selectId') select: dxSelectBox;
     expensesCollection3: AngularFirestoreCollection<transaccion>;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth) { 
+  constructor(public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
+     public bodegasService:BodegaService,public transaccionesService:TransaccionesService, public sucursalesService:SucursalesService,) { 
     this.traslados= new traslados()
     this.transportista= new transportista()
       this.detalleTraslado= new detalleTraslados()
       this.detalleTraslados.push(new detalleTraslados())
-     // this.traslados.sucursal_origen.nombre="matriz"
-      setTimeout(() => {
-        console.log("hello");
-        //this.asignarValores()
-        //this.select.option()
-        //this.obtenerDatosSucursalOrigen()
-        //Swal.close()
-        
-      }, 3000);
+    
   }
 
   ngOnInit() {
-    this.getLocales()
-    this.getbodegas()
-    this.getProductos()
-    this.getProductos2()
-    this.getTrasladoId()
-    this.getIDTransacciones()
-    this.getTransportista()
-    this.getProductosSucursal()
-    this.getTransacciones()
-    this.getParametrizaciones()
+    //this.getLocales()
+    //this.getbodegas()
+    //this.getProductos()
+    //this.getProductos2()
+    //this.getTrasladoId()
+   // this.getIDTransacciones()
+    //this.getTransportista()
+   // this.getProductosSucursal()
+   // this.getTransacciones()
+   // this.getParametrizaciones()
+
+   this.traerTransacciones()
+   this.traerParametrizaciones()
+   this.traerSucursales()
+   this.traerBodegas()
+   this.traerProductos()
+   this.traerTraslados()
+   this.traerTransportistas()
+   this.traerContadoresDocumentos()
+   this.cargarUsuarioLogueado()
+  }
+
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            
+            this.validarRol()
+          },
+          err => {
+          }
+        )
+    });
+  }
+
+  validarRol(){
+    this.sucursal_origen = this.usuarioLogueado[0].sucursal
+    if(this.usuarioLogueado[0].rol == "Administrador"){
+      var x = document.getElementById("admin");
+      x.style.display = "block";
+    }
+  }
+
+  traerParametrizaciones(){
+    this.parametrizacionService.getParametrizacion().subscribe(res => {
+      this.parametrizaciones = res as parametrizacionsuc[];
+   })
+  }
+
+  traerSucursales(){
+    this.sucursalesService.getSucursales().subscribe(res => {
+      this.locales = res as Sucursal[];
+   })
+  }
+
+  traerBodegas(){
+    this.bodegasService.getBodegas().subscribe(res => {
+      this.bodegas = res as bodega[];
+   })
+  }
+
+  traerTransacciones(){
+    this.transaccionesService.getTransaccion().subscribe(res => {
+      this.transacciones = res as transaccion[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      this.llenarComboProductos2()
+      
+   })
+  }
+
+  traerTransportistas(){
+    this.transportistasService.getTransportistas().subscribe(res => {
+      this.transportistas = res as transportista[];  
+   })
+  }
+
+  traerTraslados(){
+    this.trasladosService.getTraslado().subscribe(res => {
+      this.trasladosG = res as traslados[];  
+      this.asignarValores()
+   })
+  }
+
+  traerContadoresDocumentos(){
+    this.contadoresService.getContadores().subscribe(res => {
+        this.contadores = res as contadoresDocumentos[];
+        this.asignarIDdocumentos()
+     })
+  }
+  
+  asignarIDdocumentos(){
+    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    this.id2=this.contadores[0].contTraslados_Ndocumento+1
+   // this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
   }
 
  
 
-  getLocales(){
+ /*  getLocales(){
     new Promise<any>((resolve, reject) => {
     this.db.collection('/locales').valueChanges().subscribe((data:Sucursal[]) => {
       if(data != null)
@@ -129,34 +230,34 @@ export class TrasladosComponent implements OnInit {
     console.log("hayyy"+this.locales.length)
   })
     
-  }
+  } */
 
-  getParametrizaciones(){
+  /* getParametrizaciones(){
     this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
       if(data != null)
         this.parametrizaciones = data
 
     })
-  }
+  } */
 
-  getbodegas(){
+  /* getbodegas(){
     this.db.collection('/bodegas').valueChanges().subscribe((data:bodega[]) => {
       if(data != null)
         this.bodegas = data
 
     })
-  }
+  } */
 
-  getTransportista(){
+ /*  getTransportista(){
     this.db.collection('/transportista').valueChanges().subscribe((data:transportista[]) => {
       if(data != null)
         this.transportistas = data
 
     })
   }
+ */
 
-
-  async getTraslados() {
+ /*  async getTraslados() {
     
     await this.db.collection('traslados').snapshotChanges().subscribe((traslados) => {
       new Promise<any>((resolve, reject) => {
@@ -164,16 +265,16 @@ export class TrasladosComponent implements OnInit {
           this.trasladosG.push(nt.payload.doc.data());
         })
       }) 
-    this.asignarValores()
+   
     });;
-  }
+  } */
 
-  getProductosSucursal(){
+  /* getProductosSucursal(){
     this.db.collection('/productosSucursal').valueChanges().subscribe((data:productosSucursal[]) => {
       if(data != null)
         this.productosSucursal = data
     })
-  }
+  } */
 
   asignarValores(){
     console.log("eee4444ks" +this.trasladosGR.length)
@@ -187,43 +288,34 @@ export class TrasladosComponent implements OnInit {
     })
   }
 
-  getProductosTrasladados(){
+  /* getProductosTrasladados(){
     this.db.collection('/productosTrasladados').valueChanges().subscribe((data:detalleTraslados[]) => {
       if(data != null)
         this.detalleTrasladosBase = data
 
     })
-  }
+  } */
 
-  getTransacciones(){
+ /*  getTransacciones(){
     this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
       this.transacciones = data
   
     })
-  }
+  } */
 
 
-  async getTrasladoId() {
+ /*  async getTrasladoId() {
     //REVISAR OPTIMIZACION
     await this.db.collection('/traslados_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
       console.log(contador.payload.data())
       this.id2 = contador.payload.data()['documento_n']+1;  
      //this.id2=20
     });;
-  }
+  } */
 
 
-  async getProductos2() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('bodega2').snapshotChanges().subscribe((productos) => {
-    
-      productos.forEach((nt: any) => {
-        this.productos2.push(nt.payload.doc.data());
-      })
-    });;
-  }
 
-  async getProductos() {
+ /*  async getProductos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
       this.productos = []
@@ -235,15 +327,15 @@ export class TrasladosComponent implements OnInit {
       this.llenarComboProductos2()
     });;
   }
+ */
 
-
-  async getIDTransacciones() {
+  /* async getIDTransacciones() {
     
     await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
       console.log(transacciones.payload.data())
       this.number_transaccion = transacciones.payload.data()['documento_n'];    
     });;
-  }
+  } */
 
   mostrarC(e){
       if(this.seleccion){
@@ -293,12 +385,13 @@ export class TrasladosComponent implements OnInit {
     console.log("enteeeeeee" +e.value)
     this.transportistas.forEach(element=>{
       if(element.nombre == this.nombre_transportista){
-        console.log("encontre")
+       this.traslados.transportista=element
         this.nombre_transportista=element.nombre
         this.celular= element.celular
         this.identificacion=element.identificacion
         this.placa=element.placa
         this.tipo_vehiculo=element.vehiculo
+        console.log("acabo de asignar a "+JSON.stringify(this.traslados.transportista))
       }
     })
 
@@ -418,17 +511,19 @@ export class TrasladosComponent implements OnInit {
 
      this.trasladosG.forEach(element=>{
        console.log("dddddddd")
-       if(e.id == element.id){
+       if(e.idT == element.idT){
            this.traslados= element
+           this.detalleTraslados=element.detalleTraslados
+           console.log("traje lo siguiente "+JSON.stringify(this.traslados))
        }
      })
-     this.detalleTrasladosBase.forEach(element=>{
+     /* this.detalleTrasladosBase.forEach(element=>{
       console.log("encontre "+element.producto)
          if(element.id == e.id){
            console.log("encontre "+element.producto)
            this.detalleTraslados.push(element)
          }
-     })
+     }) */
 
      this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.traslados.sucursal_origen.nombre){
@@ -460,8 +555,8 @@ export class TrasladosComponent implements OnInit {
         this.detalleTraslados.push(new detalleTraslados())
        break;
       case "Historial Traslados":
-        this.getTraslados()
-        this.getProductosTrasladados()
+       // this.getTraslados()
+       // this.getProductosTrasladados()
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";
@@ -496,18 +591,17 @@ export class TrasladosComponent implements OnInit {
   }
 
   rechazarTraslado(e:any){ 
-    var data2=""
-    data2=e.id+""
       Swal.fire({
         title: 'Eliminar Traslado',
-        text: "Desea eliminar el traslado #"+e.id,
+        text: "Desea eliminar el traslado #"+e.idT,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si',
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-          this.db.collection('/traslados').doc( data2).update({"estado" :"Rechazado"})
+          //this.db.collection('/traslados').doc( data2).update({"estado" :"Rechazado"})
+          this.trasladosService.updateEstadoTraslado(e,"Rechazado").subscribe(res => {},err => { alert("error") })
           Swal.fire({
             title: 'Correcto',
             text: 'Un administrador aprobará su eliminación',
@@ -533,7 +627,7 @@ export class TrasladosComponent implements OnInit {
     data=e.id+""
       Swal.fire({
         title: 'Eliminar Traslado',
-        text: "Se eliminará definitivamente el traslado #"+e.id,
+        text: "Se eliminará definitivamente el traslado #"+e.idT,
         icon: 'warning',
         showCancelButton: true,
         confirmButtonText: 'Si',
@@ -541,8 +635,9 @@ export class TrasladosComponent implements OnInit {
       }).then((result) => {
         if (result.value) {
           this.mensajeGuardando()
-          this.db.collection('/traslados').doc(data).delete()
-          this.eliminarTransacciones(e)
+          //this.db.collection('/traslados').doc(data).delete()
+          this.trasladosService.deleteTraslado(e).subscribe(res => {this.eliminarTransacciones(e)},err => { alert("error") })
+          
           
        
         } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -558,13 +653,14 @@ export class TrasladosComponent implements OnInit {
 
   eliminarTransacciones(e){
     this.transacciones.forEach(element=>{
-      if(element.documento== e.id+""){
-       this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
+      if(element.documento== e.idT){
+        this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
+      /*  this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
        this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
          querySnapshot.forEach(function(doc) {
            doc.ref.delete();
          });
-       });
+       }); */
       }
     })
 
@@ -594,10 +690,34 @@ export class TrasladosComponent implements OnInit {
     })
    }
 
+   crearTransportista(){
+    // alert("yo recibi "+JSON.stringify(this.traslados.transportista))
+    if(this.traslados.transportista._id) {
+      this.transportistasService.updateTransportista(this.traslados.transportista).subscribe(res => {console.log(res + "entre por si");},
+        err => {
+          Swal.fire({
+            title: "Error",
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    } else {
+      this.transportistasService.newTransportista(this.traslados.transportista).subscribe(res => {console.log(res + "entre por si");},
+        err => {
+          Swal.fire({
+            title: "Error",
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+    }
+  }
+
 
 
   guardarTraslado(){
     //guardarTranportista
+    //alert("dsds"+this.identificacion)
     this.transportista.identificacion=this.identificacion
     this.transportista.nombre=this.nombre_transportista
     this.transportista.celular=this.celular
@@ -605,19 +725,22 @@ export class TrasladosComponent implements OnInit {
     this.transportista.vehiculo=this.tipo_vehiculo
     // aqui termina
     var contVal=0
-    this.traslados.id= this.id2
-    this.traslados.identificacion= this.identificacion
-    this.traslados.nombre_transportista= this.nombre_transportista
-    this.traslados.celular= this.celular
-    this.traslados.placa= this.placa
-    this.traslados.tipo_vehiculo= this.tipo_vehiculo 
+    this.traslados.idT= this.id2
+    this.traslados.transportista.nombre= this.nombre_transportista
+    this.traslados.transportista.celular= this.celular
+    this.traslados.transportista.identificacion= this.identificacion
+    this.traslados.transportista.placa= this.placa
+    this.traslados.transportista.vehiculo= this.tipo_vehiculo
+   // this.traslados.transportista.nombre= this.nombre_transportista
+   // this.traslados.transportista.celular= this.celular
+   // this.traslados.transportista.placa= this.placa
+   // this.traslados.transportista.vehiculo= this.tipo_vehiculo 
     this.traslados.observaciones= this.observaciones
+    this.traslados.detalleTraslados=this.detalleTraslados
     this.traslados.fecha=new Date().toLocaleDateString()
     console.log("version1 "+ new Date().toLocaleString())
     console.log("version1 "+ new Date().toLocaleTimeString())
     console.log("version1 "+ new Date().toTimeString())
-    console.log("jj"+this.traslados.identificacion)
-    console.log("jj"+this.traslados.bodega_origen)
     console.log("los datos son "+JSON.stringify(this.traslados))
     var bandera=true
     this.detalleTraslados.forEach(element=>{
@@ -631,14 +754,18 @@ export class TrasladosComponent implements OnInit {
       }
     })
     //alert("hay antes de guardar "+this.detalleTraslados.length)
-    if(this.traslados.identificacion!=undefined && this.traslados.nombre_transportista!=undefined  && this.traslados.celular!=undefined && 
-    this.traslados.placa!=undefined && this.traslados.tipo_vehiculo!= undefined && this.traslados.sucursal_destino!= undefined && this.traslados.sucursal_origen!= undefined 
+    if(this.traslados.transportista.identificacion!=undefined && this.traslados.transportista.nombre!=undefined  && this.traslados.transportista.celular!=undefined && 
+    this.traslados.transportista.placa!=undefined && this.traslados.transportista.vehiculo!= undefined && this.traslados.sucursal_destino!= undefined && this.traslados.sucursal_origen!= undefined 
     && this.traslados.bodega_destino!= undefined && this.traslados.bodega_origen!= undefined && bandera==true ){
         new Promise<any>((resolve, reject) => {
-
-          this.db.collection('/transportista').doc(this.identificacion).set({...Object.assign({},this.transportista )}) ;
-      this.db.collection('/traslados').doc(this.id2+"").set({...Object.assign({},this.traslados )}) ;
-        this.db.collection('/traslados_ID').doc("matriz").update({"documento_n" :this.id2});
+          this.crearTransportista()
+          this.trasladosService.newTraslado(this.traslados).subscribe( res => {
+            this.contadores[0].contTraslados_Ndocumento=this.id2
+            this.contadoresService.updateContadoresTraslados(this.contadores[0]).subscribe( res => {},err => {})
+          },err => {})
+         // this.db.collection('/transportista').doc(this.identificacion).set({...Object.assign({},this.transportista )}) ;
+      //this.db.collection('/traslados').doc(this.id2+"").set({...Object.assign({},this.traslados )}) ;
+       // this.db.collection('/traslados_ID').doc("matriz").update({"documento_n" :this.id2});
         
           this.detalleTraslados.forEach(element => {
             element.id=this.id2
@@ -661,21 +788,34 @@ export class TrasladosComponent implements OnInit {
             this.transaccion.usuario="q@q.com"
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
-  
-            this.db.collection("/transacciones")
+            this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                res => {
+                },
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },err => {
+            })
+           /*  this.db.collection("/transacciones")
             .add({ ...this.transaccion })
             .then(res => {console.log("llll") }, err => reject(err));
             this.db
               .collection("/transacciones_ID")
               .doc("matriz").set({ documento_n:this.number_transaccion })
-              .then(res => { }, err => reject(err));
+              .then(res => { }, err => reject(err)); */
           });
 
 
           this.detalleTraslados.forEach(element => {
             element.id=this.id2
-            this.db.collection("/productosTrasladados").add({ ...Object.assign({}, element)})
-            .then(res => {}, err => reject(err));
+            /* this.db.collection("/productosTrasladados").add({ ...Object.assign({}, element)})
+            .then(res => {}, err => reject(err)); */
             this.transaccion = new transaccion()    
             this.transaccion.fecha_mov=new Date().toLocaleDateString()
             this.transaccion.fecha_transaccion=new Date().toLocaleString()
@@ -691,18 +831,30 @@ export class TrasladosComponent implements OnInit {
             this.transaccion.observaciones=this.traslados.observaciones
             this.transaccion.tipo_transaccion="traslado2"
             this.transaccion.movimiento=1
-            this.transaccion.usu_autorizado="q@q.com"
-            this.transaccion.usuario="q@q.com"
+            this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+            this.transaccion.usuario=""
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
-  
-            this.db.collection("/transacciones")
+            this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
+              contVal++,this.contadorValidaciones(contVal),
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {},
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },err => {
+            })
+           /*  this.db.collection("/transacciones")
             .add({ ...this.transaccion })
             .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
             this.db
               .collection("/transacciones_ID")
               .doc("matriz").set({ documento_n:this.number_transaccion })
-              .then(res => { }, err => reject(err));
+              .then(res => { }, err => reject(err)); */
           });
 
           this.actualizarProductosBase()
@@ -758,17 +910,23 @@ export class TrasladosComponent implements OnInit {
           restProd=0
           if(element2.producto == element.PRODUCTO ){
             switch (this.traslados.sucursal_origen.nombre) {
-              case "Milagro":
+              case "matriz":
                 restProd=element.sucursal1-element2.cantidadm2
-                this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :restProd})
+                //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :restProd})
+                element.sucursal1=restProd
+                this.productoService.updateProductoSucursal1(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 restProd=element.sucursal2-element2.cantidadm2
-                 this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :restProd})
+                element.sucursal2=restProd
+                this.productoService.updateProductoSucursal2(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                // this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :restProd})
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 restProd=element.sucursal3-element2.cantidadm2
-                this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :restProd})
+                element.sucursal3=restProd
+                this.productoService.updateProductoSucursal3(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+              // this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :restProd})
               default:
             }
           }
@@ -781,17 +939,23 @@ export class TrasladosComponent implements OnInit {
           sumProd=0
           if(element2.producto == element.PRODUCTO ){
             switch (this.traslados.sucursal_destino.nombre) {
-              case "Milagro":
+              case "matriz":
                 sumProd=element.sucursal1+element2.cantidadm2
-                this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd})
+                element.sucursal1=sumProd
+                this.productoService.updateProductoSucursal1(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd})
                 break;
-              case "Naranjito":
+              case "sucursal1":
                 sumProd=element.sucursal2+element2.cantidadm2
-                 this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd})
+                element.sucursal2=sumProd
+                this.productoService.updateProductoSucursal2(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                // this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd})
                 break;
-              case "El Triunfo":
+              case "sucursal2":
                 sumProd=element.sucursal3+element2.cantidadm2
-                this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd})
+                element.sucursal3=sumProd
+                this.productoService.updateProductoSucursal3(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                //this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd})
               default:
             }
           }
@@ -817,16 +981,10 @@ export class TrasladosComponent implements OnInit {
 
      this.trasladosG.forEach(element=>{
        console.log("dddddddd")
-       if(e.id == element.id){
+       if(e.id == element.idT){
            this.traslados= element
+           this.detalleTraslados=element.detalleTraslados
        }
-     })
-     this.detalleTrasladosBase.forEach(element=>{
-      console.log("encontre "+element.producto)
-         if(element.id == e.id){
-           console.log("encontre "+element.producto)
-           this.detalleTraslados.push(element)
-         }
      })
 
     for (let index = 0; index < this.productos.length; index++) {
@@ -835,17 +993,23 @@ export class TrasladosComponent implements OnInit {
         restProd=0
         if(element2.producto == element.PRODUCTO ){
           switch (this.traslados.sucursal_origen.nombre) {
-            case "Milagro":
+            case "matriz":
               restProd=element.sucursal1+element2.cantidadm2
-              this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :restProd})
+              element.sucursal1=restProd
+              this.productoService.updateProductoSucursal1(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+              //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :restProd})
               break;
-            case "Naranjito":
+            case "sucursal1":
               restProd=element.sucursal3+element2.cantidadm2
-               this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :restProd})
+              element.sucursal2=restProd
+              this.productoService.updateProductoSucursal2(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+               //this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :restProd})
               break;
-            case "El Triunfo":
+            case "sucursal2":
               restProd=element.sucursal3+element2.cantidadm2
-              this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :restProd})
+              element.sucursal3=restProd
+              this.productoService.updateProductoSucursal3(element).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+              //this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :restProd})
             default:
           }
         }
@@ -858,18 +1022,23 @@ export class TrasladosComponent implements OnInit {
         sumProd=0
         if(element2.producto == element.PRODUCTO ){
           switch (this.traslados.sucursal_destino.nombre) {
-            case "Milagro":
+            case "matriz":
               sumProd=element.sucursal1-element2.cantidadm2
-           
-            this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
+              element.sucursal1=sumProd
+              this.productoService.updateProductoSucursal1(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
+            //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
               break;
-            case "Naranjito":
+            case "sucursal1":
               sumProd=element.sucursal2-element2.cantidadm2
-               this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
+              element.sucursal2=sumProd
+              this.productoService.updateProductoSucursal2(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
+               //this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
               break;
-            case "El Triunfo":
+            case "sucursal2":
               sumProd=element.sucursal3-element2.cantidadm2
-              this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
+              element.sucursal3=sumProd
+              this.productoService.updateProductoSucursal3(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
+              //this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
             default:
           }
         }
@@ -982,14 +1151,14 @@ contadorValidaciones2(i:number){
       console.log("ttt "+cantm2)
 
       switch (this.traslados.sucursal_origen.nombre) {
-        case "Milagro":
+        case "matriz":
           if(cantm2 >element.sucursal1+element.suc1Pendiente){
             alert("el cantidad excede el inventario del producto")
             this.detalleTraslados[i].cajas=0
             this.detalleTraslados[i].piezas=0
           }
           break;
-        case "Naranjito":
+        case "sucursal1":
           console.log("Entre por aqui a naranjito")
           if(cantm2 >element.sucursal2+element.suc2Pendiente){
             alert("el cantidad excede el inventario del producto")
@@ -997,7 +1166,7 @@ contadorValidaciones2(i:number){
             this.detalleTraslados[i].piezas=0
           }
           break;
-        case "El Triunfo":
+        case "sucursal2":
           if(cantm2 >element.sucursal3+element.suc3Pendiente){
             console.log("fffff"+element.sucursal3+element.suc3Pendiente)
             alert("el cantidad excede el inventario del producto")
@@ -1051,7 +1220,7 @@ contadorValidaciones2(i:number){
 
   crearPDF(){
     const documentDefinition = this.getDocumentDefinition();
-    pdfMake.createPdf(documentDefinition).download('Traslado '+this.traslados.id, function() {  });
+    pdfMake.createPdf(documentDefinition).download('Traslado '+this.traslados.idT, function() {  });
   }
 
   compararlocales(){
@@ -1075,7 +1244,7 @@ contadorValidaciones2(i:number){
   }
 
   setearNFactura(){
-    let nf=this.traslados.id
+    let nf=this.traslados.idT
     let num=('' + nf).length
     console.log("el numero es"+num)
     switch (num) {
@@ -1292,11 +1461,11 @@ contadorValidaciones2(i:number){
                           type: 'none',
                           fontSize:9,
                           ul: [
-                            ''+this.traslados.nombre_transportista,
-                            ''+this.traslados.identificacion,
-                            ''+this.traslados.celular,
-                            ''+this.traslados.tipo_vehiculo,
-                            ''+this.traslados.placa,
+                            ''+this.traslados.transportista.nombre,
+                            ''+this.traslados.transportista.identificacion,
+                            ''+this.traslados.transportista.celular,
+                            ''+this.traslados.transportista.vehiculo,
+                            ''+this.traslados.transportista.placa,
                           ]
                         }
                       ]

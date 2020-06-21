@@ -45,6 +45,11 @@ app.use('/remisiones', require('./routes/remisionRoutes'));
 app.use('/productosObsequio', require('./routes/productosObsequioRoutes'));
 app.use('/productosIngresados', require('./routes/productosIngresadosRoutes'));
 app.use('/baja', require('./routes/bajasRoutes'));
+app.use('/traslados', require('./routes/trasladosRoutes'));
+app.use('/transportista', require('./routes/transportistaRoutes'));
+app.use('/devoluciones', require('./routes/devolucionesRoutes'));
+app.use('/productosEntregados', require('./routes/productosEntregadosRoutes'));
+app.use('/documentoGenerado', require('./routes/documentoGeneradoRoutes'));
 
 
 

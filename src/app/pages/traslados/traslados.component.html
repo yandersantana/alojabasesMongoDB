@@ -1,16 +1,19 @@
-
-<div class="col-md-12">
+<div id="admin" style="display: none;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3"><h6>Sucursal</h6></div>
+            <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+                [value]="sucursalesDefault[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
+                <div class="col-md-5"></div>
+         </div>
+    </div>
     <div class="row">
-        <div class="col-md-3"><h6>Sucursal</h6></div>
-        <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
-            [value]="sucursalesDefault[0]" 
-            [readOnly]="false" 
-            [disabled]="false"
-            (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
-            <div class="col-md-5"></div>
+        <div class="col-md-10"> <span>Administrador  </span><dx-check-box [(value)]="seleccion" (onValueChanged)="mostrarC($event)"></dx-check-box></div>  
+    </div>
 </div>
-</div>
-
 
 <div class="row alin2 titulos" style="margin-top: 1em;margin-right: 1em;">
     <div class="col-md-8"><div class="">
@@ -27,9 +30,7 @@
 
 
 <div id="traslados" style="display: block;">
-    <div class="row">
-        <div class="col-md-10"> <span>Administrador  </span><dx-check-box [(value)]="seleccion" (onValueChanged)="mostrarC($event)"></dx-check-box></div>  
-    </div>
+    
     <div class="row remiPro">
         <div class="col-md-12 titulo" ><h4>Traslados de Productos</h4></div>
         <div class="col-md-6">
@@ -150,7 +151,7 @@
             <div *ngFor="let p of detalleTraslados;let i = index" style="text-align: center;margin-top: 1em;">
                 <div class="row altura">
                     <div class="col-4">
-                        <dx-select-box [items]="productosTraslado" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
+                        <dx-select-box [items]="productos" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
                         [searchEnabled]="true"  
                         valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesProducto($event,i)">
                     </dx-select-box>
@@ -263,7 +264,13 @@
         placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column
-            dataField="id"
+            dataField="_id"
+            caption="Traslado N"
+            dataType="string"
+            [visible]="false" >
+        </dxi-column>
+        <dxi-column
+            dataField="idT"
             caption="Traslado N"
             dataType="string"
             sortOrder="desc">
@@ -286,7 +293,7 @@
             [visible]="true">
         </dxi-column>
         <dxi-column
-            dataField="nombre_transportista"
+            dataField="transportista.nombre"
             caption="Transportista"
             dataType="string"
             [visible]="true">
@@ -325,7 +332,13 @@
         placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="TrasladosAnulados" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column
-            dataField="id"
+            dataField="_id"
+            caption="Traslado N"
+            dataType="string"
+            [visible]="false" >
+        </dxi-column>
+        <dxi-column
+            dataField="idT"
             caption="Traslado N"
             dataType="string">
         </dxi-column>
@@ -347,7 +360,7 @@
             [visible]="true">
         </dxi-column>
         <dxi-column
-            dataField="nombre_transportista"
+            dataField="transportista.nombre"
             caption="Transportista"
             dataType="string"
             [visible]="true">

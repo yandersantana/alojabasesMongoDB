@@ -13,8 +13,9 @@ export class devolucion{
     num_documento:number
     tipo_documento:string
     estado:string
+    productosDevueltos:productosDevueltos[]=[]
     constructor(){
-        this.usuario="q@q.com"
+        this.usuario=""
         this.estado="Pendiente"
     }
 }

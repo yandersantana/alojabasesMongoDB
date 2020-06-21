@@ -7,6 +7,13 @@ router.get('/getNotasVenta', async (req, res) => {
     res.send(notasVenta)      
 })
 
+router.put('/updateObservaciones/:id/:observaciones', async (req, res,next) => {
+    const { id } = req.params;
+    const { observaciones } = req.params;
+    await NotasVenta.findByIdAndUpdate(id, {$set: {observaciones:observaciones}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;

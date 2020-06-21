@@ -8,6 +8,16 @@ router.get('/getFacturas', async (req, res) => {
 })
 
 
+router.put('/update2/:id/:observaciones', async (req, res,next) => {
+    console.log("siiiiiiiiiiii")
+    const { id } = req.params;
+    const { observaciones } = req.params;
+    console.log("llegue hasta qui")
+    await Factura.findByIdAndUpdate(id, {$set: {observaciones:observaciones}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const facturas = {

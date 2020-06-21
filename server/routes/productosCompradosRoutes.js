@@ -79,7 +79,4 @@ router.post('/newProductoComprado', async (req, res) => {
 
 });
 
-
-
-
 module.exports = router;

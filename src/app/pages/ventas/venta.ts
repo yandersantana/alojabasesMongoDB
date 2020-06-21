@@ -77,6 +77,7 @@ export class cliente {
             
 }
 export class factura {
+        _id:string
         documento_n : number
         sucursal : string
         fecha: Date
@@ -253,6 +254,10 @@ export class contadoresDocumentos{
     contFacturaProveedor_Ndocumento:number
     contRemisiones_Ndocumento:number
     contBajas_Ndocumento:number
+    contTraslados_Ndocumento:number
+    contDevoluciones_Ndocumento:number
+    contDocumentoEntrega_Ndocumento:number
+    contProductosEntregadosSucursal_Ndocumento:number
     pagoProveedor_Ndocumento:number
     constructor(){
 

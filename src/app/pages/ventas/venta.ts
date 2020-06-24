@@ -257,6 +257,7 @@ export class contadoresDocumentos{
     contTraslados_Ndocumento:number
     contDevoluciones_Ndocumento:number
     contDocumentoEntrega_Ndocumento:number
+    contProductosPendientes_Ndocumento:number
     contProductosEntregadosSucursal_Ndocumento:number
     pagoProveedor_Ndocumento:number
     constructor(){

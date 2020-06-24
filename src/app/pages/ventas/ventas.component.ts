@@ -301,6 +301,7 @@ contadores:contadoresDocumentos[]
     console.log("estoy trayendo")
     await this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
+      this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
       this.asignarIDdocumentos()
    })
   }
@@ -1792,6 +1793,17 @@ var tipoDoc:boolean=false
           ]
           },
           this.getDatosFooter(),
+          {
+            text:"Convenciones: E: entregado, P: pendiente, I: incompleto o parcial",
+            fontSize: 8,
+            pageBreak: 'after'
+          },
+          {
+            text:"ENTREGA DE PRODUCTOS"
+          },{
+            text:"Factura "+this.factura.documento_n + "     Fecha: "+this.mySimpleFormat
+          },
+          this.getProductosVendidosCajasPiezas(this.productosVendidos)
          // this.getProductosPenientesEntrega(this.productoPendienteEntregas),
           
         ],
@@ -2328,7 +2340,18 @@ var tipoDoc:boolean=false
           ]
           },
           this.getDatosFooter(),
-         
+          {
+            text:"Convenciones: E: entregado, P: pendiente, I: incompleto o parcial",
+            fontSize: 8,
+            pageBreak: 'after'
+          },
+          {
+            text:"ENTREGA DE PRODUCTOS"
+          },{
+            text:"Factura "+this.factura.documento_n + "     Fecha: "+this.mySimpleFormat
+          },
+          this.getProductosVendidosCajasPiezas(this.productosVendidos)
+          
           
         ],
         footer: function (currentPage, pageCount) {
@@ -2461,10 +2484,10 @@ var tipoDoc:boolean=false
     getProductosVendidos(productos: venta[]) {
       let productos2:venta[]=[]
       productos.forEach(element=>{
-        if(element.entregar==true){
-            element.tipoDocumentoVenta="E"
+        if(element.pedir==true){
+            element.tipoDocumentoVenta="P"
         }else{
-          element.tipoDocumentoVenta="P"
+          element.tipoDocumentoVenta="E"
         }
         productos2.push(element)
       })
@@ -2521,6 +2544,36 @@ var tipoDoc:boolean=false
               { text: " -- ", alignment: 'center' }, "Servicios de Transporte", { text: " -- ", alignment: 'center' }, { text: " -- ", alignment: 'center' }, {text:this.factura.coste_transporte.toFixed(2), alignment:"right",style:"totales2"} 
             ] */
             
+          ]
+        }
+      };
+    }
+
+
+    getProductosVendidosCajasPiezas(productos: venta[]) {
+      return {
+        table: {
+          widths: ["50%","20%"],
+          alignment:'center',
+          body: [
+            [
+            {
+              text: 'Producto',
+              style: 'tableHeader2'
+              , alignment: 'center'
+            },
+            
+            {
+              text: 'Cantidad',
+              style: 'tableHeader', 
+              alignment: 'center'
+            }
+            ],
+            
+            ...productos.map(ed =>{
+              return [ ed.producto.PRODUCTO,{text:ed.equivalencia, alignment:"center"}];
+              
+            }),
           ]
         }
       };
@@ -2717,7 +2770,11 @@ var tipoDoc:boolean=false
             default:
           }
 
-          this.productosPendientesService.newProductoPendiente(this.productoPendienteE).subscribe( res => {console.log(res + "entre por si");},err => {this.error()})
+          this.productosPendientesService.newProductoPendiente(this.productoPendienteE).subscribe( res => {
+            console.log(res + "entre por si");
+            this.contadores[0].contProductosPendientes_Ndocumento=this.numeroID
+            this.contadoresService.updateContadoresIDProductosPendientes(this.contadores[0]).subscribe( res => {},err => {this.error()})
+          },err => {this.error()})
           /* this.db.collection("/productosPendientesEntrega").doc(""+this.productoPendienteE.id_Pedido).set({ ...Object.assign({}, this.productoPendienteE) })
           .then(res => {console.log("listo")}, err => reject(err));
           this.db.collection("/productosPendientesEntregaID").doc("matriz").set({ documento_n:this.numeroID})

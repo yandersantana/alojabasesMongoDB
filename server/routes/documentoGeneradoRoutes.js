@@ -2,7 +2,7 @@ const { Router } = require('express');
 const router = Router();
 const DocumentoGenerado = require('../models/documentoGeneradoEntrega')
 
-router.get('/getDocumentoGenerado', async (req, res) => {
+router.get('/getDocumentosGenerado', async (req, res) => {
     const devoluciones = await DocumentoGenerado.find();
     res.send(devoluciones)      
 })

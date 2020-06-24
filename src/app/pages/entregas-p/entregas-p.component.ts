@@ -110,6 +110,7 @@ export class EntregasPComponent implements OnInit {
   traerProductosPendientesEntrega(){
     this.productosPendientesService.getProductoPendiente().subscribe(res => {
       this.productosPendientes = res as productosPendientesEntrega[];
+      //alert("entree")
       this.separarEntregas()
    })
   }
@@ -491,7 +492,7 @@ export class EntregasPComponent implements OnInit {
 
         this.documentoGeneradoService.newDocumentoGenerado(this.documentoG).subscribe( res => {
           this.contadores[0].contDocumentoEntrega_Ndocumento=this.idDoc
-          this.contadoresService.updateContadoresIDDocumentoGenerado(this.contadores[0]).subscribe( res => {},err => {})
+          this.contadoresService.updateContadoresIDDocumentoGenerado(this.contadores[0]).subscribe( res => {this.crearPDF3()},err => {})
         },err => {})
        
     })
@@ -532,7 +533,7 @@ export class EntregasPComponent implements OnInit {
         this.entregaProducto.productoPorEntregar.cajasEntregadas=this.productoLeido.cajas
         this.entregaProducto.productoPorEntregar.piezasEntregadas=this.productoLeido.piezas
         this.entregaProducto.productoPorEntregar.m2Entregados=this.productoLeido.cantM2
-        this.productosPendientesService.updateProductoPendiente(this.entregaProducto).subscribe( res => {},err => {})
+        this.productosPendientesService.updateProductoPendiente(this.entregaProducto.productoPorEntregar).subscribe( res => {},err => {})
       this.productosEntregadosService.newProductoEntregado(this.entregaProducto).subscribe( res => {
         this.actualizarPendientes(),
         this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt
@@ -586,12 +587,14 @@ export class EntregasPComponent implements OnInit {
       this.mostrarMensaje()
       this.entregaProducto.productoPorEntregar.estado="ENTREGADO"
       this.entregaProducto.productoPorEntregar.cajas=0
+      this.entregaProducto.productoPorEntregar.cajas=0
       this.entregaProducto.productoPorEntregar.piezas=0
       this.entregaProducto.productoPorEntregar.cantM2=0
       this.entregaProducto.productoPorEntregar.cajasEntregadas=this.productoLeido.cajas
       this.entregaProducto.productoPorEntregar.piezasEntregadas=this.productoLeido.piezas
       this.entregaProducto.productoPorEntregar.m2Entregados=this.productoLeido.cantM2
-      this.productosPendientesService.updateProductoPendiente(this.entregaProducto).subscribe( res => {},err => {})
+
+      this.productosPendientesService.updateProductoPendiente(this.entregaProducto.productoPorEntregar).subscribe( res => {},err => {})
     this.productosEntregadosService.newProductoEntregado(this.entregaProducto).subscribe( res => {
       this.actualizarPendientes(),
       this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt

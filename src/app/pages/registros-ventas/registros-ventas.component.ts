@@ -12,6 +12,7 @@ import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { FacturasService } from 'src/app/servicios/facturas.service';
 import { ProformasService } from 'src/app/servicios/proformas.service';
+import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 
 @Component({
   selector: 'app-registros-ventas',
@@ -38,7 +39,7 @@ export class RegistrosVentasComponent implements OnInit {
   sIva12:number=0
   iva:number=0
   numeroFactura:string=""
-  constructor(public parametrizacionService:ParametrizacionesService,public facturasService:FacturasService,public proformasService:ProformasService) { 
+  constructor(public parametrizacionService:ParametrizacionesService,public notasventaService:NotasVentasService, public facturasService:FacturasService,public proformasService:ProformasService) { 
     this.factura = new factura()
   }
 
@@ -67,6 +68,12 @@ export class RegistrosVentasComponent implements OnInit {
   traerProformas(){
     this.proformasService.getProformas().subscribe(res => {
       this.cotizaciones = res as factura[];
+   })
+  }
+
+  traerNotasVenta(){
+    this.notasventaService.getNotasVentas().subscribe(res => {
+      this.notasVenta = res as factura[];
    })
   }
 

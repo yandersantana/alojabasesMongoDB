@@ -12,6 +12,8 @@ import { NumericRule } from 'devextreme/ui/validation_engine';
 import { CatalogoService } from '../../servicios/catalogo.service';
 import { ProductoService } from '../../servicios/producto.service';
 import { OpcionesCatalogoService } from '../../servicios/opciones-catalogo.service';
+import { UploadService } from 'src/app/servicios/upload.service';
+import { AlertsService } from 'angular-alert-module';
 
 @Component({
   selector: 'app-catalogo',
@@ -19,6 +21,7 @@ import { OpcionesCatalogoService } from '../../servicios/opciones-catalogo.servi
   styleUrls: ['./catalogo.component.scss']
 })
 export class CatalogoComponent implements OnInit {
+  uploadedFiles: Array<File>;
   titulo:string="ksjdksjd"
   base64textString:String="";
   popupvisible:boolean=false
@@ -53,7 +56,7 @@ export class CatalogoComponent implements OnInit {
   "ACTIVO",
   "INACTIVO"
   ];
-
+  formData: FormData 
   opcionesCatalogo: opcionesCatalogo[]=[]
   arrayClasif: string[]
   arrayUnid: string[]
@@ -85,10 +88,12 @@ export class CatalogoComponent implements OnInit {
 
   }
   elementRef
+  tempUrl:string=""
+
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
-  constructor(public catalogoService: CatalogoService ,public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
@@ -257,7 +262,8 @@ export class CatalogoComponent implements OnInit {
   }
 
   newProducto(){
-    this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
+    //this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
+    this.catalogo2.IMAGEN_PRINCIPAL= this.tempUrl
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
     this.comparardatos()
     this.comparardatos2()
@@ -266,18 +272,36 @@ export class CatalogoComponent implements OnInit {
       //this.catalogo2.IMAGEN[0]=+this.base64textString
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
-        this.catalogoService.newCatalogo(this.catalogo2).subscribe(
-          res => {
-            console.log(res + "entre por si");
-            this.crearNuevoProducto()
-          },
-          err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
+        var contador=0
+        this.productosCatalogo.forEach(element=>{
+          if(element.PRODUCTO == this.catalogo2.PRODUCTO){
+            contador++
+          }
+        })
+        if(contador==0){
+          //alert("el contador esta en "+contador)
+          this.catalogoService.newCatalogo(this.catalogo2).subscribe(
+            res => {
+              console.log(res + "entre por si");
+              this.crearNuevoProducto()
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
             })
+        }else{
+          
+          Swal.fire({
+            title:"Error",
+            text: 'El producto ya existe',
+            icon: 'error'
           })
+          //contador=0
+        }
+        
         //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).set({ ...this.catalogo2 }).then(res => { this.crearNuevoProducto()}, err =>{reject(err) , this.mensajeError()} );
       }) 
 
@@ -350,6 +374,30 @@ export class CatalogoComponent implements OnInit {
       )
         //this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayClasificación":this.arrayClasif})
     }
+  }
+
+
+  upload(){
+    //this.mensajeGuardando()
+    this.formData = new FormData();
+    this.formData.append("uploads[]", this.uploadedFiles[0], this.uploadedFiles[0].name);
+
+    var options = { content: this.formData };
+    this.serviceUpload.uploadFile(this.formData).subscribe(
+      (res) => {
+        
+        this.tempUrl = res.url
+        //alert(this.tempUrl)
+        this.newProducto()
+      },
+      err => {alert("errrrrorrr")}
+      )
+  }
+
+  fileChange(element) {
+    console.log("entre aquiiii")
+    this.uploadedFiles = element.target.files;
+    console.log("vvv" + JSON.stringify(this.uploadedFiles))
   }
 
   
@@ -517,6 +565,10 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("TIPO", "visible", true);
     e.component.columnOption("ORIGEN", "visible", true);
     e.component.columnOption("ESTADO", "visible", true);
+    e.component.columnOption("APLICACION", "visible", true);
+    e.component.columnOption("VIGENCIA", "visible", true);
+    e.component.columnOption("FEC_PRODUCCION", "visible", true);
+    e.component.columnOption("CANT_MINIMA", "visible", true);
    
   };
   onExported (e) {
@@ -526,6 +578,10 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("TIPO", "visible", false);
     e.component.columnOption("ORIGEN", "visible", false);
     e.component.columnOption("ESTADO", "visible", false);
+    e.component.columnOption("APLICACION", "visible", false);
+    e.component.columnOption("VIGENCIA", "visible", false);
+    e.component.columnOption("FEC_PRODUCCION", "visible", false);
+    e.component.columnOption("CANT_MINIMA", "visible", false);
     e.component.endUpdate();
   }
 

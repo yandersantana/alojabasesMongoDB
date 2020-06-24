@@ -74,6 +74,10 @@ export class ContadoresDocumentosService {
     return this.http.put(this.URL + `/updateIdPagosProveedor/${contadores._id}`, contadores); 
   }
 
+  updateContadoresIDProductosPendientes(contadores){
+    return this.http.put(this.URL + `/updateIdProductosPendientes/${contadores._id}`, contadores); 
+  }
+
   updateContadoresIDBajas(contadores){
     return this.http.put(this.URL + `/updateIdBajas/${contadores._id}`, contadores); 
   }

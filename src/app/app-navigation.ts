@@ -180,7 +180,8 @@ export const navigationAdmin = [
       
       }, {
         text: 'Parametrización',
-        path: '/parametrizacion',
+        path: '/parametrizacion'
+        
       }, {
         text: 'Usuarios',
         path: '/usuarios',

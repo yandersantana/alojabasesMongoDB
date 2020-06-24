@@ -5,6 +5,7 @@ const ProductoSchema = require('../models/producto').schema;
 
 const ProductosPendientesSchema = new Schema({
     id: { type: Number, required: false},
+    id_Pedido: { type: Number, required: false},
     fecha: { type: String, required: false},
     cliente: { type: String, required: false},
     celular: { type: String, required: false},

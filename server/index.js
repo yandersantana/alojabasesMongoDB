@@ -18,7 +18,7 @@ app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
 /* app.use('/uploads', express.static('uploads'));
 app.use(express.static(path.join(__dirname,'frontend'))); */
 app.use(express.static(path.join(__dirname,'frontend')));
-
+app.use('/server/uploads', express.static('server/uploads'));
 
 app.use('/usuario', require('./routes/userRoutes'));
 app.use('/catalogo', require('./routes/catalogoRoutes'));
@@ -50,6 +50,7 @@ app.use('/transportista', require('./routes/transportistaRoutes'));
 app.use('/devoluciones', require('./routes/devolucionesRoutes'));
 app.use('/productosEntregados', require('./routes/productosEntregadosRoutes'));
 app.use('/documentoGenerado', require('./routes/documentoGeneradoRoutes'));
+app.use('/upload', require('./routes/uploadRoutes'));
 
 
 

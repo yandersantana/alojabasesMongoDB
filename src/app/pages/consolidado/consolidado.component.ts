@@ -9,7 +9,7 @@ import { inventario, invFaltanteSucursal } from './consolidado';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-consolidado',
   templateUrl: './consolidado.component.html',

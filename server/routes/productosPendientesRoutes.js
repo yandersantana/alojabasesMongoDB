@@ -17,6 +17,7 @@ router.get('/getProductosPend/:documento', async (req, res) => {
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const productosComprados = {
+        id_Pedido: req.body.id_Pedido,
         fecha: req.body.fecha,
         cliente: req.body.cliente,
         celular: req.body.celular,
@@ -51,6 +52,7 @@ router.delete('/delete/:id', async (req, res,next) => {
 
 router.post('/newProductoPendiente', async (req, res) => {
     const newPendiente = new ProductosPendientes({
+        id_Pedido: req.body.id_Pedido,
         fecha: req.body.fecha,
         cliente: req.body.cliente,
         celular: req.body.celular,

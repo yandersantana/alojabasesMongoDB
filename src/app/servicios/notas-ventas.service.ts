@@ -29,6 +29,10 @@ export class NotasVentasService {
     return this.http.put(this.URL + `/updateObservaciones/${notasventa._id}/${observaciones}`, notasventa); 
   }
 
+  updateNotasVentaEstado(notasventa,estado:string){
+    return this.http.put(this.URL + `/updateEstado/${notasventa._id}/${estado}`, notasventa); 
+  }
+
   deleteNotasVenta(notasVenta){
     return this.http.delete(this.URL + `/delete/${notasVenta._id}`, notasVenta); 
   }

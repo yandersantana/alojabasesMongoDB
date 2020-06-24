@@ -18,6 +18,17 @@ router.put('/update2/:id/:observaciones', async (req, res,next) => {
 })
 
 
+
+
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    console.log("llegue hasta aquu")
+    await Factura.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const facturas = {

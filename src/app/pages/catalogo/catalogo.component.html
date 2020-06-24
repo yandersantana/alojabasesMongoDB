@@ -35,6 +35,10 @@
     <dxi-column dataField="TIPO" caption="Tipo" [visible]="false"></dxi-column>
     <dxi-column dataField="ORIGEN" caption="Origen" [visible]="false"></dxi-column>
     <dxi-column dataField="ESTADO" caption="Estado" [visible]="false"></dxi-column>
+    <dxi-column dataField="APLICACION" caption="Aplicacion" [visible]="false"></dxi-column>
+    <dxi-column dataField="VIGENCIA" caption="Vigencia" [visible]="false"></dxi-column>
+    <dxi-column dataField="FEC_PRODUCCION" caption="FEC_PRODUCCION" [visible]="false"></dxi-column>
+    <dxi-column dataField="CANT_MINIMA" caption="Cant.Minima" [visible]="false"></dxi-column>
    
     <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
     </dxi-column> -->
@@ -336,16 +340,20 @@
                                             </div>
                                         </div>
                                         <div>
-                                            <div>
+                                            <div> 
+                                            <form action="http://localhost:3000/upload/uploadFile" method="post" enctype="multipart/form-data">
                                                 <label for="filePicker">Escoge una imagen:</label><br>
-                                                <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)">
+                                                <!-- <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->
+                                                <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" multiple>
                                                 <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
                                                 <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
+                                            </form>
                                             </div>
                                             <br>
                                             <div>
                                                 <label for="filePicker">Escoge una imagen:</label><br>
-                                                <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)">
+                                               <!--  <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->
+                                                <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01"aria-describedby="inputGroupFileAddon01">
                                                 <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
                                                 <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
                                             </div>
@@ -358,7 +366,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4"></div>
-                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="newProducto()">Guardar</button></div>
+                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="upload()">Guardar</button></div>
                                    
                                     <div class="col-md-4"></div>
                                 </div>

@@ -63,6 +63,15 @@ router.put('/updateEstadoRechazo/:id/:estado/:mensaje/:estado2', async (req, res
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateEstadoRechazo2/:id/:estado/:mensaje/:estado2', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    const { mensaje } = req.params;
+    const { estado2 } = req.params;
+    await OrdenCompra.findByIdAndUpdate(id, {$set: {estado:estado , msjGeneral:mensaje , estadoOrden:estado2}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateEstadoAprobado/:id/:estado/:orden/:usuario/:estado2', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
@@ -96,6 +105,15 @@ router.put('/updateEstadoOrden/:id/:estado', async (req, res,next) => {
     await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
+
+router.put('/updateEstadosOrdenes/:id/:estado/:estado2', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    const { estado2 } = req.params;
+    await OrdenCompra.findByIdAndUpdate(id, {$set: { estado:estado,estadoOrden:estado2}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 
 router.delete('/delete/:id', async (req, res,next) => {
     await OrdenCompra.findByIdAndRemove(req.params.id);

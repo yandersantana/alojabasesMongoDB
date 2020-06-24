@@ -63,6 +63,7 @@ router.post('/api/upload', multipartMiddleware, (req, res) => {
         'size': parseInt(pathy.size/1024)
         
     });
+    res.status(500).json(error);
 });  
 
 

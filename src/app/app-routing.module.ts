@@ -93,6 +93,8 @@ import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
 import { ParametrizacionComponent } from './pages/parametrizacion/parametrizacion.component';
 import { UserComponent } from './pages/user/user.component';
 import { VerifyAuthGuard } from './verify-auth.guard';
+import { ClientesComponent } from './pages/clientes/clientes.component';
+import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
 
 
 const routes: Routes = [
@@ -158,6 +160,18 @@ const routes: Routes = [
     canActivate: [ AuthGuardService ],
     data: { roles: ['Administrador'] } ,
     component: UserComponent
+  },
+  {
+    path: 'clientes',
+    canActivate: [ AuthGuardService ],
+    data: { roles: ['Administrador'] } ,
+    component: ClientesComponent
+  },
+  {
+    path: 'precios',
+    canActivate: [ AuthGuardService ],
+    data: { roles: ['Administrador'] } ,
+    component: ControlPreciosComponent
   },
   {
     path: 'proveedores',

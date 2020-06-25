@@ -51,6 +51,7 @@ export class RegistrosVentasComponent implements OnInit {
     this.traerParametrizaciones()
     this.traerFacturas()
     this.traerProformas()
+    this.traerNotasVenta()
   }
 
   traerParametrizaciones(){
@@ -160,17 +161,19 @@ export class RegistrosVentasComponent implements OnInit {
 
   //cargar Nota de Venta
   cargarNotaVenta(e){
+    this.limpiarArregloPFact()
     this.notasVenta.forEach(element=>{
       if(e.documento_n == element.documento_n){
        this.factura= element
+       this.productosVendidos2=element.productosVendidos
       }
     })
-    this.limpiarArregloPFact()
-    this.productosVendidos.forEach(element=>{
+    
+   /*  this.productosVendidos.forEach(element=>{
       if(element.factura_id== e.documento_n && element.tipoDocumentoVenta=="Nota de Venta"){
        this.productosVendidos2.push(element)
       }
-    })
+    }) */
     this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.factura.sucursal){
         this.parametrizacionSucu= element

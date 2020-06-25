@@ -182,10 +182,19 @@ export const navigationAdmin = [
         text: 'Parametrización',
         path: '/parametrizacion'
         
-      }, {
+      }, 
+      {
         text: 'Usuarios',
         path: '/usuarios',
-      }, 
+      },
+      {
+        text: 'Clientes',
+        path: '/clientes',
+      },
+      {
+        text: 'Control Precios',
+        path: '/precios',
+      },
       {
         text: 'Caja menor',
       

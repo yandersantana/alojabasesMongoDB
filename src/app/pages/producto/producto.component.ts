@@ -922,7 +922,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {})
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=this.remisionProducto.fechaP
-              this.transaccion.fecha_transaccion=new Date().toLocaleString()
+              this.transaccion.fecha_transaccion=new Date()
               this.transaccion.sucursal=this.transaccion.sucursal
               this.transaccion.totalsuma=0
               this.transaccion.bodega=this.remisionProducto.bodega
@@ -930,6 +930,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.transaccion.orden_compra=this.remisionProducto.num_orden
               this.transaccion.producto=element.producto
               this.transaccion.cajas=element.cantidad
+              this.transaccion.costo_unitario=0
               this.transaccion.piezas=element.cantidadpiezas
               this.transaccion.valor=0
               this.transaccion.totalsuma=0
@@ -978,7 +979,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.transaccion = new transaccion()
             //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
             this.transaccion.fecha_mov=this.remisionProducto.fechaP
-            this.transaccion.fecha_transaccion=new Date().toLocaleString()
+            this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.remisionProducto.sucursal
             this.transaccion.bodega=this.remisionProducto.bodega
             this.transaccion.documento=this.remisionProducto.num_FactPro
@@ -987,6 +988,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.transaccion.cajas=element.cantidadEntregada
             this.transaccion.piezas=element.cantidadEntregadapiezas
             this.transaccion.observaciones=""
+            this.transaccion.costo_unitario=element.nombreComercial.precio
             this.transaccion.tipo_transaccion="compra"
             this.transaccion.movimiento=1
             this.transaccion.valor=element.valorunitario

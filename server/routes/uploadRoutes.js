@@ -36,6 +36,17 @@ router.post('/api/upload', multipartMiddleware, (req, res) => {
 });
  
 
+const storage = multer.diskStorage({
+    destination: function(req, file, cb) {
+        cb(null, './server/uploads');
+    },
+
+    // By default, multer removes file extensions so let's add them back
+    filename: function(req, file, cb) {
+        cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+    }
+});
+
 
  router.post('/uploadFile', multipartMiddleware, (req, res, next) => {
      console.log("llegue aqui ")
@@ -65,6 +76,33 @@ router.post('/api/upload', multipartMiddleware, (req, res) => {
     });
     res.status(500).json(error);
 });  
+
+
+
+router.post('/upload3', (req, res) => {
+    // 10 is the limit I've defined for number of uploaded files at once
+    // 'multiple_images' is the name of our file input field
+    console.log("33333333")
+    let upload = multer({ storage: storage, fileFilter: helpers.imageFilter }).array('multiple_images', 10);
+
+    upload(req, res, function(err) {
+        if (req.fileValidationError) {
+            return res.send(req.fileValidationError);
+        }
+        // The same as when uploading single images
+
+        let result = "You have uploaded these images: <hr />";
+        const files = req.files;
+        let index, len;
+
+        // Loop through all the uploaded images and display them on frontend
+        for (index = 0, len = files.length; index < len; ++index) {
+            result += `<img src="${files[index].path}" width="300" style="margin-right: 20px;">`;
+        }
+        result += '<hr/><a href="./">Upload more images</a>';
+        res.send(result);
+    });
+});
 
 
 // POST File

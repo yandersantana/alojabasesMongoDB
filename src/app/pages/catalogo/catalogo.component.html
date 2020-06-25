@@ -341,7 +341,7 @@
                                         </div>
                                         <div>
                                             <div> 
-                                            <form action="http://localhost:3000/upload/uploadFile" method="post" enctype="multipart/form-data">
+                                            <form action="http://104.248.14.190:3000/upload/uploadFile" method="post" enctype="multipart/form-data">
                                                 <label for="filePicker">Escoge una imagen:</label><br>
                                                 <!-- <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->
                                                 <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" multiple>
@@ -350,6 +350,15 @@
                                             </form>
                                             </div>
                                             <br>
+                                            <form method="POST" action="http://104.248.14.190:3000/upload/upload3" enctype="multipart/form-data">
+                                                <div>
+                                                    <label>Select multiple images:</label>
+                                                    <input type="file" name="multiple_images" multiple />
+                                                </div>
+                                                <div>
+                                                    <input type="submit" name="btn_upload_multiple_images" value="Upload" />
+                                                </div>
+                                            </form>
                                             <div>
                                                 <label for="filePicker">Escoge una imagen:</label><br>
                                                <!--  <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->

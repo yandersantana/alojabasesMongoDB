@@ -4,7 +4,7 @@ const { Schema } = mongoose;
 const TransaccionesSchema = new Schema({
     id: { type: Number, required: false},
     idTransaccion: { type: Number, required: false},
-    fecha_transaccion: { type: String, required: false},
+    fecha_transaccion: { type: Date, required: false},
     fecha_mov: { type: String, required: false},
     sucursal: { type: String, required: false},
     bodega: { type: String, required: false},
@@ -18,6 +18,7 @@ const TransaccionesSchema = new Schema({
     usuario: { type: String, required: false},
     observaciones: { type: String, required: false},
     factPro: { type: String, required: false},
+    costo_unitario: { type: Number, required: false},
     valor: { type: String, required: false},
     cliente: { type: String, required: false},
     proveedor: { type: String, required: false},

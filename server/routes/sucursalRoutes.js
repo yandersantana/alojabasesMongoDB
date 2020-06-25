@@ -12,6 +12,20 @@ router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const sucursales = {
         nombre: req.body.nombre,
+        nombreComercial: req.body.nombreComercial,
+        contacto: req.body.contacto,
+        celular: req.body.celular,
+        direccion: req.body.direccion
+    };
+    await Sucursal.findByIdAndUpdate(id, {$set: sucursales}, {new: true});
+    res.json({status: 'Sucursal Actualizada'});  
+})
+
+router.put('/updateNombre/:id/:nombre', async (req, res,next) => {
+    const { id } = req.params;
+    const sucursales = {
+        nombre: req.body.nombre,
+        nombreComercial: req.body.nombreComercial,
         contacto: req.body.contacto,
         celular: req.body.celular,
         direccion: req.body.direccion
@@ -28,9 +42,9 @@ router.delete('/delete/:id', async (req, res,next) => {
 
 
 router.post('/newSucursal', async (req, res) => {
-    //const { index_name, index_description, index_type,index_length } = req.body;
     const newSucursal2= new Sucursal({ 
         nombre: req.body.nombre,
+        nombreComercial: req.body.nombreComercial,
         contacto: req.body.contacto,
         celular: req.body.celular,
         direccion: req.body.direccion

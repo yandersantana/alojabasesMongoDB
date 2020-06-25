@@ -51,6 +51,7 @@ app.use('/devoluciones', require('./routes/devolucionesRoutes'));
 app.use('/productosEntregados', require('./routes/productosEntregadosRoutes'));
 app.use('/documentoGenerado', require('./routes/documentoGeneradoRoutes'));
 app.use('/upload', require('./routes/uploadRoutes'));
+app.use('/precios', require('./routes/preciosRoutes'));
 
 
 

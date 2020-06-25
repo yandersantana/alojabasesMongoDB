@@ -155,6 +155,11 @@ export class TrasladosComponent implements OnInit {
 
   validarRol(){
     this.sucursal_origen = this.usuarioLogueado[0].sucursal
+    this.bodegas.forEach(element=>{
+      if(element.sucursal == this.sucursal_origen){
+          this.bodegasorigen.push(element)
+      }
+    })
     if(this.usuarioLogueado[0].rol == "Administrador"){
       var x = document.getElementById("admin");
       x.style.display = "block";
@@ -771,7 +776,7 @@ export class TrasladosComponent implements OnInit {
             element.id=this.id2
             this.transaccion = new transaccion()    
             this.transaccion.fecha_mov=new Date().toLocaleDateString()
-            this.transaccion.fecha_transaccion=new Date().toLocaleString()
+            this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_origen.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_origen
@@ -818,7 +823,7 @@ export class TrasladosComponent implements OnInit {
             .then(res => {}, err => reject(err)); */
             this.transaccion = new transaccion()    
             this.transaccion.fecha_mov=new Date().toLocaleDateString()
-            this.transaccion.fecha_transaccion=new Date().toLocaleString()
+            this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_destino.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_destino
@@ -1385,7 +1390,7 @@ contadorValidaciones2(i:number){
                         type: 'none',
                         fontSize:9,
                         ul: [
-                          ''+this.traslados.sucursal_origen.nombre,
+                          ''+this.traslados.sucursal_origen.nombreComercial,
                           ''+this.traslados.sucursal_origen.direccion,
                           ''+this.traslados.sucursal_origen.contacto,
                           ''+this.traslados.sucursal_origen.celular,
@@ -1416,7 +1421,7 @@ contadorValidaciones2(i:number){
                         type: 'none',
                         fontSize:9,
                         ul: [
-                          ''+this.traslados.sucursal_destino.nombre,
+                          ''+this.traslados.sucursal_destino.nombreComercial,
                           ''+this.traslados.sucursal_destino.direccion,
                           ''+this.traslados.sucursal_destino.contacto,
                           ''+this.traslados.sucursal_destino.celular,

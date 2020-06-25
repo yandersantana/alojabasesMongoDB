@@ -1,7 +1,8 @@
 
 const { Router } = require('express');
 const router = Router();
-const Cliente = require('../models/clientes')
+const Cliente = require('../models/clientes');
+const { runInNewContext } = require('vm');
 
 router.post('/newCliente', async (req, res) => {
     const newCliente = new Cliente({ 
@@ -10,7 +11,22 @@ router.post('/newCliente', async (req, res) => {
         ruc:req.body.ruc,
         direccion:req.body.direccion,
         celular: req.body.celular,
-        tventa:req.body.tventa});
+        tventa:req.body.tventa,
+        telefono:req.body.telefono,
+        correo:req.body.correo,
+        nombreContacto:req.body.nombreContacto,
+        direccionContacto:req.body.direccionContacto,
+        ciudad:req.body.ciudad,
+        celularContacto:req.body.celularContacto,
+        fechaNacimiento:req.body.fechaNacimiento,
+        notas:req.body.notas,
+        regimen:req.body.regimen,
+        forma_pago:req.body.forma_pago,
+        dias_credito:req.body.dias_credito,
+        cupo_maximo:req.body.cupo_maximo,
+        tipoCliente:req.body.tipoCliente,
+        estado:req.body.estado
+    });
     await newCliente.save();
     res.json({status: 'Cliente creado'});
 });
@@ -35,7 +51,21 @@ router.put('/update/:id', async (req, res,next) => {
         ruc:req.body.ruc,
         direccion:req.body.direccion,
         celular: req.body.celular,
-        tventa:req.body.tventa};
+        tventa:req.body.tventa,
+        telefono:req.body.telefono,
+        correo:req.body.correo,
+        nombreContacto:req.body.nombreContacto,
+        direccionContacto:req.body.direccionContacto,
+        ciudad:req.body.ciudad,
+        celularContacto:req.body.celularContacto,
+        fechaNacimiento:req.body.fechaNacimiento,
+        notas:req.body.notas,
+        regimen:req.body.regimen,
+        forma_pago:req.body.forma_pago,
+        dias_credito:req.body.dias_credito,
+        cupo_maximo:req.body.cupo_maximo,
+        tipoCliente:req.body.tipoCliente,
+        estado:req.body.estado};
     await Cliente.findByIdAndUpdate(id, {$set: newCliente}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

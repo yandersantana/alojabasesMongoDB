@@ -35,6 +35,8 @@ import { ParametrizacionComponent } from './pages/parametrizacion/parametrizacio
 import { EntregasPComponent } from './pages/entregas-p/entregas-p.component';
 import { HttpClientModule } from '@angular/common/http';
 import { UserComponent } from './pages/user/user.component';
+import { ClientesComponent } from './pages/clientes/clientes.component';
+import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
 
 
 @NgModule({
@@ -59,6 +61,8 @@ import { UserComponent } from './pages/user/user.component';
     ParametrizacionComponent,
     EntregasPComponent,
     UserComponent,
+    ClientesComponent,
+    ControlPreciosComponent,
   ],
   imports: [
     BrowserModule,

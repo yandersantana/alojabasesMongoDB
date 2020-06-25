@@ -8,7 +8,6 @@
         id="gridContainer"
         [dataSource]="transacciones"
         [showBorders]="true"
-        
         (onExporting)="onExporting($event)"
         (onExported)="onExported($event)"
         (onRowPrepared)="onRowPrepared($event)">   
@@ -22,7 +21,7 @@
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Transacciones" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column dataField="idTransaccion" sortOrder="desc"></dxi-column>
-        <dxi-column dataField="fecha_transaccion"  [visible]="false"></dxi-column>
+        <dxi-column dataField="fecha_transaccion" dataType="date" [visible]="false"></dxi-column>
         <dxi-column dataField="fecha_mov"></dxi-column>
         <dxi-column dataField="sucursal"></dxi-column>
         <dxi-column dataField="tipo_transaccion"></dxi-column>
@@ -33,6 +32,7 @@
         <dxi-column dataField="producto" width="25%"></dxi-column>
         <dxi-column dataField="cajas"  dataType="number"></dxi-column>
         <dxi-column dataField="piezas"  dataType="number"></dxi-column>
+        <dxi-column dataField="costo_unitario" [visible]="false"></dxi-column>
         <dxi-column dataField="cantM2" caption="Cantidad" [visible]="false"  dataType="number"></dxi-column>
         <dxi-column dataField="valor" dataType="number" caption="V.Unitario" [visible]="false" ></dxi-column>
         <dxi-column dataField="totalsuma"   dataType="number"></dxi-column>
@@ -42,7 +42,7 @@
         <dxi-column dataField="movimiento"  [visible]="false"></dxi-column>
         <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
-       <!--  <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling> -->
+        <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
     </dx-data-grid>
 
 

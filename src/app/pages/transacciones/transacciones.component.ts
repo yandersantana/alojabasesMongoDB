@@ -44,6 +44,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("usuario", "visible", true);
     e.component.columnOption("observaciones", "visible", true);
     e.component.columnOption("cliente", "visible", true);
+    e.component.columnOption("costo_unitario", "visible", true);
     e.component.columnOption("cantM2", "visible", true);
     e.component.columnOption("proveedor", "visible", true);
     e.component.columnOption("movimiento", "visible", true);
@@ -57,6 +58,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("usuario", "visible", false);
     e.component.columnOption("cliente", "visible", false);
     e.component.columnOption("cantM2", "visible", false);
+    e.component.columnOption("costo_unitario", "visible", false);
     e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("movimiento", "visible", false);
     e.component.columnOption("observaciones", "visible", false);

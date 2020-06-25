@@ -811,6 +811,8 @@ setSelectedProducto(i:number){
               this.factura.cliente.cliente_nombre= element.cliente_nombre
               this.factura.cliente.direccion = element.direccion
               this.factura.cliente.celular = element.celular
+              this.factura.tipo_venta= element.tventa
+              this.factura.cliente.nombreContacto=element.nombreContacto
             }
           }); 
           this.calcularTipoCliente(); 
@@ -1682,7 +1684,7 @@ var tipoDoc:boolean=false
                           type: 'none',
                           ul: [
                             ''+this.factura.cliente.cliente_nombre,
-                            ''+this.factura.cliente.direccion,
+                            ''+this.factura.cliente.nombreContacto,
                             ''+this.factura.cliente.direccion,
                             ''+this.factura.cliente.celular,
                           ]
@@ -1794,7 +1796,7 @@ var tipoDoc:boolean=false
           },
           this.getDatosFooter(),
           {
-            text:"Convenciones: E: entregado, P: pendiente, I: incompleto o parcial",
+            text:"Convenciones: E: entregado, P: pendiente",
             fontSize: 8,
             pageBreak: 'after'
           },
@@ -2004,7 +2006,7 @@ var tipoDoc:boolean=false
                           type: 'none',
                           ul: [
                             ''+this.factura.cliente.cliente_nombre,
-                            ''+this.factura.cliente.direccion,
+                            ''+this.factura.cliente.nombreContacto,
                             ''+this.factura.cliente.direccion,
                             ''+this.factura.cliente.celular,
                             ''+this.mySimpleFormat2,
@@ -2269,7 +2271,7 @@ var tipoDoc:boolean=false
                           type: 'none',
                           ul: [
                             ''+this.factura.cliente.cliente_nombre,
-                            ''+this.factura.cliente.direccion,
+                            ''+this.factura.cliente.nombreContacto,
                             ''+this.factura.cliente.direccion,
                             ''+this.factura.cliente.celular,
                           ]
@@ -2341,7 +2343,7 @@ var tipoDoc:boolean=false
           },
           this.getDatosFooter(),
           {
-            text:"Convenciones: E: entregado, P: pendiente, I: incompleto o parcial",
+            text:"Convenciones: E: entregado, P: pendiente",
             fontSize: 8,
             pageBreak: 'after'
           },
@@ -2979,7 +2981,9 @@ var tipoDoc:boolean=false
       });
 
       this.factura.cliente= this.factura.cliente
-
+      if(this.factura.cliente.nombreContacto==""||this.factura.cliente.nombreContacto==undefined){
+        this.factura.cliente.nombreContacto=this.factura.cliente.cliente_nombre
+      }
       new Promise<any>((resolve, reject) => { 
         this.crearCliente()
         this.guardarFactura()
@@ -3018,12 +3022,13 @@ var tipoDoc:boolean=false
         
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
-          this.transaccion.fecha_transaccion=this.factura.fecha.toLocaleString()
+          this.transaccion.fecha_transaccion=this.factura.fecha
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"
           this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
           this.transaccion.cantM2=element.cantidad
+          this.transaccion.costo_unitario=element.producto.precio
           this.transaccion.documento=this.factura.documento_n+""
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.producto=element.producto.PRODUCTO
@@ -3033,10 +3038,10 @@ var tipoDoc:boolean=false
           this.transaccion.tipo_transaccion="venta-fact"
           this.transaccion.movimiento=-1
           this.transaccion.usu_autorizado="q@q.com"
-          this.transaccion.usuario="q@q.com"
+          this.transaccion.usuario=this.usuarioLogueado[0].username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre  
-          
+          //alert("ssd "+JSON.stringify(this.transaccion))
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
@@ -3062,15 +3067,6 @@ var tipoDoc:boolean=false
                 icon: 'error'
               })
             })
-          //this.getIDTransacciones()
-
-         /*  this.db.collection("/transacciones")
-          .add({ ...this.transaccion })
-          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-          this.db
-            .collection("/transacciones_ID")
-            .doc("matriz").set({ documento_n:this.number_transaccion })
-            .then(res => { }, err => reject(err)); */
         });
         
       });
@@ -3191,7 +3187,7 @@ var tipoDoc:boolean=false
 
   generarNotaDeVenta(e) {
     
-    this.traerContadoresDocumentos()
+    //this.traerContadoresDocumentos()
     this.buscarDatosSucursal()
     this.mostrarMensaje()
     var contVal=0
@@ -3229,11 +3225,12 @@ var tipoDoc:boolean=false
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
-          this.transaccion.fecha_transaccion=this.factura.fecha.toLocaleString()
+          this.transaccion.fecha_transaccion=this.factura.fecha
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"
           this.transaccion.valor=element.precio_venta
+          this.transaccion.costo_unitario=element.producto.precio
           this.transaccion.documento=this.factura.documento_n+""
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.producto=element.producto.PRODUCTO
@@ -3481,7 +3478,6 @@ var tipoDoc:boolean=false
         m2s1=parseInt(element.cantidadM2.toFixed(0))
         m2s2=parseInt(element.cantidadM2b2.toFixed(0))
         m2s3=parseInt(element.cantidadM2b3.toFixed(0))
-       // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
       })
     }
 

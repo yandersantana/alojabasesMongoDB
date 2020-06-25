@@ -34,7 +34,7 @@ export class ParametrizacionComponent implements OnInit {
   parametrizacionesData:parametrizacionsuc[]=[]
   parametrizacionSucu:parametrizacionsuc
   contadores:contadoresDocumentos
-  
+  nombreSucursal:string=""
   constructor(public parametrizacionService:ParametrizacionesService,public contadorService:ContadoresDocumentosService, public sucursalesService:SucursalesService) {
     this.parametroSuc.sucursal="Matriz"
    }
@@ -199,7 +199,7 @@ export class ParametrizacionComponent implements OnInit {
 
 
    newParametrizacion(){
-    console.log("kjkjl "+JSON.stringify(this.parametroSuc))
+    this.nombreSucursal= this.parametroSuc.nombre
     if(this.parametroSuc.nombre!="" &&this.parametroSuc.direccion!="" && this.parametroSuc.fecha!= "" && this.parametroSuc.inicio!=0 && this.parametroSuc.fin!=0 && this.parametroSuc.razon_social!=""
     && this.parametroSuc.ruc!="" && this.parametroSuc.sri!="" && this.parametroSuc.telefonos!=""){
       this.mensajeGuardando()
@@ -207,7 +207,7 @@ export class ParametrizacionComponent implements OnInit {
       new Promise<any>((resolve, reject) => {
         this.parametrizacionService.updateParametrizacion(this.parametroSuc).subscribe(
           res => {
-            this.actualizarContadores()
+            this.actualizarsucursal()
           },
           err => {
             Swal.fire({
@@ -226,6 +226,26 @@ export class ParametrizacionComponent implements OnInit {
     }
     
   } 
+
+  actualizarsucursal(){
+    this.locales.forEach(element=>{
+      if(this.parametroSuc.sucursal == element.nombre){
+        //alert(this.nombreSucursal)
+        element.nombreComercial= this.nombreSucursal
+        this.sucursalesService.updateSucursales(element).subscribe(
+          res => {
+            this.actualizarContadores()
+          },
+          err => {
+            Swal.fire({
+              title: err.error,
+              text: 'Revise e intente nuevamente',
+              icon: 'error'
+            })
+          })
+      }
+    })
+  }
 
   mensajeGuardando(){
     let timerInterval

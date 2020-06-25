@@ -6,6 +6,7 @@ const { Schema } = mongoose;
 const SucursalSchema = new Schema({
     id: { type: Number, required: false},
     nombre: { type: String, required: false},
+    nombreComercial: { type: String, required: false},
     contacto: { type: String, required: false},
     celular: { type: String, required: false},
     direccion: { type: String, required: false}

@@ -1,6 +1,6 @@
 export class transaccion{
     idTransaccion:number
-    fecha_transaccion:string
+    fecha_transaccion:Date
     fecha_mov:string
     sucursal:string
     bodega:string
@@ -9,6 +9,7 @@ export class transaccion{
     documento:string
     producto:string
     cajas:number
+    costo_unitario:number
     piezas:number
     usu_autorizado:string
     usuario:string

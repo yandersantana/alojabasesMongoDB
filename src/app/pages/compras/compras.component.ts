@@ -28,6 +28,7 @@ import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { ProductosCompradosService } from 'src/app/servicios/productos-comprados.service';
 import { HttpClient } from '@angular/common/http';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import DataSource from "devextreme/data/data_source";
 import { user } from '../user/user';
 @Component({
   selector: 'app-compras',
@@ -113,6 +114,7 @@ export class ComprasComponent implements OnInit {
   disponibilidadProducto:string=""
   popupvisible:boolean=false
   usuarioLogueado:user
+  productos22: DataSource;
   constructor(public authenService: AuthenService,public transaccionesService: TransaccionesService,public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService, public proveedoresService:ProveedoresService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
     this.ordenDeCompra = new OrdenDeCompra()
     this.ordenDeCompra.fecha = this.now.toDateString()  
@@ -123,6 +125,10 @@ export class ComprasComponent implements OnInit {
     this.ordenDeCompra.condpago="Contado"
     this.ordenDeCompra.observaciones=""
     this.ordenDeCompra.usuario = sessionStorage.getItem('user')
+
+
+        
+    
   }
 
 
@@ -279,6 +285,10 @@ export class ComprasComponent implements OnInit {
         this.productos.push(element)
       }
     })
+     this.productos22 = new DataSource({  
+      store: this.productos,  
+      sort: [{ field: "PRODUCTO", asc: true }],    
+    });
   }
 
   anadirProducto = (e) => {

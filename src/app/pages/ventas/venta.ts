@@ -66,15 +66,40 @@ export class venta {
 export class cliente {
         _id:string
         cliente_nombre: string
-        t_cliente: string
         ruc: string
         direccion: string
         celular: string
         tventa: string
-        constructor( 
-            ) { }
-            
-            
+        telefono:string
+        correo:string
+        nombreContacto:string
+        direccionContacto:string
+        ciudad:string
+        celularContacto:string
+        fechaNacimiento:string
+        notas:string
+        //datos Tributarios
+        t_cliente: string
+        regimen:string
+        forma_pago:string
+        dias_credito:number
+        cupo_maximo:number
+        tipoCliente:string
+        estado:string
+            constructor( ) { 
+                this.telefono=""
+                this.correo=""
+                this.nombreContacto=""
+                this.direccionContacto=""
+                this.celularContacto=""
+                this.fechaNacimiento=""
+                this.notas=""
+                this.regimen=""   
+                this.forma_pago=""   
+                this.estado=""   
+                this.dias_credito=0   
+                this.cupo_maximo=0   
+            }          
 }
 export class factura {
         _id:string

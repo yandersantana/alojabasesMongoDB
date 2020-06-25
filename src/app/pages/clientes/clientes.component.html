@@ -1,0 +1,275 @@
+<br>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Administración de Clientes
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row botones">
+
+                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                            <i class="fa fa-list fa-2x"></i>
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Cliente" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                            <i class="fa fa-user-plus fa-2x"></i>
+                        </button></div>
+                </div>
+            </div>
+
+          
+            <div class="col-md-10 card carIn">
+                <div id="read" style="display: block;text-align: center;">
+                    <br>
+                    <h4>Clientes</h4>
+                    <dx-data-grid id="gridContainer" [dataSource]="clientes" [showBorders]="true">
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
+                        <dxi-column dataField="cliente_nombre" caption="Nombre" [visible]="true"></dxi-column>
+                        <dxi-column dataField="ruc" caption="RUC"></dxi-column>
+                        <dxi-column dataField="direccion" caption="Dirección"></dxi-column>
+                        <dxi-column dataField="celular" caption="Celular"></dxi-column>
+                        <dxi-column dataField="tventa" caption="Tipo Cliente"></dxi-column>
+                        <dxi-column dataField="telefono" caption="Telefono" [visible]="false"></dxi-column>
+                        <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="10%">
+                            <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdateUser"></dxi-button>
+                            <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deleteUser"></dxi-button>
+                        </dxi-column>
+                        <dxo-paging [pageSize]="5"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                        </dxo-pager>
+
+                    </dx-data-grid>
+                    <br><br>
+                </div>
+
+
+
+                <div id="new" style="display: none;">
+                    <div style="text-align: center;" class="newr">
+                        <h4>Registrar Nuevo Cliente</h4>
+                        <!-- <img class="img-responsive" src="../../../assets/img/brand/grupos.png" alt=""> -->
+                        <div>
+                            <form #f="ngForm" (ngSubmit)="register(f)">
+
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="row espacio">
+                                            <div class="col-md-12" style="text-align: left;margin-bottom: 1em; background-color: #c2c2c2;"><h6>Datos básicos</h6></div>
+                
+                                            <div class="col-md-4" style="text-align: left;">Nombre</div>
+                                            <div class="col-md-8"> <!-- <input type="text" [(ngModel)]="cliente.cliente_nombre"
+                                                    name="nombre" class="form-control" placeholder="Nombre "
+                                                    required> -->
+                                                    <dx-text-box [(value)]="cliente.cliente_nombre" [readOnly]="false"></dx-text-box>
+                                                   <!--  <dx-autocomplete #data2
+                                                    [dataSource]="clientes"
+                                                    placeholder="Nombre del cliente"
+                                                    valueExpr="cliente_nombre"
+                                                    [(value)]= "mensaje"
+                                                    (onChange)="setClienteData($event)">
+                                                </dx-autocomplete> -->
+                                                </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Cédula / RUC</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.ruc" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Dirección</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.direccion" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Celular</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.celular" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <br>
+                                        <div class="row espacio">
+                                            <div class="col-md-12" style="text-align: left; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Otros datos personales</h6></div>
+                                            <br>
+                                            <div class="col-md-4" style="text-align: left;">Telefono Convencional</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.telefono" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Correo</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.correo" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Nombre Contacto</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.nombreContacto" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Dirección Contacto</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.direccionContacto" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Ciudad</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.ciudad" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Celular contacto</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.celularContacto" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Fecha Nacimiento</div>
+                                            <div class="col-md-8"> <dx-date-box [(value)]="cliente.fechaNacimiento" [readOnly]="false"></dx-date-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Notas</div>
+                                            <div class="col-md-8"><dx-text-box [(value)]="cliente.notas" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <br>
+                                        <div class="row espacio">
+                                            <div class="col-md-12" style="text-align: left;margin-bottom: 1em;background-color: #c2c2c2;"><h6>Datos Tributarios</h6></div>
+                                            
+                                            <div class="col-md-4" style="text-align: left;">Tipo Cliente</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.t_cliente" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Regimen</div>
+                                            <div class="col-md-8"> <dx-text-box [(value)]="cliente.regimen" [readOnly]="false"></dx-text-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Forma de Pago</div>
+                                            <div class="col-md-8"> <dx-select-box [items]="formaPago" [(value)]="cliente.forma_pago" [readOnly]="false"
+                                                [disabled]="false" ></dx-select-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Dias credito</div>
+                                            <div class="col-md-8"> <dx-number-box [(value)]="cliente.dias_credito" [readOnly]="false"></dx-number-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Cupo máximo</div>
+                                            <div class="col-md-8"><dx-number-box [(value)]="cliente.cupo_maximo" [readOnly]="false"></dx-number-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Tipo de Cliente</div>
+                                            <div class="col-md-8"><dx-select-box [items]="tiposClientes" [(value)]="cliente.tventa" [readOnly]="false"
+                                                [disabled]="false" ></dx-select-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Estado</div>
+                                            <div class="col-md-8">  <dx-select-box [items]="menuTipoDatos" [(value)]="cliente.estado" [readOnly]="false"
+                                                [disabled]="false" ></dx-select-box></div>
+                                        </div>
+                                   
+                                         <div class="col-md-12">
+                                             <div class="row">
+                                                 <div class="col-md-4"></div>
+                                                 <div class="col-md-4">
+                                                    <button class="btn btn-block btn-success espacio">Registrar Cliente</button>
+                                                 </div>
+                                                 <div class="col-md-4"></div>
+                                             </div>
+                                         </div>
+                                        
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+               <!--  <div id="edit" style="display: none;">
+                    <div class="row" class="fomR">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4" style="text-align: center;">
+                                    <div style="font-weight: bold;">Nombre del Usuario</div>
+                                    <dx-autocomplete [dataSource]="usuariosempresa" placeholder="" valueExpr="name"
+                                        [(value)]="nombreUser" (onChange)="buscarUser($event)">
+                                    </dx-autocomplete>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-12">
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">Correo</div>
+                                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.email" name="usuario"
+                                        class="form-control" placeholder="Correo" autocomplete="email" required></div>
+                            </div>
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">Contraseña</div>
+                                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.password"
+                                        name="contrasena" class="form-control" placeholder="Descripción" required></div>
+                            </div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-3"></div>
+                                <div class="col-md-3"><button class="btn btn2" type="button"
+                                        (click)="updateUsuario()">Actualizar</button></div>
+                                <div class="col-md-3"><button class="btn btn2" type="button"
+                                        (click)="deleteUsuario($event)">Eliminar</button></div>
+                                <div class="col-md-3"></div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                </div> -->
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<dx-popup [width]="500" [height]="450" [showTitle]="true" title="Actualizar Información" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+           <!--  <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Correo</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.email" name="usuario"
+                        class="form-control" placeholder="Correo" autocomplete="email" required></div>
+            </div>
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Nombres y Apellidos</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.name" name="usuario" class="form-control"
+                        placeholder="Correo" autocomplete="email" required></div>
+            </div>
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Contraseña</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.password" name="contrasena"
+                        class="form-control" placeholder="Descripción" required></div>
+            </div>
+            <div class="row espacio" >
+                <div class="col-md-4" style="text-align: left;">Estado</div>
+
+                <div class="col-md-8">
+                    <dx-select-box [items]="menuTipoDatos" [value]="menuTipoDatos[0]" [readOnly]="false"
+                        [disabled]="false" (onValueChanged)="setTipo($event)"></dx-select-box>
+                </div>
+
+            </div> -->
+
+
+
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><button class="btn btn2" type="button"
+                        (click)="updateCliente()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        <!-- <p>
+            Position:
+            <span>{{currentEmployee.Position}}</span>
+        </p> -->
+    </div>
+</dx-popup>

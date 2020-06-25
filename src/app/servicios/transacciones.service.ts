@@ -12,6 +12,7 @@ export class TransaccionesService {
   constructor(public http: HttpClient, public router: Router ) { }
 
   newTransaccion(transaccion){
+   // alert("aqui ñe "+JSON.stringify(transaccion))
     return this.http.post<any>(this.URL +'/newTransaccion', transaccion);
   }
 

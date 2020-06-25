@@ -77,6 +77,7 @@ export class Proveedor{
 export class Sucursal{
     sucursalTipo:string
     nombre:string
+    nombreComercial:string
     contacto:string
     celular:string
     direccion:string

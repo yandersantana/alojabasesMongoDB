@@ -1956,13 +1956,14 @@ anadirDetallePago = (e) => {
               /*  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"cantidad" :sumaProductos, "precio":element.precio_compra})  */  
                 this.transaccion = new transaccion()
                 this.transaccion.fecha_mov=new Date().toLocaleDateString()
-                this.transaccion.fecha_transaccion=new Date().toLocaleString()
+                this.transaccion.fecha_transaccion=new Date()
                 this.transaccion.sucursal=e.sucursal.nombre
                 this.transaccion.valor=element.precio_compra
                 this.transaccion.totalsuma=element.total-(element.total*(element.descGeneral/100))
                 this.transaccion.bodega="bodega1"
                 this.transaccion.orden_compra=ord
                 this.transaccion.documento=e.documento
+                this.transaccion.costo_unitario=element.nombreComercial.precio
                 sum2=element.precio_compra-(element.precio_compra*(element.descProducto/100))
                 this.transaccion.valor=sum2-(sum2*(element.descGeneral/100))
                 this.transaccion.cantM2=element.cantidad

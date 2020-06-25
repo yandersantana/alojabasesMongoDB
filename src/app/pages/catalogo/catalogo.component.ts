@@ -394,6 +394,10 @@ export class CatalogoComponent implements OnInit {
       )
   }
 
+  upload3(){
+    
+  }
+
   fileChange(element) {
     console.log("entre aquiiii")
     this.uploadedFiles = element.target.files;

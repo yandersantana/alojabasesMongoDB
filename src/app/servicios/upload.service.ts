@@ -7,13 +7,18 @@ import { HttpClient } from '@angular/common/http';
 export class UploadService {
 
   private URL = 'http://104.248.14.190:3000/upload';
-//private URL = 'http://localhost:3000/upload';
+  //private URL = 'http://localhost:3000/upload';
   constructor(private http: HttpClient) { }
 
   uploadFile(formData) {
    console.log("yes "+JSON.stringify(formData))
     return this.http.post<any>(this.URL +'/uploadFile', formData);
   }
+
+  uploadFile2(formData) {
+    console.log("yes "+JSON.stringify(formData))
+     return this.http.post<any>(this.URL +'/upload3', formData);
+   }
 
 
   newDocumento(documento){

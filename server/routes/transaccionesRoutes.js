@@ -17,6 +17,7 @@ router.put('/update/:id', async (req, res,next) => {
         sucursal: req.body.sucursal,
         bodega: req.body.bodega,
         tipo_transaccion: req.body.tipo_transaccion,
+        costo_unitario:req.body.costo_unitario,
         totalsuma: req.body.totalsuma,
         documento: req.body.documento,
         producto: req.body.producto,
@@ -45,7 +46,7 @@ router.delete('/delete/:id', async (req, res,next) => {
 
 
 router.post('/newTransaccion', async (req, res) => {
-    console.log("avance")
+    console.log("avance"+req.body)
     //const { index_name, index_description, index_type,index_length } = req.body;
     const newTransaccion= new Transacciones({ 
         idTransaccion: req.body.idTransaccion,
@@ -59,6 +60,7 @@ router.post('/newTransaccion', async (req, res) => {
         producto: req.body.producto,
         cajas: req.body.cajas,
         piezas: req.body.piezas,
+        costo_unitario:req.body.costo_unitario,
         usu_autorizado: req.body.usu_autorizado,
         usuario: req.body.usuario,
         observaciones: req.body.observaciones,

@@ -2,14 +2,15 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
 
-
 const PreciosSchema = new Schema({
     id: { type: String, required: false},
     aplicacion: { type: String, required: false},
-    cantidad1: { type: Number, required: false},
-    porcentaje1: { type: Number, required: false},
-    cantidad2: { type: Number, required: false},
-    porcentaje2: { type: Number, required: false}
+    cant1: { type: Number, required: false},
+    percent1: { type: Number, required: false},
+    cant2: { type: Number, required: false},
+    percent2: { type: Number, required: false},
+    cant3: { type: Number, required: false},
+    percent3: { type: Number, required: false}
 },{
     timestamps:true
 });

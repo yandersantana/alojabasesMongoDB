@@ -40,6 +40,9 @@ import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
 import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
+import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
+import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
+import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -175,6 +178,7 @@ correo:string=""
 calmetros:number=0
 caltotal:number=0
 numeroID:number=0
+precios:precios[]=[]
 contR=this.numeroID
 disponibilidadProducto:string=""
 parametrizaciones:parametrizacionsuc[]=[]
@@ -184,8 +188,9 @@ contadores:contadoresDocumentos[]
   fechaMaxima2 = new Date(this.now3.setDate(this.now.getDate() + 7));
   mySimpleFormat2 = this.pipe.transform(this.fechaMaxima2, 'MMM / d / y');
   usuarioLogueado:user
+  preciosEspeciales:preciosEspeciales[]=[]
 
-  constructor(public ventaService: VentasService,public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
+  constructor(public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = new Date()
@@ -213,7 +218,8 @@ contadores:contadoresDocumentos[]
    this.traerParametrizaciones()
    this.traerProformas()
    this.traerProductosCatalogo()
-
+    this.traerPrecios()
+    this.traerPreciosEspeciales()
    //this.crearClientes()
    // this.factura.username = sessionStorage.getItem('user')
     this.factura.tipo_venta="Normal"
@@ -281,6 +287,18 @@ contadores:contadoresDocumentos[]
   traerFacturas(){
     this.facturasService.getFacturas().subscribe(res => {
       this.facturas = res as factura[];
+   })
+  }
+
+  traerPrecios(){
+    this.preciosService.getPrecio().subscribe(res => {
+      this.precios = res as precios[];
+   })
+  }
+
+  traerPreciosEspeciales(){
+    this.preciosEspecialesService.getPrecio().subscribe(res => {
+      this.preciosEspeciales = res as preciosEspeciales[];
    })
   }
 
@@ -851,26 +869,7 @@ setSelectedProducto(i:number){
         }
       
       
-      //asignar producto al detalle
-       /*  asignarProducto(e, i:number){
-          console.log("asignando producto")
-          //this.productos.length
-          //let tmp = this.productosVendidos[this.selected]
-          //console.log("estoy buscando"+tmp)
-          console.log("estoy buscando"+this.productosVendidos[i].producto.PRODUCTO)
-          this.productos.forEach(element => {
-            //console.log("si encontre producto"+element.PRODUCTO)
-            if(element.PRODUCTO == this.productosVendidos[i].producto.PRODUCTO){
-              console.log("si encontre producto")
-              this.productosVendidos[i].producto= element
-            }
-          }); 
-          //this.calcularTipoCliente(); 
-        } */
-      
-      
-      
-      
+    
       
         //CALCULO DE TIPO DE CLIENTE
         calcularTipoCliente(){
@@ -978,26 +977,58 @@ this.traerProductosVendidos()
   }
 
   calcularDisponibilidadProducto(e, i:number) {
-var cant=0
+    this.calcularPrecioMinino(e,i)
+    var cant=0
     this.productosSolicitados=this.productosVendidos[i].disponible-this.productosVendidos[i].cantidad
     this.calcularTotalFactura()
-    //this.alerts.setMessage('All the fields are required','error');
     if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
-      //this.productosVendidos[i].cantidad=this.productosVendidos[i].disponible
-     
       cant= this.productosVendidos[i].cantidad - this.productosVendidos[i].disponible
       console.log("el restantes de cant es "+cant)
       this.showModal(e,i)
       this.calcularEquivalencia(e, i)
       this.calcularTotalFactura()
+      
       this.productosVendidos[i].pedir= true
-     //console.log("holasi"+this.showModal())
+    
    }
    this.productosVendidos[i].entregar= true
-    /* setTimeout(function () {
-      console.log();
-   }, 5000); */
+  }
 
+  calcularPrecioMinino(e, i:number){
+  switch (this.factura.tipo_venta) {
+    case "Normal":
+      this.productosVendidos[i].producto
+    this.precios.forEach(element=>{
+      if(element.aplicacion == this.productosVendidos[i].producto.APLICACION){
+        //alert("tambien")
+        if(this.productosVendidos[i].cantidad >0 && this.productosVendidos[i].cantidad <=element.cant1){
+          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent1 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+          //alert("precio es" +this.productosVendidos[i].precio_min)
+        }
+        if(this.productosVendidos[i].cantidad >element.cant1 && this.productosVendidos[i].cantidad <=element.cant2){
+          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent2 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+          //alert("precio es 2" +this.productosVendidos[i].precio_min)
+        }
+
+        if(this.productosVendidos[i].cantidad >element.cant2){
+          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent3 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+         // alert("precio es 3" +this.productosVendidos[i].precio_min)
+        }
+      }
+    })
+      break;
+    case "Distribuidor":
+      //alert("entre2")
+      this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+      break;
+    case "Socio":
+      this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioSocio / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+      break;
+  
+    default:
+      break;
+  }
+    
   }
 
 calcularTotalFactura(){

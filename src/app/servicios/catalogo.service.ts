@@ -10,7 +10,7 @@ export class CatalogoService {
 
   empresa: catalogo[];
   private URL = 'http://104.248.14.190:3000/catalogo';
- //private URL = 'http://localhost:3000/catalogo'; //localhost
+  //private URL = 'http://localhost:3000/catalogo'; //localhost
 
   constructor(public http: HttpClient, public router: Router ) { }
 
@@ -25,6 +25,10 @@ export class CatalogoService {
   updateCatalogo(catalogo){
     console.log("lll "+catalogo._id)
     return this.http.put(this.URL + `/update/${catalogo._id}`, catalogo); 
+  }
+
+  updateCatalogoAplicacion(nombre:string, aplicacion:string){
+    return this.http.put(this.URL + `/updateAplicacion/${nombre}/${aplicacion}`, catalogo); 
   }
 
   deleteEmpresas(catalogo){

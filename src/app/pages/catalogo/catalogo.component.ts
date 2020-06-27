@@ -14,6 +14,8 @@ import { ProductoService } from '../../servicios/producto.service';
 import { OpcionesCatalogoService } from '../../servicios/opciones-catalogo.service';
 import { UploadService } from 'src/app/servicios/upload.service';
 import { AlertsService } from 'angular-alert-module';
+import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
+import { precios } from '../control-precios/controlPrecios';
 
 @Component({
   selector: 'app-catalogo',
@@ -89,11 +91,11 @@ export class CatalogoComponent implements OnInit {
   }
   elementRef
   tempUrl:string=""
-
+  aplicaciones:precios[]=[]
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
-  constructor(public catalogoService: CatalogoService ,public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
@@ -113,6 +115,7 @@ export class CatalogoComponent implements OnInit {
     //this.verGaleria()
     this.traerProductosCatalogo()
     this.traerOpcionesCatalogo()
+    this.traerAplicaciones()
 
   }
 
@@ -121,6 +124,12 @@ export class CatalogoComponent implements OnInit {
     this.catalogoService.getCatalogo().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
       this.separarProductos()
+   })
+  }
+
+  traerAplicaciones(){
+    this.aplicacionesService.getPrecio().subscribe(res => {
+      this.aplicaciones = res as precios[];
    })
   }
 
@@ -228,6 +237,7 @@ export class CatalogoComponent implements OnInit {
     this.nuevoProducto.REFERENCIA= this.catalogo2.REFERENCIA
     this.nuevoProducto.UNIDAD= this.catalogo2.UNIDAD
     this.nuevoProducto.nombre_comercial= this.catalogo2.NOMBRE_COMERCIAL
+    this.nuevoProducto.APLICACION= this.catalogo2.APLICACION
     this.nuevoProducto.porcentaje_ganancia= 30
     this.nuevoProducto.precio= 0
     this.nuevoProducto.suc1Pendiente= 0

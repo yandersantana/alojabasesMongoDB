@@ -70,6 +70,13 @@ router.put('/update/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateAplicacion/:producto/:aplicacion', async (req, res,next) => {
+    const { producto } = req.params;
+    const { aplicacion } = req.params;
+    console.log("si lo hice"+aplicacion)
+    await Catalogo.findOneAndUpdate({"PRODUCTO":producto}, {$set: {APLICACION:aplicacion}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
 
 router.delete('/delete/:id', async (req, res,next) => {
     await Catalogo.findByIdAndRemove(req.params.id);

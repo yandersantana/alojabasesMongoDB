@@ -314,7 +314,20 @@
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">APLICACIÓN</div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.APLICACION" name="APLICACIÓN" class="form-control" placeholder="Opcional"  required></div>
+                                            <div class="col-md-8">
+                                                <dx-select-box [items]="aplicaciones" 
+                                                [(value)]="catalogo2.APLICACION" 
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                valueExpr="aplicacion" displayExpr="aplicacion"
+                                                ></dx-select-box>  
+                                                <!-- <dx-autocomplete
+                                                [items]="aplicaciones" 
+                                                valueExpr="aplicacion"
+                                                [(value)]="catalogo2.APLICACION" 
+                                                (onChange)="buscarUnidad($event)">
+                                            </dx-autocomplete> -->
+                                            </div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">VIGENCIA</div>
@@ -339,11 +352,11 @@
                                                 ></dx-select-box>
                                             </div>
                                         </div>
-                                        <div>
+                                        <!-- <div>
                                             <div> 
                                             <form action="http://104.248.14.190:3000/upload/uploadFile" method="post" enctype="multipart/form-data">
                                                 <label for="filePicker">Escoge una imagen:</label><br>
-                                                <!-- <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->
+                                                
                                                 <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" multiple>
                                                 <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
                                                 <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
@@ -361,12 +374,12 @@
                                             </form>
                                             <div>
                                                 <label for="filePicker">Escoge una imagen:</label><br>
-                                               <!--  <input type="file" id="filePicker" data-max-size="1024" accept="image/x-png, image/jpeg, image/jpeg" (change)="handleFileSelect($event)"> -->
+                                               
                                                 <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01"aria-describedby="inputGroupFileAddon01">
                                                 <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
                                                 <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="col-md-1"></div>
                                 </div> 
@@ -375,7 +388,7 @@
                             <div class="col-md-12">
                                 <div class="row">
                                     <div class="col-md-4"></div>
-                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="upload()">Guardar</button></div>
+                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="newProducto()">Guardar</button></div>
                                    
                                     <div class="col-md-4"></div>
                                 </div>

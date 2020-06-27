@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Producto } from '../pages/compras/compra';
+import { producto } from '../pages/ventas/venta';
 
 @Injectable({
   providedIn: 'root'
@@ -32,6 +33,10 @@ export class ProductoService {
 
   updateProductoBodegaProveedor(producto){
     return this.http.put(this.URL + `/updateBodega/${producto._id}`, producto); 
+  }
+
+  updateProductoAplicacion(id:string, aplicacion:string){
+    return this.http.put(this.URL + `/updateAplicacion/${id}/${aplicacion}`, aplicacion); 
   }
 
   updateProductoSucursal1ComD(producto,suma:number, precio:number){

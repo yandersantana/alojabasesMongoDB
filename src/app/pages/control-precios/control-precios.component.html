@@ -1,1 +1,464 @@
-<p>control-precios works!</p>
+<br>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Control de Precios
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row botones">
+
+                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                            <i class="fa fa-list fa-2x"></i>
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Nuevo Grupo" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                            <i class="fa fa-user-plus fa-2x"></i>
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Nuevo Grupo" class="btn btn-primary btnIcons2" (click)="mostrar(3)">
+                            <i class="fa fa-user-plus fa-2x"></i>
+                    </button></div>
+                </div>
+            </div>
+
+          
+            <div class="col-md-10 card carIn">
+                <div id="read" style="display: block;text-align: center;">
+                    <br>
+                    <h4>Control de Precios</h4>
+                    <dx-data-grid id="gridContainer" [dataSource]="preciosGrupo" [showBorders]="true">
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
+                        <dxi-column dataField="aplicacion" width="35%" caption="Aplicación" sortOrder="desc" [visible]="true"></dxi-column>
+                        <dxi-column dataField="cant1" caption="Hasta"></dxi-column>
+                        <dxi-column dataField="percent1" caption="%"></dxi-column>
+                        <dxi-column dataField="cant2" caption="Hasta"></dxi-column>
+                        <dxi-column dataField="percent2" caption="%"></dxi-column>
+                        <dxi-column dataField="cant3" caption="Hasta"></dxi-column>
+                        <dxi-column dataField="percent3" caption="%"></dxi-column>
+                        <dxi-column type="buttons" dataField="bt1" caption="Lista" width="10%">
+                            <dxi-button hint="Ver lista" icon="fa fa-list" [onClick]="listarPro"></dxi-button>
+                        </dxi-column>
+                        <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="10%">
+                            <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdateUser"></dxi-button>
+                            <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deletePrecio"></dxi-button>
+                        </dxi-column>
+                        <dxo-paging [pageSize]="5"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                        </dxo-pager>
+
+                    </dx-data-grid>
+
+
+                    
+                    <br><br>
+                </div>
+
+                <div id="tabla" style="display: none;">
+                    <div class="col-md-12" style="text-align: center;">
+                        <h4>Grupo {{nombreGrupo}}</h4>
+                    </div>
+                    <dx-data-grid id="gridContainer" [dataSource]="preciosGrupoDefinido" [showBorders]="true">
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
+                        <dxi-column dataField="producto.PRODUCTO" width="20%" caption="Producto"></dxi-column>
+                        <dxi-column dataField="precio" width="10%" caption="Precio"></dxi-column>
+                        <dxi-column dataField="aplicacion" width="20%" caption="Aplicación" [visible]="false"></dxi-column>
+                        <dxi-column caption="Rango 1">
+                            <dxi-column dataField="cant1" caption="Hasta"></dxi-column>
+                            <dxi-column dataField="pventa1" caption="P.V"></dxi-column>
+                            <dxi-column dataField="percent1" caption="%"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="Rango 2">
+                            <dxi-column dataField="cant2" caption="Hasta"></dxi-column>
+                            <dxi-column dataField="pventa2" caption="P.V"></dxi-column>
+                            <dxi-column dataField="percent2" caption="%"></dxi-column>
+                        </dxi-column>
+                        <dxi-column caption="Rango 3">
+                            <dxi-column dataField="cant3" caption="Hasta"></dxi-column>
+                            <dxi-column dataField="pventa3" caption="P.V"></dxi-column>
+                            <dxi-column dataField="percent3" caption="%"></dxi-column>
+                        </dxi-column>
+
+                        <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="10%">
+                            <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="nuevoRango"></dxi-button>
+                        </dxi-column>
+                        <dxo-paging [pageSize]="5"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                        </dxo-pager>
+
+                    </dx-data-grid>
+                </div>
+
+                <div id="new" style="display: none;">
+                    <div class="col-md-12" style="text-align: center;"><h4>Nuevo Grupo Precios</h4></div>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">APLICACION</div>
+                                <div class="col-md-8"> <dx-text-box [(value)]="nuevoPrecio.aplicacion" [readOnly]="false"></dx-text-box></div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                  <tr>
+                                    <th style="text-align: center;width: 50%;" >Rango </th>
+                                    <th style="text-align: center;width: 25%;" >Cantidad </th>
+                                    <th style="text-align: center;width: 25%;" >( % )</th>
+                                  </tr>
+                                  <tr>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De 0 a {{nuevoPrecio.cant1}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.cant1" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.percent1" [min]="0" [max]="100" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{nuevoPrecio.cant1+1}} a {{nuevoPrecio.cant2}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.cant2" (onChange)="controlarRango()" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.percent2" [min]="0" [max]="100" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{nuevoPrecio.cant2+1}} en adelante</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  
+                                    <td colspan="2"> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.percent3" [min]="0" [max]="100"  [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                       <button class="btn btn-block btn-success espacio" (click)="registrar()">Registrar</button>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    
+
+                </div>
+
+                <div id="edit" style="display: none;">
+                    <div class="col-md-12" style="text-align: center;"><h4>Nuevo Grupo Precios</h4></div>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">APLICACION</div>
+                                <div class="col-md-8"> <dx-text-box [(value)]="precioLeido2.aplicacion" [readOnly]="true"></dx-text-box></div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                  <tr>
+                                    <th style="text-align: center;width: 50%;" >Rango </th>
+                                    <th style="text-align: center;width: 25%;" >Cantidad </th>
+                                    <th style="text-align: center;width: 25%;" >( % )</th>
+                                  </tr>
+                                  <tr>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De 0 a {{precioLeido2.cant1}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="precioLeido2.cant1" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="precioLeido2.percent1"  [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{precioLeido2.cant1+1}} a {{precioLeido2.cant2}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="precioLeido2.cant2" (onChange)="controlarRango2()" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="precioLeido2.percent2" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{precioLeido2.cant2+1}} en adelante</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                   <!--  <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecio.cant1" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td> -->
+                                    <td colspan="2"> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="precioLeido2.percent3" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                       <button class="btn btn-block btn-success espacio" (click)="actualizar()">Actualizar</button>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </div>
+                            <br><br>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    
+
+                </div>
+
+
+                <div id="newRango" style="display: none;">
+                    <div class="col-md-12" style="text-align: center;"><h4>Nuevo Rango Precio</h4></div>
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
+                                <div class="col-md-8">{{nombrePro2}}</div>
+                            </div>
+                            <div class="row espacio">
+                                <div class="col-md-4" style="text-align: left;">APLICACION</div>
+                                <div class="col-md-8"> <dx-text-box [(value)]="nuevoPrecioAsig.aplicacion" [readOnly]="false"></dx-text-box></div>
+                            </div>
+                            <br>
+                            <div class="row">
+                                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                  <tr>
+                                    <th style="text-align: center;width: 50%;" >Rango </th>
+                                    <th style="text-align: center;width: 25%;" >Cantidad </th>
+                                    <th style="text-align: center;width: 25%;" >( % )</th>
+                                  </tr>
+                                  <tr>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De 0 a {{nuevoPrecioAsig.cant1}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecioAsig.cant1" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecioAsig.percent1" [min]="0" [max]="100" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{nuevoPrecioAsig.cant1+1}} a {{nuevoPrecioAsig.cant2}}</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecioAsig.cant2" (onChange)="controlarRango3()" style="text-align: center;" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                    <td> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecioAsig.percent2" [min]="0" [max]="100" [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+
+                                  <tr >
+                                    <td style="text-align: center;">
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;">De {{nuevoPrecioAsig.cant2+1}} en adelante</div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  
+                                    <td colspan="2"> 
+                                        <div class="row">
+                                            <div class="col-md-2"></div>
+                                            <div class="col-md-8" style="text-align: center;"><dx-number-box [(value)]="nuevoPrecioAsig.percent3" [min]="0" [max]="100"  [readOnly]="false"></dx-number-box></div>
+                                            <div class="col-md-2"></div>
+                                        </div>
+                                    </td>
+                                  </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4">
+                                       <button class="btn btn-block btn-success espacio" (click)="registrar2()">Registrar</button>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    
+
+                </div>
+
+                <div id="admin2" style="display: none;">
+                    <br><br>
+                    <div class="col-md-12" style="text-align: center;">
+                        <h4>Precios Socio/Distribuidor</h4>
+                    </div>
+                    <br>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4" style="text-align: left;">SOCIO (%)</div>
+                                    <div class="col-md-6"> <dx-number-box [(value)]="precioEspecial.precioSocio" [min]="1" [max]="100" [readOnly]="edit1"></dx-number-box></div>
+                                    <div class="col-md-2"><button class="btn"  type="button" (click)="editar(1)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></div>
+                                </div>
+                                
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <div class="row">
+                                    <div class="col-md-4" style="text-align: left;">DISTRIBUIDOR (%)</div>
+                                    <div class="col-md-6"> <dx-number-box [(value)]="precioEspecial.precioDistribuidor" [min]="1" [max]="100" [readOnly]="edit2"></dx-number-box></div>
+                                    <div class="col-md-2"><button class="btn"  type="button" (click)="editar(2)"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></div>
+                                </div>
+                               
+                            </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                   <button class="btn btn-block btn-success espacio" (click)="guardar()">Guardar</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                               
+                            </div>
+                        </div>
+                        <br>
+                        <br>
+                        <br>
+                    </div>
+                   
+                </div>
+
+
+              
+              
+            </div>
+        </div>
+
+
+
+    </div>
+</div>

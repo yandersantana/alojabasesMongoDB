@@ -115,6 +115,7 @@ export class Producto {
     PRODUCTO: string
     REFERENCIA: string
     UNIDAD: string
+    APLICACION: string
     cantidad: number
     precio: number
     porcentaje_ganancia: number

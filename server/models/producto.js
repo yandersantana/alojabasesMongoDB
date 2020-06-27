@@ -12,6 +12,7 @@ const ProductoSchema = new Schema({
     P_CAJA: { type: Number, required: false},
     PRODUCTO: { type: String, required: false},
     REFERENCIA: { type: String, required: false},
+    APLICACION: { type: String, required: false},
     UNIDAD: { type: String, required: false},
     cantidad: { type: Number, required: false},
     precio: { type: Number, required: false},

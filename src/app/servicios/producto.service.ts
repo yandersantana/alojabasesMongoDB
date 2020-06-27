@@ -11,6 +11,7 @@ import { producto } from '../pages/ventas/venta';
 export class ProductoService {
 
   empresa: Producto[];
+  
  //private URL = 'http://localhost:3000/producto'; //localhost
  private URL = 'http://104.248.14.190:3000/producto';
   constructor(public http: HttpClient, public router: Router ) { }

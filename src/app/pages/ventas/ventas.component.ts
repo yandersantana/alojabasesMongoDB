@@ -1297,7 +1297,7 @@ console.log("entre a actualizar")
         resta =element.producto.sucursal3-element.cantidad
         element.producto.sucursal3=resta
         this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
-        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal3" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
+        
           break;
       default:
     }

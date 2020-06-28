@@ -151,6 +151,7 @@ export class ConsolidadoComponent implements OnInit {
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
              case "venta-fact":
+               console.log("enteteeeeee")
               contCajas=Number(contCajas)-Number(element.cajas)
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
@@ -208,8 +209,6 @@ export class ConsolidadoComponent implements OnInit {
               contCajas2=Number(contCajas2)+Number(element.cajas)
               contPiezas2=Number(contPiezas2)+Number(element.piezas)
              break;
-             
-            
             default:    
           } 
           console.log("el "+element2.PRODUCTO + " tiene"+element.cajas)

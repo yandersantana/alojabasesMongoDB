@@ -1,8 +1,16 @@
 
 <div class="row remiPro titulos">
-    <div class="col-md-8"><div class="">
-        
-    </div></div>
+    <div class="col-md-8">
+        <!-- <div class="row">
+            <div class="col-md-3"><h6>Sucursal</h6></div>
+            <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+                [value]="sucursalesDefault[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
+                <div class="col-md-5"></div>
+         </div> -->
+    </div>
     <div class="col-md-4"> <dx-select-box [items]="menu1" 
         [value]="menu1[0]" 
         [readOnly]="false" 
@@ -32,7 +40,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6"><p>Usuario</p> </div>
-                <div class="col-md-6"><dx-text-box [(value)]="usuario" [readOnly]="false" ></dx-text-box></div>
+                <div class="col-md-6"><dx-text-box [(value)]="usuario" [readOnly]="true" ></dx-text-box></div>
             </div>       
         </div>
     
@@ -42,10 +50,33 @@
                 <div class="col-md-6"><p>ID-Devolución</p> </div>
                 <div class="col-md-6" style="margin-bottom: 1em;"><dx-number-box [(value)]="id_devolucion" [readOnly]="true" class="id"></dx-number-box></div>
             </div>
-            <div class="row">
-                <div class="col-md-6"><p>Sucursal</p> </div>
-                <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="false" ></dx-text-box></div>
+            <div id="admin1" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6"><p>Sucursal</p> </div>
+                    <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="true" ></dx-text-box></div>
+                   <!--  <div class="col-md-6">
+                        <dx-select-box [items]="sucursalesDefault" 
+                    [value]="sucursalesDefault" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="asignarsucursalD($event)"></dx-select-box>
+                    </div> -->
+                </div>
             </div>
+            <div id="admin2" style="display: none;">
+                <div class="row">
+                    <div class="col-md-6"><p>Sucursal</p> </div>
+                    <!-- <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="false" ></dx-text-box></div> -->
+                    <div class="col-md-6">
+                        <dx-select-box [items]="sucursalesDefault" 
+                    [value]="sucursalesDefault" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="asignarsucursalD($event)"></dx-select-box>
+                    </div>
+                </div>
+            </div>
+            
             <div class="row">
                 <div class="col-md-6"><p>Fecha</p> </div>
                 <div class="col-md-6"> <dx-date-box [(value)]="fecha" [type]="'date'" [showClearButton]="true" >

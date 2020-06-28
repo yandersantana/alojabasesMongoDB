@@ -347,4 +347,43 @@ export class ClientesComponent implements OnInit {
     })
   }
 
+  onExporting (e) {
+    e.component.beginUpdate();
+    e.component.columnOption("telefono", "visible", true);
+    e.component.columnOption("correo", "visible", true);
+    e.component.columnOption("nombreContacto", "visible", true);
+    e.component.columnOption("direccionContacto", "visible", true);
+    e.component.columnOption("ciudad", "visible", true);
+    e.component.columnOption("celularContacto", "visible", true);
+    e.component.columnOption("fechaNacimiento", "visible", true);
+    e.component.columnOption("notas", "visible", true);
+    e.component.columnOption("t_cliente", "visible", true);
+    e.component.columnOption("regimen", "visible", true);
+    e.component.columnOption("forma_pago", "visible", true);
+    e.component.columnOption("dias_credito", "visible", true);
+    e.component.columnOption("cupo_maximo", "visible", true);
+    e.component.columnOption("tipoCliente", "visible", true);
+    e.component.columnOption("estado", "visible", true);
+   
+  };
+  onExported (e) {
+    e.component.beginUpdate();
+    e.component.columnOption("telefono", "visible", false);
+    e.component.columnOption("correo", "visible", false);
+    e.component.columnOption("nombreContacto", "visible", false);
+    e.component.columnOption("direccionContacto", "visible", false);
+    e.component.columnOption("ciudad", "visible", false);
+    e.component.columnOption("celularContacto", "visible", false);
+    e.component.columnOption("fechaNacimiento", "visible", false);
+    e.component.columnOption("notas", "visible", false);
+    e.component.columnOption("t_cliente", "visible", false);
+    e.component.columnOption("regimen", "visible", false);
+    e.component.columnOption("forma_pago", "visible", false);
+    e.component.columnOption("dias_credito", "visible", false);
+    e.component.columnOption("cupo_maximo", "visible", false);
+    e.component.columnOption("tipoCliente", "visible", false);
+    e.component.columnOption("estado", "visible", false);
+    e.component.endUpdate();
+  }
+
 }

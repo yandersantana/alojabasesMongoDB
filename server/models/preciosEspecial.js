@@ -3,7 +3,7 @@ const { Schema } = mongoose;
 
 
 const PreciosEspecialesSchema = new Schema({
-    id: { type: String, required: false},
+    id: { type: Number, required: false},
     precioSocio: { type: Number, required: false},
     precioDistribuidor: { type: Number, required: false}
 },{

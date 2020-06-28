@@ -4,6 +4,7 @@ const PreciosEspeciales = require('../models/preciosEspecial')
 
 router.get('/getPreciosEsp', async (req, res) => {
     const precios = await PreciosEspeciales.find();
+    console.log("22 "+precios)
     res.send(precios)      
 })
 

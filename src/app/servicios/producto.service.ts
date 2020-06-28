@@ -35,7 +35,11 @@ export class ProductoService {
   updateProductoBodegaProveedor(producto){
     return this.http.put(this.URL + `/updateBodega/${producto._id}`, producto); 
   }
-
+  //updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
+  updateProductoCatalogo(producto:string,referencia:string,nombre:string,aplicacion:string ){
+    return this.http.put(this.URL + `/updatePCatalogo/${producto}/${referencia}/${nombre}/${aplicacion}`, producto); 
+  }
+  
   updateProductoAplicacion(id:string, aplicacion:string){
     return this.http.put(this.URL + `/updateAplicacion/${id}/${aplicacion}`, aplicacion); 
   }

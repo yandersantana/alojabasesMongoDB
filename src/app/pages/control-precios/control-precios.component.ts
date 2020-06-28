@@ -21,8 +21,10 @@ export class ControlPreciosComponent implements OnInit {
   precioLeido2:precios
   nuevoPrecio:precios
   nuevoPrecioAsig:precios
-  precioEspecial:preciosEspeciales
+  precioespecial: preciosEspeciales
   precioEspecial2:preciosEspeciales[]=[]
+  precioSocio:number=0
+  precioDistribuidor:number=0
   preciosGrupoDefinido:preciosGrupoDefinido[]=[]
   preciosGrupoDefinido2:preciosGrupoDefinido
   productosCatalogo:catalogo[]=[]
@@ -33,10 +35,14 @@ export class ControlPreciosComponent implements OnInit {
   nombrePro2:string=""
   nombrePro:producto
   constructor(public controlPreciosService:ControlPreciosService, public catalagoService:CatalogoService, public productosService:ProductoService, public preciosEspecialesService:PrecioEspecialService) { 
-    this.nuevoPrecio= new precios
-    this.precioLeido2= new precios
-    this.nuevoPrecioAsig= new precios
-    this.precioEspecial = new preciosEspeciales
+    this.precioespecial = new preciosEspeciales()
+   // alert(JSON.stringify(this.precioespecial))
+    this.nuevoPrecio= new precios()
+    this.precioLeido2= new precios()
+    this.nuevoPrecioAsig= new precios()
+    this.precioespecial.precioSocio=0
+    /* this.precioEspecial.precioSocio=0
+    this.precioEspecial.precioDistribuidor=0 */
   }
 
   ngOnInit() {
@@ -71,7 +77,8 @@ export class ControlPreciosComponent implements OnInit {
   traerPreciosEspeciales(){
     this.preciosEspecialesService.getPrecio().subscribe(res => {
       this.precioEspecial2 = res as preciosEspeciales[];
-      this.precioEspecial = this.precioEspecial2[0]
+      console.log("sss"+this.precioEspecial2)
+      this.precioespecial = this.precioEspecial2[0]
    })
   }
 
@@ -87,9 +94,11 @@ export class ControlPreciosComponent implements OnInit {
   }
 
   guardar(){
-    if(this.precioEspecial.precioDistribuidor!=0 && this.precioEspecial.precioSocio!=0){
-      this.preciosEspecialesService.updatePrecio(this.precioEspecial).subscribe(res => {
-        console.log(res + "entre por si");
+    //alert(this.precioSocio)
+    //this.precioespecial= new preciosEspeciales()
+    
+    if(this.precioespecial.precioDistribuidor!=0 && this.precioespecial.precioSocio!=0){
+      this.preciosEspecialesService.updatePrecio(this.precioespecial).subscribe(res => {
         Swal.fire({
           title: "Correcto",
           text: 'Se guardó con éxito',

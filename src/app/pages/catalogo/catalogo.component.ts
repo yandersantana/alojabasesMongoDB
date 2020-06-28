@@ -527,8 +527,15 @@ _handleReaderLoaded(readerEvt) {
        // this.actualizarEstado()
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
-            console.log(res);
-            this.mostrarMensaje()
+            ///updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
+            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION).subscribe(
+              res => {
+                
+                this.mostrarMensaje()
+              },
+              err => { console.log(err); this.mensajeError() }
+            )
+            //this.mostrarMensaje()
           },
           err => { console.log(err); this.mensajeError() }
         )

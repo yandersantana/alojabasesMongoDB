@@ -1,11 +1,12 @@
-import { producto } from '../ventas/venta';
+import { producto, sucursal } from '../ventas/venta';
+import { Sucursal } from '../compras/compra';
 
 
 export class devolucion{
     cliente:string
     usuario:string
     observaciones:string
-    sucursal:string
+    sucursal:Sucursal
     fecha:string
     fecha_transaccion:string
     id_devolucion:number

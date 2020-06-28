@@ -18,12 +18,16 @@
                 </div>
             </div>
 
-          
             <div class="col-md-10 card carIn">
                 <div id="read" style="display: block;text-align: center;">
                     <br>
                     <h4>Clientes</h4>
-                    <dx-data-grid id="gridContainer" [dataSource]="clientes" [showBorders]="true">
+                    <dx-data-grid id="gridContainer" [dataSource]="clientes"
+                    (onExporting)="onExporting($event)"
+                    (onExported)="onExported($event)"
+                     [showBorders]="true">
+                        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                        <dxo-export [enabled]="true" fileName="clientes" [allowExportSelectedData]="true"></dxo-export>
                         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                         <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
                         <dxi-column dataField="cliente_nombre" caption="Nombre" [visible]="true"></dxi-column>
@@ -32,6 +36,20 @@
                         <dxi-column dataField="celular" caption="Celular"></dxi-column>
                         <dxi-column dataField="tventa" caption="Tipo Cliente"></dxi-column>
                         <dxi-column dataField="telefono" caption="Telefono" [visible]="false"></dxi-column>
+                        <dxi-column dataField="correo" caption="Correo" [visible]="false"></dxi-column>
+                        <dxi-column dataField="nombreContacto" caption="Nombre/Contacto" [visible]="false"></dxi-column>
+                        <dxi-column dataField="direccionContacto" caption="Dirección/Contacto" [visible]="false"></dxi-column>
+                        <dxi-column dataField="ciudad" caption="Ciudad" [visible]="false"></dxi-column>
+                        <dxi-column dataField="celularContacto" caption="Celular/Contacto" [visible]="false"></dxi-column>
+                        <dxi-column dataField="fechaNacimiento" caption="Fecha/Nacimiento" [visible]="false"></dxi-column>
+                        <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
+                        <dxi-column dataField="t_cliente" caption="Tipo/Cliente" [visible]="false"></dxi-column>
+                        <dxi-column dataField="regimen" caption="Regimen" [visible]="false"></dxi-column>
+                        <dxi-column dataField="forma_pago" caption="Forma/Pago" [visible]="false"></dxi-column>
+                        <dxi-column dataField="dias_credito" caption="Días crédito" [visible]="false"></dxi-column>
+                        <dxi-column dataField="cupo_maximo" caption="Cupo máximo" [visible]="false"></dxi-column>
+                        <dxi-column dataField="tipoCliente" caption="Tipo de Cliente" [visible]="false"></dxi-column>
+                        <dxi-column dataField="estado" caption="Estado" [visible]="false"></dxi-column>
                         <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="10%">
                             <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdateUser"></dxi-button>
                             <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deleteUser"></dxi-button>

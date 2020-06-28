@@ -209,12 +209,15 @@
         </div>
         <div class="col-2">
             <div class="row">
-                <div class="col-6">
+                <!-- <div class="col-6">
                     <h5>Rot</h5>
 
-                </div>
+                </div> -->
                 <div class="col-6">
                     <h5>Disp.</h5>
+                </div>
+                <div class="col-6">
+                    <h5>Eq.</h5>
                 </div>
             </div>
         </div>
@@ -261,11 +264,14 @@
             </div>
             <div class="col-2">
                 <div class="row">
-                    <div class="col-6">
+                    <!-- <div class="col-6">
                         <dx-text-box [(value)]="p.rotacion" [disabled]="false" [readOnly]="true"></dx-text-box>
-                    </div>
+                    </div> -->
                     <div class="col-6">
                         <dx-text-box [(value)]="p.disponible" [disabled]="false" [readOnly]="true"></dx-text-box>
+                    </div>
+                    <div class="col-6">
+                        <dx-text-box [(value)]="p.equivalencia" [disabled]="false" [readOnly]="true"></dx-text-box>
                     </div>
                 </div>
             </div>
@@ -274,7 +280,7 @@
             </div>
             <div class="col-1">
                 <dx-number-box [(value)]="p.cantidad" [disabled]="false" [readOnly]="false"
-                    (onFocusIn)="setSelectedProducto(i)" (onChange)="carcularTotalProducto($event, i)"  [min]="1">
+                    (onFocusIn)="setSelectedProducto(i)" (onChange)="carcularTotalProducto($event, i)"  [min]="0">
                 </dx-number-box>
                
             </div>

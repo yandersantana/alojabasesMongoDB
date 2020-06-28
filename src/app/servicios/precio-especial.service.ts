@@ -8,7 +8,7 @@ import { Router } from '@angular/router';
 export class PrecioEspecialService {
 
  
-  private URL = 'http://104.248.14.190:3000/precios';
+  private URL = 'http://104.248.14.190:3000/preciosEspeciales';
   //private URL = 'http://localhost:3000/preciosEspeciales'; //localhost
 
   constructor(public http: HttpClient, public router: Router ) { }
@@ -18,6 +18,7 @@ export class PrecioEspecialService {
   }
 
   getPrecio(){ 
+    console.log("pase por aqui ks")
     return this.http.get(this.URL+'/getPreciosEsp');
   }
 

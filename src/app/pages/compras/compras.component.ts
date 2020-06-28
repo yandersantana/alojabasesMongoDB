@@ -684,6 +684,7 @@ verGaleria(imagenes:string[]){
  
     this.calcularTotalRow(i)
     this.calcularTotalFactura()
+    this.calcularEquivalencia(e,i)
   }
 
   calcularEquivalencia(e, i:number) {
@@ -1496,7 +1497,7 @@ cambiarEstadoSeleccionado(e){
           element.nombreComercial.bodegaProveedor=cant
           if(this.seleccion){
           }else{
-            this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe(
+            /* this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe(
               res => {
                 console.log(res + "entre por si");
               },
@@ -1506,7 +1507,7 @@ cambiarEstadoSeleccionado(e){
                   text: 'Revise e intente nuevamente',
                   icon: 'error'
                 })
-              })
+              }) */
           }
           
            /*  this.productosCompradosService.newProductoComprado(element).subscribe(

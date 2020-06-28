@@ -27,8 +27,9 @@ import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { DetallePagoService } from 'src/app/servicios/detalle-pago.service';
-import { contadoresDocumentos } from '../ventas/venta';
+import { contadoresDocumentos, orden_compra, producto } from '../ventas/venta';
 import { PagoProveedorService } from 'src/app/servicios/pago-proveedor.service';
+import { ProductoService } from 'src/app/servicios/producto.service';
 
 
 //import { ConsoleReporter } from 'jasmine';
@@ -133,16 +134,19 @@ proveedor:string=""
 sucursal:string=""
 usuario:string=""
 total:number=0
-
+ordencompraleida:OrdenDeCompra
+productosCompradosLeidos:ProductoDetalleCompra[]=[]
 contadores:contadoresDocumentos[]=[]
 selectedRows: string[];
 selectAllModeVlaue: string = "page";
 selectionModeValue: string = "all";
+productosActivos:producto[]=[]
+banderaProductos:boolean=false
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
 //@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
-  constructor( public contadoresService:ContadoresDocumentosService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
+  constructor( public contadoresService:ContadoresDocumentosService,public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
 
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
@@ -157,6 +161,7 @@ selectionModeValue: string = "all";
     this.traerFacturasProveedor()
     this.traerContadoresDocumentos()
     this.traerOrdenesCompra()
+    this.traerProductos()
     this.traerPagosFacturasProveedor()
   }
 
@@ -165,6 +170,13 @@ selectionModeValue: string = "all";
   traerProveedores(){
     this.proveedoresService.getProveedor().subscribe(res => {
       this.proveedores = res as Proveedor[];
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      
    })
   }
 
@@ -320,9 +332,16 @@ selectionModeValue: string = "all";
     this.limpiarArreglo()
   let numero =this.datoNsolicitud
     let solicitud=0
-    
+    this.facturaProveedor2.forEach(element=>{
+      if(this.datoNsolicitud==element.nSolicitud){
+          this.banderaProductos=true
+      }
+    })
     this.ordenesCompra.forEach(element=>{
       if(element.n_orden == numero){
+        this.ordencompraleida=element
+        this.productosCompradosLeidos= element.productosComprados
+        //alert(this.productosCompradosLeidos.length)
         //alert("enre "+element.documento)
         this.facturaProveedor.documento_solicitud= element.documento
           solicitud=element.documento
@@ -410,7 +429,7 @@ selectionModeValue: string = "all";
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.NordenFact == element.n_orden){
-            this.totalOrden=element.total
+            this.totalOrden=element.total-element.costeUnitaTransport
       }
     })
 
@@ -1039,7 +1058,7 @@ anadirDetallePago = (e) => {
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.datoNsolicitud == element.n_orden){
-            this.totalOrden=element.total  
+            this.totalOrden=element.total  - element.costeUnitaTransport
             this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
       }
     })
@@ -1067,7 +1086,7 @@ anadirDetallePago = (e) => {
            this.facturasProveedorService.newFacturaProveedor(this.facturaProveedor).subscribe( res => {
             this.contadores[0].contFacturaProveedor_Ndocumento=this.facturaNp
             console.log("ddd "+JSON.stringify(this.contadores[0]))
-            this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( res => {this.confirmar()}, err => {alert("error")})
+            this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( res => {this.actualizarProductosBodega()}, err => {alert("error")})
            }, err => {alert("error")})
            // this.db.collection('/facturasProveedor').doc(datoNFact).set({...Object.assign({},this.facturaProveedor )}).then(res => { }) ;
           /*   this.db
@@ -1088,6 +1107,54 @@ anadirDetallePago = (e) => {
 
     }
     
+  }
+  
+
+  actualizarProductosBodega(){
+    var cant=0
+    var cont=1
+    if(this.banderaProductos){
+      
+    }else{
+      if(this.ordencompraleida.tipo == "Entregado"){
+        this.confirmar()
+      }else{
+        this.productosActivos.forEach(element=>{
+          this.productosCompradosLeidos.forEach(element2 => {
+            if(element.PRODUCTO==element2.nombreComercial.PRODUCTO){
+              cant=element.bodegaProveedor+element2.cantidad
+              element.bodegaProveedor=cant
+              this.productoService.updateProductoBodegaProveedor(element).subscribe(
+                res => {
+                  
+                 this.contadorValidaciones(cont++)
+                },
+                err => {
+                  Swal.fire({
+                    title: err.error,
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            }
+            
+          })
+        });
+      }
+      
+    }
+
+    
+  }
+
+  contadorValidaciones(i:number){
+    //alert("entre con "+i)
+    if(this.productosCompradosLeidos.length==i){
+       this.confirmar()
+    }else{
+      console.log("no he entrado "+i)
+    }
+
   }
 
   mostrarMsnsaConf(){

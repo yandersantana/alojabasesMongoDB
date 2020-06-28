@@ -498,7 +498,14 @@
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">APLICACIÓN</div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.APLICACION" name="APLICACIÓN" class="form-control" placeholder="Ingrese la aplicación"  required></div>
+                                            <div class="col-md-8">  
+                                                <dx-select-box [items]="aplicaciones" 
+                                                [(value)]="catalogo2.APLICACION" 
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                valueExpr="aplicacion" displayExpr="aplicacion"
+                                                ></dx-select-box> 
+                                            </div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">VIGENCIA</div>
@@ -523,7 +530,7 @@
                                                 ></dx-select-box>
                                             </div>
                                         </div>
-                                        <div>
+                                      <!--   <div>
                                             <div>
                                                 <label for="filePicker">Escoge una imagen:</label><br>
                                                 <input type="file" id="filePicker" (change)="handleFileSelect($event)">
@@ -532,7 +539,7 @@
                                                 <label for="filePicker">Escoge una imagen:</label><br>
                                                 <input type="file" id="filePicker" (change)="handleFileSelect($event)">
                                             </div>
-                                        </div>
+                                        </div> -->
                                     </div>
                                     <div class="col-md-1"></div>
                                 </div>

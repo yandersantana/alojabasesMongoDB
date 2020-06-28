@@ -1,15 +1,17 @@
-<!-- <div class="col-md-12">
-    <div class="row">
-        <div class="col-md-3"><h6>Sucursal</h6></div>
-        <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
-            [value]="sucursalesDefault[0]" 
-            [readOnly]="false" 
-            [disabled]="false"
-            (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
-            <div class="col-md-5"></div>
+<div id="admin" style="display: none;">
+    <div class="col-md-12">
+        <div class="row">
+            <div class="col-md-3"><h6>Sucursal</h6></div>
+            <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+                [value]="sucursalesDefault[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
+                <div class="col-md-5"></div>
+    </div>
+    </div>
 </div>
-</div>
-<br> -->
+<br>
 
 
 <div class="row" style="margin-bottom: 1.5em;">
@@ -151,15 +153,7 @@
         <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
-    <!-- <div style="width: 20px;">
-        <dx-button
-                        stylingMode="contained"
-                        text="Contained"
-                        type="normal"
-                        [width]="120"
-                        (onClick)="buscarCliente($event)">
-                    </dx-button>
-    </div> -->
+
 
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
@@ -318,7 +312,7 @@
                 </div>
             </div>
             <div class="col-3">
-                <dx-select-box [items]="productos" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+                <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
                     [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
                     valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint={{p.producto.PRODUCTO}}>
                 </dx-select-box>

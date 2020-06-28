@@ -37,6 +37,16 @@ router.put('/update/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updatePCatalogo/:producto/:referencia/:nombre/:aplicacion', async (req, res,next) => {
+    const { id } = req.params;
+    const { producto } = req.params;
+    const { referencia } = req.params;
+    const { nombre } = req.params;
+    const { aplicacion } = req.params;
+    await Producto.findOneAndUpdate({"PRODUCTO":producto}, {$set: {REFERENCIA:referencia,nombre_comercial:nombre,APLICACION:aplicacion}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 
 router.put('/updateAplicacion/:id/:aplicacion', async (req, res,next) => {
     const { id } = req.params;

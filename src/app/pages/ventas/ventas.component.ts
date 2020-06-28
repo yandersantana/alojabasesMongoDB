@@ -43,6 +43,7 @@ import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
 import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
 import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
+import DataSource from 'devextreme/data/data_source';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -158,9 +159,9 @@ export class VentasComponent implements OnInit {
 
 
 sucursalesDefault: string[] = [
-  "Milagro",
-  "Naranjito",
-  "El Triunfo"
+  "matriz",
+  "sucursal1",
+  "sucursal2"
 ];
 
 tipoConversiones: string[] = [
@@ -189,7 +190,7 @@ contadores:contadoresDocumentos[]
   mySimpleFormat2 = this.pipe.transform(this.fechaMaxima2, 'MMM / d / y');
   usuarioLogueado:user
   preciosEspeciales:preciosEspeciales[]=[]
-
+  productos22: DataSource;
   constructor(public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -231,7 +232,7 @@ contadores:contadoresDocumentos[]
   }
 
   cargarUsuarioLogueado() {
-    console.log("dddddd entre")
+   
     const promesaUser = new Promise((res, err) => {
       if (localStorage.getItem("maily") != '') {
         this.correo = localStorage.getItem("maily");
@@ -242,7 +243,7 @@ contadores:contadoresDocumentos[]
             this.usuarioLogueado = res as user;
             this.factura.username=this.usuarioLogueado[0].username
             this.factura.sucursal=this.usuarioLogueado[0].sucursal
-            console.log("sss "+ this.factura.sucursal)
+            this.validarRol()
           },
           err => {
           }
@@ -250,6 +251,12 @@ contadores:contadoresDocumentos[]
     });
   }
 
+  validarRol(){
+    if(this.usuarioLogueado[0].rol == "Administrador"){
+      var z = document.getElementById("admin");
+      z.style.display = "block";
+    }
+  }
   
 
   traerSucursales(){
@@ -325,6 +332,7 @@ contadores:contadoresDocumentos[]
   }
 
   asignarIDdocumentos(){
+    console.log("entree connnn")
     switch (this.factura.sucursal) {
       case "matriz":
         this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
@@ -840,7 +848,8 @@ setSelectedProducto(i:number){
         asignarsucursalD(e){
           this.factura.sucursal= e.value
           console.log("Pertenece a "+this.factura.sucursal)
-          this.factura.sucursal= this.factura.sucursal
+         // this.factura.sucursal= this.factura.sucursal
+          this.asignarIDdocumentos()
         }
       
         buscarCliente(e){
@@ -1066,12 +1075,24 @@ llenarPR(){
   })
 }
 
+/* llenarComboProductos(){
+  this.productosActivos.forEach(element=>{
+    if(element.ESTADO == "ACTIVO"){
+      this.productos.push(element)
+    }
+  })
+} */
+
 llenarComboProductos(){
   this.productosActivos.forEach(element=>{
     if(element.ESTADO == "ACTIVO"){
       this.productos.push(element)
     }
   })
+   this.productos22 = new DataSource({  
+    store: this.productos,  
+    sort: [{ field: "PRODUCTO", asc: true }],    
+  });
 }
 
 
@@ -2995,7 +3016,7 @@ var tipoDoc:boolean=false
         bandera=false
       }
     });
-    if(contpro>=1 &&bandera){
+    if(contpro>=1 &&bandera && this.factura.documento_n!=undefined){
     this.factura.documento_n = this.numeroFactura2
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje

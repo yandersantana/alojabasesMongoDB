@@ -16,6 +16,8 @@ import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { BajasService } from 'src/app/servicios/bajas.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { user } from '../user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-bajas',
@@ -25,7 +27,7 @@ import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 export class BajasComponent implements OnInit {
 
 
-  usuario:string="q@q.com"
+  usuario:string=""
   observaciones:string
   sucursal:string
   transaccion:transaccion
@@ -54,6 +56,7 @@ export class BajasComponent implements OnInit {
   productos: producto[] = []
   productosActivos: producto[] = []
   contadorFirebase:contadoresDocumentos[]=[]
+  usuarioLogueado:user
 
   menuMotivo: string[] = [
     "Caducidad",
@@ -69,8 +72,9 @@ export class BajasComponent implements OnInit {
   "Aprobaciones",
   "Bajas Aprobadas"
   ];
+  correo=""
   contadores:contadoresDocumentos[]=[]
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
+  constructor(private db: AngularFirestore, public authenService:AuthenService, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
     this.baja = new baja
     this.productosBaja.push(new productosBajas)
   }
@@ -91,7 +95,26 @@ export class BajasComponent implements OnInit {
     this.traerProductos()
     this.traerSucursales()
     this.getIDDocumentos()
+    this.cargarUsuarioLogueado()
   }
+
+  cargarUsuarioLogueado() {
+   
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+           
+           
+          },
+          err => {
+        })
+      })
+    }
 
   traerParametrizaciones(){
     this.parametrizacionService.getParametrizacion().subscribe(res => {
@@ -341,8 +364,8 @@ export class BajasComponent implements OnInit {
         this.transaccion.valor=element.producto.precio
         this.transaccion.cantM2=element.cantbajam2
         this.transaccion.totalsuma=element.total
-        this.transaccion.usu_autorizado="q@q.com"
-        this.transaccion.usuario="q@q.com"
+        this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+        this.transaccion.usuario=this.usuarioLogueado[0].username
         this.transaccion.factPro=""
         this.transaccion.idTransaccion=this.number_transaccion++
        /*  this.db.collection("/transacciones")

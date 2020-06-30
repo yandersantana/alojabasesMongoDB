@@ -17,6 +17,7 @@ export class traslados{
     observaciones:string
     fecha:string
     estado:string
+    usuario:string
     detalleTraslados:detalleTraslados[]=[]
     constructor(){
         this.estado="Listo"

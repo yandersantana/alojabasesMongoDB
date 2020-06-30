@@ -26,6 +26,7 @@ export class producto {
         bodegaProveedor:number
         constructor(
             ) {
+                this.REFERENCIA=""
     }
 }
 
@@ -39,6 +40,7 @@ export class venta {
         pedir: boolean
         seleccionado: boolean
         precio_min: number
+        REFERENCIA:string
         precio_venta: number
         total: number
         tipo_documento_emitido: string

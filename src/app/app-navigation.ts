@@ -107,7 +107,7 @@ export const navigationAdmin = [
   },
   {
     text: 'Comercial',  
-    icon: 'home',
+    icon: 'fa fa-check-circle-o',
     items: [{
         text: 'Ventas',
         path: '/ventas',
@@ -128,7 +128,7 @@ export const navigationAdmin = [
   },
   {
     text: 'Inventarios',  
-    icon: 'home',
+    icon: 'contentlayout',
     items: [{
         text: 'Transacciones',
         path: '/transacciones',
@@ -150,7 +150,7 @@ export const navigationAdmin = [
   },
   {
     text: 'Compras',  
-    icon: 'home',
+    icon: 'money',
     items: [{
         text: 'Generar OC',
         path: '/compras',
@@ -171,16 +171,33 @@ export const navigationAdmin = [
   },
   {
     text: 'Administración',  
-    icon: 'home',
-    items: [{
-        text: 'Anulaciones',
-        path: '/anulaciones',
-      }, {
+    icon: 'fa fa-lock',
+    items: [ {
         text: 'Cierres',
       
       }, {
         text: 'Parametrización',
-        path: '/parametrizacion'
+        items: [{
+          text: 'Anulaciones',
+         
+        }, {
+          text: 'Cierres',
+        
+        }, {
+          text: 'Presentación',
+        }, 
+        {
+          text: 'Datos Fuente',
+          path:"/parametrizacion",
+        },
+        {
+          text: 'IVA',
+        
+        },
+        {
+          text: 'Matriz Precios',
+          path: '/precios',
+        }]
         
       }, 
       {
@@ -191,19 +208,98 @@ export const navigationAdmin = [
         text: 'Clientes',
         path: '/clientes',
       },
-      {
+      /* {
         text: 'Control Precios',
         path: '/precios',
-      },
-      {
-        text: 'Caja menor',
-      
+      }, */
+     ]
+  },
+  {
+    text: 'Financiero',  
+    icon: 'fa fa-money',
+    items: [{
+        text: 'P&G Negocio',
+        path: '',
+       
+      },{
+        text: 'Indicadores',
+        path: '',
+       
       }]
   },
   {
-    text: 'Profile',
-    path: '/profile',
+    text: 'Contable',  
+    icon: 'fa fa-bar-chart',
+    items: [{
+        text: 'Caja menos',
+        path: '',
+       
+      },{
+        text: 'Registros Caja',
+        path: '',
+       
+      }, {
+        text: 'Recibos de Caja',
+        path: '',
+       
+      }, {
+        text: 'Cuentas por Cobrar',
+        path: '',
+      }, {
+        text: 'Cuentas por Pagar',
+        path: '',
+      }, {
+        text: 'Anulaciones',
+        path: '/anulaciones',
+      }, {
+        text: 'Activos Fijos',
+        path: '',
+      }]
+  },
+  {
+    text: 'Auditorias',  
+    icon: 'fa fa-list-alt',
+    items: [{
+        text: 'Auditorias de Inventario',
+        path: '',
+       
+      }]
+  },
+  {
+    text: 'Recurso Humano',  
+    icon: 'fa fa-users',
+    items: [{
+        text: 'Creación colaboradores',
+        path: '',
+      },{
+        text: 'Ficha Personal',
+        path: '',      
+      },{
+        text: 'Administración Personal',
+        path: '',      
+      },{
+        text: 'Novedades Personal',
+        path: '',      
+      }]
+  },
+  {
+    text: 'Operaciones',  
+    icon: 'fa fa-spinner',
+    items: [{
+        text: 'Tiquets',
+        path: '',
+      }]
+  },
+  {
+    text: 'Tutoriales',
+    path: '',
     icon: 'home'
+  },
+  {
+    
+  },
+  {
+    
   },
 
 ];

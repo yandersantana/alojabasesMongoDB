@@ -2833,7 +2833,7 @@ var tipoDoc:boolean=false
         this.productoPendienteE.id_Pedido=this.numeroID++
         this.productoPendienteE.producto=element.producto
         this.productoPendienteE.sucursal=this.factura.sucursal
-        this.productoPendienteE.usuario="q@q.com"
+        this.productoPendienteE.usuario=this.usuarioLogueado[0].username
         this.productoPendienteE.valor_unitario=element.precio_venta
         this.productoPendienteE.total=resta*element.precio_venta
         this.productoPendienteEntregas.push(this.productoPendienteE)
@@ -3132,7 +3132,7 @@ var tipoDoc:boolean=false
           this.transaccion.observaciones=this.factura.observaciones
           this.transaccion.tipo_transaccion="venta-fact"
           this.transaccion.movimiento=-1
-          this.transaccion.usu_autorizado="q@q.com"
+          this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
           this.transaccion.usuario=this.usuarioLogueado[0].username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre  

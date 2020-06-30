@@ -137,7 +137,7 @@ export class RemisionProductos{
     total:number
     constructor(){
         this.estado="Ingresado"
-        this.nombre_recibe="q@q.com"
+        this.nombre_recibe=""
         this.msjAdmin=""
     } 
 }

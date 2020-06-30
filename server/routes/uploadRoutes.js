@@ -49,7 +49,7 @@ const storage = multer.diskStorage({
 
 
  router.post('/uploadFile', multipartMiddleware, (req, res, next) => {
-     console.log("llegue aqui ")
+     /* console.log("llegue aqui ")
    var file=req.files.uploads
    console.log("files "+JSON.stringify(file))
     for (var i = 0; i < file .length; i++) {//para cuando sean varios documentos
@@ -64,11 +64,12 @@ const storage = multer.diskStorage({
       console.log("el tamaño es"+tamaño)
 
     console.log(file.length);
-    console.log(file[0].path);
+    console.log(file[0].path); */
     res.json({
         'message': 'File uploaded succesfully.',
         //'url':'http://ofistoreserver.herokuapp.com/'+pathy.path,
-        'url':'http://localhost:3000/'+pathy.path,
+        //'url':'http://localhost:3000/'+pathy.path,
+        'url':'http://localhost:3000/',
         //'url':'https://www.w3schools.com/css/default.asp',
 
         'size': parseInt(pathy.size/1024)

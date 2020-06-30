@@ -23,6 +23,8 @@ import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.s
 import { RemisionesService } from 'src/app/servicios/remisiones.service';
 import { ProductosIngresadosService } from 'src/app/servicios/productos-ingresados.service';
 import { AngularFireAuth } from 'angularfire2/auth';
+import { user } from '../user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 
 @Component({
@@ -106,7 +108,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   Id_remision:number=0
   placa:string=""
   nombre_transportador:string=""
-  nombre_recibe:string="q@q.com"
+  nombre_recibe:string=""
   newButtonEnabled2:boolean=false
   contIngresos:number=0
   numeroFactura:string
@@ -132,8 +134,10 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
    transacciones:transaccion[]=[]
    showFilterRow: boolean;
    solicitudOrdenC:number=0
+   usuarioLogueado:user
    contadores:contadoresDocumentos[]=[]
    contadorFirebase:contadoresDocumentos[]=[]
+   correo:string=""
   @ViewChild('selectId') selectBox: DxSelectBoxComponent;
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid: DxDataGridComponent;
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -142,7 +146,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
  /*  expensesCollection: AngularFirestoreCollection<ProductoDetalleEntrega>;
   expensesCollection2: AngularFirestoreCollection<ProductoDetalleCompra>;
   expensesCollection3: AngularFirestoreCollection<transaccion>; */
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public productosObservice:ProductosObsequioService, public productosIngresadoService:ProductosIngresadosService, public remisionesService:RemisionesService, public facturasProveedorService:FacturasProveedorService, public transaccionesService:TransaccionesService ,public productoService:ProductoService,public productosObsequioService:ProductosObsequioService, public bodegasService:BodegaService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService) {
+  constructor(private db: AngularFirestore,public authenService:AuthenService, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public productosObservice:ProductosObsequioService, public productosIngresadoService:ProductosIngresadosService, public remisionesService:RemisionesService, public facturasProveedorService:FacturasProveedorService, public transaccionesService:TransaccionesService ,public productoService:ProductoService,public productosObsequioService:ProductosObsequioService, public bodegasService:BodegaService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService) {
     setTimeout(() => {
       console.log("hello");
     }, 3000);
@@ -189,7 +193,26 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.traerRemisiones()
     this.traerProductosIngresados()
     this.getIDDocumentos()
+    this.cargarUsuarioLogueado()
   }
+
+  cargarUsuarioLogueado() {
+   
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+           
+           
+          },
+          err => {
+        })
+      })
+    }
 
   crearBodega(){
     this.nuevaBodega=new bodega
@@ -953,8 +976,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.transaccion.totalsuma=0
               this.transaccion.observaciones=""
               this.transaccion.tipo_transaccion="compra_obs"
-              this.transaccion.usu_autorizado="q@q.com"
-              this.transaccion.usuario="q@q.com"
+              this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+              this.transaccion.usuario=this.usuarioLogueado[0].username
               this.transaccion.factPro=this.Id_remision+""
               this.transaccion.proveedor=this.remisionProducto.nombre_proveedor
               this.transaccion.idTransaccion=this.number_transaccion++
@@ -1020,8 +1043,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.transaccion.totalsuma=suma2P-(suma2P*(element.descuentoGeneral/100))
             //this.transaccion.totalsuma=element.valortotal-(element.valortotal*(element.descuentoGeneral/100))
             //this.transaccion.totalsuma=element.valortotal-(element.valortotal*(element.descuentoGeneral/100))
-            this.transaccion.usu_autorizado="q@q.com"
-            this.transaccion.usuario="q@q.com"
+            this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+            this.transaccion.usuario=this.usuarioLogueado[0].username
             this.transaccion.factPro=this.Id_remision+""
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()

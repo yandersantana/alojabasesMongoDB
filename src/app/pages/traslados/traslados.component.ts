@@ -833,8 +833,8 @@ export class TrasladosComponent implements OnInit {
             this.transaccion.observaciones=this.traslados.observaciones
             this.transaccion.movimiento=-1
             this.transaccion.tipo_transaccion="traslado1"
-            this.transaccion.usu_autorizado="q@q.com"
-            this.transaccion.usuario="q@q.com"
+            this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+            this.transaccion.usuario=this.usuarioLogueado[0].username
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
             this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
@@ -883,7 +883,7 @@ export class TrasladosComponent implements OnInit {
             this.transaccion.tipo_transaccion="traslado2"
             this.transaccion.movimiento=1
             this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
-            this.transaccion.usuario=""
+            this.transaccion.usuario=this.usuarioLogueado[0].username
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
             this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {

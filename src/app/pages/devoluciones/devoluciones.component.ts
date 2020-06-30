@@ -96,8 +96,9 @@ productosVendidos:venta[]=[]
   parametrizaciones:parametrizacionsuc[]=[]
 parametrizacionSucu:parametrizacionsuc
 contadores:contadoresDocumentos[]=[]
+contadorFirebase:contadoresDocumentos[]=[]
 correo:string=""
-  constructor(public parametrizacionService:ParametrizacionesService,public authenService:AuthenService, public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public authenService:AuthenService, public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
     this.devolucion = new devolucion
     this.productosDevueltos.push(new productosDevueltos)
     //this.variablesucursal="matriz"
@@ -123,7 +124,7 @@ correo:string=""
     this.traerOrdenesCompra()
     this.traerParametrizaciones()
     this.traerSucursales()
-    
+    this.getIDDocumentos()
   }
 
   cargarUsuarioLogueado() {
@@ -214,9 +215,22 @@ correo:string=""
   }
   
   asignarIDdocumentos(){
-    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    //this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
     this.id_devolucion=this.contadores[0].contDevoluciones_Ndocumento+1
-   // this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      this.asignarIDdocumentos2()
+    });;
+  }
+
+  asignarIDdocumentos2(){
+    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    //this.id_devolucion=this.contadores[0].contDevoluciones_Ndocumento+1
   }
 
  /*  getParametrizaciones(){
@@ -687,7 +701,10 @@ correo:string=""
           .then(res => { }, err => reject(err)); */
           this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
             this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
-            this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {contVal++,this.contadorValidaciones(contVal)},err => {alert("error")})}
+            this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {
+              this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
+            },err => {alert("error")})}
             ,err => {})
          
     })
@@ -696,7 +713,6 @@ correo:string=""
 
   contadorValidaciones(i:number){
     if(this.productosDevueltosCarga.length==i){
-      console.log("guarde")
       this.actualizarProductos()
     }else{
       console.log("no he entrado "+i)

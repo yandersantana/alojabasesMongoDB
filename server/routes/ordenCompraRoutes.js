@@ -63,6 +63,16 @@ router.put('/updateEstadoRechazo/:id/:estado/:mensaje/:estado2', async (req, res
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+
+router.put('/updateEstadoProductos/:id/:producto/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { producto } = req.params;
+    const { estado } = req.params;
+    console.log("sssssss "+id +"d "+ producto+ " f "+estado)
+    await OrdenCompra.findOneAndUpdate({_id:id , "productosComprados.REFERENCIA": producto}, {$set: {"productosComprados.$.estado_remision" :estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateEstadoRechazo2/:id/:estado/:mensaje/:estado2', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;

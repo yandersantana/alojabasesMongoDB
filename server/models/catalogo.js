@@ -22,6 +22,7 @@ const CatalogoSchema = new Schema({
     VIGENCIA: { type: String, required: false},
     FEC_PRODUCCION: { type: String, required: false},
     CANT_MINIMA: { type: Number, required: false},
+    porcentaje_ganancia: { type: Number, required: false},
     ESTADO: { type: String, required: false},
     IMAGEN: { type: Array, required: false},
     IMAGEN_PRINCIPAL: { type: String, required: false},

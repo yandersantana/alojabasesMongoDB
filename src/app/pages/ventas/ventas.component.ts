@@ -44,6 +44,8 @@ import { ControlPreciosService } from 'src/app/servicios/control-precios.service
 import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
 import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
 import DataSource from 'devextreme/data/data_source';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -169,7 +171,7 @@ tipoConversiones: string[] = [
   "De m2 a cajas"
 ];
 
-//calculadoras
+contadorFirebase:contadoresDocumentos[]=[]
 popupvisible:boolean=false
 productosCatalogo:catalogo[]=[]
 calp:number=0
@@ -191,7 +193,7 @@ contadores:contadoresDocumentos[]
   usuarioLogueado:user
   preciosEspeciales:preciosEspeciales[]=[]
   productos22: DataSource;
-  constructor(public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = new Date()
@@ -221,6 +223,7 @@ contadores:contadoresDocumentos[]
    this.traerProductosCatalogo()
     this.traerPrecios()
     this.traerPreciosEspeciales()
+    this.getIDDocumentos()
    //this.crearClientes()
    // this.factura.username = sessionStorage.getItem('user')
     this.factura.tipo_venta="Normal"
@@ -327,7 +330,7 @@ contadores:contadoresDocumentos[]
     await this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
-      this.asignarIDdocumentos()
+     // this.asignarIDdocumentos()
    })
   }
 
@@ -351,8 +354,40 @@ contadores:contadoresDocumentos[]
     }
         
     
-    this.number_transaccion = this.contadores[0].transacciones_Ndocumento+1
-     
+    this.number_transaccion = this.contadores[0].transacciones_Ndocumento+1 
+  }
+
+  asignarIDdocumentos2(){
+    switch (this.factura.sucursal) {
+      case "matriz":
+        this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+        this.numeroFactura2=this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+        break;
+      case "sucursal1":
+        this.factura.documento_n =this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+        this.numeroFactura2=this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+        break;
+      case "sucursal2":
+        this.factura.documento_n =this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+        this.numeroFactura2=this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+        break;
+      default:
+        break;
+    }
+        
+    
+    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1 
+  }
+
+
+  //contadores usando firebase para actualizacion automatica
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      this.asignarIDdocumentos2()
+    });;
   }
 
   
@@ -659,8 +694,8 @@ mostrarPopup(e,i:number){
       var suc1=this.productosVendidos[i].producto.sucursal1+this.productosVendidos[i].producto.suc1Pendiente
       var suc2=this.productosVendidos[i].producto.sucursal2+this.productosVendidos[i].producto.suc2Pendiente
       var suc3=this.productosVendidos[i].producto.sucursal3+this.productosVendidos[i].producto.suc3Pendiente
-      this.disponibilidadProducto=suc1+"M    "+
-      suc2+"N    "+suc3+"T  "+this.productosVendidos[i].producto.bodegaProveedor+"P  "
+      this.disponibilidadProducto=suc1.toFixed(0)+"M    "+
+      suc2.toFixed(0)+"S1    "+suc3.toFixed(0)+"S2  "+this.productosVendidos[i].producto.bodegaProveedor.toFixed(0)+"P  "
     }
   })
   this.popupvisible=true 
@@ -849,7 +884,7 @@ setSelectedProducto(i:number){
           this.factura.sucursal= e.value
           console.log("Pertenece a "+this.factura.sucursal)
          // this.factura.sucursal= this.factura.sucursal
-          this.asignarIDdocumentos()
+          this.asignarIDdocumentos2()
         }
       
         buscarCliente(e){
@@ -2940,18 +2975,26 @@ var tipoDoc:boolean=false
       switch (this.factura.sucursal) {
         case "matriz":
           this.contadores[0].facturaMatriz_Ndocumento = this.factura.documento_n
-         
-          this.contadoresService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          this.contadoresService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {
+            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaMatriz_Ndocumento:this.factura.documento_n })
+            .then(res => { }, err => (err));
+          },err => {this.error()})
+          
           break;
         case "sucursal1":
           this.contadores[0].facturaSucursal1_Ndocumento = this.factura.documento_n
-        
-          this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {
+            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal1_Ndocumento:this.factura.documento_n })
+            .then(res => { }, err => (err));
+          },err => {this.error()})
           break;
         case "sucursal2":
           this.contadores[0].facturaSucursal2_Ndocumento = this.factura.documento_n
        
-          this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {console.log(res + "entre por si");},err => {this.error()})
+          this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {
+            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal2_Ndocumento:this.factura.documento_n })
+            .then(res => { }, err => (err));
+          },err => {this.error()})
           break;
         default:
           break;
@@ -3101,8 +3144,11 @@ var tipoDoc:boolean=false
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
-                  console.log(res + "entre por si");
-                  contVal++,this.contadorValidaciones(contVal)
+                  //console.log(res + "entre por si");
+                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
+            
+                 
                 },
                 err => {
                   Swal.fire({
@@ -3300,12 +3346,11 @@ var tipoDoc:boolean=false
           
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
-              console.log(res + "entre por siff");
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
-                  console.log(res + "entre por si");
-                  contVal++,this.contadorValidaciones(contVal)
+                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
                 },
                 err => {
                   Swal.fire({

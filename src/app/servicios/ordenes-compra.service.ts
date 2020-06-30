@@ -7,8 +7,8 @@ import { Router } from '@angular/router';
 })
 export class OrdenesCompraService {
 
-  //private URL = 'http://localhost:3000/ordenesCompra'; //localhost
-  private URL = 'http://104.248.14.190:3000/ordenesCompra';
+  private URL = 'http://localhost:3000/ordenesCompra'; //localhost
+  //private URL = 'http://104.248.14.190:3000/ordenesCompra';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newOrden(venta){
@@ -25,6 +25,10 @@ export class OrdenesCompraService {
 
   updateOrden(ordenes){
     return this.http.put(this.URL + `/update/${ordenes._id}`, ordenes); 
+  }
+  
+  updateEstadoProductos(ordenes:string, producto:string,estado:string){
+    return this.http.put(this.URL + `/updateEstadoProductos/${ordenes}/${producto}/${estado}`, ordenes); 
   }
 
   updateEstadoOrden(ordenes,estado:string){

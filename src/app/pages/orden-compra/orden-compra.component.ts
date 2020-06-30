@@ -27,6 +27,8 @@ import { producto, contadoresDocumentos, orden_compra } from '../ventas/venta';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore } from 'angularfire2/firestore';
 
 
 //import { ConsoleReporter } from 'jasmine';
@@ -143,9 +145,10 @@ selectedRows: string[];
 transacciones:transaccion[]=[]
 selectAllModeVlaue: string = "page";
 selectionModeValue: string = "all";
+contadorFirebase:contadoresDocumentos[]=[]
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
-  constructor(public transaccionesService: TransaccionesService,public authenService:AuthenService, public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService,public proveedoresService:ProveedoresService, public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService: TransaccionesService,public authenService:AuthenService, public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService,public proveedoresService:ProveedoresService, public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
     
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
@@ -173,6 +176,7 @@ selectionModeValue: string = "all";
     this.traerProductos()
     this.traerProductosComprados()
     this.traerOrdenesCompra()
+    this.getIDDocumentos()
   }
 
   cargarUsuarioLogueado() {
@@ -244,8 +248,23 @@ selectionModeValue: string = "all";
   }
 
   asignarIDdocumentos(){
-    this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
+    //this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
     this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento+1
+  }
+
+   //contadores usando firebase para actualizacion automatica
+   async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+        this.asignarIDdocumentos2()
+    });;
+  }
+
+  asignarIDdocumentos2(){
+    this.number_transaccion =this.contadorFirebase[0].transacciones_Ndocumento+1
+    //this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento+1
   }
 
 
@@ -1984,7 +2003,8 @@ anadirDetallePago = (e) => {
                     this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
                     this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                       res => {
-                        contVal++,this.contadorValidaciones(contVal)
+                        this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
                       },
                       err => {
                         Swal.fire({

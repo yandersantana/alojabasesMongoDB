@@ -312,9 +312,23 @@
                 </div>
             </div>
             <div class="col-3">
-                <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
+               <!--  <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+                    [searchEnabled]="true" cssclass="sbox"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
                     valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint={{p.producto.PRODUCTO}}>
+                </dx-select-box> -->
+                <dx-select-box
+                    [dataSource]="productos22"
+                    displayExpr="PRODUCTO"
+                    valueExpr="PRODUCTO"
+                    [(value)]="p.REFERENCIA"
+                    hint={{p.producto.PRODUCTO}}
+                    (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
+                    itemTemplate="item">
+                    <div *dxTemplate="let data of 'item'">
+                       
+                        <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}
+                           </div>
+                    </div>
                 </dx-select-box>
             </div>
              <!--   <div class="col-4">

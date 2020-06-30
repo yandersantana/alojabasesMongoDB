@@ -82,6 +82,7 @@ export class CatalogoComponent implements OnInit {
     ORIGEN:"",
     ESTADO:"",
     APLICACION:"",
+    porcentaje_ganancia:0,
     VIGENCIA:"",
     FEC_PRODUCCION:"",
     CANT_MINIMA:0,
@@ -238,7 +239,7 @@ export class CatalogoComponent implements OnInit {
     this.nuevoProducto.UNIDAD= this.catalogo2.UNIDAD
     this.nuevoProducto.nombre_comercial= this.catalogo2.NOMBRE_COMERCIAL
     this.nuevoProducto.APLICACION= this.catalogo2.APLICACION
-    this.nuevoProducto.porcentaje_ganancia= 30
+    this.nuevoProducto.porcentaje_ganancia= this.catalogo2.porcentaje_ganancia
     this.nuevoProducto.precio= 0
     this.nuevoProducto.suc1Pendiente= 0
     this.nuevoProducto.suc2Pendiente= 0
@@ -278,7 +279,7 @@ export class CatalogoComponent implements OnInit {
     this.comparardatos()
     this.comparardatos2()
     console.log("los datos soon "+JSON.stringify(this.catalogo2))
-    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
+    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       //this.catalogo2.IMAGEN[0]=+this.base64textString
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
@@ -521,14 +522,14 @@ _handleReaderLoaded(readerEvt) {
 
   updateProducto(){
     console.log("JSON "+JSON.stringify(this.catalogo2))
-    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
+    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!=""  && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
        // this.actualizarEstado()
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
             ///updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
-            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION).subscribe(
+            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.ESTADO).subscribe(
               res => {
                 
                 this.mostrarMensaje()

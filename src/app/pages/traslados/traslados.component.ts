@@ -103,7 +103,8 @@ export class TrasladosComponent implements OnInit {
     @ViewChild('datag3') dataGrid2: DxDataGridComponent;
     @ViewChild('selectId') select: dxSelectBox;
     expensesCollection3: AngularFirestoreCollection<transaccion>;
-  constructor(public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
+    contadorFirebase:contadoresDocumentos[]=[]
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
      public bodegasService:BodegaService,public transaccionesService:TransaccionesService, public sucursalesService:SucursalesService,) { 
     this.traslados= new traslados()
     this.transportista= new transportista()
@@ -132,6 +133,7 @@ export class TrasladosComponent implements OnInit {
    this.traerTraslados()
    this.traerTransportistas()
    this.traerContadoresDocumentos()
+   this.getIDDocumentos()
    //this.cargarUsuarioLogueado()
   }
 
@@ -230,9 +232,21 @@ export class TrasladosComponent implements OnInit {
   }
   
   asignarIDdocumentos(){
-    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    //this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
     this.id2=this.contadores[0].contTraslados_Ndocumento+1
-   // this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+  async getIDDocumentos() {
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      this.asignarIDdocumentos2()
+    });
+  }
+
+  asignarIDdocumentos2(){
+    this.number_transaccion=this.contadorFirebase[0].transacciones_Ndocumento+1
+    //this.id2=this.contadores[0].contTraslados_Ndocumento+1
   }
 
  
@@ -827,6 +841,8 @@ export class TrasladosComponent implements OnInit {
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
+                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => {  }, err => (err));
                 },
                 err => {
                   Swal.fire({
@@ -871,9 +887,12 @@ export class TrasladosComponent implements OnInit {
             this.transaccion.idTransaccion=this.number_transaccion++
             //this.getIDTransacciones()
             this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
-              contVal++,this.contadorValidaciones(contVal),
+             
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
-              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {},
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {
+                this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
+              },
                 err => {
                   Swal.fire({
                     title: "Error al guardar",

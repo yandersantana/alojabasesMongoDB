@@ -53,7 +53,8 @@ export class BajasComponent implements OnInit {
   bajaLeida:baja
   productos: producto[] = []
   productosActivos: producto[] = []
-  
+  contadorFirebase:contadoresDocumentos[]=[]
+
   menuMotivo: string[] = [
     "Caducidad",
     "Desiciones comerciales",
@@ -69,7 +70,7 @@ export class BajasComponent implements OnInit {
   "Bajas Aprobadas"
   ];
   contadores:contadoresDocumentos[]=[]
-  constructor(public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
     this.baja = new baja
     this.productosBaja.push(new productosBajas)
   }
@@ -89,7 +90,7 @@ export class BajasComponent implements OnInit {
     this.traerContadoresDocumentos()
     this.traerProductos()
     this.traerSucursales()
-    
+    this.getIDDocumentos()
   }
 
   traerParametrizaciones(){
@@ -121,11 +122,21 @@ export class BajasComponent implements OnInit {
     this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.id_baja =this.contadores[0].contBajas_Ndocumento+1
-      this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
-
-      
-      //this.asignarIDdocumentos()
+     // this.number_transaccion =this.contadores[0].transacciones_Ndocumento+1
    })
+  }
+
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      this.asignarIDdocumentos2()
+    });;
+  }
+
+  asignarIDdocumentos2(){
+    this.number_transaccion =this.contadorFirebase[0].transacciones_Ndocumento+1
   }
 
   /* async getIDBjas() {
@@ -344,7 +355,8 @@ export class BajasComponent implements OnInit {
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
-                  contVal++,this.contadorValidaciones(contVal)
+                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
                 },
                 err => {
                   Swal.fire({

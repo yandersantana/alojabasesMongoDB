@@ -429,7 +429,7 @@ banderaProductos:boolean=false
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.NordenFact == element.n_orden){
-            this.totalOrden=element.total-element.costeUnitaTransport
+            this.totalOrden=element.total-element.costeUnitaTransport-element.otrosCostosGen
       }
     })
 
@@ -1058,7 +1058,7 @@ anadirDetallePago = (e) => {
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.datoNsolicitud == element.n_orden){
-            this.totalOrden=element.total  - element.costeUnitaTransport
+            this.totalOrden=element.total  - element.costeUnitaTransport-element.otrosCostosGen
             this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
       }
     })
@@ -1114,7 +1114,7 @@ anadirDetallePago = (e) => {
     var cant=0
     var cont=1
     if(this.banderaProductos){
-      
+      this.confirmar()
     }else{
       if(this.ordencompraleida.tipo == "Entregado"){
         this.confirmar()

@@ -34,8 +34,9 @@ export class ParametrizacionComponent implements OnInit {
   parametrizacionesData:parametrizacionsuc[]=[]
   parametrizacionSucu:parametrizacionsuc
   contadores:contadoresDocumentos
+  contadorFirebase:contadoresDocumentos[]=[]
   nombreSucursal:string=""
-  constructor(public parametrizacionService:ParametrizacionesService,public contadorService:ContadoresDocumentosService, public sucursalesService:SucursalesService) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public contadorService:ContadoresDocumentosService, public sucursalesService:SucursalesService) {
     this.parametroSuc.sucursal="Matriz"
    }
 
@@ -46,6 +47,7 @@ export class ParametrizacionComponent implements OnInit {
     this.traerSucursales()
     this.traerParametrizaciones()
     this.traerContadoresDocumentos()
+    this.getIDDocumentos()
   }
 
  
@@ -73,6 +75,15 @@ export class ParametrizacionComponent implements OnInit {
     this.parametrizacionService.getParametrizacion().subscribe(res => {
       this.parametrizacionesData = res as parametrizacionsuc[];
    })
+  }
+
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      //this.asignarIDdocumentos2()
+    });;
   }
 
   /* getParametrizaciones(){
@@ -158,15 +169,24 @@ export class ParametrizacionComponent implements OnInit {
     switch (this.parametroSuc.sucursal) {
       case "matriz":
         this.contadores[0].facturaMatriz_Ndocumento = this.parametroSuc.inicio
-        this.contadorService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {this.correcto()},err => {this.error()})
+        this.contadorService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {
+          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaMatriz_Ndocumento:this.parametroSuc.inicio})
+                  .then(res => { this.correcto() }, err => (err));
+          },err => {this.error()})
         break;
       case "sucursal1":
         this.contadores[0].facturaSucursal1_Ndocumento = this.parametroSuc.inicio
-        this.contadorService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {this.correcto()},err => {this.error()})
+        this.contadorService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {
+          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal1_Ndocumento:this.parametroSuc.inicio})
+                  .then(res => { this.correcto() }, err => (err));
+        },err => {this.error()})
         break;
       case "sucursal2":
         this.contadores[0].facturaSucursal2_Ndocumento = this.parametroSuc.inicio
-        this.contadorService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {this.correcto()},err => {this.error()})
+        this.contadorService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {
+          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal2_Ndocumento:this.parametroSuc.inicio})
+          .then(res => { this.correcto() }, err => (err));
+        },err => {this.error()})
         break;
       default:
         break;

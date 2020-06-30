@@ -22,6 +22,7 @@ import { ProductosObsequioService } from 'src/app/servicios/productos-obsequio.s
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { RemisionesService } from 'src/app/servicios/remisiones.service';
 import { ProductosIngresadosService } from 'src/app/servicios/productos-ingresados.service';
+import { AngularFireAuth } from 'angularfire2/auth';
 
 
 @Component({
@@ -132,7 +133,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
    showFilterRow: boolean;
    solicitudOrdenC:number=0
    contadores:contadoresDocumentos[]=[]
-  //db=firebase.firestore();
+   contadorFirebase:contadoresDocumentos[]=[]
   @ViewChild('selectId') selectBox: DxSelectBoxComponent;
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid: DxDataGridComponent;
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -141,7 +142,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
  /*  expensesCollection: AngularFirestoreCollection<ProductoDetalleEntrega>;
   expensesCollection2: AngularFirestoreCollection<ProductoDetalleCompra>;
   expensesCollection3: AngularFirestoreCollection<transaccion>; */
-  constructor(public parametrizacionService:ParametrizacionesService,public productosObservice:ProductosObsequioService, public productosIngresadoService:ProductosIngresadosService, public remisionesService:RemisionesService, public facturasProveedorService:FacturasProveedorService, public transaccionesService:TransaccionesService ,public productoService:ProductoService,public productosObsequioService:ProductosObsequioService, public bodegasService:BodegaService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public productosObservice:ProductosObsequioService, public productosIngresadoService:ProductosIngresadosService, public remisionesService:RemisionesService, public facturasProveedorService:FacturasProveedorService, public transaccionesService:TransaccionesService ,public productoService:ProductoService,public productosObsequioService:ProductosObsequioService, public bodegasService:BodegaService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService) {
     setTimeout(() => {
       console.log("hello");
     }, 3000);
@@ -187,6 +188,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.traerBodegas()
     this.traerRemisiones()
     this.traerProductosIngresados()
+    this.getIDDocumentos()
   }
 
   crearBodega(){
@@ -270,8 +272,22 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   }
 
   asignarIDdocumentos(){
-    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+   // this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
     this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
+  }
+
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      if(data != null)
+        this.contadorFirebase = data
+      this.asignarIDdocumentos2()
+    });;
+  }
+
+  asignarIDdocumentos2(){
+    this.number_transaccion=this.contadorFirebase[0].transacciones_Ndocumento+1
+    //this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
   }
 
   
@@ -780,7 +796,8 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   actualizarProductossolicitados(){
 new Promise<any>((resolve, reject) => {
   this.productosControlFinal.forEach(element=>{
-    console.log("kkk "+JSON.stringify(element))
+    console.log("kkkkkkkkkkk "+JSON.stringify(element))
+    this.ordenesService.updateEstadoProductos(this.ordenleida._id,element.nombre_comercial,element.estado).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     /* this.expensesCollection2 = this.db.collection('/productosComprados', ref => ref.where('solicitud_n', '==', element.solicitud_orden).where('nombreComercial.PRODUCTO', '==', element.nombre_comercial)); */
    // console.log("sss "+(this.expensesCollection.snapshotChanges()))}
    console.log("actualice 1")
@@ -956,6 +973,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
                   this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
                   this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                     res => {
+                      this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => {  }, err => (err));
                     },
                     err => {
                       Swal.fire({
@@ -1019,7 +1038,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
                   this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
                   this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                     res => {
-                      contVal++,this.contadorValidaciones(contVal)
+                      this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
                     },
                     err => {
                       Swal.fire({

@@ -20,6 +20,7 @@ export class catalogo{
     FEC_PRODUCCION:string
     CANT_MINIMA:number
     ESTADO:string
+    porcentaje_ganancia:number
     IMAGEN:[]
     IMAGEN_PRINCIPAL:string
     estado2:string

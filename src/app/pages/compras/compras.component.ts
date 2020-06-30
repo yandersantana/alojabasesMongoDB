@@ -459,7 +459,7 @@ setSelectedProducto(i:number){
     this.buscarDatosSucursal()
     const documentDefinition = this.getDocumentDefinition();
     //const pdfDocGenerator = pdfMake.createPdf(documentDefinition)
-    var numor=this.ordenDeCompra.documento-1
+    var numor=this.ordenDeCompra.documento
     pdfMake.createPdf(documentDefinition).download('Orden de Compra '+numor, function(response) { Swal.close(),
       Swal.fire({
         title: 'Solicitud guardada',
@@ -641,8 +641,8 @@ mostrarPopup(e,i:number){
       this.titulo=element.PRODUCTO
       this.catalogoLeido = element
       console.log("encontre")
-      this.disponibilidadProducto=this.productosComprados[i].nombreComercial.sucursal1+"M    "+
-      this.productosComprados[i].nombreComercial.sucursal2+"N    "+this.productosComprados[i].nombreComercial.sucursal3+"T  "
+      this.disponibilidadProducto=this.productosComprados[i].nombreComercial.sucursal1.toFixed(0)+"M    "+
+      this.productosComprados[i].nombreComercial.sucursal2.toFixed(0)+"S1    "+this.productosComprados[i].nombreComercial.sucursal3.toFixed(0)+"S2  "+this.productosComprados[i].nombreComercial.bodegaProveedor.toFixed(0)+"P  "
     }
   })
   this.popupvisible=true 

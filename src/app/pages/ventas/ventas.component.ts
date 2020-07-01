@@ -2763,18 +2763,6 @@ var tipoDoc:boolean=false
 
 
     getDatosFooter() {
-      /* return {
-        content: [
-          {
-            text: 'RESUME',
-            alignment: 'center', 
-          },
-          {
-            text: 'RESUME',
-            alignment: 'center',         
-          },
-        ]
-      } */
       return {
         table: {
           widths: ["*"],         
@@ -2838,7 +2826,6 @@ var tipoDoc:boolean=false
         this.productoPendienteE.total=resta*element.precio_venta
         this.productoPendienteEntregas.push(this.productoPendienteE)
        
-        console.log("llelgggggggoooo el " +this.productoPendienteE.id_Pedido )
         new Promise<any>((resolve, reject) => {
           switch (this.factura.sucursal) {
             case "matriz":

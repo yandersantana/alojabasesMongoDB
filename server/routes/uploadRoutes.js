@@ -16,7 +16,7 @@ router.use(bodyParser.urlencoded({
 const multipartMiddleware = multipart({
     uploadDir: './server/uploads'
 });
-
+var upload = multer({ dest: './server/uploads/' })
 router.post('/api/upload', multipartMiddleware, (req, res) => {
     var file=req.files
     console.log("files "+JSON.stringify(file))
@@ -76,6 +76,11 @@ const storage = multer.diskStorage({
     });
     res.status(500).json(error);
 });  
+
+router.post('/uploadNew', upload.single('img'), function(req, res, next){
+    console.log("file"+req.file+req.files);
+    res.send('Successfully uploaded!');
+  });
 
 
 

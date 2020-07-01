@@ -405,6 +405,10 @@ export class CatalogoComponent implements OnInit {
       )
   }
 
+  uploadNew(){
+    
+  }
+
   upload3(){
     
   }

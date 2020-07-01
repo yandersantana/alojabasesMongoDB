@@ -72,7 +72,7 @@ const storage = multer.diskStorage({
         'url':'http://localhost:3000/',
         //'url':'https://www.w3schools.com/css/default.asp',
 
-        'size': parseInt(pathy.size/1024)
+        'size': parseInt(23000/1024)
         
     });
     res.status(500).json(error);

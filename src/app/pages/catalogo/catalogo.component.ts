@@ -394,7 +394,7 @@ export class CatalogoComponent implements OnInit {
     this.formData.append("uploads[]", this.uploadedFiles[0], this.uploadedFiles[0].name);
 
     var options = { content: this.formData };
-    this.serviceUpload.uploadFile(this.formData).subscribe(
+    this.serviceUpload.uploadFile(options).subscribe(
       (res) => {
         
         this.tempUrl = res.url

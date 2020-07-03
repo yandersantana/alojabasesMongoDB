@@ -7,6 +7,11 @@ router.get('/getProductos', async (req, res) => {
     res.send(productos)      
 })
 
+router.get('/getProductosActivos', async (req, res) => {
+    const productos = await Producto.find({"ESTADO":"ACTIVO"});
+    res.send(productos)      
+})
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
@@ -58,6 +63,16 @@ router.put('/updateAplicacion/:id/:aplicacion', async (req, res,next) => {
     await Producto.findByIdAndUpdate(id, {$set: {APLICACION:aplicacion}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
+
+
+router.put('/updateEstado/:producto/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { producto } = req.params;
+    const { estado } = req.params;
+    await Producto.findOneAndUpdate({"PRODUCTO":producto}, {$set: {ESTADO:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 
 
 router.put('/updateBodega/:id', async (req, res,next) => {

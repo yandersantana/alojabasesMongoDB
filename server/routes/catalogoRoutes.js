@@ -72,6 +72,14 @@ router.put('/update/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+
+router.put('/updateEliminacion/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await Catalogo.findByIdAndUpdate(id, {$set: {estado2:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateAplicacion/:producto/:aplicacion', async (req, res,next) => {
     const { producto } = req.params;
     const { aplicacion } = req.params;

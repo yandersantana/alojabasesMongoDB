@@ -204,7 +204,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-4">
+        <div class="col-3">
             <h5>Producto</h5>
         </div>
         <div class="col-2">
@@ -236,6 +236,9 @@
         <div class="col-1">
             <h5>Total</h5>
         </div>
+        <div class="col-1">
+            <h5>Elimin</h5>
+        </div>
     </div>
     <div *ngFor="let p of productosComprados;let i = index">
         <div class="row altura">
@@ -256,11 +259,26 @@
                     
                 </div>
             </div>
-            <div class="col-4">
-                <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+            <div class="col-3">
+                <!-- <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
                 [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
                 valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint={{p.REFERENCIA}}>
-            </dx-select-box>
+            </dx-select-box> -->
+            <dx-select-box
+                    [dataSource]="productos22"
+                    displayExpr="PRODUCTO"
+                    [searchEnabled]="true"
+                    valueExpr="PRODUCTO"
+                    [(value)]="p.REFERENCIA"
+                    hint={{p.REFERENCIA}}
+                    (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
+                    itemTemplate="item">
+                    <div *dxTemplate="let data of 'item'">
+                       
+                        <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}
+                           </div>
+                    </div>
+                </dx-select-box>
             </div>
             <div class="col-2">
                 <div class="row">
@@ -286,7 +304,7 @@
             </div>
             <div class="col-1">
                 <dx-number-box [(value)]="p.precio_compra" [disabled]="false" [readOnly]="false"
-                    (onChange)="carcularTotalProducto($event, i)" [min]="p.precio_min">
+                    (onChange)="carcularTotalProducto($event, i)" >
                 </dx-number-box>
             </div>
             <div class="col-1">
@@ -296,6 +314,9 @@
             <div class="col-1">
                 <dx-number-box [value]="p.total" [disabled]="false" [readOnly]="false">
                 </dx-number-box>
+            </div>
+            <div class="col-1">
+                 <i class="dx-icon-close" (click)="deleteProductoVendido(i)"></i>    
             </div>
 
         </div>

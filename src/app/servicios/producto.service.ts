@@ -12,8 +12,8 @@ export class ProductoService {
 
   empresa: Producto[];
   
- //private URL = 'http://localhost:3000/producto'; //localhost
- private URL = 'http://104.248.14.190:3000/producto';
+ private URL = 'http://localhost:3000/producto'; //localhost
+ //private URL = 'http://104.248.14.190:3000/producto';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newProducto(producto){
@@ -24,12 +24,20 @@ export class ProductoService {
     return this.http.get(this.URL+'/getProductos');
   }
 
+  getProductosActivos(){ 
+    return this.http.get(this.URL+'/getProductosActivos');
+  }
+
   updateProducto(producto){
     return this.http.put(this.URL + `/update/${producto._id}`, producto); 
   }
 
   deleteProducto(producto){
     return this.http.delete(this.URL + `/delete/${producto._id}`, producto); 
+  }
+  
+  updateProductoEstado(producto:string, estado:string){
+    return this.http.put(this.URL + `/updateEstado/${producto}/${estado}`, producto); 
   }
 
   updateProductoBodegaProveedor(producto){

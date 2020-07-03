@@ -54,6 +54,7 @@ export class ProductoDetalleCompra{
     disponible:number
     precio_cos:number
     cantidad:number
+    REFERENCIA: string
     precio_compra:number
     desct:number
     total:number

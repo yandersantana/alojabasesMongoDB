@@ -40,7 +40,7 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   ngOnInit() {
-   this.traerProductos()
+   //this.traerProductos()
     this.traerTransacciones()
    this.traerProductosPendientes()
   }
@@ -48,13 +48,16 @@ export class ConsolidadoComponent implements OnInit {
   traerTransacciones(){
     this.transaccionesService.getTransaccion().subscribe(res => {
       this.transacciones = res as transaccion[];
-      this.cargarDatos()
+      this.traerProductos()
+      
    })
   }
 
   traerProductos(){
-    this.productoService.getProducto().subscribe(res => {
+    this.productoService.getProductosActivos().subscribe(res => {
       this.productos = res as producto[];
+      this.cargarDatos()
+      //alert("jhjhj "+ this.productos.length)
    })
   }
 
@@ -116,6 +119,7 @@ export class ConsolidadoComponent implements OnInit {
 
 
   cargarDatos(){
+   // alert("entre con "+this.transacciones.length)
     console.log("entre")
     var contCajas=0
     var contCajas2=0

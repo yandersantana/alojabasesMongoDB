@@ -66,6 +66,7 @@ export class CatalogoComponent implements OnInit {
   varM2:boolean=true
   varPC:boolean=true
   nuevoProducto:producto
+  catalogo3:catalogo
   catalogo2 = {
     PRODUCTO:"",
     NOMBRE_PRODUCTO:"",
@@ -87,7 +88,8 @@ export class CatalogoComponent implements OnInit {
     FEC_PRODUCCION:"",
     CANT_MINIMA:0,
     IMAGEN:[],
-    IMAGEN_PRINCIPAL:""
+    IMAGEN_PRINCIPAL:"",
+    estado2:"Activo"
 
   }
   elementRef
@@ -330,7 +332,7 @@ export class CatalogoComponent implements OnInit {
   mensajeError(){
     Swal.fire({
       title: 'Error',
-      text: 'Se ha producido un error al guardar, la imagen supera el limite de tamaño',
+      text: 'Se ha producido un error al guardar',
       icon: 'error',
       confirmButtonText: 'Ok'
     })
@@ -513,12 +515,20 @@ _handleReaderLoaded(readerEvt) {
 
   cambiarEstado(){
     new Promise<any>((resolve, reject) => {
+      this.productoService.updateProductoEstado(this.catalogo2.PRODUCTO, "INACTIVO").subscribe(res => {this.mostrarMensajeEliminación()
+        },
+        err => { console.log(err); this.mensajeError() }
+      )
       //this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":"INACTIVO"}).then(res => {this.mostrarMensajeEliminación()}, err => reject(err));
     }) 
   }
 
   cambiarEstado2(producto:string){
     new Promise<any>((resolve, reject) => {
+      this.productoService.updateProductoEstado(producto, "ACTIVO").subscribe(res => {this.mostrarMensajeRestauración()
+      },
+      err => { console.log(err); this.mensajeError() }
+    )
       //this.db.collection("/productos").doc(producto).update({"ESTADO":"ACTIVO"}).then(res => {this.mostrarMensajeRestauración()}, err => reject(err));
     }) 
   }
@@ -560,6 +570,9 @@ _handleReaderLoaded(readerEvt) {
   deleteProducto(){
     new Promise<any>((resolve, reject) => {
       this.mensajeGuardando()
+      this.catalogoService.updateCatalogoEliminacion(this.catalogo2,"Eliminado").subscribe(res => {this.cambiarEstado()},
+        err => { console.log(err); this.mensajeError() }
+      )
       //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({"estado2":"Eliminado"}).then(res => { this.cambiarEstado()}, err => reject(err));
     })
   }
@@ -671,6 +684,11 @@ _handleReaderLoaded(readerEvt) {
   }
 
   restaurar(producto:string){
+    this.productosCatalogoElim.forEach(element=>{
+      if(element.PRODUCTO == producto){
+        this.catalogo3 = element
+      }
+    })
     Swal.fire({
       title: 'Alerta',
       text: "Está seguro que desea restaurar el producto",
@@ -682,8 +700,12 @@ _handleReaderLoaded(readerEvt) {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
           this.mensajeGuardando()
+          this.catalogoService.updateCatalogoEliminacion(this.catalogo3,"Activo").subscribe(res => {this.cambiarEstado2(producto)},
+          err => { console.log(err); this.mensajeError() }
+        )
          // this.db.collection("/catalogo").doc(producto).update({"estado2":"Activo"}).then(res => { this.cambiarEstado2(producto)}, err => reject(err));
         })
+        
       }
     })
    

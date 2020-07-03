@@ -9,8 +9,8 @@ import { catalogo } from '../pages/catalogo/catalogo';
 export class CatalogoService {
 
   empresa: catalogo[];
-  //private URL = 'http://104.248.14.190:3000/catalogo';
-  private URL = 'http://localhost:3000/catalogo'; //localhost
+  private URL = 'http://104.248.14.190:3000/catalogo';
+  //private URL = 'http://localhost:3000/catalogo'; //localhost
 
   constructor(public http: HttpClient, public router: Router ) { }
 

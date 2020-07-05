@@ -416,7 +416,12 @@
                 <h4>Relación cheques girados</h4>
             </div>
            
-            <dx-data-grid id="gridContainer"
+            <div class="color">
+                <button class="btn btn-primary btn-xs" (click)="mostrarEliminar2()" >
+                    <i class="fa fa-trash"></i>
+                </button>
+            </div>
+            <dx-data-grid #datag3 id="gridContainer"
             [dataSource]="detallePago2"
             [showBorders]="true"
             (onExporting)="onExporting($event)"
@@ -483,7 +488,9 @@
                 dataType="string"
                 [visible]="false" > 
             </dxi-column>
-
+            <dxi-column type="buttons" dataField="bt3" caption="Eliminar" width="15%" [visible]="false">
+                <dxi-button icon="clear" [onClick]="getCourseFile6"></dxi-button>   
+            </dxi-column>
             
 
            
@@ -493,6 +500,89 @@
                         [allowedPageSizes]="[8, 12, 20]"
                     ></dxo-pager>
                 </dx-data-grid>
+
+
+
+        <h4>Pendientes de eliminación </h4>
+            <dx-data-grid  id="gridContainer"
+                [dataSource]="detallePago3"
+                [showBorders]="true"
+                (onExporting)="onExporting($event)"
+                (onExported)="onExported($event)">
+            <dxo-filter-row 
+            [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel 
+                [visible]="true" 
+                [width]="240" 
+                placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="DetallePagosFacturas" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column
+                dataField="idPago"
+                caption="Pago#"
+                cssClass= "cls"
+                sortOrder="desc"
+                >
+            </dxi-column>
+        
+            <dxi-column
+                dataField="n_cheque"
+                dataType="string"
+                >
+            </dxi-column>
+            <dxi-column
+                dataField="nombre_banco"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="beneficiario"
+                dataType="string" 
+                > 
+            </dxi-column>
+            <dxi-column
+                dataField="fact_proveedor"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="orden_compra"
+                dataType="string" > 
+            </dxi-column>
+            <dxi-column
+                dataField="fecha_vencimiento"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="valor"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="no_conformidad"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="total"
+                dataType="string" 
+                [visible]="true"> 
+            </dxi-column>
+            <dxi-column
+                dataField="observaciones"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt3" caption="Eliminar" width="15%" [visible]="true">
+                <dxi-button icon="clear" [onClick]="getCourseFile"></dxi-button>   
+            </dxi-column>
+            
+
+           
+                <dxo-paging [pageSize]="5"></dxo-paging>
+                    <dxo-pager
+                        [showPageSizeSelector]="true"
+                        [allowedPageSizes]="[8, 12, 20]">
+                    </dxo-pager>
+            </dx-data-grid>
         </div>
 </div>
 

@@ -26,6 +26,7 @@ export class productosDevueltos{
     cantFactCajas:number
     cantFactPiezas:number
     cantDevueltaCajas:number
+    REFERENCIA:string
     cantDevueltaPiezas:number
     cantDevueltam2:number
     cantDevueltam2Flo:number

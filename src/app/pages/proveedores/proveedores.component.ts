@@ -49,6 +49,8 @@ export class ProveedoresComponent implements OnInit {
   ordenDeCompra3 : OrdenDeCompra;
   facturaProveedor: FacturaProveedor;
   pago_proveedor: PagoProveedor;
+  pago_proveedor2: PagoProveedor;
+  pago_proveedores: PagoProveedor[]=[];
   facturaProveedor2: FacturaProveedor[] = []
   facturaProveedorBus: FacturaProveedor[] = []
   facturaProveedorBus2: FacturaProveedor[] = []
@@ -58,6 +60,8 @@ export class ProveedoresComponent implements OnInit {
   productosComprados: ProductoDetalleCompra[] = []
   detallePago: DetallePagoProveedor[] = []
   detallePago2: DetallePagoProveedor[] = []
+  detallePago3: DetallePagoProveedor[] = []
+  detallePago4: DetallePagoProveedor[] = []
   productosComprados2: ProductoDetalleCompra[] = []
   productosComprados3: ProductoDetalleCompra[] = []
   productosComprados4: ProductoDetalleCompra[] = []
@@ -144,6 +148,7 @@ productosActivos:producto[]=[]
 banderaProductos:boolean=false
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
+@ViewChild('datag3') dataGrid4: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
 //@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
   constructor( public contadoresService:ContadoresDocumentosService,public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
@@ -163,6 +168,7 @@ banderaProductos:boolean=false
     this.traerOrdenesCompra()
     this.traerProductos()
     this.traerPagosFacturasProveedor()
+    this.traerPagosFacturas()
   }
 
   
@@ -176,6 +182,13 @@ banderaProductos:boolean=false
   traerProductos(){
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[];
+      
+   })
+  }
+
+  traerPagosFacturas(){
+    this.pagoFacturaService.getPagosProveedor().subscribe(res => {
+      this.pago_proveedores = res as PagoProveedor[];
       
    })
   }
@@ -199,7 +212,7 @@ banderaProductos:boolean=false
   traerPagosFacturasProveedor(){
     this.detallePagoService.getDetallePagos().subscribe(res => {
       this.detallePago2 = res as DetallePagoProveedor[];
-
+      this.separarFacturas()
    })
   }
 
@@ -207,6 +220,14 @@ banderaProductos:boolean=false
     this.facturasProveedorService.getFacturasProveedor().subscribe(res => {
       this.facturaProveedor2 = res as FacturaProveedor[];
    })
+  }
+
+  separarFacturas(){
+    this.detallePago2.forEach(element=>{
+      if(element.estado =="rechazado"){
+        this.detallePago3.push(element)
+      }
+    })
   }
 
 
@@ -544,7 +565,7 @@ banderaProductos:boolean=false
   }
 
   getCourseFile = (e) => {  
-    //this.cargarOrdenCompra(e.row.data)  
+    this.eliminarPagocheque(e.row.data)  
   }
 
   getCourseFile2 = (e) => {  
@@ -562,6 +583,10 @@ banderaProductos:boolean=false
   
   getCourseFile5 = (e) => {  
     this.rechazarEliminacion(e.row.data) 
+  }
+
+  getCourseFile6 = (e) => {  
+    this.rechazarPagoAsociado(e.row.data) 
   }
 
   rechazarEliminacion(e:any){
@@ -637,6 +662,46 @@ banderaProductos:boolean=false
     })
   }
 
+  eliminarPagocheque(e:any){
+    var contadoEn=0
+    this.pago_proveedores.forEach(element=>{
+      if(element.n_cheque == e.n_cheque){
+        this.pago_proveedor2 = element
+      }
+    })
+    Swal.fire({
+      title: 'Eliminar Pago asociada',
+      text: "Se eliminará definitivamente el pago #"+e.idPago,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.detallePagoService.deleteDetallePago(e).subscribe( res => {
+          this.pago_proveedor2.valor= this.pago_proveedor2.valor- e.valor
+          this.pagoFacturaService.updatePagosProveedor(this.pago_proveedor2).subscribe( res => {
+            Swal.fire({
+              title: 'Correcto',
+              text: 'Se eliminó con éxito',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              window.location.reload()
+            })
+          }, err => {alert("error")})
+        }, err => {alert("error")})
+        
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
 
 
   rechazarFactP(e:any){ 
@@ -664,6 +729,44 @@ banderaProductos:boolean=false
             window.location.reload()
             //this.asignarValores()
           })
+       
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire(
+            'Cancelado!',
+            'Se ha cancelado su proceso.',
+            'error'
+          )
+        }
+      })
+  }
+
+  rechazarPagoAsociado(e:any){ 
+    var data2=""
+    data2=e.idF+""
+    console.log("data2 "+data2)
+      Swal.fire({
+        title: 'Eliminar Pago asociado',
+        text: "Desea eliminar el pago"+e.idPago+" asociado al cheque #"+e.n_cheque,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
+         this.detallePagoService.updateEstado(e ,"rechazado").subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Un administrador aprobará su eliminación de pago',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+            //this.asignarValores()
+          })
+         }, err => {alert("error")})
+        
+          
        
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           Swal.fire(
@@ -766,6 +869,15 @@ banderaProductos:boolean=false
       this.dataGrid2.instance.columnOption("bt2", "visible", true);
     }else{
       this.dataGrid2.instance.columnOption("bt2", "visible", false);
+    }
+    
+  }
+
+  mostrarEliminar2(){
+    if(this.dataGrid4.instance.columnOption("bt3").visible == false){
+      this.dataGrid4.instance.columnOption("bt3", "visible", true);
+    }else{
+      this.dataGrid4.instance.columnOption("bt3", "visible", false);
     }
     
   }

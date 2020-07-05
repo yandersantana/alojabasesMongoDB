@@ -336,6 +336,10 @@ subtotal:number=0
     this.rechazarFactAnu(e.row.data) 
   }
 
+  rechazarAnulNOT= (e) => {  
+    this.rechazarNotAnu(e.row.data) 
+  }
+
   eliminarFactura= (e) => {  
     this.eliminarFact(e.row.data) 
   }
@@ -503,6 +507,7 @@ subtotal:number=0
   onExporting (e) {
     e.component.beginUpdate();
     e.component.columnOption("cliente.ruc", "visible", true);
+    e.component.columnOption("cotizacion", "visible", true);
     e.component.columnOption("tipo_venta", "visible", true);
     e.component.columnOption("tipo_cliente", "visible", true);
     e.component.columnOption("coste_transportea", "visible", true);
@@ -510,6 +515,7 @@ subtotal:number=0
   };
   onExported (e) {
     e.component.columnOption("cliente.ruc", "visible", false);
+    e.component.columnOption("cotizacion", "visible", false);
     e.component.columnOption("tipo_venta", "visible", false);
     e.component.columnOption("tipo_cliente", "visible", false);
     e.component.columnOption("coste_transportea", "visible", false);
@@ -1591,16 +1597,17 @@ subtotal:number=0
 
   actualizarNotV(e){
     Swal.fire({
-      title: 'Anular Nota de Venta',
-      text: "Se anulará la nota de venta #"+e.documento_n,
+      title: 'Nota de venta #'+e.documento_n,
+      text: "Motivo de anulación",
       icon: 'warning',
+      input: 'textarea',
       showCancelButton: true,
-      confirmButtonText: 'Si',
+      confirmButtonText: 'Enviar',
       cancelButtonText: 'No'
     }).then((result) => {
-      if (result.value) {
+        if (result.value) {
         //this.db.collection('/notas_venta').doc(e.documento_n+"").update({"estado":"PENDIENTE"}).then(res => {  }, err => alert(err));  
-        this.notasventaService.updateNotasVentaEstado(e,"PENDIENTE").subscribe(
+        this.notasventaService.updateNotasVentaEstadoAnulación(e,"PENDIENTE",result.value).subscribe(
           res => {
             console.log(res + "entre por si");this.coorecto()
           },err => {alert("error")})
@@ -1629,14 +1636,15 @@ subtotal:number=0
 
   actualizarFact(e){
     Swal.fire({
-      title: 'Anular Factura',
-      text: "Se anulará la factura #"+e.documento_n,
+      title: 'Factura #'+e.documento_n,
+      text: "Motivo de anulación",
       icon: 'warning',
+      input: 'textarea',
       showCancelButton: true,
-      confirmButtonText: 'Si',
+      confirmButtonText: 'Enviar',
       cancelButtonText: 'No'
     }).then((result) => {
-      if (result.value) {
+        if (result.value) {
        /*  this.db.collection('/facturas').doc(e.documento_n+"").update({"estado":"PENDIENTE"}).then(res => {  Swal.fire({
           title: 'Correcto',
           text: 'Un administrador aprobará su solicitud',
@@ -1645,7 +1653,7 @@ subtotal:number=0
         }).then((result) => {
           window.location.reload()
         })}, err => alert(err)); */  
-        this.facturasService.updateFacturasEstado(e,"PENDIENTE").subscribe(
+        this.facturasService.updateFacturasEstadoAnulacion(e,"PENDIENTE",result.value).subscribe(
           res => {
             console.log(res + "entre por si");this.coorecto()
           },err => {alert("error")})
@@ -1663,23 +1671,41 @@ subtotal:number=0
 
   rechazarFactAnu(e){
     Swal.fire({
-      title: 'Rechazar Anulación Factura',
-      text: "Rechzar proceso de anulación #"+e.documento_n,
+      title: 'Rechazar Anulación',
+      text: "Anular rechazo de factura #"+e.documento_n,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
-      if (result.value) {
-        /* this.db.collection('/facturas').doc(e.documento_n+"").update({"estado":"FACTURADA"}).then(res => {  Swal.fire({
-          title: 'Correcto',
-          text: 'Se realizó su proceso con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => alert(err)); */  
-        this.facturasService.updateFacturasEstado(e,"PENDIENTE").subscribe(
+      if (result.value) { 
+        this.facturasService.updateFacturasEstado(e,"CONTABILIZADA").subscribe(
+          res => {
+            console.log(res + "entre por si");this.coorecto()
+          },err => {alert("error")})
+       
+     
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+  rechazarNotAnu(e){
+    Swal.fire({
+      title: 'Rechazar Anulación',
+      text: "Anular rechazo de factura #"+e.documento_n,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) { 
+        this.notasventaService.updateNotasVentaEstado(e,"CONTABILIZADA").subscribe(
           res => {
             console.log(res + "entre por si");this.coorecto()
           },err => {alert("error")})
@@ -1718,8 +1744,9 @@ subtotal:number=0
     }).then((result) => {
       if (result.value) {
         this.mostrarMensaje()
-        //this.db.collection('/facturas').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos(e)}, err => alert(err));  
-        this.facturasService.updateFacturasEstado(e,"ELIMINADA").subscribe(
+        //this.db.collection('/facturas').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos(e)}, err => alert(err));
+        var obs= e.observaciones + ".. Documento Anulado"  
+        this.facturasService.updateFacturasEstado2(e,"ELIMINADA",obs).subscribe(
           res => {
             console.log(res + "entre por si");this.actualizarProductos(e)
           },err => {alert("error")})
@@ -1735,7 +1762,7 @@ subtotal:number=0
   }
 
   eliminarNot(e){
-    Swal.fire({
+     Swal.fire({
       title: 'Eliminar Nota Venta',
       text: "Eliminar nota de venta #"+e.documento_n,
       icon: 'warning',
@@ -1743,10 +1770,12 @@ subtotal:number=0
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
-      if (result.value) {
+      if (result.value) { 
+    
         this.mostrarMensaje()
         //this.db.collection('/notas_venta').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos2(e)}, err => alert(err));  
-        this.notasventaService.updateNotasVentaEstado(e,"ELIMINADA").subscribe(
+        var obs= e.observaciones + "... Documento Anulado" 
+        this.notasventaService.updateNotasVentaEstado2(e,"ELIMINADA",obs).subscribe(
           res => {
             console.log(res + "entre por si");this.actualizarProductos2(e)
           },err => {alert("error")})

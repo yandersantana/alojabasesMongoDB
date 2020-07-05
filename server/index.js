@@ -10,7 +10,6 @@ app.set('port', process.env.PORT || 3000);
 app.use(cors());
 app.use(express.json());
 
-
 const bodyParser = require('body-parser');
 
 app.use(bodyParser.json({limit: '50mb', extended: true}))
@@ -53,8 +52,6 @@ app.use('/documentoGenerado', require('./routes/documentoGeneradoRoutes'));
 app.use('/upload', require('./routes/uploadRoutes'));
 app.use('/precios', require('./routes/preciosRoutes'));
 app.use('/preciosEspeciales', require('./routes/precioEspecialRoutes'));
-
-
 
 
 

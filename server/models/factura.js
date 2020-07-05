@@ -26,6 +26,7 @@ const FacturaSchema = new Schema({
     totalIva: { type: Number, required: false},
     totalDescuentos: { type: Number, required: false},
     estado: { type: String, required: false},
+    mensaje: { type: String, required: false},
     productosVendidos: { type: Array, required: false}
 },{
     timestamps:true

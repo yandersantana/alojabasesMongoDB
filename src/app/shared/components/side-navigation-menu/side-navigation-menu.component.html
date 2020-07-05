@@ -11,6 +11,11 @@
         (onSelectionChanged)="updateSelection($event)"
         [selectByClick]="true"
         selectionMode="single"
-        keyExpr="path">
+        keyExpr="path"
+       >
+        <!-- <div *dxTemplate="let itemObj of 'itemTemplate'">
+            <a href="/itemObj.path" target="_blank">page link</a>
+           
+        </div> -->
     </dx-tree-view>
 </div>

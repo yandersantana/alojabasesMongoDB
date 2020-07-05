@@ -396,19 +396,28 @@ export class CatalogoComponent implements OnInit {
     this.formData.append("uploads[]", this.uploadedFiles[0], this.uploadedFiles[0].name);
 
     var options = { content: this.formData };
-    this.serviceUpload.uploadFile(options).subscribe(
+    console.log(options)
+    this.serviceUpload.uploadFile(this.formData).subscribe(
       (res) => {
         
         this.tempUrl = res.url
         //alert(this.tempUrl)
-        this.newProducto()
+        //this.newProducto()
       },
       err => {alert("errrrrorrr")}
       )
   }
 
   uploadNew(){
-    
+    this.serviceUpload.uploadFile(this.uploadedFiles).subscribe(
+      (res) => {
+        alert("sdsd "+res)
+        //this.tempUrl = res.url
+        //alert(this.tempUrl)
+        //this.newProducto()
+      },
+      err => {alert("errrrrorrr")}
+      )
   }
 
   upload3(){
@@ -416,9 +425,11 @@ export class CatalogoComponent implements OnInit {
   }
 
   fileChange(element) {
-    console.log("entre aquiiii")
-    this.uploadedFiles = element.target.files;
-    console.log("vvv" + JSON.stringify(this.uploadedFiles))
+    this.uploadedFiles = element.target.files
+      
+
+    console.log('Name of the file',  this.uploadedFiles);
+    //console.log('Size of the file',  this.uploadedFiles.size);
   }
 
   
@@ -535,10 +546,15 @@ _handleReaderLoaded(readerEvt) {
 
 
   updateProducto(){
-    console.log("JSON "+JSON.stringify(this.catalogo2))
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!=""  && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
+        if(this.catalogo2.M2 ==0){
+          this.catalogo2.M2=1
+        }
+        if(this.catalogo2.P_CAJA ==0){
+          this.catalogo2.P_CAJA=1
+        }
        // this.actualizarEstado()
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {

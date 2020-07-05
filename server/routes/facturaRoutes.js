@@ -17,14 +17,29 @@ router.put('/update2/:id/:observaciones', async (req, res,next) => {
     res.json({status: 'factura Updated'});  
 })
 
-
-
-
 router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
     console.log("llegue hasta aquu")
     await Factura.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+router.put('/updateEstadoMensaje/:id/:estado/:mensaje', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    const { mensaje } = req.params;
+    await Factura.findByIdAndUpdate(id, {$set: {estado:estado,mensaje:mensaje}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
+
+router.put('/updateEstadoOb/:id/:estado/:observaciones', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    const { observaciones } = req.params;
+    await Factura.findByIdAndUpdate(id, {$set: {estado:estado, observaciones:observaciones}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 
@@ -49,6 +64,7 @@ router.put('/update/:id', async (req, res,next) => {
         totalIva:req.body.totalIva,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
+        mensaje:req.body.mensaje,
         productosVendidos:req.body.productosVendidos
     };
     console.log("llegue hasta aquu")
@@ -84,6 +100,7 @@ router.post('/newFactura', async (req, res) => {
         totalIva:req.body.totalIva,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
+        mensaje:req.body.mensaje,
         productosVendidos:req.body.productosVendidos
     });
     console.log("llegue hasta aqui")

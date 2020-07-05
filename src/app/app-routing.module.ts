@@ -95,6 +95,8 @@ import { UserComponent } from './pages/user/user.component';
 import { VerifyAuthGuard } from './verify-auth.guard';
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
+import { CalculadorasComponent } from './pages/calculadora/calculadora.component';
+import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 
 
 const routes: Routes = [
@@ -146,6 +148,11 @@ const routes: Routes = [
   {
     path: 'productos',
     component: ProductoComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'calculadora',
+    component:CalculadorasComponent,
     canActivate: [ AuthGuardService ]
   },
   {

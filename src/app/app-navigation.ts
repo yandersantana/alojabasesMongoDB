@@ -106,6 +106,14 @@ export const navigationAdmin = [
     icon: 'home'
   },
   {
+    text: 'Herramientas',
+    icon: 'home',
+    items: [{
+      text: 'Calculadora',
+      path: '/calculadora',
+      }]
+  },
+  {
     text: 'Comercial',  
     icon: 'fa fa-check-circle-o',
     items: [{

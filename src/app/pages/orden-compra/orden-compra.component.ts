@@ -256,9 +256,12 @@ contadorFirebase:contadoresDocumentos[]=[]
    async getIDDocumentos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
-      if(data != null)
-        this.contadorFirebase = data
-        this.asignarIDdocumentos2()
+      new Promise<any>((resolve, reject) => {
+        if(data != null){
+          this.contadorFirebase = data
+        } 
+      })
+      this.asignarIDdocumentos2()
     });;
   }
 

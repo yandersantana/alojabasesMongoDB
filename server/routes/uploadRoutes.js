@@ -8,14 +8,16 @@ const formidable = require('formidable');
 const express = require('express'),
   path = require('path'),
   multer = require('multer');
-/*router.use(bodyParser.json());
-router.use(bodyParser.urlencoded({
-    extended: true
-}));*/
-
+  
+  var fs = require('fs');
+  var busboy = require('connect-busboy');
+  //...
+ 
+  router.use(busboy());
 const multipartMiddleware = multipart({
     uploadDir: './server/uploads'
 });
+ 
 var upload = multer({ dest: './server/uploads/' })
 router.post('/api/upload', multipartMiddleware, (req, res) => {
     var file=req.files
@@ -36,6 +38,13 @@ router.post('/api/upload', multipartMiddleware, (req, res) => {
 });
  
 
+router.post('/uploadNew', function(req, res) {
+    var fstream;
+    req.pipe(req.busboy);
+    console.log("ssss"+req.busboy)
+    
+});
+
 const storage = multer.diskStorage({
     destination: function(req, file, cb) {
         cb(null, './server/uploads');
@@ -50,20 +59,12 @@ const storage = multer.diskStorage({
 
  router.post('/uploadFile', multipartMiddleware, (req, res, next) => {
      console.log("llegue aqui ")
-   var file=req.files.uploads
-   console.log("files tt "+JSON.stringify(file))
-    for (var i = 0; i < file .length; i++) {//para cuando sean varios documentos
-        var pathy = file[i]
-      }
-   
+     console.log(req.files.upload)
+   var file=req.files.upload
+   console.log("files tt "+file)
+    
 
-      var sizeKb = 1024;
-      var sizeMb = sizeKb * sizeKb;
-      var sizeGb = sizeMb * sizeKb;
-      var tamaño=pathy.size.length
-      console.log("el tamaño es"+tamaño)
-
-    console.log(file.length);
+    //console.log(file.length);
     console.log(file[0].path);
     res.json({
         'message': 'File uploaded succesfully.',
@@ -77,10 +78,31 @@ const storage = multer.diskStorage({
     res.status(500).json(error);
 });  
 
-router.post('/uploadNew', upload.single('img'), function(req, res, next){
+router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, next){
     console.log("file"+req.file+req.files);
     res.send('Successfully uploaded!');
   });
+
+
+
+  var fileupload = require("express-fileupload");
+  router.use(fileupload());
+  router.post("/upload23", function(req, res)
+{
+    var file;
+
+    if(!req.files)
+    {
+        res.send("File was not found");
+        return;
+    }
+
+    file = req.files.FormFieldName;  // here is the field name of the form
+    console.log("ssss"+file)
+    res.send("File Uploaded");
+
+
+});
 
 
 

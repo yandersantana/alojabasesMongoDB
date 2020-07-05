@@ -963,7 +963,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=this.remisionProducto.fechaP
               this.transaccion.fecha_transaccion=new Date()
-              this.transaccion.sucursal=this.transaccion.sucursal
+              this.transaccion.sucursal=this.remisionProducto.sucursal
               this.transaccion.totalsuma=0
               this.transaccion.bodega=this.remisionProducto.bodega
               this.transaccion.documento=this.remisionProducto.num_FactPro

@@ -33,6 +33,15 @@ export class NotasVentasService {
     return this.http.put(this.URL + `/updateEstado/${notasventa._id}/${estado}`, notasventa); 
   }
 
+  updateNotasVentaEstadoAnulación(notasventa,estado:string,mensaje:string){
+    return this.http.put(this.URL + `/updateEstadoAnulacion/${notasventa._id}/${estado}/${mensaje}`, notasventa); 
+  }
+
+  updateNotasVentaEstado2(notasventa,estado:string,observaciones:string){
+    console.log("sdsdsd "+`/updateEstadoObs/${notasventa._id}/${estado}/${observaciones}`)
+    return this.http.put(this.URL + `/updateEstadoObs/${notasventa._id}/${estado}/${observaciones}`, notasventa); 
+  }
+
   deleteNotasVenta(notasVenta){
     return this.http.delete(this.URL + `/delete/${notasVenta._id}`, notasVenta); 
   }

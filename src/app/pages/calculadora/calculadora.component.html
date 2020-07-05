@@ -1,0 +1,129 @@
+
+<br>
+<br>
+<br>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-2"></div>
+        <div class="col-md-8">
+
+            <div class="card">
+                <h3 class="card-header text-center font-weight-bold text-uppercase ">Calculadora</h3>
+                <div class="card-body">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-6"></div>
+                            <div class="col-md-6"> <dx-select-box [items]="tipoConversiones" 
+                                [value]="tipoConversiones[0]" 
+                                [readOnly]="false" 
+                                [disabled]="false"
+                                (onValueChanged)="opcionMenu($event)"></dx-select-box></div>
+                        </div>
+                        <br><br>  
+                    </div>
+                    
+                
+                    <div id="op1" style="display: block;">
+                        <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+                
+                        <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
+                        [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora($event)" 
+                        valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+                        </dx-select-box>
+                        <div class="row">
+                        <div class="col-md-6">
+                            <br>
+                            <label for="">Cajas</label>
+                            <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="false"
+                            (onChange)="calcularMetros($event)">
+                            </dx-number-box>
+                            <label for="">Piezas</label>
+                            <dx-text-box [(value)]="valorEnM2" class="calT" (onKeyDown)="calcularMetros($event)" (onChange)="calcularMetros($event)" [disabled]="false" [readOnly]="false"></dx-text-box>
+                            <br>   
+                        </div>
+                
+                        <div class="col-md-6" style="text-align: center;">
+                            <br>
+                            <br>
+                            <h4>m2</h4>
+                            <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="true"
+                                    (onKeyDown)="calcularMetros($event)" class="tot">
+                                </dx-number-box></div>
+                            </div>
+                 
+                            <dx-number-box [(value)]="calp" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                            [visible]="false">
+                                </dx-number-box>
+                            <dx-number-box [(value)]="calmetros" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                            [visible]="false"  >
+                            </dx-number-box>
+                    </div>
+                
+                    <div id="op2" style="display: none;">
+                        <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+                
+                        <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
+                        [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora2($event)"  (onChange)="calcularMetros2($event)" 
+                        valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+                        </dx-select-box>
+                        <div class="row">
+                            <div class="col-md-6" style="text-align: center;">
+                                <br>
+                                <br>
+                                <h4>m2</h4>
+                                <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="false"
+                                (onChange)="calcularMetros2($event)" class="tot">
+                                    </dx-number-box></div>
+                        <div class="col-md-6">
+                            <br>
+                            <label for="">Cajas</label>
+                            <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="true"
+                            >
+                            </dx-number-box>
+                            <label for="">Piezas</label>
+                            <dx-text-box [(value)]="valorEnM2" class="calT" [disabled]="false" [readOnly]="true"></dx-text-box>
+                            <br>   
+                        </div>
+                
+                        
+                            </div>
+                 
+                            <dx-number-box [(value)]="calp" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                            [visible]="false">
+                                </dx-number-box>
+                            <dx-number-box [(value)]="calmetros" [showClearButton]="true" [disabled]="false" [readOnly]="false"
+                            [visible]="false"  >
+                            </dx-number-box>
+                    </div>
+                    <div>
+                        <div class="col-md-12" style="text-align: center;">
+                            <div class="row">
+                                <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <table style="text-align: center;">
+                                        <tr>
+                                        <th>M2/Caja</th>
+                                        <th>Piezas/Caja</th>
+                                        </tr>
+                                        <tr>
+                                        <td style="text-align: center;">{{calmetros}}</td>
+                                        <td style="text-align: center;">{{calp}}</td>
+                                       
+                                        </tr>
+                                    </table>
+                                </div>
+                                <div class="col-md-2"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        
+            
+        
+    
+    
+        </div>
+        <div class="col-md-2"></div>
+    </div>
+</div>

@@ -610,7 +610,7 @@ setSelectedProducto(i:number){
         break;
       default:    
     }     
-    }
+  }
 
   calcularMetros(e) {
     console.log("entre a calcualr")

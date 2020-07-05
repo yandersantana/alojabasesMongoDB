@@ -126,10 +126,12 @@ export class factura {
         totalIva:number
         totalDescuentos:number
         estado:string
+        mensaje:string
         productosVendidos:venta[]=[]
         constructor(
             ) { 
                 this.estado="CONTABILIZADA"
+                this.mensaje=" "
                 //this.cliente = new cliente()
     }
 }

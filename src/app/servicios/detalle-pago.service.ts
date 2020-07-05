@@ -25,6 +25,10 @@ export class DetallePagoService {
     return this.http.put(this.URL + `/update/${detallePago._id}`, detallePago); 
   }
 
+  updateEstado(detallePago,estado:string){
+    return this.http.put(this.URL + `/updateEstado/${detallePago._id}/${estado}`, detallePago); 
+  }
+
   deleteDetallePago(detallePago){
     return this.http.delete(this.URL + `/delete/${detallePago._id}`, detallePago); 
   }

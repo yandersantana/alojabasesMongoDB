@@ -14,6 +14,7 @@ const detallePagoSchema = new Schema({
     valor: { type: Number, required: false},
     no_conformidad: { type: Number, required: false},
     total: { type: Number, required: false},
+    estado: { type: String, required: false},
     id_factura: { type: Number, required: false},
     observaciones: { type: String, required: false}
 },{

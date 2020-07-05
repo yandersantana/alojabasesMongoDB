@@ -384,10 +384,14 @@ contadores:contadoresDocumentos[]
   async getIDDocumentos() {
     //REVISAR OPTIMIZACION
     await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
-      if(data != null)
-        this.contadorFirebase = data
+      new Promise<any>((resolve, reject) => {
+        if(data != null){
+          this.contadorFirebase = data
+        } 
+      })
       this.asignarIDdocumentos2()
-    });;
+    })
+    
   }
 
   
@@ -795,8 +799,8 @@ setSelectedProducto(i:number){
     })
     //alert("1111" + this.productosVendidos.length)
     this.newButtonEnabled = false
-   // alert("esta en"+bandera5)
-    if(cont<=1){
+    //alert("esta en"+cont)
+    if(cont==0){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
           switch (this.factura.sucursal) {
@@ -884,7 +888,41 @@ setSelectedProducto(i:number){
           this.factura.sucursal= e.value
           console.log("Pertenece a "+this.factura.sucursal)
          // this.factura.sucursal= this.factura.sucursal
+         if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
+          Swal.fire({
+            title: 'Cambiar de sucursal',
+            text: 'Desea cambiar de sucursal, se eliminará los productos detallados',
+            icon: 'success',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.value) {
+              this.limpiarArreglo()
+              this.asignarIDdocumentos2()
+              this.productosVendidos.push(new venta())
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+             
+            }
+           
+          })
+         }else{
           this.asignarIDdocumentos2()
+         }
+          
+        }
+
+        limpiarArreglo(){
+          var cont=0
+          this.productosVendidos.forEach(element=>{
+            cont++
+          })
+          if(cont>=0){
+            this.productosVendidos.forEach(element=>{
+              this.productosVendidos.splice(0)
+              
+            })
+          }
         }
       
         buscarCliente(e){

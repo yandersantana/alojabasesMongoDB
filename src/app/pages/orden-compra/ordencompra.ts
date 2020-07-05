@@ -49,8 +49,10 @@ export class DetallePagoProveedor{
     total:number
     observaciones:string
     id_factura:number
+    estado:string
     constructor(){
         this.no_conformidad=0
+        this.estado="Pagado"
 
     }
 }

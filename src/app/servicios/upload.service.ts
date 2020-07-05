@@ -11,13 +11,23 @@ export class UploadService {
   constructor(private http: HttpClient) { }
 
   uploadFile(formData) {
-   console.log("yes "+JSON.stringify(formData))
+   console.log(formData)
     return this.http.post<any>(this.URL +'/uploadFile', formData);
   }
 
   uploadFile2(formData) {
     console.log("yes "+JSON.stringify(formData))
      return this.http.post<any>(this.URL +'/upload3', formData);
+   }
+
+   uploadFile3(formData) {
+    console.log("yes "+JSON.stringify(formData))
+     return this.http.post<any>(this.URL +'/upload23', formData);
+   }
+
+   uploadFile4(formData) {
+    console.log("yes "+JSON.stringify(formData))
+     return this.http.post<any>(this.URL +'/uploadNew5', formData);
    }
 
 
@@ -47,6 +57,7 @@ export class UploadService {
    console.log("yaaa "+JSON.stringify(documento))
     return this.http.put(this.URL + `/updateFile/${documento._id}`, documento); 
   }
+  
 
  
   updateDocumento(documento){

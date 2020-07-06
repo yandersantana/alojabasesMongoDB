@@ -93,7 +93,7 @@ router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, ne
       console.log(pathy)
     } */
     //console.log(pathy)
-    var ruta="http://localhost:3000/"+file.file.path
+    var ruta="http://104.248.14.190:3000/"+file.file.path
     res.json(ruta);
   
   });

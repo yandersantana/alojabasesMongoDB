@@ -28,7 +28,8 @@
         <dxi-column
             dataField="sucursal"
             caption="Sucursal"
-            dataType="string">
+            dataType="string"
+            [groupIndex]="0">
         </dxi-column>
         <dxi-column
             dataField="cliente.cliente_nombre"
@@ -112,6 +113,8 @@
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>    
         </dxi-column>
         <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-group-panel [visible]="true"></dxo-group-panel>
+        <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
         <dxo-pager
             [showPageSizeSelector]="true"
             [allowedPageSizes]="[8, 12, 20]"

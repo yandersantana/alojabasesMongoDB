@@ -194,7 +194,8 @@
                 <dxi-column
                     dataField="sucursal"
                     caption="Sucursal"
-                    dataType="string">
+                    dataType="string"
+                    [groupIndex]="0">
                 </dxi-column>
                 <dxi-column
                     dataField="cliente.cliente_nombre"
@@ -261,6 +262,8 @@
                 <dxi-column type="buttons"  caption="Opciones" >
                     <dxi-button text="Anular" [onClick]="anularFactura"></dxi-button>    
                 </dxi-column>
+                <dxo-group-panel [visible]="true"></dxo-group-panel>
+                <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
                 <dxo-paging [pageSize]="5"></dxo-paging>
                 <dxo-pager
                     [showPageSizeSelector]="true"

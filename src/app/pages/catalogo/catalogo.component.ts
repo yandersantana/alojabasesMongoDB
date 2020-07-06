@@ -13,9 +13,12 @@ import { CatalogoService } from '../../servicios/catalogo.service';
 import { ProductoService } from '../../servicios/producto.service';
 import { OpcionesCatalogoService } from '../../servicios/opciones-catalogo.service';
 import { UploadService } from 'src/app/servicios/upload.service';
+import { HttpEventType, HttpResponse } from '@angular/common/http';
 import { AlertsService } from 'angular-alert-module';
 import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
 import { precios } from '../control-precios/controlPrecios';
+import { Observable } from 'rxjs';
+import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -96,9 +99,20 @@ export class CatalogoComponent implements OnInit {
   tempUrl:string=""
   aplicaciones:precios[]=[]
 
+  //para el upload
+  nombreClase: string
+  idClase: string = ""
+  //clase: classDocumentos
+
+  selectedFiles: FileList;
+  progressInfos = [];
+  message = '';
+
+  fileInfos: Observable<any>;
+
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
-  constructor(public catalogoService: CatalogoService ,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
@@ -153,6 +167,54 @@ export class CatalogoComponent implements OnInit {
       this.llenarCombos()
     });;
   } */
+
+
+  //----------------------archivos upload ------------------------
+
+  selectFiles(event) {
+    this.progressInfos = [];
+    this.selectedFiles = event.target.files;
+  }
+
+  uploadFiles() {
+    this.message = '';
+  
+    for (let i = 0; i < this.selectedFiles.length; i++) {
+      this.upload4(i, this.selectedFiles[i]);
+    }
+  }
+
+  upload4(idx, file) {
+    var contador=0
+    this.progressInfos[idx] = { value: 0, fileName: file.name };
+  
+    this.uploadService.upload(file).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          this.fileInfos = this.uploadService.getFiles();
+          console.log("ssss "+event.body)
+          console.log("sdd "+file.name)
+          
+          this.catalogo2.IMAGEN.push(event.body)
+          contador++
+          this.validarContador(contador)
+         //this.fileInfos = pathy;
+        }
+      },
+      err => {
+        this.progressInfos[idx].value = 0;
+        this.message = 'Could not upload the file:' + file.name;
+      });
+  }
+  validarContador(cont:number){
+    if(cont == this.selectFiles.length){
+      this.newProducto()
+    }else{
+      console.log("aun no ")
+    }
+  }
 
   buscarUnidad(e){
     console.log("entr aqui ")
@@ -276,7 +338,7 @@ export class CatalogoComponent implements OnInit {
 
   newProducto(){
     //this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
-    this.catalogo2.IMAGEN_PRINCIPAL= this.tempUrl
+    this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
     this.comparardatos()
     this.comparardatos2()

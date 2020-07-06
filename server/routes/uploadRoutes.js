@@ -85,6 +85,29 @@ router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, ne
 
 
 
+  router.post('/uploadBulkFile', multipartMiddleware, (req, res) => {
+    var file = req.files
+   /*  console.log(file)
+    for (var i = 0; i < file.length; i++) {//para cuando sean varios documentos
+      var pathy = file[i]
+      console.log(pathy)
+    } */
+    //console.log(pathy)
+    var ruta="http://localhost:3000/"+file.file.path
+    res.json(ruta);
+  
+  });
+  
+  router.get('/files', async (req, res) => {
+  
+    for (var i = 0; i < fileBulk.length; i++) {//para cuando sean varios documentos
+      var pathy = fileBulk[i]
+    }
+    res.json(pathy);
+  
+  });
+
+
   var fileupload = require("express-fileupload");
   router.use(fileupload());
   router.post("/upload23", function(req, res)

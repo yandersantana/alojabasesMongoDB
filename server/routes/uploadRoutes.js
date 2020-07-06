@@ -87,6 +87,7 @@ router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, ne
 
   router.post('/uploadBulkFile', multipartMiddleware, (req, res) => {
     var file = req.files
+    console.log(file)
    /*  console.log(file)
     for (var i = 0; i < file.length; i++) {//para cuando sean varios documentos
       var pathy = file[i]

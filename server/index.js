@@ -6,6 +6,7 @@ const path= require('path');
 require('./database');
 
 app.set('port', process.env.PORT || 3000);
+//var app = connect().use(connect.static('public')).listen(3000, "0.0.0.0");
 // middlewares
 app.use(cors());
 app.use(express.json());

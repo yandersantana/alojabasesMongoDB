@@ -250,6 +250,7 @@ export class RegistrosVentasComponent implements OnInit {
     e.component.columnOption("tipo_cliente", "visible", true);
     e.component.columnOption("username", "visible", true);
     e.component.columnOption("coste_transportea", "visible", true);
+    e.component.columnOption("maestro", "visible", true);
     e.component.columnOption("observaciones", "visible", true); 
   };
   onExported (e) {
@@ -259,6 +260,7 @@ export class RegistrosVentasComponent implements OnInit {
     e.component.columnOption("tipo_cliente", "visible", false);
     e.component.columnOption("username", "visible", false);
     e.component.columnOption("coste_transportea", "visible", false);
+    e.component.columnOption("maestro", "visible", false);
     e.component.columnOption("observaciones", "visible", false);
     e.component.endUpdate();
   }

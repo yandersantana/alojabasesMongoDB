@@ -175,7 +175,7 @@
     </dxi-item>
 
 
-    <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
+    <dxi-item itemType="group" [colCount]="3" [colSpan]="2">
       
         <dxi-item dataField="coste_transporte" [editorOptions]="{ placeholder: 'Cost/Transporte'}" [colSpan]="1" onChange="calcularTotalFacturaconTransporte($event)">
             <dxo-label
@@ -192,6 +192,16 @@
                     </dx-button>
                     <dx-check-box [(value)]="costoTr" [readOnly]="true">
                     </dx-check-box>
+        </dxi-item>
+
+        <dxi-item dataField="">
+            <dx-select-box [items]="clientesMaestros" 
+            [(value)]="maestroConstructor" 
+            [readOnly]="false" 
+            [disabled]="false"
+            displayExpr="cliente_nombre"
+            valueExpr="cliente_nombre"
+            (onValueChanged)="asignarMaestro($event)"></dx-select-box>
         </dxi-item>
     
     </dxi-item>

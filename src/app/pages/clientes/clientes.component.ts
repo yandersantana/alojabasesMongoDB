@@ -30,6 +30,7 @@ export class ClientesComponent implements OnInit {
   tiposClientes: string[] = [
     "Normal",
     "Socio",
+    "Maestro",
     "Distribuidor"
   ];
 

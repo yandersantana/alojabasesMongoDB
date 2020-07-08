@@ -1059,10 +1059,12 @@ contadorFirebase:contadoresDocumentos[]=[]
       e.component.beginUpdate();
       e.component.columnOption("usuario", "visible", true);
       e.component.columnOption("usuarioAuth", "visible", true);
+      e.component.columnOption("msjGeneral", "visible", true);
     };
     onExported2 (e) {
       e.component.columnOption("usuario", "visible", false);
       e.component.columnOption("usuarioAuth", "visible", false);
+      e.component.columnOption("msjGeneral", "visible", false);
       e.component.endUpdate();
     }
   

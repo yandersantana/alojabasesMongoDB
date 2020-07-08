@@ -16,7 +16,7 @@ export class BulkUploadService {
     const formData: FormData = new FormData();
 
     formData.append('file', file);
-
+console.log(file)
     const req = new HttpRequest('POST', `${this.baseUrl}/uploadBulkFile`, formData, {
       reportProgress: true,
       responseType: 'json'

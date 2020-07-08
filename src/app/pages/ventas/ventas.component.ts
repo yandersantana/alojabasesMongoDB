@@ -46,6 +46,7 @@ import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service
 import DataSource from 'devextreme/data/data_source';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { threadId } from 'worker_threads';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -81,6 +82,7 @@ export class VentasComponent implements OnInit {
   productos2: producto[] = []
   clientes:cliente[] = []
   clientes2:cliente[] = []
+  clientesMaestros:cliente[] = []
   facturas:factura[] = []
   proformas:factura[] = []
   id_transacciones:transaccion[] = []
@@ -182,6 +184,7 @@ calmetros:number=0
 caltotal:number=0
 numeroID:number=0
 precios:precios[]=[]
+maestroConstructor:string
 contR=this.numeroID
 disponibilidadProducto:string=""
 parametrizaciones:parametrizacionsuc[]=[]
@@ -285,6 +288,7 @@ contadores:contadoresDocumentos[]
   traerClientes(){
     this.clienteService.getCliente().subscribe(res => {
       this.clientes = res as cliente[];
+      this.separarClientes()
    })
   }
 
@@ -392,6 +396,14 @@ contadores:contadoresDocumentos[]
       this.asignarIDdocumentos2()
     })
     
+  }
+
+  separarClientes(){
+    this.clientes.forEach(element=>{
+      if(element.tventa == "Maestro"){
+        this.clientesMaestros.push(element)
+      }
+    })
   }
 
   
@@ -881,6 +893,11 @@ setSelectedProducto(i:number){
             }
           }); 
           this.calcularTipoCliente(); 
+        }
+
+        asignarMaestro(e){
+          this.factura.maestro = e.value
+          //alert("asigne "+this.factura.maestro)
         }
       
       

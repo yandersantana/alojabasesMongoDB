@@ -24,6 +24,7 @@ const NotasSchema = new Schema({
     subtotalF1: { type: Number, required: false},
     subtotalF2: { type: Number, required: false},
     totalIva: { type: Number, required: false},
+    maestro: { type: String, required: false},
     totalDescuentos: { type: Number, required: false},
     estado: { type: String, required: false},
     mensaje: { type: String, required: false},

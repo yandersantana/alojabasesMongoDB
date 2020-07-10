@@ -984,15 +984,15 @@ banderaProductos:boolean=false
     onExporting (e) {
       e.component.beginUpdate();
       e.component.columnOption("total", "visible", true);
-      e.component.columnOption("fecha_vencimiento", "visible", true);
-      e.component.columnOption("valor", "visible", true);
+      e.component.columnOption("orden_compra", "visible", true);
+      e.component.columnOption("valor", "total", true);
       e.component.columnOption("no_conformidad", "visible", true);
       e.component.columnOption("observaciones", "visible", true);
     };
     onExported (e) {
       e.component.columnOption("total", "visible", false);
-      e.component.columnOption("fecha_vencimiento", "visible", false);
-      e.component.columnOption("valor", "visible", false);
+      e.component.columnOption("orden_compra", "visible", false);
+      e.component.columnOption("valor", "total", false);
       e.component.columnOption("no_conformidad", "visible", false);
       e.component.columnOption("observaciones", "visible", false);
       e.component.endUpdate();

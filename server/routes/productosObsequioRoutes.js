@@ -28,6 +28,7 @@ router.delete('/delete/:id', async (req, res,next) => {
 })
 
 router.post('/newProductoObsequio', async (req, res) => {
+    console.log("ssssssssssssssssssssssssssssss")
     const newProductoObsequio = new ProductosObsequio({
         cantidad: req.body.cantidad,
         cantidadpiezas: req.body.cantidadpiezas,

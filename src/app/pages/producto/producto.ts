@@ -190,11 +190,16 @@ export class productosObsequio{
     cantidad:number
     cantidadpiezas:number
     cantidadM2:number
-    producto:string
+    producto:producto
+    productoNombre:string
     idfactura:string
     proveedor:string
     fecha:string
+    bloqueo:boolean
     constructor(){
-
+        this.cantidadpiezas=0
+        this.cantidadM2=0
+        this.cantidad=0
+        this.bloqueo=true
     }
 }

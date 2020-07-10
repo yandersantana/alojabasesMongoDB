@@ -349,23 +349,24 @@
 
        <div class="row"><div class="col-md-12"><h6>OBSEQUIOS</h6></div></div>
       <div class="row">
+          
+          <div class="col-md-6">Producto</div>
           <div class="col-md-2">Cajas</div>
           <div class="col-md-2">Piezas</div>
-          <div class="col-md-6">Producto</div>
           <div class="col-md-2">Elim</div>
       </div>
 
       <div *ngFor="let p of productosObsequios;let i = index" style="text-align: center;margin-top: 1em;">
         <div class="row ">
-            <div class="col-md-2"><dx-number-box [(value)]="p.cantidad"   ></dx-number-box></div>
-            <div class="col-md-2"><dx-number-box [(value)]="p.cantidadpiezas"></dx-number-box></div>
-            <div class="col-md-6"> <dx-select-box [items]="productos" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
-                [searchEnabled]="true"  
+            
+            <div class="col-md-6"> <dx-select-box [items]="productos" [(value)]="p.productoNombre" [readOnly]="false" [disabled]="false"
+                [searchEnabled]="true"  (onValueChanged)="validarObsequio($event, i)"
                 valueExpr="PRODUCTO" displayExpr="PRODUCTO" >
             </dx-select-box></div>
+            <div class="col-md-2"><dx-number-box [(value)]="p.cantidad"  (onValueChanged)="calcularm2Obsequios(i)" ></dx-number-box></div>
+            <div class="col-md-2"><dx-number-box [(value)]="p.cantidadpiezas"  (onValueChanged)="calcularm2Obsequios(i)"  [(readOnly)]="p.bloqueo"></dx-number-box></div>
             <div class="col-md-2"><dx-button icon="clear" (onClick)="eliminarobsequio(i)" ></dx-button></div>
         </div>
-
     </div>
 </div>
 </div>

@@ -12,7 +12,7 @@ export class ProductosObsequioService {
   constructor(public http: HttpClient, public router: Router ) { }
 
   newProductoObsequio(productoObs){
-    return this.http.post<any>(this.URL +'/newProductoComprado', productoObs);
+    return this.http.post<any>(this.URL +'/newProductoObsequio', productoObs);
   }
 
   getProductosObsequio(){ 

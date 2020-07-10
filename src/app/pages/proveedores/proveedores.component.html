@@ -437,14 +437,17 @@
                 dataField="idPago"
                 caption="Pago#"
                 cssClass= "cls"
-                sortOrder="desc"
-                >
+                sortOrder="desc">
             </dxi-column>
         
             <dxi-column
                 dataField="n_cheque"
+                dataType="string" >
+            </dxi-column>
+            <dxi-column
+                dataField="fecha_vencimiento"
                 dataType="string"
-                >
+                [visible]="true" > 
             </dxi-column>
             <dxi-column
                 dataField="nombre_banco"
@@ -461,7 +464,8 @@
             </dxi-column>
             <dxi-column
                 dataField="orden_compra"
-                dataType="string" > 
+                dataType="string"
+                [visible]="false" > 
             </dxi-column>
             <dxi-column
                 dataField="fecha_vencimiento"
@@ -471,7 +475,7 @@
             <dxi-column
                 dataField="valor"
                 dataType="string"
-                [visible]="false" > 
+                [visible]="true" > 
             </dxi-column>
             <dxi-column
                 dataField="no_conformidad"
@@ -481,7 +485,7 @@
             <dxi-column
                 dataField="total"
                 dataType="string" 
-                [visible]="true"> 
+                [visible]="false"> 
             </dxi-column>
             <dxi-column
                 dataField="observaciones"

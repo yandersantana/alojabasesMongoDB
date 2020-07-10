@@ -1997,8 +1997,8 @@ anadirDetallePago = (e) => {
                 this.transaccion.observaciones=e.observaciones
                 this.transaccion.movimiento=1
                 this.transaccion.tipo_transaccion="compra-dir"
-                this.transaccion.usu_autorizado="q@q.com"
-                this.transaccion.usuario="q@q.com"
+                this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+                this.transaccion.usuario=this.usuarioLogueado[0].username
                 this.transaccion.factPro=""
                 this.transaccion.idTransaccion=this.number_transaccion++
                 this.transaccion.proveedor= e.proveedor.nombre_proveedor

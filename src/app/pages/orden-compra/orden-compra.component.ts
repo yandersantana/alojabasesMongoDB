@@ -709,22 +709,7 @@ contadorFirebase:contadoresDocumentos[]=[]
       }).then((result) => {
         if (result.value) {
           new Promise<any>((resolve, reject) => {
-           /*  this.ordenesService.updateOrdenEstado(data2, "Ingresada").subscribe( res => {Swal.fire({
-              title: 'Correcto',
-              text: 'Se restableció a la lista de ordenes de compra',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              window.location.reload()
-            })}, err => {this.errorMensaje()}) */
-            /* this.db.collection('/ordenesDeCompra').doc(data2).update({"estadoIngreso" :"Ingresada"}).then(res => {  Swal.fire({
-              title: 'Correcto',
-              text: 'Se restableció a la lista de ordenes de compra',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              window.location.reload()
-            }) }, err => alert(err)); */
+          
           })
             
            

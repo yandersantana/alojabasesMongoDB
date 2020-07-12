@@ -97,6 +97,7 @@ import { ClientesComponent } from './pages/clientes/clientes.component';
 import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
 import { CalculadorasComponent } from './pages/calculadora/calculadora.component';
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
+import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 
 
 const routes: Routes = [
@@ -223,6 +224,11 @@ const routes: Routes = [
   {
     path: 'catalogo',
     component: CatalogoComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'auditorias',
+    component: AuditoriasComponent,
     canActivate: [ AuthGuardService ]
   },
   {

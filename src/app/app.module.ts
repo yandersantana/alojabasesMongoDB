@@ -38,6 +38,7 @@ import { UserComponent } from './pages/user/user.component';
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { CalculadorasComponent } from './pages/calculadora/calculadora.component';
 import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
+import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 
 
 
@@ -65,7 +66,8 @@ import { ControlPreciosComponent } from './pages/control-precios/control-precios
     UserComponent,
     ClientesComponent,
     CalculadorasComponent,
-    ControlPreciosComponent
+    ControlPreciosComponent,
+    AuditoriasComponent
   ],
   imports: [
     BrowserModule,

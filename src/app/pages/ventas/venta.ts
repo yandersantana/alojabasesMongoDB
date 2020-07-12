@@ -291,6 +291,7 @@ export class contadoresDocumentos{
     contProductosPendientes_Ndocumento:number
     contProductosEntregadosSucursal_Ndocumento:number
     pagoProveedor_Ndocumento:number
+    auditorias_Ndocumento:number
     constructor(){
 
     }

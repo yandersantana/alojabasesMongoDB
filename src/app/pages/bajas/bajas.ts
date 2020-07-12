@@ -19,6 +19,7 @@ export class baja{
 
 export class productosBajas{
     producto:producto
+    REFERENCIA:string
     cantFactCajas:number
     cantFactPiezas:number
     causa:string

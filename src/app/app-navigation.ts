@@ -269,7 +269,7 @@ export const navigationAdmin = [
     icon: 'fa fa-list-alt',
     items: [{
         text: 'Auditorias de Inventario',
-        path: '',
+        path: '/auditorias',
        
       }]
   },

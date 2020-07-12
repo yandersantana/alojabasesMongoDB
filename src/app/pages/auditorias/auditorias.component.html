@@ -1,0 +1,297 @@
+
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Auditoría de Productos
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <!-- <div class="col-md-2">
+                <div class="row botones">
+
+                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                            <i class="fa fa-list fa-2x"></i>
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Cliente" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                            <i class="fa fa-user-plus fa-2x"></i>
+                        </button></div>
+                </div>
+            </div> -->
+            <div class="col-md-12 card carIn">
+                <div id="newAudGlobal"  style="display: block;">
+                    <div  class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8">
+                            <div class="row">
+                                <br><br>
+                                <div class="col-md-12" style="text-align: center;"><h5>Nueva Auditoria</h5></div>
+
+                                <div class="col-md-4" style="padding-top: 0.7em;">ID Auditoria</div>
+                                <div class="col-md-8"><dx-number-box [(value)]="newAuditoria.idAuditoria" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+
+                                <div class="col-md-4" style="padding-top: 0.7em;">Contraseña / Código</div>
+                                <div class="col-md-8"><dx-text-box [(value)]="newAuditoria.contrasena" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+
+                                <div class="col-md-4" style="padding-top: 0.7em;">Fecha Inicio</div>
+                                <div class="col-md-8"><dx-date-box [(value)]="newAuditoria.fecha_inicio" [disabled]="false" [readOnly]="true"></dx-date-box></div>
+
+                                <div class="col-md-4" style="padding-top: 0.7em;">Sucursal</div>
+                                <div class="col-md-8"><dx-select-box [items]="locales" [(value)]="nameSucursal" [readOnly]="false" [disabled]="false"
+                                    [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre" (onValueChanged)="validarSucursal($event)">
+                                </dx-select-box></div>
+                                
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4">
+                                        <button class="btn btn-block btn-success espacio" (click)="guardarAuditoria()">Registrar Auditoria</button>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        </div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                        </div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <h5 class="card-header text-center font-weight-bold text-uppercase ">Auditorias en Proceso</h5>
+                                    <div class="card-body">
+                                      <div id="table" class="table-editable">
+                                        <span class="table-add float-right mb-3 mr-2">
+                                          <a class="text-success" >
+                                          
+                                          </a>
+                                        </span>
+                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                          <tr>
+                                            <th class="text-center" >ID</th>
+                                            <th class="text-center">Auditor</th>
+                                            <th class="text-center" >Sucursal</th>
+                                            <th class="text-center" >Ver Lista</th>
+                                            <th class="text-center" colspan="2" >Acciones</th>
+                                            
+                                          </tr>
+                                         
+                                          <tr *ngFor="let audit of auditoriasIniciadas; let id = index">
+                                            <td>
+                                              <span>{{audit.idAuditoria}}</span>
+                                            </td>
+                                           
+                                            <td>
+                                              <span>{{audit.contrasena}}</span>
+                                            </td>
+                                            <td>
+                                              <span>{{audit.sucursal.nombreComercial}}</span>
+                                            </td>
+                                           
+                                            <td>
+                                              <span><button class="btnIcons5" (click)="guardarAuditoria()"><i class="fa fa-list fa-1x"></i></button></span>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <span><button class="btn btn-block btn-success " (click)="finalizarAuditoria(id)">Finalizar</button></span>
+                                            </td>
+                                          </tr>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div  id="newAud"  style="display: none;">
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div class="col-md-12" style="text-align: center;"><h5>Auditorias de Inventarios</h5></div>
+
+                                    <div class="row">
+                                        <div class="col-md-4" ><p class="texto">ID</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="auditoria.idAud" [disabled]="false" [readOnly]="true"></dx-text-box></div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Sucursal</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="nombreSucursal" [disabled]="false" [readOnly]="true"></dx-text-box></div>
+                                    </div>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Producto</p></div>
+                                        <div class="col-md-8"><dx-select-box [items]="productos" [(value)]="sucursal" [readOnly]="false" [disabled]="false"
+                                            [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
+                                        </dx-select-box>
+                                        <br>
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Existencia en sistema</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.cajas_sistema" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.piezas_sistema" [disabled]="false" [readOnly]="false"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Fisico</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.cajas_fisico" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.piezas_fisico" [disabled]="false" [readOnly]="false"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Daños Obsoletas</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.cajas_danadas" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="auditoria.piezas_danadas" [disabled]="false" [readOnly]="false"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Valoración</h6></div>
+                                        <div class="col-md-12"><dx-select-box [items]="menuValoracion" [(value)]="auditoria.valoracion" [readOnly]="false" [disabled]="false"
+                                            [searchEnabled]="true"></dx-select-box>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Observaciones</h6></div>
+                                        <div class="col-md-12"><dx-text-box [(value)]="auditoria.observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-6">
+                                        <button class="btn btn-block btn-success espacio" (click)="guardarAuditoriaProducto()">Registrar Auditoria</button>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                        </div>
+                                    
+                                </div>
+                    
+                    
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                </div>
+
+                <div id="tablaAuditoria">
+                    <div class="col-md-12">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <h5 class="card-header text-center font-weight-bold text-uppercase ">Auditorias 1</h5>
+                                    <div class="card-body">
+                                      <div id="table" class="table-editable">
+                                        <span class="table-add float-right mb-3 mr-2">
+                                          <a class="text-success" >
+                                          
+                                          </a>
+                                        </span>
+                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                            <tr>
+                                                <th class="text-center" rowspan="2">ID</th>
+                                                <!-- <th class="text-center"></th> -->
+                                                <th class="text-center" rowspan="2">Fecha</th>
+                                                <!-- <th class="text-center" rowspan="2">Estado</th> -->
+                                                <th class="text-center" rowspan="2">Producto</th>
+                                                <th class="text-center" colspan="2">Sistema</th>
+                                                <th class="text-center" colspan="2">Fisico</th>
+                                                <th class="text-center" colspan="2">DIFF</th>
+                                                <th class="text-center" rowspan="2" >Condición</th>
+                                                <th class="text-center" rowspan="2" >Impacto</th>
+                                                <th class="text-center" colspan="3" >Acciones</th>
+                                              </tr>
+                                              <tr> 
+                                              <!--   <th class="text-center">Cant.Fact</th> -->
+                                                <th class="text-center" >Cajas </th>
+                                                <th class="text-center">Piezas </th>
+                                               <!--  <th class="text-center">m2 </th> -->
+                                                <th class="text-center" >Cajas </th>
+                                                <th class="text-center">Piezas </th>
+                                                <th class="text-center" >Cajas </th>
+                                                <th class="text-center">Piezas </th>
+
+                                                <th class="text-center">Ac </th>
+                                                <th class="text-center">El </th>
+                                                <th class="text-center">Aj </th>
+                                                
+                                              </tr>
+                                         
+                                          <tr *ngFor="let audit of auditoriaProductosBase; let id = index">
+                                            <td><span>{{audit.idAud}}</span></td>
+                                            <td><span>{{audit.fecha}}</span></td>
+                                            <td><span>{{audit.producto}}</span></td>
+                                            <td><span>{{audit.cajas_sistema}}</span></td>
+                                            <td><span>{{audit.piezas_sistema}}</span></td>
+                                            <td><span>{{audit.cajas_fisico}}</span></td>
+                                            <td><span>{{audit.piezas_fisico}}</span></td>
+                                            <td><span>{{valordefault}}</span></td>
+                                            <td><span>{{valordefault}}</span></td>
+                                            <td><span>{{valordefault}}</span></td>
+                                            <td><span>{{valordefault}}</span></td>
+                                            
+                                           <td><dx-check-box [(value)]="seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
+                                                </dx-check-box></td>
+                                                <td><dx-check-box [(value)]="seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
+                                                </dx-check-box></td>
+                                                <td><dx-check-box [(value)]="seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
+                                                </dx-check-box></td>
+                                            <!-- <td>
+                                              <span><button class="btnIcons5" (click)="guardarAuditoria()"><i class="fa fa-list fa-1x"></i></button></span>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
+                                            </td>
+                                            <td style="width: 15%;">
+                                                <span><button class="btn btn-block btn-success " (click)="finalizarAuditoria(id)">Finalizar</button></span>
+                                            </td>  -->
+                                          </tr>
+                                        </table>
+                                      </div>
+                                    </div>
+                                  </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+</div>

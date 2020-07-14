@@ -88,7 +88,7 @@ router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, ne
   router.post('/uploadBulkFile', multipartMiddleware, (req, res) => {
     var file = req.files
     console.log(req)
-    console.log("fileeee "+Json.stringify(file))
+    //console.log("fileeee "+Json.stringify(file))
     console.log("222 "+req.file)
     //console.log(req.files)
    /*  console.log(file)
@@ -97,9 +97,11 @@ router.post('/uploadNew5', upload.single('uploadedFiles'), function(req, res, ne
       console.log(pathy)
     } */
     //console.log(pathy)
-    //var ruta="http://104.248.14.190:3000/"+file.file.path
-    var ruta="http://localhost:3000/"+file.file.path
+    console.log("si pase")
+    var ruta="http://104.248.14.190:3000/"+file.file.path
+    //var ruta="http://localhost:3000/"+file.file.path
     res.json(ruta);
+
   
   });
   

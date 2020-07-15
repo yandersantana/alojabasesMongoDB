@@ -15,8 +15,8 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
-/* app.use('/uploads', express.static('uploads'));
-app.use(express.static(path.join(__dirname,'frontend'))); */
+ //app.use('/uploads', express.static('uploads'));
+/*app.use(express.static(path.join(__dirname,'frontend'))); */
 app.use(express.static(path.join(__dirname,'frontend')));
 app.use('/server/uploads', express.static('server/uploads'));
 

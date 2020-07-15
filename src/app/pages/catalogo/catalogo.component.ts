@@ -19,6 +19,7 @@ import { ControlPreciosService } from 'src/app/servicios/control-precios.service
 import { precios } from '../control-precios/controlPrecios';
 import { Observable } from 'rxjs';
 import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-catalogo',
@@ -65,7 +66,7 @@ export class CatalogoComponent implements OnInit {
   opcionesCatalogo: opcionesCatalogo[]=[]
   arrayClasif: string[]
   arrayUnid: string[]
-
+  contadorArchivos:number=0
   varM2:boolean=true
   varPC:boolean=true
   nuevoProducto:producto
@@ -103,7 +104,7 @@ export class CatalogoComponent implements OnInit {
   nombreClase: string
   idClase: string = ""
   //clase: classDocumentos
-
+  contadorImagenes=0
   selectedFiles: FileList;
   progressInfos = [];
   message = '';
@@ -174,18 +175,23 @@ export class CatalogoComponent implements OnInit {
   selectFiles(event) {
     this.progressInfos = [];
     this.selectedFiles = event.target.files;
+    var x = document.getElementById("nombreIM");
+        x.style.display = "block";
   }
 
   uploadFiles() {
+    var x = document.getElementById("nombreIM");
+        x.style.display = "none";
     this.message = '';
-  
+  this.contadorArchivos=this.selectedFiles.length
     for (let i = 0; i < this.selectedFiles.length; i++) {
       this.upload4(i, this.selectedFiles[i]);
     }
+    //alert("select files "+this.selectedFiles.length)
   }
 
   upload4(idx, file) {
-    var contador=0
+    
     this.progressInfos[idx] = { value: 0, fileName: file.name };
   
     this.uploadService.upload(file).subscribe(
@@ -198,8 +204,8 @@ export class CatalogoComponent implements OnInit {
           console.log("sdd "+file.name)
           
           this.catalogo2.IMAGEN.push(event.body)
-          contador++
-          this.validarContador(contador)
+          this.contadorImagenes++
+          this.validarContador(this.contadorImagenes)
          //this.fileInfos = pathy;
         }
       },
@@ -208,8 +214,12 @@ export class CatalogoComponent implements OnInit {
         this.message = 'Could not upload the file:' + file.name;
       });
   }
+
+
   validarContador(cont:number){
-    if(cont == this.selectFiles.length){
+    console.log("sssssss "+this.contadorArchivos)
+    console.log("sssssss2222 "+cont)
+    if(cont == this.contadorArchivos){
       this.newProducto()
     }else{
       console.log("aun no ")
@@ -228,6 +238,11 @@ export class CatalogoComponent implements OnInit {
       this.varM2=true
       this.varPC=true
     }
+  }
+
+  deleteImagen(i:number){
+    console.log("aaaaaaaaaaaa "+this.catalogo2.IMAGEN[i])
+    this.catalogo2.IMAGEN.splice(i,1)
   }
 
 

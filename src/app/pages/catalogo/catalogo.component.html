@@ -356,56 +356,32 @@
                                                 ></dx-select-box>
                                             </div>
                                         </div>
-                                       <!--  <div>
-                                            <div> 
-                                            <form action="http://104.248.14.190:3000/upload/uploadFile" method="post" enctype="multipart/form-data">
-                                                <label for="filePicker">Escoge una imagen:</label><br>
-                                                
-                                                <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" multiple>
-                                                <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
-                                                <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
-                                            </form>
-                                            </div>
-                                            <br>
-                                            <form method="POST" action="http://104.248.14.190:3000/upload/upload3" enctype="multipart/form-data">
-                                                <div>
-                                                    <label>Select multiple images:</label>
-                                                    <input type="file" name="multiple_images" multiple />
-                                                </div>
-                                                <div>
-                                                    <input type="submit" name="btn_upload_multiple_images" value="Upload" />
-                                                </div>
-                                            </form>
-                                            <form action="http://localhost:3000/upload/uploadNew" enctype="multipart/form-data" method="post">
-                                                File <input type="file" name="img" accept="image/*">
-                                                 <input type="submit" value="Upload">
-                                              </form>
-                                            <div>
-                                                <label for="filePicker">Escoge una imagen:</label><br>
-                                               
-                                                <input (change)="fileChange($event)" type="file" class="custom-file-input" id="inputGroupFile01"aria-describedby="inputGroupFileAddon01">
-                                                <br><span class="note">Extensiones permitidas: <span>.jpg, .jpeg, .png</span>.</span><br>
-                                                <span class="note">Tamaño máximo de archivo: <span>1 MB</span>.</span>
-                                            </div>
-                                        </div> -->
-                                        <!-- <form method="post" enctype="multipart/form-data" action="/upload">
-                                            <input type="hidden" name="msgtype" value="2"/>
-                                            <input type="file" name="fileUploaded" (change)="fileChange($event)" />
-                                        </form> -->
                                         <div class="row espacio">
-                                            <div class="col-md-10" style="text-align: left;">
+                                            <div class="col-md-4">Escoja las imágenes a subir</div>
+                                            <div class="col-md-12" style="text-align: left;">
                                               <label class="custom-file-label">
                                                 <input type="file" multiple (change)="selectFiles($event)"  class="custom-file-input" id="inputGroupFile01"
                                                 aria-describedby="inputGroupFileAddon01" />
                                               </label>
                                             </div>
-                                            <!-- <div class="col-md-2" style="text-align: left;">
-                                              <button class="btn btn-success" [disabled]="!selectedFiles" (click)="uploadFiles()">
-                                                Upload
-                                              </button>
-                                            </div> -->
-                                          </div>
-                                          <div class="row espacio">
+                                           
+                                        </div>
+                                        <div id="nombreIM" style="display: none;">
+                                            <div class="row espacio">
+                                                <div class="col-md-12">
+                                                    <br>
+                                                    
+                                                    Imágenes a subir
+                                                    <div class="col-md-6" *ngFor="let d of selectedFiles">
+                                                        <div class="form-group">
+                                                            <label>{{ d.name }}</label>
+                                                            <!-- <span>{{ }}</span> -->
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="row espacio">
                                               <div class="col-md-12" style="text-align: left;">
                                           <div class="alert alert-light" role="alert">{{ message }}</div>
                                           <div *ngFor="let progressInfo of progressInfos">
@@ -573,6 +549,17 @@
                                                 (onValueChanged)="asignarEstado($event)"
                                                 ></dx-select-box>
                                             </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-12" style="text-align: center;">Fotos del producto</div>
+                                            <div class="row">
+                                                <div class="col-md-3" *ngFor="let d of catalogo2.IMAGEN; let id = index">
+                                                    <img src="{{ d }}" alt="Girl in a jacket" width="100%" height="auto">
+                                                    <button class="btn btn6" type="button" (click)="deleteImagen(id)">Eliminar</button>
+                                                    
+                                                </div>   
+                                            </div>
+                                            
                                         </div>
                                       <!--   <div>
                                             <div>

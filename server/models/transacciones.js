@@ -22,6 +22,7 @@ const TransaccionesSchema = new Schema({
     valor: { type: String, required: false},
     cliente: { type: String, required: false},
     proveedor: { type: String, required: false},
+    maestro: { type: String, required: false},
     orden_compra: { type: String, required: false},
     cantM2: { type: String, required: false},
     movimiento: { type: String, required: false}

@@ -943,7 +943,6 @@ setSelectedProducto(i:number){
         }
       
         buscarCliente(e){
-          //this.factura.cliente.direccion=" "
           console.log("entre por aqui");
           console.log("aquisi"+this.factura.cliente.ruc+" 2 "+this.factura.cliente.cliente_nombre);
           console.log("entre a buscar el cliente"+this.factura.cliente.ruc)
@@ -955,7 +954,6 @@ setSelectedProducto(i:number){
               this.factura.cliente.direccion = element.direccion
               this.factura.cliente.celular = element.celular
               this.mensaje=element.cliente_nombre
-              //console.log("corazon333"+this.mensaje +this.factura.cliente.cliente_nombre)
             }
           });
           this.calcularTipoCliente();  
@@ -976,8 +974,6 @@ setSelectedProducto(i:number){
           this.factura.cliente.cliente_nombre =  this.factura.cliente.cliente_nombre
           this.factura.cliente.direccion =  this.factura.cliente.direccion
           this.factura.cliente.celular = this.factura.cliente.celular
-          //this.mensaje=element.cliente_nombre
-          console.log("entre aqui a buscar facturas")
           let contador=0
           this.facturas.forEach(element => {
             if(element.dni_comprador == this.factura.cliente.ruc){
@@ -3124,39 +3120,11 @@ var tipoDoc:boolean=false
       new Promise<any>((resolve, reject) => { 
         this.crearCliente()
         this.guardarFactura()
-          /* this.db
-            .collection("/clientes")
-            .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
-            .then(res => { }, err => reject(err));
-            //console.log("los datos"+this.factura.cliente.cliente_nombre)
-          this.db
-            .collection("/facturas")
-            .doc(this.factura.documento_n+"").set({ ...Object.assign({}, this.factura) })
-            .then(res => { }, err => reject(err));
-          this.db
-            .collection("/factureros")
-            .doc("matriz").set({ n_factura:this.factura.documento_n })
-            .then(res => { }, err => reject(err)); */
         
         this.traerContadoresDocumentos()
         this.productosVendidos.forEach(element => {
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
-          /* this.db.collection("/productosVendidos").add({ ... element})
-          .then(res => { }, err => reject(err)); */
-
-        /*   this.productosVenService.newProductoVendido(element).subscribe(
-            res => {
-              console.log(res + "entre por si");
-            },
-            err => {
-              Swal.fire({
-                title: err.error,
-                text: 'Revise e intente nuevamente',
-                icon: 'error'
-              })
-            }) */
-        
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
           this.transaccion.fecha_transaccion=this.factura.fecha
@@ -3168,6 +3136,7 @@ var tipoDoc:boolean=false
           this.transaccion.costo_unitario=element.producto.precio
           this.transaccion.documento=this.factura.documento_n+""
           this.transaccion.factPro=this.factura.documento_n+""
+          this.transaccion.maestro=this.factura.maestro
           this.transaccion.producto=element.producto.PRODUCTO
           this.transaccion.cajas=Math.trunc(element.cantidad / element.producto.M2);
           this.transaccion.piezas=(Math.trunc(element.cantidad *element.producto.P_CAJA / element.producto.M2) - (Math.trunc(element.cantidad / element.producto.M2) * element.producto.P_CAJA));
@@ -3374,6 +3343,7 @@ var tipoDoc:boolean=false
           this.transaccion.documento=this.factura.documento_n+""
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.producto=element.producto.PRODUCTO
+          this.transaccion.maestro=this.factura.maestro
           this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
           this.transaccion.cantM2=element.cantidad
           this.transaccion.cajas=Math.trunc(element.cantidad / element.producto.M2)

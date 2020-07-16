@@ -1,7 +1,7 @@
 
-<div class="row alin2 titulos">
+<!-- <div class="row alin2 titulos">
     <div class="col-md-8"><div class="">
-        <!-- <h4>Solicitudes de Ordenes de Compra</h4> -->
+    
     </div></div>
     <div class="col-md-4"> <dx-select-box [items]="menu1" 
         [value]="menu1[0]" 
@@ -9,18 +9,18 @@
         [disabled]="false"
         (onValueChanged)="opcionMenu($event)"
         ></dx-select-box></div>
-</div>
+</div> -->
 <!-- <div class=" tdco2">
     
            
 </div> 
  -->
 <div id="ordnormal" style="display: block;">
-
-    <div class="card mb-3">
-        <div class="card-header" style="background-color: #ff5722;color:white"><h4>Solicitudes de Ordenes de Compra</h4>
-        </div>
-        <div class="card-body">
+    <br><br>
+    <div >
+        <h4>Solicitudes de Ordenes de Compra</h4>
+        
+        <div >
             <dx-data-grid id="gridContainer"
             [dataSource]="ordenesCompraPendientes"
             [showBorders]="true"
@@ -81,9 +81,9 @@
 
 
 
-    <div class="card mb-3">
-        <div class="card-header" ><h4>Solicitudes rechazadas </h4>esta queda de ejemplo como se ve sin color
-        </div>
+    <div >
+        <h4>Solicitudes rechazadas </h4>
+       
         <div class="card-body">
             <dx-data-grid id="gridContainer"
             [dataSource]="ordenesCompraRechazadas"
@@ -141,9 +141,9 @@
 
 
 
-    <div class="card mb-3">
-        <div class="card-header" style="background-color: #ff5722;color:white"> <h4>Ordenes de compra</h4>
-        </div>
+    <div >
+        <h4>Ordenes de compra</h4>
+       
         <div class="card-body">
             <dx-data-grid id="gridContainer"
             [dataSource]="ordenesCompraAprobadas"

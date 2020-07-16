@@ -40,6 +40,7 @@ export class AnulacionesComponent implements OnInit {
   ordenesCompra:OrdenDeCompra[]=[]
   ordenesCompraPendientes:OrdenDeCompra[]=[]
   ordenesCompraPendientesAnulacion:OrdenDeCompra[]=[]
+  ordenesCompraAnuladas:OrdenDeCompra[]=[]
 
   ordenDeCompra2 : OrdenDeCompra;
   ordenDeCompra3 : OrdenDeCompra;
@@ -307,25 +308,113 @@ subtotal:number=0
 
   obtenerOrdenesPendientes(){
     this.ordenesCompra.forEach(element=>{
-      if(element.estadoOrden=="PENDIENTE"){
+      if(element.estadoOrden=="PENDIENTE" ){
         this.ordenesCompraPendientes.push(element)
       }else if(element.estadoOrden=="Pendiente-Anulacion"){
         this.ordenesCompraPendientesAnulacion.push(element)
+      }else if(element.estadoOrden=="ANULADO"){
+        this.ordenesCompraAnuladas.push(element)
       }
     })
   }
 
- /*  guardarAnulacion(){
-    this.anulacion.id=this.nAnulacion
-    
-    new Promise<any>((resolve, reject) => {
-      this.db.collection('/anulaciones').doc(this.nAnulacion+"").set({...Object.assign({},this.anulacion )}) ;
-      this.db.collection('/anulaciones_ID').doc("matriz").update({"documento_n" : this.anulacion.id});
-      this.db.collection('/ordenesDeCompra').doc(this.nsolicitudOrden+"").update({"estadoOrden" : "Pendiente_Anulacion","msjGeneral":this.motivo});
+  eliminarTransacciones5(e){
+    this.transacciones.forEach(element=>{
+      if(element.documento== e.documento){
+        this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
+      }
     })
-    alert("Termine")
-   
-  } */
+ 
+     
+    }
+ 
+    actualizarProductos3(e){
+      this.eliminarTransacciones5(e)
+     var cont=0
+     var contVal=0
+      
+
+      /* this.ordenesCompraPendientesAnulacion.forEach(element=>{
+        if(e.documento == element.documento){
+         console.log("sssasasasasasasass"+ JSON.stringify(element))
+          
+          this.productosComprados2=element.productosComprados
+          alert("entre"+this.productosComprados2)
+        }
+      }) */
+     console.log("entre a actualizar")
+      var sumaProductos =0
+      var num1:number=0
+      var num2:number=0
+      var num3:number=0
+      var cont3ing=0
+       var contIng:number=0
+       var entre:boolean=true   
+       //alert("sssss "+this.productosComprados2.length)  
+         this.productosComprados2.forEach(element=>{
+           this.productos.forEach(elemento1=>{
+             if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
+              switch (e.sucursal.nombre) {
+               case "matriz":
+                 num1=element.cantidad
+                 num2=elemento1.sucursal1
+                 sumaProductos =Number(num2) - Number(num1)
+                 break;
+               case "sucursal1":
+                 num1=element.cantidad
+                 num2=elemento1.sucursal2
+                 sumaProductos =Number(num2) - Number(num1)
+                 break;
+               case "sucursal2":
+                 num1=element.cantidad
+                 num2=elemento1.sucursal3
+                 sumaProductos =Number(num2) - Number(num1)
+                   break;
+               default:
+             }
+            }
+          })
+          if(entre){
+            console.log("entre porque el contador esta en "+contIng)
+           var sum2=0
+            new Promise<any>((resolve, reject) => {
+             switch (e.sucursal.nombre) {
+               case "matriz":
+                 element.nombreComercial.sucursal1=sumaProductos
+                 this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)}, err => {alert("error")})
+                 break;
+               case "sucursal1":
+                 element.nombreComercial.sucursal2=sumaProductos
+                 this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)}, err => {alert("error")})
+                 break;
+               case "sucursal2":
+                 element.nombreComercial.sucursal3=sumaProductos
+                 this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)
+                }, err => {alert("error")})
+                break;
+               default:
+             }
+            })
+          }
+         })     
+     }
+
+     contadorValidaciones3(i:number){
+      if(this.productosComprados2.length==i){
+          console.log("recien termine")
+          Swal.close()
+          Swal.fire({
+            title: 'Orden Anulada',
+            text: 'Se ha guardado con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+      }else{
+        console.log("no he entrado actualizar"+i)
+      }
+    }
 
 
   anularOrden = (e) => {  
@@ -1792,13 +1881,6 @@ subtotal:number=0
     this.transacciones.forEach(element=>{
       if(element.documento== num+"" && element.tipo_transaccion=="venta-fact"){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
-     /* console.log("entre con el "+element.idTransaccion)
-       this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
-       this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
-         querySnapshot.forEach(function(doc) {
-           doc.ref.delete();
-         });
-       }); */
       }
     })
    }
@@ -2017,15 +2099,18 @@ subtotal:number=0
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        //this.db.collection('/ordenesDeCompra').doc(e.documento+"").update({"estado":"Aprobado","estadoOrden":"ANULADO"}).then(res => {  }, err => alert(err));  
-        this.ordenesService.updateEstadosOrdenes(e._id,"Aprobado","ANULADO").subscribe( res => {Swal.fire({
-          title: 'Correcto',
-          text: 'Se anuló con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => {alert("error")})
+        if(e.tipo == "Entregado"){
+          this.compararCantidades(e)
+        }else{
+            this.ordenesService.updateEstadosOrdenes(e._id,"Aprobado","ANULADO").subscribe( res => {Swal.fire({
+              title: 'Correcto',
+              text: 'Se anuló con éxito',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              window.location.reload()
+            })}, err => {alert("error")}) 
+        }
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -2035,6 +2120,73 @@ subtotal:number=0
         )
       }
     })
+  }
+
+  compararCantidades(e:any){
+    var cont=0
+     var contVal=0
+      this.productosComprados2.forEach(element=>{
+        cont++
+      })
+      if(cont>=0){
+        this.productosComprados2.forEach(element=>{
+          this.productosComprados2.splice(0)
+        })
+      }
+      var orden_n=e.documento
+      this.productosComprados.forEach(element=>{
+        if(element.solicitud_n == orden_n){
+          this.productosComprados2.push(element)
+        }
+      })
+
+      this.ordenesCompraPendientesAnulacion.forEach(element=>{
+        if(e.documento== element.documento){
+          this.productosComprados2=element.productosComprados
+        }
+      })
+    
+    var suma=0
+    var contIn=0
+    //alert("sss "+this.productosComprados2.length)
+    this.productosComprados2.forEach(element=>{
+      this.productos.forEach(element2=>{
+        if(element.nombreComercial.PRODUCTO == element2.PRODUCTO){
+          suma=element.cantidad
+          //alert("hasta aqui llegue")
+          switch (e.sucursal.nombre) {
+            case "matriz":
+              if(suma>element2.sucursal1){
+                contIn++
+              }
+              break;
+            case "sucursal1":
+              if(suma>element2.sucursal2){
+                contIn++
+              }
+              break;
+            case "sucursal2":
+              if(suma>element2.sucursal3){
+                contIn++
+              }
+                break;
+            default:
+          }
+         
+        }
+      })
+    })
+
+    if(contIn==0){
+      this.mostrarMensaje()
+      this.ordenesService.updateEstadosOrdenes(e._id,"Aprobado","ANULADO").subscribe( res => {this.actualizarProductos3(e)}, err => {alert("error")})
+    }else{
+      Swal.fire({
+        title: 'Error',
+        text: "No hay inventario suficiente para realizar la anulación",
+        icon: 'error'
+      })
+    }
   }
 
   actualizarOrdenRec(e){

@@ -30,6 +30,7 @@ router.put('/update/:id', async (req, res,next) => {
         valor: req.body.valor,
         cliente: req.body.cliente,
         proveedor: req.body.proveedor,
+        maestro: req.body.maestro,
         orden_compra: req.body.orden_compra,
         cantM2: req.body.cantM2,
         movimiento: req.body.movimiento
@@ -68,6 +69,7 @@ router.post('/newTransaccion', async (req, res) => {
         valor: req.body.valor,
         cliente: req.body.cliente,
         proveedor: req.body.proveedor,
+        maestro: req.body.maestro,
         orden_compra: req.body.orden_compra,
         cantM2: req.body.cantM2,
         movimiento: req.body.movimiento

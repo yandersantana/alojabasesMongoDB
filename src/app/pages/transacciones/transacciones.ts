@@ -18,6 +18,7 @@ export class transaccion{
     valor:number
     cliente:string
     proveedor:string
+    maestro:string
     orden_compra:number
     cantM2:number
     movimiento:number

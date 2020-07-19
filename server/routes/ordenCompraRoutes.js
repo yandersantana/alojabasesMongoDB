@@ -100,11 +100,8 @@ router.put('/updateEstadoOrden/:id/:estado', async (req, res,next) => {
 })
 
 router.put('/updateEstadoOrdenes2/:id/:estado', async (req, res,next) => {
-    console.log("sssssssssss" +JSON.stringify(req.body))
     const { id } = req.params;
     const { estado } = req.params;
-    //console.log("aqui esta "+orden + " y "+estado)
-    //await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
     await OrdenCompra.findByIdAndUpdate(id, {$set: { estadoOrden:estado}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

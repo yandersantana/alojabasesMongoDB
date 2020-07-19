@@ -9,7 +9,7 @@ import { DxDataGridModule } from "devextreme-angular";
 import pdfMake from 'pdfmake/build/pdfmake';
 
 import { AlertsService } from 'angular-alert-module';
-import {  ProductoDetalleVenta ,ProductoDetalleCompra } from '../producto/producto';
+import {  ProductoDetalleVenta ,ProductoDetalleCompra, RemisionProductos } from '../producto/producto';
 import { FacturaProveedor, PagoProveedor,DetallePagoProveedor }  from '../orden-compra/ordencompra';
 import { Proveedor }  from '../compras/compra';
 import {formatDate} from '@angular/common';
@@ -30,6 +30,7 @@ import { DetallePagoService } from 'src/app/servicios/detalle-pago.service';
 import { contadoresDocumentos, orden_compra, producto } from '../ventas/venta';
 import { PagoProveedorService } from 'src/app/servicios/pago-proveedor.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
+import { RemisionesService } from 'src/app/servicios/remisiones.service';
 
 
 //import { ConsoleReporter } from 'jasmine';
@@ -138,30 +139,29 @@ proveedor:string=""
 sucursal:string=""
 usuario:string=""
 total:number=0
+remisiones:RemisionProductos[]=[]
 ordencompraleida:OrdenDeCompra
 productosCompradosLeidos:ProductoDetalleCompra[]=[]
 contadores:contadoresDocumentos[]=[]
 selectedRows: string[];
+arrayproductos: string[];
 selectAllModeVlaue: string = "page";
 selectionModeValue: string = "all";
 productosActivos:producto[]=[]
 banderaProductos:boolean=false
+contadorF:number=0
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('datag3') dataGrid4: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
 //@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
-  constructor( public contadoresService:ContadoresDocumentosService,public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
+  constructor( public contadoresService:ContadoresDocumentosService,public remisionesService:RemisionesService, public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
 
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
    }
 
   ngOnInit() {
-   /*  this.getfacturasProveedor()
-    this.getFacturasProveedor()
-    this.getPagosProveedor() */
-    //this.traerPagosFacturasProveedor()
     this.traerProveedores()
     this.traerFacturasProveedor()
     this.traerContadoresDocumentos()
@@ -169,6 +169,7 @@ banderaProductos:boolean=false
     this.traerProductos()
     this.traerPagosFacturasProveedor()
     this.traerPagosFacturas()
+    this.traerRemisiones()
   }
 
   
@@ -206,6 +207,12 @@ banderaProductos:boolean=false
     this.ordenesService.getOrden().subscribe(res => {
       this.ordenesCompra = res as OrdenDeCompra[];
       this.obtenerOrdenes()
+   })
+  }
+
+  traerRemisiones(){
+    this.remisionesService.getRemisiones().subscribe(res => {
+      this.remisiones = res as RemisionProductos[];
    })
   }
 
@@ -577,7 +584,8 @@ banderaProductos:boolean=false
   }
 
   getCourseFile4 = (e) => {  
-    this.eliminarPago(e.row.data)  
+    this.verificarFacturas(e.row.data)
+    //this.eliminarPago(e.row.data)  
   }
 
   
@@ -621,6 +629,34 @@ banderaProductos:boolean=false
     })
   }
 
+  verificarFacturas(e:any){
+    var cont=0
+    this.facturaProveedor2.forEach(element=>{
+      if(element.nSolicitud == e.nSolicitud){
+        this.contadorF++
+      }
+    })
+
+    this.remisiones.forEach(element=>{
+      if(element.num_FactPro == e.nFactura && element.estado != "Eliminada"){
+        cont++
+      }
+    })
+    
+    if(cont ==0){
+      this.eliminarPago(e)
+    }else{
+      Swal.fire({
+        title: 'Error',
+        text: 'Hay una remision asociada a esta factura',
+        icon: 'error',
+        confirmButtonText: 'Ok'
+      })
+    }
+
+    
+  }
+
   eliminarPago(e:any){
     var contadoEn=0
     Swal.fire({
@@ -632,25 +668,66 @@ banderaProductos:boolean=false
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
+        this.mostrarMsnsaConf()
         this.facturasProveedorService.deleteFacturasProveedor(e).subscribe( res => {}, err => {alert("error")})
         //this.db.collection('/facturasProveedor').doc( e.id+"").delete()
-         if( this.facturaProveedorBus.length-1 <=0){
+        if( this.facturaProveedorBus.length-1 <=0){
           this.ordenesCompraService.updateEstadoOrden(e,"PENDIENTE").subscribe( res => {
             
           }, err => {alert("error")})
           //this.db.collection('/ordenesDeCompra').doc(this.num_documento+"").update({"estadoOrden" :"PENDIENTE"})
-        } 
+        }
+        if(this.contadorF == 1){
+          
+          this.ordenesCompra.forEach(element=>{
+            if(element.n_orden == e.nSolicitud){          
+              this.productosCompradosLeidos= element.productosComprados
+             // alert("sdsdsd "+JSON.stringify(this.productosCompradosLeidos))
+            }
+          })
+          var cont=0
+          //alert("sdsd "+this.productosCompradosLeidos.length)
+          this.productosActivos.forEach(element=>{
+            this.productosCompradosLeidos.forEach(element2 => {
+              if(element.PRODUCTO==element2.nombreComercial.PRODUCTO){
+                element.bodegaProveedor=0
+                //alert("sss "+element.PRODUCTO)
+                this.productoService.updateProductoBodegaProveedor(element).subscribe(
+                  res => {
+                    cont++;
+                    //alert("aqui se va "+cont)
+                   this.contadorValidaciones5(cont)
+                  },
+                  err => {
+                    Swal.fire({
+                      title: err.error,
+                      text: 'Revise e intente nuevamente',
+                      icon: 'error'
+                    })
+                  })
+              }
+              
+            })
+          });
+
+
+
+
+        } else{
+          Swal.close()
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Se eliminó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }
        
           
         
-        Swal.fire({
-          title: 'Correcto',
-          text: 'Se eliminó con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })
+        
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -1265,6 +1342,25 @@ anadirDetallePago = (e) => {
        this.confirmar()
     }else{
       console.log("no he entrado "+i)
+    }
+
+  }
+
+  contadorValidaciones5(i:number){
+    
+    if(this.productosCompradosLeidos.length==i){
+      Swal.close()
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se eliminó con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        window.location.reload()
+      })
+    }else{
+      console.log("no he entrado "+i)
+      //alert("no entro")
     }
 
   }

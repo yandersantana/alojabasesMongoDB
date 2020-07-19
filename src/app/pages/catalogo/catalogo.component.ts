@@ -173,21 +173,92 @@ export class CatalogoComponent implements OnInit {
   //----------------------archivos upload ------------------------
 
   selectFiles(event) {
+    //alert("si entre")
     this.progressInfos = [];
     this.selectedFiles = event.target.files;
     var x = document.getElementById("nombreIM");
         x.style.display = "block";
   }
 
+  selectFiles2(event) {
+    //alert("si entre")
+    this.progressInfos = [];
+    this.selectedFiles = event.target.files;
+    var x = document.getElementById("nombreIM2");
+        x.style.display = "block";
+  }
+
   uploadFiles() {
-    var x = document.getElementById("nombreIM");
-        x.style.display = "none";
-    this.message = '';
-  this.contadorArchivos=this.selectedFiles.length
-    for (let i = 0; i < this.selectedFiles.length; i++) {
-      this.upload4(i, this.selectedFiles[i]);
+    this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
+    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
+      var x = document.getElementById("nombreIM");
+      x.style.display = "none";
+      this.message = '';
+      this.contadorArchivos=this.selectedFiles.length
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        this.upload4(i, this.selectedFiles[i]);
+      }
+    }else{
+      Swal.fire({
+        title: 'Error',
+        text: 'Hay campos obligatorios vacios ',
+        icon: 'error'
+      })
+    } 
+  }
+
+  uploadFiles2() {
+    this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
+    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
+      var x = document.getElementById("nombreIM");
+      x.style.display = "none";
+      this.message = '';
+      this.contadorArchivos=this.selectedFiles.length
+      for (let i = 0; i < this.selectedFiles.length; i++) {
+        this.upload5(i, this.selectedFiles[i]);
+      }
+    }else{
+      Swal.fire({
+        title: 'Error',
+        text: 'Hay campos obligatorios vacios ',
+        icon: 'error'
+      })
+    } 
+  }
+
+  upload5(idx, file) {
+    
+    this.progressInfos[idx] = { value: 0, fileName: file.name };
+  
+    this.uploadService.upload(file).subscribe(
+      event => {
+        if (event.type === HttpEventType.UploadProgress) {
+          this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
+        } else if (event instanceof HttpResponse) {
+          this.fileInfos = this.uploadService.getFiles();
+          console.log("ssss "+event.body)
+          console.log("sdd "+file.name)
+          
+          this.catalogo2.IMAGEN.push(event.body)
+          this.contadorImagenes++
+          this.validarContador2(this.contadorImagenes)
+         //this.fileInfos = pathy;
+        }
+      },
+      err => {
+        this.progressInfos[idx].value = 0;
+        this.message = 'Could not upload the file:' + file.name;
+      });
+  }
+
+  validarContador2(cont:number){
+    console.log("sssssss "+this.contadorArchivos)
+    console.log("sssssss2222 "+cont)
+    if(cont == this.contadorArchivos){
+      this.continuarGuardando()
+    }else{
+      console.log("aun no ")
     }
-    //alert("select files "+this.selectedFiles.length)
   }
 
   upload4(idx, file) {
@@ -623,6 +694,15 @@ _handleReaderLoaded(readerEvt) {
 
 
   updateProducto(){
+    console.log("sdddddd "+JSON.stringify(this.catalogo2.IMAGEN.length))
+     if(this.selectedFiles.length >0){
+      this.uploadFiles2()
+    } else{
+      this.continuarGuardando()
+    }
+  }
+
+  continuarGuardando(){
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!=""  && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
@@ -657,7 +737,6 @@ _handleReaderLoaded(readerEvt) {
         confirmButtonText: 'Ok'
       })
     }
-    
   }
 
   deleteProducto(){

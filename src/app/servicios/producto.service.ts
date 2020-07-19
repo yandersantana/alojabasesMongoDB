@@ -76,6 +76,18 @@ export class ProductoService {
     return this.http.put(this.URL + `/updateProductoSuc3/${producto._id}`, producto); 
   }
 
+  updateProductoSucursal1Bodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc1Bodega/${producto._id}`, producto); 
+  }
+
+  updateProductoSucursal2Bodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc2Bodega/${producto._id}`, producto); 
+  }
+  
+  updateProductoSucursal3Bodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc3Bodega/${producto._id}`, producto); 
+  }
+
   updateProductoPendienteSucursal1(producto , num:number){
     return this.http.put(this.URL + `/updateProductoPenSuc1/${producto._id}/${num}`, producto); 
   }

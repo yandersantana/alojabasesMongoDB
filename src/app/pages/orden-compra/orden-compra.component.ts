@@ -848,7 +848,11 @@ contadorFirebase:contadoresDocumentos[]=[]
         num=e._id
 
         new Promise<any>((resolve, reject) => {
+          if(e.tipo == "Entregado"){
+            this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"COMPLETO").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
+          }else{
           this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"PENDIENTE").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
+        }
           /* this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra, "usuarioAuth":this.usuariologueado, "estadoOrden":"PENDIENTE"}).then(res => {console.log("jjjjj") }, err => alert(err));
           this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra}).then(res => { this.confirmarM(e ,this.nordenCompra )}, err => alert(err)); */
           

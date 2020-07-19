@@ -28,6 +28,7 @@
                     <br>
                     <h4>Control de Precios</h4>
                     <dx-data-grid id="gridContainer" [dataSource]="preciosGrupo" [showBorders]="true">
+                        <dxo-export [enabled]="true" fileName="ControlPrecios" [allowExportSelectedData]="true"></dxo-export>
                         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                         <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
                         <dxi-column dataField="aplicacion" width="35%" caption="Aplicación" sortOrder="desc" [visible]="true"></dxi-column>
@@ -60,6 +61,7 @@
                         <h4>Grupo {{nombreGrupo}}</h4>
                     </div>
                     <dx-data-grid id="gridContainer" [dataSource]="preciosGrupoDefinido" [showBorders]="true">
+                        <dxo-export [enabled]="true" fileName="Precios{{nombreGrupo}}" [allowExportSelectedData]="true"></dxo-export>
                         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                         <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
                         <dxi-column dataField="producto.PRODUCTO" width="20%" caption="Producto"></dxi-column>

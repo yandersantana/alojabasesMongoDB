@@ -147,6 +147,23 @@ router.put('/updateProductoSuc3/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateProductoSuc1Bodega/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:req.body.sucursal1,bodegaProveedor:req.body.bodegaProveedor}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateProductoSuc2Bodega/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal2:req.body.sucursal2,bodegaProveedor:req.body.bodegaProveedor}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateProductoSuc3Bodega/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal3:req.body.sucursal3,bodegaProveedor:req.body.bodegaProveedor}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
 
 router.delete('/delete/:id', async (req, res,next) => {
     await Producto.findByIdAndRemove(req.params.id);

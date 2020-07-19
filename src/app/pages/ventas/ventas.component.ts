@@ -1440,9 +1440,6 @@ cambiarestado(e,i:number){
 
   calcularEquivalencia(e, i:number) {
     this.productos.forEach(element => {
-    console.log("MIRANDO1"+this.productosVendidos[i].producto.PRODUCTO)
-    console.log("mirando2"+element.REFERENCIA)
-    console.log(this.productosVendidos[i].cantidad)
 
       if(element.PRODUCTO == this.productosVendidos[i].producto.PRODUCTO){
         let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
@@ -1451,7 +1448,6 @@ cambiarestado(e,i:number){
         this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
       }
     })
-   // this.asignarProducto(e,i)
   }
 
   calcularTotalRow(i:number) {

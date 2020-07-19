@@ -48,6 +48,7 @@ export class ProductoComponent implements OnInit {
   facturaProveedor3: FacturaProveedor[] = []
   transaccion:transaccion
   ordenleida:OrdenDeCompra
+  ordenleida2:OrdenDeCompra
   productosControl: ControlProductos[] = []
   productosControlFinal: ControlProductos[] = []
   remisiones: RemisionProductos[] = []
@@ -465,13 +466,23 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
        // var num:string
         var data2=""
          data2=e.id_remision+""
-         this.remisionesService.updateRechazarRemision(e,"Rechazada",result.value).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+         this.remisionesService.updateRechazarRemision(e,"Rechazada",result.value).subscribe( res => {
+           Swal.close()
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Un administrador aprobará su eliminación de remisión',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+            //this.asignarValores()
+          })
+         }, err => {alert("error")})
          //this.db.collection('/remisionProductos').doc( data2).update({"estado" :"Rechazada","msjAdmin":result.value})
          let timerInterval
          Swal.fire({
            title: 'Guardando !',
            html: 'Procesando',
-           timer: 2000,
            timerProgressBar: true,
            onBeforeOpen: () => {
              Swal.showLoading()
@@ -488,15 +499,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
            }
          }).then((result) => {
            if (result.dismiss === Swal.DismissReason.timer) {
-            Swal.fire({
-              title: 'Correcto',
-              text: 'Un administrador aprobará su eliminación de remisión',
-              icon: 'success',
-              confirmButtonText: 'Ok'
-            }).then((result) => {
-              window.location.reload()
-              //this.asignarValores()
-            })
+            
            }
          })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -675,28 +678,26 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
             switch (e.sucursal) {
               case "matriz":
                 element.nombreComercial.sucursal1=sumaProductos
-                this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                element.nombreComercial.bodegaProveedor=0
+                this.productoService.updateProductoSucursal1Bodega(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
                // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos})
                 break;
               case "sucursal1":
-                element.nombreComercial.sucursal1=sumaProductos
-                this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                element.nombreComercial.sucursal2=sumaProductos
+                element.nombreComercial.bodegaProveedor=0
+                this.productoService.updateProductoSucursal2Bodega(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
                //// this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos})
                 break;
               case "sucursal2":
-                element.nombreComercial.sucursal1=sumaProductos
-                this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+                element.nombreComercial.sucursal3=sumaProductos
+                element.nombreComercial.bodegaProveedor=0
+                this.productoService.updateProductoSucursal3Bodega(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
                // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos})
                   break;
               default:
             }
             this.productosIngresadoService.updateEstadoIngreso(element,"Eliminado").subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
-           /*  this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', element.numeroRemision));
-            this.expensesCollection.get().toPromise().then(function(querySnapshot) {
-              querySnapshot.forEach(function(doc) {
-               doc.ref.update({"estadoIngreso":"Eliminado"})
-              });
-            }).then(res => { console.log("termine1")}, err => reject(err));; */
+
            }
           })
           this.actualizarEstados(e)
@@ -861,13 +862,13 @@ console.log("si entre verdadero" + this.solicitudNOrden)
      // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
      //alert("aqui" +JSON.stringify(this.ordenleida))
 
-      this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(this.ordenleida,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }else{
     console.log("entre a falso" +this.solicitudNOrden)
     new Promise<any>((resolve, reject) => {
      // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"PARCIAL"})
-      this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(this.ordenleida,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
     })
   }
 
@@ -1031,8 +1032,6 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         }
         
         }).then(res => { console.log("finalice")});;
-       // this.actualizarProductos()
-        //this.crearPDF2()
 
           let timerInterval
           Swal.fire({
@@ -1156,11 +1155,11 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     if(contEstados==this.productosComprados3.length){
       new Promise<any>((resolve, reject) => {
        // this.db.collection('/ordenesDeCompra').doc(this.solicitudNOrden+"").update({"estadoOrden":"COMPLETO"})
-       this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+       this.ordenesService.updateEstadoOrden2(this.ordenleida,"COMPLETO").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
       })
     }else{
       new Promise<any>((resolve, reject) => {
-        this.ordenesService.updateEstadoOrden2(this.ordenleida._id,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+        this.ordenesService.updateEstadoOrden2(this.ordenleida,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
         //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
       })
     }
@@ -1610,10 +1609,10 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
 
   actualizarEstados(e:any){
-    console.log("ddddddddddddddddddddddddddddddd" + this.datoNsolicitud)
+   
     var contre=0
     this.remisiones.forEach(element=>{
-      if(element.num_orden == e.num_orden ){
+      if(element.num_orden == e.num_orden && element.estado != "Eliminada" ){
         contre++
       }
     })
@@ -1622,25 +1621,38 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.solicitudOrdenC=element.documento_solicitud  
       }
     })
-    //alert("hay "+contre)
+    this.ordenesCompra.forEach(element=>{
+      if(e.num_orden == element.n_orden){
+        this.ordenleida2 = element
+      }
+    })
     console.log("encontre ennnnn "+contre)
     if(contre-1 <= 0){
-      console.log("accctttt" +this.solicitudOrdenC)
+      //alert("entre a pendiente")
       //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PENDIENTE"})
-      this.ordenesService.updateEstadoOrden2(e,"PENDIENTE").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(this.ordenleida2,"PENDIENTE").subscribe( res => {Swal.close()
+        Swal.fire({
+          title: 'Remisión eliminada',
+          text: 'Se ha eliminado con éxito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })  }, err => {alert("error")})
     }else{
+      //alert("entre a parcial")
       //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
-      this.ordenesService.updateEstadoOrden2(e,"PARCIAL").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")})
+      this.ordenesService.updateEstadoOrden2(e,"PARCIAL").subscribe( res => {Swal.close()
+        Swal.fire({
+          title: 'Remisión eliminada',
+          text: 'Se ha eliminado con éxito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })  }, err => {alert("error")})
     }
-    Swal.close()
-    Swal.fire({
-      title: 'Remisión eliminada',
-      text: 'Se ha eliminado con éxito',
-      icon: 'success',
-      confirmButtonText: 'Ok'
-    }).then((result) => {
-      window.location.reload()
-    })  
+    
   }
 
 

@@ -278,6 +278,7 @@
                   </tr> -->
               <tr>
                 <th class="text-center" rowspan="2">Producto</th>
+                <th class="text-center" rowspan="2">Ubicacion</th>
                 <!-- <th class="text-center"></th> -->
                 <th class="text-center" colspan="2">Cant.rec</th>
                 <!-- <th class="text-center" rowspan="2">Estado</th> -->
@@ -298,9 +299,9 @@
                 <td>
                   <span contenteditable="false" >{{producto.nombreComercial.PRODUCTO}}</span>
                 </td>
-               <!--  <td>
-                  <span contenteditable="false" >{{producto.cantidadSolicitada}}</span>
-                </td> -->
+                 <td>
+                  <span contenteditable="true" (blur)="actualizarDato(id, 'ubicacion', $event)">{{producto.ubicacion}}</span>
+                </td> 
                 <td>
                   <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregada', $event)" >{{producto.cantidadEntregada}}</span>
                 </td>

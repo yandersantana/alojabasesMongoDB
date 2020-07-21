@@ -601,11 +601,14 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Facturas_Ingresadas" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column dataField="idF" caption="ID" width="10%" sortOrder="desc"></dxi-column>
-        <dxi-column dataField="nSolicitud" caption="Orden" width="10%"></dxi-column>
-        <dxi-column dataField="nFactura" caption="Factura #" width="10%"></dxi-column>
-        <dxi-column dataField="productos" caption="Productos" width="45%"></dxi-column>
-        <dxi-column dataField="total" caption="Total" width="25%"></dxi-column>
+        <dxi-column dataField="idF" caption="ID" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="nFactura" caption="Factura #"></dxi-column>
+        <dxi-column dataField="nSolicitud" caption="Orden" ></dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" ></dxi-column>
+        <dxi-column dataField="productos" caption="Productos" width="35%"></dxi-column>
+        <dxi-column dataField="fechaExpiracion" caption="Fecha Vencimiento"></dxi-column>
+        <dxi-column dataField="" caption="Estado" ></dxi-column>
+        <dxi-column dataField="total" caption="Total"></dxi-column>
         <dxo-paging [pageSize]="8"></dxo-paging>
         <dxo-pager 
             [showPageSizeSelector]="true"

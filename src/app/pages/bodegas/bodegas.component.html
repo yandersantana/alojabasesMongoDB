@@ -1,0 +1,155 @@
+<br>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Administración de Bodegas
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-1">
+                <div class="row botones">
+
+                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                            <i class="fa fa-list fa-2x"></i>
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Bodega" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                            <i class="fa fa-user-plus fa-2x"></i>
+                        </button></div>
+
+
+                </div>
+
+
+
+            </div>
+            <div class="col-md-11 card carIn">
+                <div id="read" style="display: block;text-align: center;">
+                    <br>
+                    <h4>Bodegas</h4>
+                    
+                    <dx-data-grid id="gridContainer" [dataSource]="bodegas" [showBorders]="true">
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
+                        <dxi-column dataField="nombre" caption="Nombre"></dxi-column>
+                        <dxi-column dataField="persona_responsable" caption="Responsable"></dxi-column>
+                        <dxi-column dataField="direccion" caption="Dirección"></dxi-column>
+                        <dxi-column dataField="sucursal" caption="Sucursal"></dxi-column>
+                        <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="10%">
+                            <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdateBodega"></dxi-button>
+                            <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deleteBodega"></dxi-button>
+                        </dxi-column>
+                        <dxo-paging [pageSize]="5"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                        </dxo-pager>
+
+                    </dx-data-grid>
+                    <br><br>
+                </div>
+
+
+
+                <div id="new" style="display: none;">
+                    <div style="text-align: center;" class="newr">
+                        <h4>Registrar Nueva Bodega</h4>
+                        <div>
+                            <form #f="ngForm" (ngSubmit)="register(f)">
+
+                                <div class="row">
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-6">
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Nombre</div>
+                                            <div class="col-md-8"> <input type="text" [(ngModel)]="bodegaL.nombre"
+                                                    name="nombre" class="form-control" placeholder="Nombre bodega"
+                                                    required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Persona responsable</div>
+                                            <div class="col-md-8"> <input type="text" [(ngModel)]="bodegaL.persona_responsable"
+                                                    name="username" class="form-control" placeholder="Persona responsable"
+                                                    required></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Dirección</div>
+                                            <div class="col-md-8"> <input type="text" [(ngModel)]="bodegaL.direccion"
+                                                    name="suaurio" class="form-control" placeholder="Dirección"
+                                                    autocomplete="email" required></div>
+                                        </div>
+                                       
+                                         <div class="row espacio">
+                                            
+                                            <div class="col-md-4" style="text-align: left;">Sucursal</div>
+                                             <div class="col-md-8">   <dx-select-box [items]="locales" [(value)]="localAsignado" [readOnly]="false" [disabled]="false"
+                                                 [searchEnabled]="true" valueExpr="sucursalTipo" displayExpr="sucursalTipo" >
+                                             </dx-select-box></div> 
+                                         </div>
+
+
+                                        <button class="btn btn-block btn-success espacio">Registrar Usuario</button>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+              
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+
+<dx-popup [width]="500" [height]="450" [showTitle]="true" title="Actualizar Información" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+              <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Nombre</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="bodega.nombre"
+                        name="nombre" class="form-control" placeholder="Nombre Bodega"
+                        required></div>
+            </div>
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Persona responsable</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="bodega.persona_responsable"
+                        name="username" class="form-control" placeholder="Persona responsable"
+                        required></div>
+            </div>
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Dirección</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="bodega.direccion"
+                        name="suaurio" class="form-control" placeholder="Dirección"
+                        autocomplete="email" required></div>
+            </div>
+            <div class="row espacio">
+                                            
+              <div class="col-md-4" style="text-align: left;">Sucursal</div>
+               <div class="col-md-8">   <dx-select-box [items]="locales" [(value)]="localAsignado" [readOnly]="false" [disabled]="false"
+                   [searchEnabled]="true" valueExpr="sucursalTipo" displayExpr="sucursalTipo" >
+               </dx-select-box></div> 
+           </div>
+
+
+
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><button class="btn btn2" type="button"
+                        (click)="updateBodega()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        <!-- <p>
+            Position:
+            <span>{{currentEmployee.Position}}</span>
+        </p> -->
+    </div>
+</dx-popup>

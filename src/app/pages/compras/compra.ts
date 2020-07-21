@@ -126,6 +126,9 @@ export class Producto {
     suc1Pendiente:number
     suc2Pendiente:number
     suc3Pendiente:number
+    ubicacionSuc1:string[]=[]
+        ubicacionSuc2:string[]=[]
+        ubicacionSuc3:string[]=[]
     bodegaProveedor:number
     constructor(
         ) {

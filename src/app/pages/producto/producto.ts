@@ -18,6 +18,9 @@ export class Producto{
     marca:string
     usuario:string
     nombreComercial:string
+    ubicacionSuc1:string[]=[]
+        ubicacionSuc2:string[]=[]
+        ubicacionSuc3:string[]=[]
    /*  sucursal1:number
     sucursal2:number
     sucursal3:number */
@@ -85,9 +88,11 @@ export class ProductoDetalleCompra{
 
 export class ProductoDetalleEntrega{ 
     nombreComercial:producto
+    ubicacion:string
     cantidadEntregada:number
     cantidadEntregadapiezas:number
     metros2:number
+    metros2Devueltos:number
     cantidadSolicitada:number
     cantidadSolicitadacajas:number
     cantidadSolicitadapiezas:number
@@ -115,6 +120,7 @@ export class ProductoDetalleEntrega{
         this.estado="Ok"
         this.descuentoProducto=0
         this.estadoIngreso="Ingresado"
+        this.ubicacion=""
        
     }
 }

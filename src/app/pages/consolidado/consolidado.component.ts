@@ -10,6 +10,7 @@ import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
 import { HttpClient } from '@angular/common/http';
+import Swal from 'sweetalert2';
 @Component({
   selector: 'app-consolidado',
   templateUrl: './consolidado.component.html',
@@ -24,8 +25,11 @@ export class ConsolidadoComponent implements OnInit {
   ];
 
 
-
+  popupVisible:boolean=false
   productos:producto[]=[]
+  arregloUbicaciones1:string[]=[]
+  arregloUbicaciones2:string[]=[]
+  arregloUbicaciones3:string[]=[]
   transacciones:transaccion[]=[]
   invetarioP:inventario[]=[]
   invetarioFaltante1: invFaltanteSucursal
@@ -33,6 +37,12 @@ export class ConsolidadoComponent implements OnInit {
   invetarioProd:inventario
   productosPendientes:productosPendientesEntrega[]=[]
   productosPendientesNoEN:productosPendientesEntrega[]=[]
+
+  ubicacion1:string=""
+  ubicacion2:string=""
+  ubicacion3:string=""
+  nameProducto: string=""
+  
   
 
   constructor(public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
@@ -68,38 +78,32 @@ export class ConsolidadoComponent implements OnInit {
    })
   }
 
-  /* async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      productos.forEach((nt: any) => {
-        this.productos.push(nt.payload.doc.data());
-      })
-    });;
-  } */
+  actualizarUbicaciones(){
+    this.popupVisible=false
+    console.log("fff "+this.arregloUbicaciones1)
+    console.log("fff "+this.arregloUbicaciones2)
+    console.log("fff "+this.arregloUbicaciones3)
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == this.nameProducto){
+        element.ubicacionSuc1= this.arregloUbicaciones1
+        element.ubicacionSuc2= this.arregloUbicaciones2
+        element.ubicacionSuc3= this.arregloUbicaciones3
+        this.productoService.updateProductoUbicaciones(element).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }, err => {alert("error")})
+      }
+    })
+    
+  }
 
-  /* async getTransacciones(){
-    await this.db.collection('transacciones').snapshotChanges().subscribe((ordenes) => {
-      new Promise<any>((resolve, reject) => {
-        ordenes.forEach((nt: any) => {
-          this.transacciones.push(nt.payload.doc.data());
-         
-        })
-      })
-      console.log("kjkj"+this.transacciones.length)
-      this.cargarDatos()
-    });;
-  } */
-
-  /* async getProductosPendientes() {
-    await this.db.collection('productosPendientesEntrega').snapshotChanges().subscribe((productos) => {
-      new Promise<any>((resolve, reject) => {
-        productos.forEach((nt: any) => {
-          this.productosPendientes.push(nt.payload.doc.data());
-        })
-      }) 
-      this.separarEntregas()
-    });;
-  } */
+ 
 
 
   separarEntregas(){
@@ -109,6 +113,43 @@ export class ConsolidadoComponent implements OnInit {
       }else{
       }
     })
+  }
+
+  nuevaUbicacion1(){
+    this.arregloUbicaciones1.push(this.ubicacion1)
+  }
+
+  nuevaUbicacion2(){
+    this.arregloUbicaciones2.push(this.ubicacion2)
+  }
+
+  nuevaUbicacion3(){
+    this.arregloUbicaciones3.push(this.ubicacion3)
+  }
+
+  eliminar1(id: number){
+    console.log("es el ID "+id)
+    this.arregloUbicaciones1.splice(id,1)
+  }
+
+  eliminar2(id: number){
+    this.arregloUbicaciones2.splice(id,1)
+  }
+
+  eliminar3(id: number){
+    this.arregloUbicaciones3.splice(id,1)
+  }
+
+  modificar1(id: number,  event: any){
+    this.arregloUbicaciones1[id]= event.target.textContent;
+  }
+
+  modificar2(id: number,  event: any){
+    this.arregloUbicaciones2[id]= event.target.textContent;
+  }
+
+  modificar3(id: number,  event: any){
+    this.arregloUbicaciones3[id]= event.target.textContent;
   }
 
 
@@ -464,6 +505,22 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
     e.component.endUpdate();
+  }
+
+  mostrarUbicacion = (e) => {  
+    this.mostrarPopup(e.row.data)
+  }
+
+   mostrarPopup(e:any){
+     this.nameProducto = e.producto.PRODUCTO
+     this.productos.forEach(element=>{
+       if(element.PRODUCTO == e.producto.PRODUCTO){
+         this.arregloUbicaciones1=element.ubicacionSuc1
+         this.arregloUbicaciones2=element.ubicacionSuc2
+         this.arregloUbicaciones3=element.ubicacionSuc3
+       }
+     })
+    this.popupVisible=true
   }
 
   

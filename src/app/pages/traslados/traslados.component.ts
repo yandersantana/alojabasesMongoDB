@@ -762,6 +762,26 @@ export class TrasladosComponent implements OnInit {
     }
   }
 
+  validarGuardar(){
+    var bandera=false
+    this.detalleTraslados.forEach(element=>{
+      if(element.cantidadm2 == 0){
+        bandera=true
+      }
+    })
+
+    if(bandera){
+      Swal.fire({
+        title: "Error",
+        text: 'Revise el detalle de los productos e intente nuevamente',
+        icon: 'error'
+      })
+    }else{
+      this.guardarTraslado()
+    }
+
+  }
+
 
 
   guardarTraslado(){
@@ -1202,30 +1222,34 @@ contadorValidaciones2(i:number){
       if(element.PRODUCTO== this.detalleTraslados[i].producto){
         cantm2=parseFloat(((element.M2*this.detalleTraslados[i].cajas)+((this.detalleTraslados[i].piezas*element.M2)/element.P_CAJA)).toFixed(2))
       this.detalleTraslados[i].cantidadm2=cantm2
-      console.log("ttt "+cantm2)
+      console.log("la cantidad es... "+this.detalleTraslados[i].cantidadm2)
 
       switch (this.traslados.sucursal_origen.nombre) {
         case "matriz":
           if(cantm2 >element.sucursal1+element.suc1Pendiente){
-            alert("el cantidad excede el inventario del producto")
+            
             this.detalleTraslados[i].cajas=0
             this.detalleTraslados[i].piezas=0
+            this.detalleTraslados[i].cantidadm2=0
+            this.mensajeExceso()
+            
           }
           break;
         case "sucursal1":
-          console.log("Entre por aqui a naranjito")
           if(cantm2 >element.sucursal2+element.suc2Pendiente){
-            alert("el cantidad excede el inventario del producto")
+            
             this.detalleTraslados[i].cajas=0
             this.detalleTraslados[i].piezas=0
+            this.detalleTraslados[i].cantidadm2=0
+            this.mensajeExceso()
           }
           break;
         case "sucursal2":
-          if(cantm2 >element.sucursal3+element.suc3Pendiente){
-            console.log("fffff"+element.sucursal3+element.suc3Pendiente)
-            alert("el cantidad excede el inventario del producto")
+          if(cantm2 >element.sucursal3+element.suc3Pendiente){           
             this.detalleTraslados[i].cajas=0
             this.detalleTraslados[i].piezas=0
+            this.detalleTraslados[i].cantidadm2=0
+            this.mensajeExceso()
           }
         default:
       }
@@ -1247,6 +1271,13 @@ contadorValidaciones2(i:number){
   }
   
 
+  mensajeExceso(){
+    Swal.fire(
+      'Error',
+      'Las cantidad excede el inventario del producto',
+      'error'
+    )
+  }
  
   
 

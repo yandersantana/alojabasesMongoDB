@@ -216,6 +216,10 @@ export const navigationAdmin = [
         text: 'Clientes',
         path: '/clientes',
       },
+      {
+        text: 'Bodegas',
+        path: '/bodegas',
+      },
       /* {
         text: 'Control Precios',
         path: '/precios',

@@ -36,6 +36,9 @@ router.put('/update/:id', async (req, res,next) => {
         suc1Pendiente: req.body.suc1Pendiente,
         suc2Pendiente: req.body.suc2Pendiente,
         suc3Pendiente: req.body.suc3Pendiente,
+        ubicacionSuc1: req.body.ubicacionSuc1,
+        ubicacionSuc2: req.body.ubicacionSuc2,
+        ubicacionSuc3: req.body.ubicacionSuc3,
         bodegaProveedor: req.body.bodegaProveedor
     };
     await Producto.findByIdAndUpdate(id, {$set: productos}, {new: true});
@@ -165,6 +168,13 @@ router.put('/updateProductoSuc3Bodega/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateProductoUbicaciones/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {ubicacionSuc1:req.body.ubicacionSuc1,ubicacionSuc2:req.body.ubicacionSuc2,ubicacionSuc3:req.body.ubicacionSuc3}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
 router.delete('/delete/:id', async (req, res,next) => {
     await Producto.findByIdAndRemove(req.params.id);
     res.json({status: 'Product Deleted'});
@@ -192,6 +202,9 @@ router.post('/newProducto', async (req, res) => {
         suc1Pendiente: req.body.suc1Pendiente,
         suc2Pendiente: req.body.suc2Pendiente,
         suc3Pendiente: req.body.suc3Pendiente,
+        ubicacionSuc1: req.body.ubicacionSuc1,
+        ubicacionSuc2: req.body.ubicacionSuc2,
+        ubicacionSuc3: req.body.ubicacionSuc3,
         bodegaProveedor: req.body.bodegaProveedor
     });
     await nuevoProducto.save();

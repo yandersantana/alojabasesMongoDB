@@ -129,6 +129,9 @@
                 width="10%">
             </dxi-column>
          </dxi-column>
+         <dxi-column type="buttons" dataField="bt1" caption="Ubicación" width="7%">
+            <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
+        </dxi-column>
         
         
         <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
@@ -408,3 +411,93 @@
     </dx-data-grid> -->
 
 </div>
+
+<dx-popup [width]="600" [height]="450" [showTitle]="true" title="Ubicación {{nameProducto}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-10" style="text-align: center;padding-top: 0.5em;"><h6>Matriz</h6> </div>
+                <div class="col-md-2"><span style="text-align: right;"><button class="btn3" type="button"
+                    (click)="nuevaUbicacion1()"> + </button></span></div>
+                <table>
+                    <tr>
+                        <th class="text-center" >Ubicación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    <tr *ngFor="let ubi1 of arregloUbicaciones1; let id = index">
+                        <td style="text-align: center;width: 85%;">
+                            <span contenteditable="true" (blur)="modificar1(id, $event)" >{{ubi1}}</span>
+                        </td>
+                        <td style="text-align: center;width: 15%;">
+                            <button class="btn btn-primary btn-xs" (click)="eliminar1(id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                </table>
+                
+            </div>
+            <div class="row espacio" style="margin-top: 3em;">
+                <div class="col-md-10" style="text-align: center;padding-top: 0.5em;"><h6>Sucursal 1 </h6> </div>
+                <div class="col-md-2"><span style="text-align: right;"><button class="btn3" type="button"
+                    (click)="nuevaUbicacion2()"> + </button></span></div>
+                <table>
+                    <tr>
+                        <th class="text-center" >Ubicación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    <tr *ngFor="let ubi1 of arregloUbicaciones2; let id = index">
+                        <td style="text-align: center;width: 85%;">
+                            <span contenteditable="true" (blur)="modificar2(id, $event)" >{{ubi1}}</span>
+                        </td>
+                        <td style="text-align: center;width: 15%;">
+                            <button class="btn btn-primary btn-xs" (click)="eliminar2(id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                </table>
+            </div>
+            <div class="row espacio" style="margin-top: 3em;">
+                <div class="col-md-10" style="text-align: center;padding-top: 0.5em;"><h6>Sucursal 2</h6> </div>
+                <div class="col-md-2"><span style="text-align: right;"><button class="btn3" type="button"
+                    (click)="nuevaUbicacion3()"> + </button></span></div>
+                <table>
+                    <tr>
+                        <th class="text-center" >Ubicación</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    <tr *ngFor="let ubi1 of arregloUbicaciones3; let id = index">
+                        <td style="text-align: center;width: 85%;">
+                            <span contenteditable="true" (blur)="modificar3(id, $event)" >{{ubi1}}</span>
+                        </td>
+                        <td style="text-align: center;width: 15%;">
+                            <button class="btn btn-primary btn-xs" (click)="eliminar3(id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><button class="btn btn2" type="button"
+                        (click)="actualizarUbicaciones()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+        <!-- <p>
+            Position:
+            <span>{{currentEmployee.Position}}</span>
+        </p> -->
+    </dx-scroll-view>
+    </div>
+</dx-popup>

@@ -60,6 +60,10 @@ export class ProductoService {
     return this.http.put(this.URL + `/updateProductoSuc2Dir/${producto._id}/${suma}/${precio}`, producto); 
   }
 
+  updateProductoUbicaciones(producto){
+    return this.http.put(this.URL + `/updateProductoUbicaciones/${producto._id}`, producto); 
+  }
+
   updateProductoSucursal3ComD(producto,suma:number, precio:number){
     return this.http.put(this.URL + `/updateProductoSuc3Dir/${producto._id}/${suma}/${precio}`, producto); 
   }

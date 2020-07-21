@@ -98,6 +98,7 @@ import { ControlPreciosComponent } from './pages/control-precios/control-precios
 import { CalculadorasComponent } from './pages/calculadora/calculadora.component';
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
+import { BodegasComponent } from './pages/bodegas/bodegas.component';
 
 
 const routes: Routes = [
@@ -224,6 +225,11 @@ const routes: Routes = [
   {
     path: 'catalogo',
     component: CatalogoComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'bodegas',
+    component: BodegasComponent,
     canActivate: [ AuthGuardService ]
   },
   {

@@ -916,12 +916,66 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         })
   }
 
+  actualizarUbicacion(producto: ProductoDetalleEntrega){
+    //alert("dsdsdsd "+producto.ubicacion)
+    var cont=0
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == producto.nombreComercial.PRODUCTO){
+        switch (this.remisionProducto.sucursal) {
+          case "matriz":
+            for (let index = 0; index < element.ubicacionSuc1.length; index++) {
+              const element2 = element.ubicacionSuc1[index];
+              if(element2 == producto.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              element.ubicacionSuc1.push(producto.ubicacion)
+              this.productoService.updateProductoUbicaciones(element).subscribe( res => {}, err => {alert("error")})
+            }
+            
+            break;
+          case "sucursal1":
+            for (let index = 0; index < element.ubicacionSuc2.length; index++) {
+              const element2 = element.ubicacionSuc2[index];
+              if(element2 == producto.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              element.ubicacionSuc2.push(producto.ubicacion)
+              this.productoService.updateProductoUbicaciones(element).subscribe( res => {}, err => {alert("error")})
+            }
+            
+            break;
+          case "sucursal2":
+            for (let index = 0; index < element.ubicacionSuc3.length; index++) {
+              const element2 = element.ubicacionSuc3[index];
+              if(element2 == producto.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              element.ubicacionSuc3.push(producto.ubicacion)
+              this.productoService.updateProductoUbicaciones(element).subscribe( res => {}, err => {alert("error")})
+            }
+            
+              break;
+        
+          default:
+            break;
+        }
+
+      }
+    })
+  }
+
   guardarRemision(){
     console.log("eeeeee888")
     var sumatot=0
     var sum5=0
     this.productosEntregados.forEach(element => {
-      console.log("lll "+JSON.stringify(element))
+      this.actualizarUbicacion(element)
       //sumatot=(parseInt(element.metros2.toFixed(0))*element.valorunitario)-((parseInt(element.metros2.toFixed(0))*element.valorunitario)*(element.descuentoGeneral/100))+sumatot
       sum5=(element.valorunitario*element.metros2)-((element.valorunitario*element.metros2)*(element.descuentoProducto/100))
       sumatot=sum5-(sum5*element.descuentoGeneral/100)+sumatot
@@ -1817,7 +1871,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
     this.productosEntregados.forEach(element=>{
       element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+(element.cantidadEntregadapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
-      console.log("fff "+element.metros2)
+
+      element.metros2Devueltos= ((element.nombreComercial.M2*element.cantidadDevuelta)+(element.cantidadDevueltapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
+      
     })
 
     this.productosControlFinal.forEach(element=>{
@@ -1844,12 +1900,18 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         console.log("sssss por piezas "+this.productosEntregados[id].cantidadEntregadapiezas)
         console.log("elemento saldo "+element.saldo)
         console.log("elemento saldopiezas "+element.saldopiezas)
-        if(this.productosEntregados[id].cantidadEntregada == element.saldo && this.productosEntregados[id].cantidadEntregadapiezas == element.saldopiezas){
-         // alert("la cantidad es la misma") 
+        var cantM2= Number(this.productosEntregados[id].metros2)+Number(this.productosEntregados[id].metros2Devueltos)
+        //var cantidadCajas=Number(this.productosEntregados[id].cantidadEntregada)+Number(this.productosEntregados[id].cantidadDevuelta)
+        //var cantidadPiezas=Number(this.productosEntregados[id].cantidadEntregadapiezas)+Number(this.productosEntregados[id].cantidadDevueltapiezas)
+        //alert("can "+cantidadCajas)
+        //alert("can "+cantidadPiezas)
+        //alert("can "+cantM2)
+        var cantidadCajas=Math.trunc(cantM2 / this.productosEntregados[id].nombreComercial.M2);
+        var cantidadPiezas=Math.trunc(cantM2 * this.productosEntregados[id].nombreComercial.P_CAJA / this.productosEntregados[id].nombreComercial.M2) - (cantidadCajas * this.productosEntregados[id].nombreComercial.P_CAJA);
+        //alert()
+
+        if(cantidadCajas== element.saldo && cantidadPiezas == element.saldopiezas){
           element.estado= "COMPLETO"
-         /*  if(this.productosEntregados[id].cantidadEntregadapiezas == element.saldopiezas){
-            alert("la cantidad es la misma") 
-          } */ 
         }
         else{
           element.estado= "INCOMPLETO"

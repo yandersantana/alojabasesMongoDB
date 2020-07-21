@@ -24,6 +24,9 @@ const ProductoSchema = new Schema({
     suc1Pendiente: { type: Number, required: false},
     suc2Pendiente: { type: Number, required: false},
     suc3Pendiente: { type: Number, required: false},
+    ubicacionSuc1: { type: Array, required: false},
+    ubicacionSuc2: { type: Array, required: false},
+    ubicacionSuc3: { type: Array, required: false},
     bodegaProveedor: { type: Number, required: false}
 },{
     timestamps:true

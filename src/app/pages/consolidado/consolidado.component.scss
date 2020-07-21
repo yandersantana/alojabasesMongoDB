@@ -47,9 +47,25 @@ h5{
     background-color: green;
     color: white;
 }
+.btn2{
+    background-color: #0061a9;
+    color: white;
+    width: 100%;
+    margin-top: 3em;
+}
+
+.btn3{
+    background-color: #0061a9;
+    color: white;
+    border-color: transparent;
+}
 
 #historial{
     margin: 2em;
+}
+
+.calT{
+    margin-bottom: -2em;
 }
 
 .titulosT h5{
@@ -110,3 +126,15 @@ h5{
 ::ng-deep #datag2 .dx-datagrid .dx-row > td{
     text-align: center;  
 }
+
+table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+  }
+  
+  td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }

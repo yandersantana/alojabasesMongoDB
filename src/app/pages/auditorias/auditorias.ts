@@ -23,9 +23,10 @@ export class auditoria{
 
 export class auditoriasProductos{
   idAud:string
-  fecha:Date
+  fecha:string
   sucursal:Sucursal
   producto:producto
+  nombreproducto:string
   cajas_sistema: number
   piezas_sistema: number
   cajas_fisico:number

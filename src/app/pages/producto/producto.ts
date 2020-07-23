@@ -71,6 +71,7 @@ export class ProductoDetalleCompra{
     descGeneral:number
     descProducto:number
     estado_remision:string
+    estado_factura:string
     constructor() {
         this.seleccionado = true
         this.iva = true
@@ -81,6 +82,7 @@ export class ProductoDetalleCompra{
         this.descGeneral=0
         this.descProducto=0
         this.estado_remision=" "
+        this.estado_factura=""
     }
 }
 
@@ -93,6 +95,7 @@ export class ProductoDetalleEntrega{
     cantidadEntregadapiezas:number
     metros2:number
     metros2Devueltos:number
+    metros2totales:number
     cantidadSolicitada:number
     cantidadSolicitadacajas:number
     cantidadSolicitadapiezas:number

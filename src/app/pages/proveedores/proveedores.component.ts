@@ -638,8 +638,9 @@ contadorF:number=0
     })
 
     this.remisiones.forEach(element=>{
-      if(element.num_FactPro == e.nFactura && element.estado != "Eliminada"){
+      if(element.num_FactPro == e.nFactura && element.num_orden== e.nSolicitud && element.estado != "Eliminada"){
         cont++
+        //alert("entre aquiii" +JSON.stringify(element))
       }
     })
     
@@ -1251,8 +1252,7 @@ anadirDetallePago = (e) => {
             this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
       }
     })
-    console.log("El totalsuma2 es"+this.totalsuma2)
-    console.log("El total de esta orden es"+this.totalOrden)
+  
     
     this.totalsuma=this.totalOrden-this.totalsuma2
     console.log("El total suma "+this.totalsuma)
@@ -1271,19 +1271,12 @@ anadirDetallePago = (e) => {
           this.mostrarMsnsaConf()
             let datoNFact:string
             datoNFact=this.facturaNp+""
-           //alert("ddd "+this.facturaProveedor.documento_solicitud)
            this.facturasProveedorService.newFacturaProveedor(this.facturaProveedor).subscribe( res => {
             this.contadores[0].contFacturaProveedor_Ndocumento=this.facturaNp
             console.log("ddd "+JSON.stringify(this.contadores[0]))
             this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( res => {this.actualizarProductosBodega()}, err => {alert("error")})
            }, err => {alert("error")})
-           // this.db.collection('/facturasProveedor').doc(datoNFact).set({...Object.assign({},this.facturaProveedor )}).then(res => { }) ;
-          /*   this.db
-                .collection("/contadorFactProveedor")
-                .doc("matriz").set({ n_documento:this.facturaNp })
-                .then(res => {this.confirmar() }); */
-            
-           // this.getfacturasProveedor()
+           
          });
       }
 
@@ -1302,14 +1295,14 @@ anadirDetallePago = (e) => {
   actualizarProductosBodega(){
     var cant=0
     var cont=1
-    if(this.banderaProductos){
-      this.confirmar()
-    }else{
+    
       if(this.ordencompraleida.tipo == "Entregado"){
         this.confirmar()
+        //alert("pase aqui")
       }else{
+       // alert("pase aquirrr")
         this.productosActivos.forEach(element=>{
-          this.productosCompradosLeidos.forEach(element2 => {
+          /* this.productosCompradosLeidos.forEach(element2 => {
             if(element.PRODUCTO==element2.nombreComercial.PRODUCTO){
               cant=element.bodegaProveedor+element2.cantidad
               element.bodegaProveedor=cant
@@ -1327,9 +1320,43 @@ anadirDetallePago = (e) => {
                 })
             }
             
-          })
+          }) */
+          for (let index = 0; index < this.facturaProveedor.productos.length; index++) {
+            const element2 = this.facturaProveedor.productos[index];
+            if(element.PRODUCTO == element2){
+              this.productosCompradosLeidos.forEach(element3 => {
+                  if(element3.nombreComercial.PRODUCTO == element.PRODUCTO ){
+                    cant=element.bodegaProveedor+element3.cantidad
+                    element.bodegaProveedor=cant
+                    if(element3.estado_factura!="Ingresado"){
+                     // alert("vine hasta aqui")
+                      this.productoService.updateProductoBodegaProveedor(element).subscribe(
+                        res => {
+                          this.ordenesService.updateEstadoProductosFactura(this.ordencompraleida._id,element.PRODUCTO,"Ingresado").subscribe( 
+                            res => {this.contadorValidaciones(cont++)}, err => {alert("error")})
+                            
+                        },
+                        err => {
+                          Swal.fire({
+                            title: err.error,
+                            text: 'Revise e intente nuevamente',
+                            icon: 'error'
+                          })
+                        })
+                    }else{
+                      this.contadorValidaciones(cont++)
+                    }
+                    
+                  }else{
+                   
+                  }
+              })
+              
+            }
+            
+          }
         });
-      }
+      
       
     }
 
@@ -1338,7 +1365,7 @@ anadirDetallePago = (e) => {
 
   contadorValidaciones(i:number){
     //alert("entre con "+i)
-    if(this.productosCompradosLeidos.length==i){
+    if(this.facturaProveedor.productos.length==i){
        this.confirmar()
     }else{
       console.log("no he entrado "+i)

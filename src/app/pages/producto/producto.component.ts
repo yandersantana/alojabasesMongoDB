@@ -1869,20 +1869,28 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     /*(metrosCaja * cantCajas) + (cantPiezas * metrosCaja / piezasCaja)
     let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
     let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
+    var m2Totales=0
     this.productosEntregados.forEach(element=>{
       element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+(element.cantidadEntregadapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
 
       element.metros2Devueltos= ((element.nombreComercial.M2*element.cantidadDevuelta)+(element.cantidadDevueltapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
+      element.metros2totales = element.metros2+element.metros2Devueltos
+      
       
     })
-
+    
     this.productosControlFinal.forEach(element=>{
       if(this.productosEntregados[id].nombreComercial.PRODUCTO== element.nombre_comercial){
-        if(this.productosEntregados[id].metros2 > element.saldom2){
+        if(this.productosEntregados[id].metros2totales > element.saldom2){
+          
           alert("la cantidad solicitada es mayor")
           this.productosEntregados[id].cantidadEntregada=0
           this.productosEntregados[id].cantidadEntregadapiezas=0
           this.productosEntregados[id].metros2=0
+          this.productosEntregados[id].cantidadDevuelta=0
+          this.productosEntregados[id].cantidadDevueltapiezas=0
+          this.productosEntregados[id].metros2Devueltos=0
+          this.productosEntregados[id].metros2totales=0
           //this.newButtonEnabled2=true
         }else if(this.productosEntregados[id].metros2 == element.saldom2){
             //alert("si es igual")
@@ -1895,11 +1903,6 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
 
       if(this.productosEntregados[id].nombreComercial.PRODUCTO== element.nombre_comercial){
-        console.log("sssss por aqui ")
-        console.log("sssss por cajas "+this.productosEntregados[id].cantidadEntregada)
-        console.log("sssss por piezas "+this.productosEntregados[id].cantidadEntregadapiezas)
-        console.log("elemento saldo "+element.saldo)
-        console.log("elemento saldopiezas "+element.saldopiezas)
         var cantM2= Number(this.productosEntregados[id].metros2)+Number(this.productosEntregados[id].metros2Devueltos)
         //var cantidadCajas=Number(this.productosEntregados[id].cantidadEntregada)+Number(this.productosEntregados[id].cantidadDevuelta)
         //var cantidadPiezas=Number(this.productosEntregados[id].cantidadEntregadapiezas)+Number(this.productosEntregados[id].cantidadDevueltapiezas)
@@ -1908,7 +1911,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         //alert("can "+cantM2)
         var cantidadCajas=Math.trunc(cantM2 / this.productosEntregados[id].nombreComercial.M2);
         var cantidadPiezas=Math.trunc(cantM2 * this.productosEntregados[id].nombreComercial.P_CAJA / this.productosEntregados[id].nombreComercial.M2) - (cantidadCajas * this.productosEntregados[id].nombreComercial.P_CAJA);
-        //alert()
+        
 
         if(cantidadCajas== element.saldo && cantidadPiezas == element.saldopiezas){
           element.estado= "COMPLETO"
@@ -1999,12 +2002,13 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.contadorDev2= Number(element.cantidadDevueltapiezas) + this.contadorDev2
           }
         })
-        console.log("el producto"+element1.nombreComercial+" el resultado es"+ this.contadorp2)
+       
         
        // this.saldo=Number(element1.cantidadSolicitadacajas)-this.contadorp2+this.contadorDev
        // this.saldo2=Number(element1.cantidadSolicitadapiezas)-this.contadorp3+this.contadorDev2
-        sum1=Number(element1.cantidadSolicitadacajas)-this.contadorp2+this.contadorDev
-        sum2=Number(element1.cantidadSolicitadapiezas)-this.contadorp3+this.contadorDev2
+        sum1=Number(element1.cantidadSolicitadacajas)-this.contadorp2-this.contadorDev
+        //alert("aaa"+sum1)
+        sum2=Number(element1.cantidadSolicitadapiezas)-this.contadorp3-this.contadorDev2
        calculot=((element1.nombreComercial.M2*sum1)+((sum2*element1.nombreComercial.M2)/element1.nombreComercial.P_CAJA))
        this.saldo=Math.trunc(calculot /  element1.nombreComercial.M2);
        this.saldo2=Math.trunc(calculot * element1.nombreComercial.P_CAJA / element1.nombreComercial.M2) - (this.saldo * element1.nombreComercial.P_CAJA);

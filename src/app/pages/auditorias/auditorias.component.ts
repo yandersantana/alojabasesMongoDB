@@ -20,6 +20,8 @@ import { AuditoriaProductoService } from 'src/app/servicios/auditoria-producto.s
 export class AuditoriasComponent implements OnInit {
 
   sucursal:string
+  now: Date = new Date();
+  productoEntregado:string
   parametrizaciones: parametrizacionsuc[]=[]
   locales: Sucursal[]=[]
   productosActivos: producto[]=[]
@@ -117,6 +119,13 @@ export class AuditoriasComponent implements OnInit {
   }
 
   obtenerDetallesproducto(e){
+    this.productosActivos.forEach(element=>{
+      if(element.PRODUCTO == this.productoEntregado){
+        this.auditoria.producto = element
+        this.auditoria.nombreproducto = element.PRODUCTO
+        //alert("entre "+this.auditoria.producto)
+      }
+    })
 
   }
 
@@ -168,6 +177,7 @@ export class AuditoriasComponent implements OnInit {
   }
 
   guardarAuditoria(){
+    
      console.log("datos "+JSON.stringify(this.newAuditoria))
     if( this.newAuditoria.contrasena!=undefined && this.newAuditoria.sucursal != undefined){
        this.mostrarMensaje()
@@ -187,7 +197,8 @@ export class AuditoriasComponent implements OnInit {
   }
 
   guardarAuditoriaProducto(){
-    console.log("datos "+JSON.stringify(this.newAuditoria))
+    this.auditoria.fecha= new Date().toLocaleDateString()
+    console.log("datos5555 "+JSON.stringify(this.auditoria))
    if( this.auditoria.cajas_fisico!=0 && this.auditoria.piezas_fisico != 0){
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {

@@ -38,7 +38,8 @@ router.put('/update/:id', async (req, res,next) => {
         equivalencia: req.body.equivalencia,
         descGeneral: req.body.descGeneral,
         descProducto: req.body.descProducto,
-        estado_remision: req.body.estado_remision
+        estado_remision: req.body.estado_remision,
+        estado_factura: req.body.estado_factura
     };
     await ProductosComprados.findByIdAndUpdate(id, {$set: productosComprados}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
@@ -72,7 +73,8 @@ router.post('/newProductoComprado', async (req, res) => {
         equivalencia: req.body.equivalencia,
         descGeneral: req.body.descGeneral,
         descProducto: req.body.descProducto,
-        estado_remision: req.body.estado_remision
+        estado_remision: req.body.estado_remision,
+        estado_factura: req.body.estado_factura
     });
     await nuevaCompra.save();
     res.json({status: 'Se ha creado un nuevo producto'});  

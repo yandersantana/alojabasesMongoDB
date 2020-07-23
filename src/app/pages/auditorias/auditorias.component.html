@@ -136,7 +136,7 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-4"><p class="texto">Producto</p></div>
-                                        <div class="col-md-8"><dx-select-box [items]="productos" [(value)]="sucursal" [readOnly]="false" [disabled]="false"
+                                        <div class="col-md-8"><dx-select-box [items]="productos" [(value)]="productoEntregado" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
                                         </dx-select-box>
                                         <br>
@@ -256,7 +256,7 @@
                                           <tr *ngFor="let audit of auditoriaProductosBase; let id = index">
                                             <td><span>{{audit.idAud}}</span></td>
                                             <td><span>{{audit.fecha}}</span></td>
-                                            <td><span>{{audit.producto}}</span></td>
+                                            <td><span>{{audit.nombreproducto}}</span></td>
                                             <td><span>{{audit.cajas_sistema}}</span></td>
                                             <td><span>{{audit.piezas_sistema}}</span></td>
                                             <td><span>{{audit.cajas_fisico}}</span></td>

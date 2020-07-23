@@ -24,7 +24,8 @@ const ProductoDetalleCompraSchema = new Schema({
     equivalencia: { type: String, required: false},
     descGeneral: { type: Number, required: false},
     descProducto: { type: Number, required: false},
-    estado_remision: { type: String, required: false}
+    estado_remision: { type: String, required: false},
+    estado_factura: { type: String, required: false}
 },{
     timestamps:true
 });

@@ -77,9 +77,33 @@
     width: 100%;
     margin: 0.5em;
     border-color: transparent;
-  
+}
+
+.btnIcons6{
+    background-color: #28a745;
+    color: white;
+    margin: 0.5em;
+    border-color: transparent;
 }
 
 .texto{
     font-size: 1.2em;
+}
+
+::ng-deep .dx-datagrid-headers .dx-datagrid-text-content  
+{  
+    text-align: center;  
+} 
+
+::ng-deep .d2 .dx-datagrid-headers .dx-datagrid-text-content  
+{  
+    text-align: center;  
+}
+
+::ng-deep  .dx-datagrid-text-content  
+{  
+    text-align: center;  
+} 
+::ng-deep #datag2 .dx-datagrid .dx-row > td{
+    text-align: center;  
 }

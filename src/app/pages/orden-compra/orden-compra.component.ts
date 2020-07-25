@@ -1239,7 +1239,7 @@ anadirDetallePago = (e) => {
         break;
       default:    
     }     
-    }
+  }
 
 
   cargarValoresFactura(){

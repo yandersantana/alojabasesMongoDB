@@ -6,10 +6,12 @@ const AuditoriaProducto = require('../models/auditoriaProducto')
 router.post('/newAuditoriaProducto', async (req, res) => {
     const newAuditoria = new AuditoriaProducto({ 
       idAud:req.body.idAud, 
+      idPrincipal:req.body.idPrincipal,
       nombre_auditor:req.body.nombre_auditor, 
       sucursal:req.body.sucursal,
       producto:req.body.producto,
       fecha:req.body.fecha,
+      auditor:req.body.auditor,
       nombreproducto:req.body.nombreproducto,
       cajas_sistema:req.body.cajas_sistema,
       piezas_sistema:req.body.piezas_sistema,
@@ -17,7 +19,12 @@ router.post('/newAuditoriaProducto', async (req, res) => {
       piezas_fisico:req.body.piezas_fisico,
       cajas_danadas:req.body.cajas_danadas,
       piezas_danadas:req.body.piezas_danadas,
+      cajas_diferencia:req.body.cajas_diferencia,
+      piezas_diferencia:req.body.piezas_diferencia,
       valoracion:req.body.valoracion,
+      impacto:req.body.impacto,
+      condicion:req.body.condicion,
+      impactoDanado:req.body.impactoDanado,
       observaciones:req.body.observaciones
     });
     await newAuditoria.save();
@@ -52,9 +59,11 @@ router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const newAudit ={ 
       idAud:req.body.idAud, 
+      idPrincipal:req.body.idPrincipal,
       nombre_auditor:req.body.nombre_auditor, 
       sucursal:req.body.sucursal,
       fecha:req.body.fecha,
+      auditor:req.body.auditor,
       producto:req.body.producto,
       nombreproducto:req.body.nombreproducto,
       cajas_sistema:req.body.cajas_sistema,
@@ -63,7 +72,12 @@ router.put('/update/:id', async (req, res,next) => {
       piezas_fisico:req.body.piezas_fisico,
       cajas_danadas:req.body.cajas_danadas,
       piezas_danadas:req.body.piezas_danadas,
+      cajas_diferencia:req.body.cajas_diferencia,
+      piezas_diferencia:req.body.piezas_diferencia,
       valoracion:req.body.valoracion,
+      impacto:req.body.impacto,
+      condicion:req.body.condicion,
+      impactoDanado:req.body.impactoDanado,
       observaciones:req.body.observaciones};
     await AuditoriaProducto.findByIdAndUpdate(id, {$set: newAudit}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

@@ -277,8 +277,8 @@ export class ConsolidadoComponent implements OnInit {
               contPiezas2=Number(contPiezas2)+Number(element.piezas)
               break;
             case "ajuste-faltante": 
-              contCajas=Number(contCajas)-Number(element.cajas)
-              contPiezas=Number(contPiezas)-Number(element.piezas)
+              contCajas2=Number(contCajas2)-Number(element.cajas)
+              contPiezas2=Number(contPiezas2)-Number(element.piezas)
               break;
             case "baja":
               contCajas2=Number(contCajas2)-Number(element.cajas)
@@ -301,8 +301,8 @@ export class ConsolidadoComponent implements OnInit {
               contPiezas2=Number(contPiezas2)+Number(element.piezas)
              break;
              case "ajuste-sobrante":
-              contCajas=Number(contCajas)+Number(element.cajas)
-              contPiezas=Number(contPiezas)+Number(element.piezas)
+              contCajas2=Number(contCajas2)+Number(element.cajas)
+              contPiezas2=Number(contPiezas2)+Number(element.piezas)
              break;
             default:    
           } 
@@ -327,8 +327,8 @@ export class ConsolidadoComponent implements OnInit {
               contPiezas3=Number(contPiezas3)+Number(element.piezas)
               break;
             case "ajuste-faltante": 
-              contCajas=Number(contCajas)-Number(element.cajas)
-              contPiezas=Number(contPiezas)-Number(element.piezas)
+              contCajas3=Number(contCajas3)-Number(element.cajas)
+              contPiezas3=Number(contPiezas3)-Number(element.piezas)
               break;
             case "baja":
               contCajas3=Number(contCajas3)-Number(element.cajas)
@@ -351,8 +351,8 @@ export class ConsolidadoComponent implements OnInit {
               contPiezas3=Number(contPiezas3)+Number(element.piezas)
              break;
              case "ajuste-sobrante":
-              contCajas=Number(contCajas)+Number(element.cajas)
-              contPiezas=Number(contPiezas)+Number(element.piezas)
+              contCajas3=Number(contCajas3)+Number(element.cajas)
+              contPiezas3=Number(contPiezas3)+Number(element.piezas)
              break;
              
             

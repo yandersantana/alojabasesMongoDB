@@ -19,21 +19,9 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <!-- <div class="col-md-2">
-                <div class="row botones">
-
-                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
-                            <i class="fa fa-list fa-2x"></i>
-                        </button></div>
-
-                    <div class="col-md-12"> <button title="Agregar Cliente" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
-                            <i class="fa fa-user-plus fa-2x"></i>
-                        </button></div>
-                </div>
-            </div> -->
             <div class="col-md-12 card carIn">
                 <div id="newAudGlobal"  style="display: none;">
-                    <div  class="row">
+                    <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
                             <div class="row">
@@ -125,11 +113,11 @@
 
                 
                     <div id="tabla3" style="display: block;">
-                        <div class="col-md-12">
+                        <div  class="col-md-12">
                             <div class="row">
                                 <div class="col-md-1"></div>
                                 <div class="col-md-10">
-                                    <dx-data-grid #data2
+                                    <dx-data-grid 
                                     id="gridContainer"
                                     [dataSource]="auditoriasAcabadas"
                                     [showBorders]="true">   
@@ -307,7 +295,7 @@
                     
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Daños Obsoletas</h6></div>
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Novedades</h6></div>
                                         <div class="col-md-6"><dx-number-box [(value)]="auditoria.cajas_danadas" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2Dano()"></dx-number-box></div>
                                         <div class="col-md-6"><dx-number-box [(value)]="auditoria.piezas_danadas" [disabled]="lectura" [readOnly]="false" (onChange)="calcularTotalM2Dano()"></dx-number-box></div> 
                                     </div>
@@ -413,7 +401,7 @@
                     
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Daños Obsoletas</h6></div>
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Novedades</h6></div>
                                         <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.cajas_danadas" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2DanoEdit()"></dx-number-box></div>
                                         <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.piezas_danadas" [disabled]="lectura" [readOnly]="false" (onChange)="calcularTotalM2DanoEdit()"></dx-number-box></div> 
                                     </div>

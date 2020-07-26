@@ -633,7 +633,7 @@ export class AuditoriaClComponent implements OnInit {
           this.transaccion.factPro=""
           this.transaccion.maestro=""
           this.transaccion.producto=element.producto.PRODUCTO
-          if(element.cajas_diferencia <0){
+          if(element.cajas_diferencia <0 || element.piezas_diferencia<0){
             this.transaccion.cajas=element.cajas_diferencia*(-1)
             this.transaccion.piezas=element.piezas_diferencia*(-1)
             this.transaccion.valor=element.impacto*(-1)
@@ -850,7 +850,7 @@ export class AuditoriaClComponent implements OnInit {
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
-      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.04
+      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.02
       console.log("22222 "+this.editAuditoria.m2fisico)
       console.log("22222 "+this.editAuditoria.m2base)
     }
@@ -1099,8 +1099,8 @@ export class AuditoriaClComponent implements OnInit {
                contPiezas2=Number(contPiezas2)-Number(element.piezas)
               break;
               case "ajuste-faltante": 
-              contCajas=Number(contCajas)-Number(element.cajas)
-              contPiezas=Number(contPiezas)-Number(element.piezas)
+              contCajas2=Number(contCajas2)-Number(element.cajas)
+              contPiezas2=Number(contPiezas2)-Number(element.piezas)
               break;
               case "traslado1":
                contCajas2=Number(contCajas2)-Number(element.cajas)
@@ -1111,8 +1111,8 @@ export class AuditoriaClComponent implements OnInit {
                contPiezas2=Number(contPiezas2)+Number(element.piezas)
               break;
               case "ajuste-sobrante":
-              contCajas=Number(contCajas)+Number(element.cajas)
-              contPiezas=Number(contPiezas)+Number(element.piezas)
+              contCajas2=Number(contCajas2)+Number(element.cajas)
+              contPiezas2=Number(contPiezas2)+Number(element.piezas)
              break;
              default:    
            } 
@@ -1141,8 +1141,8 @@ export class AuditoriaClComponent implements OnInit {
                contPiezas3=Number(contPiezas3)-Number(element.piezas)
               break;
               case "ajuste-faltante": 
-              contCajas=Number(contCajas)-Number(element.cajas)
-              contPiezas=Number(contPiezas)-Number(element.piezas)
+              contCajas3=Number(contCajas3)-Number(element.cajas)
+              contPiezas3=Number(contPiezas3)-Number(element.piezas)
               break;
               case "venta-fact":
                contCajas3=Number(contCajas3)-Number(element.cajas)
@@ -1161,8 +1161,8 @@ export class AuditoriaClComponent implements OnInit {
                contPiezas3=Number(contPiezas3)+Number(element.piezas)
               break;
               case "ajuste-sobrante":
-              contCajas=Number(contCajas)+Number(element.cajas)
-              contPiezas=Number(contPiezas)+Number(element.piezas)
+              contCajas3=Number(contCajas3)+Number(element.cajas)
+              contPiezas3=Number(contPiezas3)+Number(element.piezas)
              break;
              
              default:    

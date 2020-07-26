@@ -40,6 +40,7 @@ import { CalculadorasComponent } from './pages/calculadora/calculadora.component
 import { ControlPreciosComponent } from './pages/control-precios/control-precios.component';
 import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 import { BodegasComponent } from './pages/bodegas/bodegas.component';
+import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
 
 
 
@@ -69,7 +70,8 @@ import { BodegasComponent } from './pages/bodegas/bodegas.component';
     CalculadorasComponent,
     ControlPreciosComponent,
     AuditoriasComponent,
-    BodegasComponent
+    BodegasComponent,
+    AuditoriaClComponent
   ],
   imports: [
     BrowserModule,

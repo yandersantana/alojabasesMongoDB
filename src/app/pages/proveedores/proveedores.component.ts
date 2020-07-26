@@ -1302,25 +1302,7 @@ anadirDetallePago = (e) => {
       }else{
        // alert("pase aquirrr")
         this.productosActivos.forEach(element=>{
-          /* this.productosCompradosLeidos.forEach(element2 => {
-            if(element.PRODUCTO==element2.nombreComercial.PRODUCTO){
-              cant=element.bodegaProveedor+element2.cantidad
-              element.bodegaProveedor=cant
-              this.productoService.updateProductoBodegaProveedor(element).subscribe(
-                res => {
-                  
-                 this.contadorValidaciones(cont++)
-                },
-                err => {
-                  Swal.fire({
-                    title: err.error,
-                    text: 'Revise e intente nuevamente',
-                    icon: 'error'
-                  })
-                })
-            }
-            
-          }) */
+         
           for (let index = 0; index < this.facturaProveedor.productos.length; index++) {
             const element2 = this.facturaProveedor.productos[index];
             if(element.PRODUCTO == element2){

@@ -3143,11 +3143,9 @@ var tipoDoc:boolean=false
           this.transaccion.usuario=this.usuarioLogueado[0].username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre  
-          //alert("ssd "+JSON.stringify(this.transaccion))
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
-              console.log(res + "entre por siff");
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {

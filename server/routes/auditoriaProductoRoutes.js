@@ -23,6 +23,9 @@ router.post('/newAuditoriaProducto', async (req, res) => {
       piezas_diferencia:req.body.piezas_diferencia,
       valoracion:req.body.valoracion,
       impacto:req.body.impacto,
+      m2base:req.body.m2base,
+      m2fisico:req.body.m2fisico,
+      m2daño:req.body.m2daño,
       condicion:req.body.condicion,
       impactoDanado:req.body.impactoDanado,
       observaciones:req.body.observaciones
@@ -76,6 +79,9 @@ router.put('/update/:id', async (req, res,next) => {
       piezas_diferencia:req.body.piezas_diferencia,
       valoracion:req.body.valoracion,
       impacto:req.body.impacto,
+      m2base:req.body.m2base,
+      m2fisico:req.body.m2fisico,
+      m2daño:req.body.m2daño,
       condicion:req.body.condicion,
       impactoDanado:req.body.impactoDanado,
       observaciones:req.body.observaciones};

@@ -99,6 +99,7 @@ import { CalculadorasComponent } from './pages/calculadora/calculadora.component
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 import { BodegasComponent } from './pages/bodegas/bodegas.component';
+import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
 
 
 const routes: Routes = [
@@ -235,6 +236,11 @@ const routes: Routes = [
   {
     path: 'auditorias',
     component: AuditoriasComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'auditorias2',
+    component: AuditoriaClComponent,
     canActivate: [ AuthGuardService ]
   },
   {

@@ -25,9 +25,10 @@ const AuditoriaProductoSchema = new Schema({
     valoracion: { type: String, required: false},
     observaciones: { type: String, required: false},
     impacto: { type: Number, required: false},
-    impactoDanado:{ type: Number, required: false}
-
-   
+    impactoDanado:{ type: Number, required: false},
+    m2base:{ type: Number, required: false},
+    m2fisico:{ type: Number, required: false},
+    m2daño:{ type: Number, required: false}
 },{
     timestamps:true
 });

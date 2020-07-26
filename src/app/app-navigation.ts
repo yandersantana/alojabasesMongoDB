@@ -68,6 +68,15 @@ export const navigation = [
        
       }]
   },
+  {
+    text: 'Auditorias',  
+    icon: 'fa fa-list-alt',
+    items: [
+      {
+        text: 'Auditorias de Inventario',
+        path: '/auditorias2',  
+      }]
+  },
 /*   {
     text: 'Administración',  
     icon: 'home',
@@ -273,8 +282,7 @@ export const navigationAdmin = [
     icon: 'fa fa-list-alt',
     items: [{
         text: 'Auditorias de Inventario',
-        path: '/auditorias',
-       
+        path: '/auditorias',  
       }]
   },
   {

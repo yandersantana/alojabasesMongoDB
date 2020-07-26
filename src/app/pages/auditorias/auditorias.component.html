@@ -89,7 +89,7 @@
                                             <th class="text-center">Código</th>
                                             <th class="text-center" >Sucursal</th>
                                             <th class="text-center" >Ver Lista</th>
-                                            <th class="text-center" colspan="2" >Acciones</th>
+                                            <th class="text-center"  >Acciones</th>
                                             
                                           </tr>
                                          
@@ -111,9 +111,7 @@
                                             <td style="width: 15%;">
                                                 <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
                                             </td>
-                                            <td style="width: 15%;">
-                                                <span><button class="btn btn-block btn-success " (click)="finalizarAuditoria(id)">Finalizar</button></span>
-                                            </td>
+                                            
                                           </tr>
                                         </table>
                                       </div>
@@ -337,7 +335,113 @@
                                     <div class="row">
                                         <div class="col-md-3"></div>
                                         <div class="col-md-6">
-                                        <button class="btn btn-block btn-success espacio" [(disabled)]="btnRe" (click)="guardarAuditoriaProducto()">Registrar Auditoria</button>
+                                        <button class="btn btn-block btn-success espacio" [(disabled)]="btnRe" (click)="guardarAuditoriaProducto()">Guardar Auditoria</button>
+                                        <br>
+                                        <br>
+                                        <br>
+                                        </div>
+                                        <div class="col-md-3"></div>
+                                        </div>
+                                    
+                                </div>
+                    
+                    
+                            </div>
+                        </div>
+                        <div class="col-md-3"></div>
+                    </div>
+                </div>
+
+
+                <div  id="editAud"  style="display: none;">
+                    <div class="row">
+                        <div class="col-md-3"></div>
+                        <div class="col-md-6">
+                            <div class="row">
+                                <div class="col-md-12">
+                                    <br>
+                                    <br>
+                                    <br>
+                                    <div class="col-md-12" style="text-align: center;"><h5>Editar Auditoria</h5></div>
+
+                                    <div class="row">
+                                        <div class="col-md-4" ><p class="texto">ID</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="editAuditoria.idAud" [disabled]="false" [readOnly]="true"></dx-text-box></div>
+                                    </div>
+
+
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Sucursal</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="nombreSucursal" [disabled]="false" [readOnly]="true"></dx-text-box></div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Auditor</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="editAuditoria.auditor" [disabled]="false" [readOnly]="true"></dx-text-box></div>
+                                    </div>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Producto</p></div>
+                                        <div class="col-md-8"><dx-select-box [items]="productos" [(value)]="productoEntregado" [readOnly]="true" [disabled]="false"
+                                            [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO">
+                                        </dx-select-box>
+                                        <br>
+                                        </div>
+                                        <br>
+                                    </div>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Existencia en sistema</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.cajas_sistema" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2Base()"></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.piezas_sistema" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2Base()"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Fisico</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.cajas_fisico" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2Edit()" ></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.piezas_fisico" [disabled]="lectura" [(readOnly)]="lectura" (onChange)="calcularTotalM2Edit()"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Daños Obsoletas</h6></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.cajas_danadas" [disabled]="false" [readOnly]="false" (onChange)="calcularTotalM2DanoEdit()"></dx-number-box></div>
+                                        <div class="col-md-6"><dx-number-box [(value)]="editAuditoria.piezas_danadas" [disabled]="lectura" [readOnly]="false" (onChange)="calcularTotalM2DanoEdit()"></dx-number-box></div> 
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Valoración</h6></div>
+                                        <div class="col-md-12"><dx-select-box [items]="menuValoracion" [(value)]="editAuditoria.valoracion" [readOnly]="false" [disabled]="false"
+                                            [searchEnabled]="true"></dx-select-box>
+                                        </div>
+                                    </div>
+                                    <br>
+                                </div>
+                    
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center; margin-bottom: 1em;background-color: #c2c2c2;"><h6>Observaciones</h6></div>
+                                        <div class="col-md-12"><dx-text-box [(value)]="editAuditoria.observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-3"></div>
+                                        <div class="col-md-6">
+                                        <button class="btn btn-block btn-success espacio" [(disabled)]="btnRe" (click)="guardarEditAuditoriaProducto()">Guardar Auditoria</button>
                                         <br>
                                         <br>
                                         <br>
@@ -416,25 +520,19 @@
                                             <td><span>{{audit.impacto}}</span></td>
                                             
                                            <td>
-                                               <span><button class="btnIcons5" (click)="editarAuditoriaProducto(id)"><i class="fa fa-pencil"></i></button></span>
+                                               <span><button class="btnIcons5" (click)="editarAuditoriaProducto(audit.idAud)"><i class="fa fa-pencil"></i></button></span>
                                             </td>
                                             <td>
                                                 <span><button class="btnIcons5" (click)="eliminarAuditoriaProducto(id)"><i class="fa fa-trash-o"></i></button></span>
                                             </td>
                                             
-                                            <!-- <td><dx-check-box [(value)]="seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
-                                                </dx-check-box></td> -->
-                                            <!-- <td>
-                                              <span><button class="btnIcons5" (click)="guardarAuditoria()"><i class="fa fa-list fa-1x"></i></button></span>
-                                            </td>
-                                            <td style="width: 15%;">
-                                                <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
-                                            </td>
-                                            <td style="width: 15%;">
-                                                <span><button class="btn btn-block btn-success " (click)="finalizarAuditoria(id)">Finalizar</button></span>
-                                            </td>  -->
                                           </tr>
                                         </table>
+                                        <div class="row">
+                                            <div class="col-md-4"></div>
+                                            <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="realizarActualizaciones()">Actualizar Productos</button></div>
+                                            <div class="col-md-4"></div>
+                                        </div>
                                       </div>
                                     </div>
                                   </div>

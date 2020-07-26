@@ -188,7 +188,6 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
       })
     });; */
     this.traerProductosObsequio()
-    this.traerBodegas()
     this.traerProductos()
     this.traerOrdenesCompra()
     this.traerTransacciones()
@@ -1335,6 +1334,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           
           if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
             cantDis= elemento1.bodegaProveedor-parseInt(element.metros2.toFixed(0))
+            //alert(cantDis)
+            element.nombreComercial.bodegaProveedor= cantDis
               this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");},err => {
                   Swal.fire({
                     title: err.error,

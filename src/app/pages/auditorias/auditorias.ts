@@ -22,6 +22,7 @@ export class auditoria{
 
 
 export class auditoriasProductos{
+  _id:string
   idPrincipal:number
   idAud:string
   fecha:string

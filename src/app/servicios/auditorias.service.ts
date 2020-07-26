@@ -27,8 +27,8 @@ export class AuditoriasService {
     return this.http.put(this.URL + `/updateAuditoriaCantidad/${auditoria._id}/${cantidad}`, auditoria); 
   }
 
-  updateAuditoriaEstado(auditoria,estado:string){
-    return this.http.put(this.URL + `/updateAuditoriaEstado/${auditoria._id}/${estado}`, auditoria); 
+  updateAuditoriaEstado(auditoria,fecha:Date,estado:string){
+    return this.http.put(this.URL + `/updateAuditoriaEstado/${auditoria._id}/${estado}/${fecha}`, auditoria); 
   }
 
   deleteBodegas(auditoria){

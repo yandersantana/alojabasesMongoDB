@@ -43,22 +43,12 @@ export class LoginFormComponent implements OnInit {
   //constructor(private authService: AuthService, public appInfo: AppInfoService, private spinner: NgxSpinnerService) { }
   constructor(private authenService: AuthenService,private router: Router, private authService: AuthService) { }
 
- /*  onLoginClick(e) {
-    this.spinner.show()
-    if (!this.validateLogin.instance.validate().isValid) {
-      return;
-    }
-
-    this.authService.logIn(this.login, this.password);
-
-    this.validateLogin.instance.reset();
-    this.spinner.hide()
-  } */
 
   ngOnInit() {
     localStorage.removeItem('token');
     if("maily" in localStorage){ 
       localStorage.removeItem('maily');
+      localStorage.removeItem('contrasena');
     } 
     if("currentUser" in localStorage){ 
       localStorage.removeItem('currentUser');

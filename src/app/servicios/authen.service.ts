@@ -50,6 +50,7 @@ export class AuthenService {
 
   logout() {
     localStorage.removeItem('token');
+    localStorage.removeItem('contrasena');
     this.router.navigate(['/login']);
   }
 

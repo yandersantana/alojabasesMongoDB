@@ -31,10 +31,11 @@ router.put('/updateAuditoriaCantidad/:id/:cantidad', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
-router.put('/updateAuditoriaEstado/:id/:estado', async (req, res,next) => {
+router.put('/updateAuditoriaEstado/:id/:estado/:fecha', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
-    await Auditoria.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
+    const { fecha } = req.params;
+    await Auditoria.findByIdAndUpdate(id, {$set: {estado:estado,fecha_fin:fecha}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

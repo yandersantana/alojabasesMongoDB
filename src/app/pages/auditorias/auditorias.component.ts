@@ -16,6 +16,9 @@ import { transaccion } from '../transacciones/transacciones';
 import { inventario, invFaltanteSucursal } from '../consolidado/consolidado';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import { AngularFireAuth } from 'angularfire2/auth';
+import { AngularFirestore } from 'angularfire2/firestore';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 
 @Component({
   selector: 'app-auditorias',
@@ -32,17 +35,21 @@ export class AuditoriasComponent implements OnInit {
   productosActivos: producto[]=[]
   productos: producto[]=[]
   nombreSucursal:string
+  number_transaccion:number=0
   auditoria:auditoriasProductos
   auditoriaProductosBase:auditoriasProductos[]=[]
   auditoriaProductosleida:auditoriasProductos[]=[]
   auditoriaProductosleida2:auditoriasProductos[]=[]
   newAuditoria: auditoria
+  editAuditoria: auditoriasProductos
   contadores:contadoresDocumentos[]=[]
   nameSucursal:string=""
   auditoriasBase: auditoria[]=[]
   auditoriasIniciadas: auditoria[]=[]
+  auditoriaEditable: auditoria
   auditoriasAcabadas: auditoria[]=[]
   transacciones: transaccion[]=[]
+  transaccion:transaccion
   idAuditorialeida:auditoria
   numProductos:number
   btnRe: boolean=false
@@ -51,6 +58,7 @@ export class AuditoriasComponent implements OnInit {
   invetarioP:inventario[]=[]
   invetarioFaltante1: invFaltanteSucursal
   invetarioFaltante:invFaltanteSucursal[]=[]
+  contadorFirebase:contadoresDocumentos[]=[]
   lectura:boolean=false
   correo:string
   usuarioLogueado:user
@@ -71,9 +79,10 @@ export class AuditoriasComponent implements OnInit {
     "Nueva Auditoria"
   ];
 
-  constructor(public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.newAuditoria = new auditoria()
+    this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
   }
 
@@ -86,6 +95,7 @@ export class AuditoriasComponent implements OnInit {
     this.traerAuditoriasProductos()
     this.traerTransacciones()
     this.cargarUsuarioLogueado()
+    this.getIDDocumentos()
   }
 
   traerParametrizaciones(){
@@ -118,7 +128,24 @@ export class AuditoriasComponent implements OnInit {
     this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.newAuditoria.idAuditoria = this.contadores[0].auditorias_Ndocumento+1
+      //this.number_transaccion= this.contadores[0].transacciones_Ndocumento
    })
+  }
+
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      new Promise<any>((resolve, reject) => {
+        if(data != null){
+          this.contadorFirebase = data
+        } 
+      })
+      this.asignarIDdocumentos2()
+    })
+    
+  }
+  asignarIDdocumentos2(){
+    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento
   }
 
   traerProductos(){
@@ -181,11 +208,33 @@ export class AuditoriasComponent implements OnInit {
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
           Swal.fire({
             title: 'Error',
-            text: 'Este producto ya ha sido auditado',
-            icon: 'error'
+            text: "Este producto ya ha sido auditado, Desea editar el producto?",
+            icon: 'error',
+            showCancelButton: true,
+            confirmButtonText: 'Si',
+            cancelButtonText: 'No'
+          }).then((result) => {
+            if (result.value) {
+                this.editAuditoria = element
+                this.editAuditoria.idAud = element.idAud
+                this.productoEntregado= element.nombreproducto
+                this.nombreSucursal= element.sucursal.nombre
+                var x = document.getElementById("editAud");
+                  var y = document.getElementById("newAud");
+                  x.style.display = "block";
+                  y.style.display = "none";
+             
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+              Swal.fire(
+                'Cancelado!',
+                'Se ha cancelado su proceso.',
+                'error'
+              )
+              this.productoEntregado=""
+              this.btnRe=true
+            }
           })
-          this.productoEntregado=""
-          this.btnRe=true
+          
         }else{
           this.btnRe=false
           this.buscarInformacion()
@@ -201,6 +250,10 @@ export class AuditoriasComponent implements OnInit {
     var z = document.getElementById("tabla2");
     var z0 = document.getElementById("tabla4");
     var z1 = document.getElementById("newAud");
+    var z2 = document.getElementById("editAud");
+    var z3 = document.getElementById("tablaAuditoria");
+
+    
 
     switch (e.value) {
       case  "Nueva Auditoria":
@@ -209,6 +262,8 @@ export class AuditoriasComponent implements OnInit {
         z.style.display="none";
         z1.style.display="none";
         z0.style.display="none";
+        z2.style.display="none";
+        z3.style.display="none";
        
        break;
       case "Ver Auditorias":
@@ -217,6 +272,8 @@ export class AuditoriasComponent implements OnInit {
         z.style.display="none";
         z1.style.display="none";
         z0.style.display="none";
+        z2.style.display="none";
+        z3.style.display="none";
        
        
         break;
@@ -225,23 +282,25 @@ export class AuditoriasComponent implements OnInit {
   }
 
   buscarInformacion(){
-    //alert("ya")
     this.invetarioP.forEach(element=>{
       if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
         switch (this.auditoria.sucursal.nombre) {
           case "matriz":
             this.auditoria.cajas_sistema= element.cantidadCajas
             this.auditoria.piezas_sistema= element.cantidadPiezas
+            
             this.calcularTotalM2Base()
             break;
           case "sucursal1":
             this.auditoria.cajas_sistema= element.cantidadCajas2
             this.auditoria.piezas_sistema= element.cantidadPiezas2
+            
             this.calcularTotalM2Base()
             break;
           case "sucursal2":
             this.auditoria.cajas_sistema= element.cantidadCajas3
             this.auditoria.piezas_sistema= element.cantidadPiezas3
+            
             this.calcularTotalM2Base()
             break;
           default:
@@ -251,6 +310,38 @@ export class AuditoriasComponent implements OnInit {
       }
     })
   }
+
+  buscarInformacionEdit(){
+    this.invetarioP.forEach(element=>{
+      if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
+        switch (this.auditoria.sucursal.nombre) {
+          case "matriz":
+            this.auditoria.cajas_sistema= element.cantidadCajas
+            this.auditoria.piezas_sistema= element.cantidadPiezas
+            
+            this.calcularTotalM2Base()
+            break;
+          case "sucursal1":
+            this.auditoria.cajas_sistema= element.cantidadCajas2
+            this.auditoria.piezas_sistema= element.cantidadPiezas2
+            
+            this.calcularTotalM2Base()
+            break;
+          case "sucursal2":
+            this.auditoria.cajas_sistema= element.cantidadCajas3
+            this.auditoria.piezas_sistema= element.cantidadPiezas3
+            
+            this.calcularTotalM2Base()
+            break;
+          default:
+            break;
+        }
+        
+      }
+    })
+  }
+
+  
 
   regresar(){
     var x = document.getElementById("tablaAuditoria");
@@ -440,10 +531,11 @@ export class AuditoriasComponent implements OnInit {
    if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {
-       this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
-         //this.contadores[0].auditorias_Ndocumento=this.newAuditoria.idAuditoria
-         this.auditoriasService.updateAuditoriaProductos(this.idAuditorialeida ,this.numProductos).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
-       }, err => {alert("error")})
+        this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
+          this.auditoriasService.updateAuditoriaProductos(this.idAuditorialeida ,this.numProductos).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
+        }, err => {alert("error")})
+  
+  
      }) 
    }else{
      Swal.fire({
@@ -453,6 +545,22 @@ export class AuditoriasComponent implements OnInit {
      })
    }
  }
+
+ guardarEditAuditoriaProducto(){
+  this.editAuditoria.fecha= new Date().toLocaleDateString()
+ if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
+    this.mostrarMensaje()
+   new Promise<any>((resolve, reject) => {
+      this.auditoriaProductoService.updateAuditoriaProducto(this.editAuditoria).subscribe( res => {this.mensajeUpdate()}, err => {alert("error")})
+   }) 
+ }else{
+   Swal.fire({
+     title: 'Error al guardar',
+     text: 'Hay campos vacios',
+     icon: 'error'
+   })
+ }
+}
 
   finalizarAuditoria(i:number){
     this.auditoriasIniciadas[i].estado = "Finalizada"
@@ -466,7 +574,8 @@ export class AuditoriasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-          this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
+          var fecha2=new Date()
+          this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],fecha2,"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
@@ -490,8 +599,8 @@ export class AuditoriasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.auditoriaProductosBase.forEach(element=>{
-          if(element.idAud ==this.auditoriaProductosBase[id].idAud ){
-            this.auditoriaProductoService.deleteAuditoria(this.auditoriaProductosBase[id]).subscribe( res => {this.auditoriaProductosBase.splice(id,1)}, err => {alert("error")})
+          if(element.idAud ==this.auditoriaProductosleida[id].idAud ){
+            this.auditoriaProductoService.deleteAuditoria(this.auditoriaProductosleida[id]).subscribe( res => {this.auditoriaProductosleida.splice(id,1)}, err => {alert("error")})
           }
         })
         
@@ -502,10 +611,157 @@ export class AuditoriasComponent implements OnInit {
     })
   }
 
-  editarAuditoriaProducto(id:number){
-    alert("entre editar")
+  realizarActualizaciones(){
+    this.mostrarMensaje()
+    var contVal=0
+    this.auditoriaProductosleida.forEach(element=>{
+      if(element.condicion != "OK"){
+          this.transaccion = new transaccion()
+          this.transaccion.fecha_mov= new Date().toLocaleDateString()
+          this.transaccion.fecha_transaccion=new Date()
+          this.transaccion.sucursal=element.sucursal.nombre
+          this.transaccion.totalsuma=element.impacto
+          this.transaccion.bodega="12"
+          
+          this.transaccion.cantM2=0
+          this.transaccion.costo_unitario=element.producto.precio
+          this.transaccion.documento=element.idAud
+          this.transaccion.factPro=""
+          this.transaccion.maestro=""
+          this.transaccion.producto=element.producto.PRODUCTO
+          if(element.cajas_diferencia <0){
+            this.transaccion.cajas=element.cajas_diferencia*(-1)
+            this.transaccion.piezas=element.piezas_diferencia*(-1)
+            this.transaccion.valor=element.impacto*(-1)
+            this.transaccion.totalsuma=element.impacto*(-1)
+          }else{
+            this.transaccion.cajas=element.cajas_diferencia
+            this.transaccion.piezas=element.piezas_diferencia
+            this.transaccion.valor=element.impacto
+            this.transaccion.totalsuma=element.impacto
+          }
+          
+          this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
+          this.transaccion.usuario=this.usuarioLogueado[0].username
+          this.transaccion.idTransaccion=this.number_transaccion++
+          this.transaccion.cliente=""
+          switch (element.condicion) {
+            case "SOBRANTE":
+              this.transaccion.tipo_transaccion="ajuste-sobrante"
+              this.transaccion.movimiento=1
+              break;
+            case "FALTANTE":
+              this.transaccion.tipo_transaccion="ajuste-faltante"
+              this.transaccion.movimiento=-1
+              break;
+          
+            default:
+              break;
+          }
 
+          this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+            res => {
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                res => {
+                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
+                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
+                },
+                err => {
+                  Swal.fire({
+                    title: "Error al guardar",
+                    text: 'Revise e intente nuevamente',
+                    icon: 'error'
+                  })
+                })
+            },
+            err => {
+              Swal.fire({
+                title: err.error,
+                text: 'Revise e intente nuevamente',
+                icon: 'error'
+              })
+            })
+          }else{
+            contVal++,this.contadorValidaciones(contVal)
+          }
+    })
+  
   }
+
+  contadorValidaciones(i:number){
+    if(this.auditoriaProductosleida.length==i){
+      this.actualizarProductos()
+     //alert("termine")
+    }else{
+      console.log("no he entrado "+i)
+    }
+  }
+
+  editarAuditoriaProducto(id:string){
+    //alert("entre editar"+id)
+    this.auditoriaProductosBase.forEach(element=>{
+      if(element.idAud ==id ){
+        this.editAuditoria = element
+        this.editAuditoria.idAud = element.idAud
+        this.productoEntregado= element.nombreproducto
+        this.nombreSucursal= element.sucursal.nombre
+        var x = document.getElementById("editAud");
+          var y = document.getElementById("tablaAuditoria");
+          x.style.display = "block";
+          y.style.display = "none";
+      }
+    })
+  }
+
+
+  actualizarProductos(){
+    var contVal=0
+    this.auditoriaProductosleida.forEach(element=>{
+        switch (element.sucursal.nombre) {
+          case "matriz":
+            element.producto.sucursal1=element.m2fisico-element.producto.suc1Pendiente
+            this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {})
+            break;
+          case "sucursal1":
+            element.producto.sucursal2=element.m2fisico-element.producto.suc2Pendiente
+            this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {})
+            break;
+          case "sucursal2":
+            element.producto.sucursal3=element.m2fisico-element.producto.suc3Pendiente
+            this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {})
+            break;
+          default:
+        }
+    })
+  }
+
+  contadorValidaciones2(i:number){
+    this.auditoriasIniciadas.forEach(element=>{
+      if(element.idAuditoria == this.auditoriaProductosleida[0].idPrincipal){ 
+        this.auditoriaEditable=element
+      }
+    })
+
+    if(this.auditoriaProductosleida.length==i){
+      var fecha2= new Date()
+      this.auditoriasService.updateAuditoriaEstado(this.auditoriaEditable,fecha2,"Finalizada").subscribe( res => {
+         Swal.fire({
+          title: 'Correcto',
+          text: 'Se ha realizado su auditoria',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })
+      }, err => {alert("error")})
+    
+    }else{
+      console.log("no he entrado "+i)
+    }
+  }
+
+
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
@@ -548,6 +804,18 @@ export class AuditoriasComponent implements OnInit {
     this.auditoria.impactoDanado = parseFloat((this.auditoria.m2daño * this.auditoria.producto.precio).toFixed(2))
   }
 
+  calcularTotalM2Edit(){
+    this.editAuditoria.m2fisico=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_fisico)+((this.editAuditoria.piezas_fisico*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
+    console.log("fff "+this.editAuditoria.m2fisico)
+    this.calculardiferencia2()
+  }
+
+  calcularTotalM2DanoEdit(){
+    this.editAuditoria.m2daño=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_danadas)+((this.editAuditoria.piezas_danadas*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
+    console.log("fff "+this.editAuditoria.m2daño)
+    this.editAuditoria.impactoDanado = parseFloat((this.editAuditoria.m2daño * this.editAuditoria.producto.precio).toFixed(2))
+  }
+
   calculardiferencia(){
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
       var m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
@@ -571,6 +839,36 @@ export class AuditoriasComponent implements OnInit {
       this.auditoria.condicion = "FALTANTE"
     }else{
       this.auditoria.condicion= "OK"
+    }
+  }
+
+  calculardiferencia2(){
+    //alert("sssss "+JSON.stringify(this.editAuditoria))
+    if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
+      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
+    }else{
+      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.04
+      console.log("22222 "+this.editAuditoria.m2fisico)
+      console.log("22222 "+this.editAuditoria.m2base)
+    }
+    
+    console.log("la diferencia es "+m2diferencia)
+    this.editAuditoria.cajas_diferencia=Math.trunc(m2diferencia /  this.editAuditoria.producto.M2);
+    console.log("SSS "+this.editAuditoria.producto.M2)
+    console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
+    
+    this.editAuditoria.piezas_diferencia=Math.trunc(m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
+    console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
+
+    this.editAuditoria.impacto = parseFloat((m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
+    console.log("sss "+this.editAuditoria.impacto)
+
+    if(m2diferencia >0){
+      this.editAuditoria.condicion = "SOBRANTE"
+    }else if (m2diferencia<0){
+      this.editAuditoria.condicion = "FALTANTE"
+    }else{
+      this.editAuditoria.condicion= "OK"
     }
   }
 
@@ -657,6 +955,18 @@ export class AuditoriasComponent implements OnInit {
     })
   }
 
+  mensajeUpdate(){
+    Swal.close()
+    Swal.fire({
+      title: 'Auditoria Actualizada',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      window.location.reload()
+    })
+  }
+
   mensajeCorrecto2(){
     Swal.fire({
       title: 'Correcto',
@@ -717,6 +1027,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas=Number(contCajas)-Number(element.cajas)
                contPiezas=Number(contPiezas)-Number(element.piezas)
               break;
+              case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
               case "traslado1":
                contCajas=Number(contCajas)-Number(element.cajas)
                contPiezas=Number(contPiezas)-Number(element.piezas)
@@ -725,6 +1039,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas=Number(contCajas)+Number(element.cajas)
                contPiezas=Number(contPiezas)+Number(element.piezas)
               break;
+              case "ajuste-sobrante":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
+             break;
              default:    
              console.log("el 22"+element2.PRODUCTO + " tiene"+element.cajas)
            }   
@@ -759,6 +1077,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas2=Number(contCajas2)-Number(element.cajas)
                contPiezas2=Number(contPiezas2)-Number(element.piezas)
               break;
+              case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
               case "traslado1":
                contCajas2=Number(contCajas2)-Number(element.cajas)
                contPiezas2=Number(contPiezas2)-Number(element.piezas)
@@ -767,6 +1089,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas2=Number(contCajas2)+Number(element.cajas)
                contPiezas2=Number(contPiezas2)+Number(element.piezas)
               break;
+              case "ajuste-sobrante":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
+             break;
              default:    
            } 
            console.log("el "+element2.PRODUCTO + " tiene"+element.cajas)
@@ -793,6 +1119,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas3=Number(contCajas3)-Number(element.cajas)
                contPiezas3=Number(contPiezas3)-Number(element.piezas)
               break;
+              case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
               case "venta-fact":
                contCajas3=Number(contCajas3)-Number(element.cajas)
                contPiezas3=Number(contPiezas3)-Number(element.piezas)
@@ -809,7 +1139,10 @@ export class AuditoriasComponent implements OnInit {
                contCajas3=Number(contCajas3)+Number(element.cajas)
                contPiezas3=Number(contPiezas3)+Number(element.piezas)
               break;
-              
+              case "ajuste-sobrante":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
+             break;
              
              default:    
            } 

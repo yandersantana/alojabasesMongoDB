@@ -16,6 +16,7 @@ export class inventario{
     totalb1:number
     totalb2:number
     totalb3:number
+    bodega:string
     constructor(){
 
     }

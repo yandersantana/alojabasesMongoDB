@@ -11,6 +11,9 @@ import { ProductoService } from 'src/app/servicios/producto.service';
 import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
 import { HttpClient } from '@angular/common/http';
 import Swal from 'sweetalert2';
+import { BodegaService } from 'src/app/servicios/bodega.service';
+import { bodega } from '../producto/producto';
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 @Component({
   selector: 'app-consolidado',
   templateUrl: './consolidado.component.html',
@@ -37,6 +40,10 @@ export class ConsolidadoComponent implements OnInit {
   invetarioProd:inventario
   productosPendientes:productosPendientesEntrega[]=[]
   productosPendientesNoEN:productosPendientesEntrega[]=[]
+  bodegas:bodega[]=[]
+  bodegasMatriz:string=""
+  bodegasSucursal1:string=""
+  bodegasSucursal2:string=""
 
   ubicacion1:string=""
   ubicacion2:string=""
@@ -45,14 +52,15 @@ export class ConsolidadoComponent implements OnInit {
   
   
 
-  constructor(public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
+  constructor(public bodegasService:BodegaService, public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
   
   }
 
   ngOnInit() {
    //this.traerProductos()
-    this.traerTransacciones()
+   this.traerTransacciones()
    this.traerProductosPendientes()
+   this.traerBodegas()
   }
 
   traerTransacciones(){
@@ -70,6 +78,33 @@ export class ConsolidadoComponent implements OnInit {
       //alert("jhjhj "+ this.productos.length)
    })
   }
+
+  traerBodegas(){
+    this.bodegasService.getBodegas().subscribe(res => {
+      this.bodegas = res as bodega[];
+      this.separarBodegas()
+   })
+  }
+
+  separarBodegas(){
+    this.bodegas.forEach(element=>{
+      switch (element.sucursal) {
+        case "matriz":
+          this.bodegasMatriz= element.nombre + " , "+this.bodegasMatriz
+          break;
+        case "sucursal1":
+          this.bodegasSucursal1= element.nombre + " , "+this.bodegasSucursal1
+          break;
+        case "sucursal2":
+          this.bodegasSucursal2= element.nombre + " ,  "+this.bodegasSucursal2
+          break;
+      
+        default:
+          break;
+      }
+    })
+  }
+  
 
   traerProductosPendientes(){
     this.productosPendientesService.getProductoPendiente().subscribe(res => {
@@ -191,24 +226,31 @@ export class ConsolidadoComponent implements OnInit {
               contCajas=Number(contCajas)+Number(element.cajas)
               contPiezas=Number(contPiezas)+Number(element.piezas)
               break;
+            case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
             case "baja":
               contCajas=Number(contCajas)-Number(element.cajas)
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
-             case "venta-fact":
-               console.log("enteteeeeee")
+            case "venta-fact":
               contCajas=Number(contCajas)-Number(element.cajas)
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
-             case "venta-not":
+            case "venta-not":
               contCajas=Number(contCajas)-Number(element.cajas)
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
-             case "traslado1":
+            case "traslado1":
               contCajas=Number(contCajas)-Number(element.cajas)
               contPiezas=Number(contPiezas)-Number(element.piezas)
              break;
-             case "traslado2":
+            case "traslado2":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
+             break;
+            case "ajuste-sobrante":
               contCajas=Number(contCajas)+Number(element.cajas)
               contPiezas=Number(contPiezas)+Number(element.piezas)
              break;
@@ -234,6 +276,10 @@ export class ConsolidadoComponent implements OnInit {
               contCajas2=Number(contCajas2)+Number(element.cajas)
               contPiezas2=Number(contPiezas2)+Number(element.piezas)
               break;
+            case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
             case "baja":
               contCajas2=Number(contCajas2)-Number(element.cajas)
               contPiezas2=Number(contPiezas2)-Number(element.piezas)
@@ -253,6 +299,10 @@ export class ConsolidadoComponent implements OnInit {
              case "traslado2":
               contCajas2=Number(contCajas2)+Number(element.cajas)
               contPiezas2=Number(contPiezas2)+Number(element.piezas)
+             break;
+             case "ajuste-sobrante":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
              break;
             default:    
           } 
@@ -276,6 +326,10 @@ export class ConsolidadoComponent implements OnInit {
               contCajas3=Number(contCajas3)+Number(element.cajas)
               contPiezas3=Number(contPiezas3)+Number(element.piezas)
               break;
+            case "ajuste-faltante": 
+              contCajas=Number(contCajas)-Number(element.cajas)
+              contPiezas=Number(contPiezas)-Number(element.piezas)
+              break;
             case "baja":
               contCajas3=Number(contCajas3)-Number(element.cajas)
               contPiezas3=Number(contPiezas3)-Number(element.piezas)
@@ -296,6 +350,10 @@ export class ConsolidadoComponent implements OnInit {
               contCajas3=Number(contCajas3)+Number(element.cajas)
               contPiezas3=Number(contPiezas3)+Number(element.piezas)
              break;
+             case "ajuste-sobrante":
+              contCajas=Number(contCajas)+Number(element.cajas)
+              contPiezas=Number(contPiezas)+Number(element.piezas)
+             break;
              
             
             default:    
@@ -315,6 +373,8 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.cantidadPiezas=contPiezas
       this.invetarioProd.cantidadPiezas2=contPiezas2
       this.invetarioProd.cantidadPiezas3=contPiezas3
+      //this.invetarioProd.bodega= "S1 ("+this.bodegasMatriz+" ) S2 ("+this.bodegasSucursal1+") S3("+this.bodegasSucursal2+")"
+      this.invetarioProd.bodega= "S1 ("+element2.ubicacionSuc1+" ) S2 ("+element2.ubicacionSuc2+") S3("+element2.ubicacionSuc3+")"
       this.invetarioP.push(this.invetarioProd)
 
      console.log("el producto "+element2.PRODUCTO+" tiene "+contCajas +" cajas")
@@ -484,6 +544,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("cantidadM2b2", "visible", true);
     e.component.columnOption("producto.CLASIFICA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
+    e.component.columnOption("bodega", "visible", true);
    
   };
  
@@ -492,6 +553,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("cantidadM2b2", "visible", false);
     e.component.columnOption("producto.CLASIFICA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
+    e.component.columnOption("bodega", "visible", false);
     e.component.endUpdate();
   }
 
@@ -499,11 +561,13 @@ export class ConsolidadoComponent implements OnInit {
     e.component.beginUpdate();
     e.component.columnOption("producto.CLASIFICA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
+    e.component.columnOption("bodega", "visible", true);
    
   };
   onExported2 (e) {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
+    e.component.columnOption("bodega", "visible", false);
     e.component.endUpdate();
   }
 

@@ -43,6 +43,7 @@ export class auditoriasProductos{
   m2base:number
   m2fisico:number
   m2daño:number
+  m2diferencia:number
   impacto:number
   condicion:string
   impactoDanado:number

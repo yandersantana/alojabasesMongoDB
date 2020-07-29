@@ -640,12 +640,24 @@ mostrarPopup(e,i:number){
       this.imagenes= element.IMAGEN
       this.titulo=element.PRODUCTO
       this.catalogoLeido = element
+      this.catalogoLeido.ubicacion1 = this.productosComprados[i].nombreComercial.ubicacionSuc1
+      this.catalogoLeido.ubicacion2 = this.productosComprados[i].nombreComercial.ubicacionSuc2
+      this.catalogoLeido.ubicacion3 = this.productosComprados[i].nombreComercial.ubicacionSuc3
       console.log("encontre")
       this.disponibilidadProducto=this.productosComprados[i].nombreComercial.sucursal1.toFixed(0)+"M    "+
       this.productosComprados[i].nombreComercial.sucursal2.toFixed(0)+"S1    "+this.productosComprados[i].nombreComercial.sucursal3.toFixed(0)+"S2  "+this.productosComprados[i].nombreComercial.bodegaProveedor.toFixed(0)+"P  "
     }
   })
   this.popupvisible=true 
+}
+
+mostrarDivUbicaciones(){
+  var x = document.getElementById("bodegUbi");
+  if (x.style.display === "none") {
+    x.style.display = "block";
+  } else {
+    x.style.display = "none";
+  }
 }
 
 verGaleria(imagenes:string[]){

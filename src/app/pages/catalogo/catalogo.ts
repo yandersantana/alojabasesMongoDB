@@ -24,6 +24,9 @@ export class catalogo{
     IMAGEN:[]
     IMAGEN_PRINCIPAL:string
     estado2:string
+    ubicacion1:string[]=[]
+    ubicacion2:string[]=[]
+    ubicacion3:string[]=[]
 
    
     constructor(){

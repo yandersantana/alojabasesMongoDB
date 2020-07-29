@@ -706,6 +706,9 @@ mostrarPopup(e,i:number){
       this.imagenes= element.IMAGEN
       this.titulo=element.PRODUCTO
       this.catalogoLeido = element
+      this.catalogoLeido.ubicacion1 = this.productosVendidos[i].producto.ubicacionSuc1
+      this.catalogoLeido.ubicacion2 = this.productosVendidos[i].producto.ubicacionSuc2
+      this.catalogoLeido.ubicacion3 = this.productosVendidos[i].producto.ubicacionSuc3
       console.log("encontre")
       var suc1=this.productosVendidos[i].producto.sucursal1+this.productosVendidos[i].producto.suc1Pendiente
       var suc2=this.productosVendidos[i].producto.sucursal2+this.productosVendidos[i].producto.suc2Pendiente
@@ -963,6 +966,15 @@ setSelectedProducto(i:number){
         guardarDatosCliente(){
           this.factura.cliente.t_cliente= this.factura.tipo_cliente
           this.factura.cliente.tventa= this.factura.tipo_venta
+        }
+
+        mostrarDivUbicaciones(){
+          var x = document.getElementById("bodegUbi");
+          if (x.style.display === "none") {
+            x.style.display = "block";
+          } else {
+            x.style.display = "none";
+          }
         }
       
       

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
@@ -19,6 +19,7 @@ import { AuthenService } from 'src/app/servicios/authen.service';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { DxDataGridComponent } from 'devextreme-angular';
 
 @Component({
   selector: 'app-auditorias',
@@ -78,6 +79,8 @@ export class AuditoriasComponent implements OnInit {
     "Ver Auditorias",
     "Nueva Auditoria"
   ];
+
+  @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
@@ -354,6 +357,15 @@ export class AuditoriasComponent implements OnInit {
       y.style.display = "block";
   }
 
+  regresar2(){
+    var x = document.getElementById("tabla4");
+    var z = document.getElementById("tabla2");
+    var y = document.getElementById("tabla3");
+      x.style.display = "none";
+      z.style.display = "none";
+      y.style.display = "block";
+  }
+
   verLista(id:number){
     var cont=0
     this.auditoriaProductosleida.forEach(element=>{
@@ -400,10 +412,7 @@ export class AuditoriasComponent implements OnInit {
   }
 
   verLista3(e){
-    var x = document.getElementById("tabla4");
-    var y = document.getElementById("tabla3");
-      x.style.display = "block";
-      y.style.display = "none";
+    
     var cont=0
     this.auditoriaProductosleida2.forEach(element=>{
       cont++
@@ -414,10 +423,23 @@ export class AuditoriasComponent implements OnInit {
       })
     }
     this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == e.idAuditoria){
-        this.auditoriaProductosleida2.push(element)
+      if(element.idPrincipal == e.idAuditoria ){
+        //alert("elll "+element.valoracion)
+        if(element.valoracion!="Ok"){
+          this.auditoriaProductosleida2.push(element)
+        }
+        
       }
     })
+
+    if(this.auditoriaProductosleida2.length==0){
+
+    }
+    var x = document.getElementById("tabla4");
+    var y = document.getElementById("tabla3");
+      x.style.display = "block";
+      y.style.display = "none";
+    this.dataGrid2.instance.refresh()
    
   }
 
@@ -466,6 +488,83 @@ export class AuditoriasComponent implements OnInit {
 
   getCourseFile2 = (e) => {
     this.verLista3(e.row.data)  
+  }
+
+  getCourseFile3 = (e) => {
+    this.eliminarAuditoria(e.row.data)  
+  }
+
+  eliminarAuditoria(e){
+    Swal.fire({
+      title: 'Eliminar Auditoría',
+      text: "Esta seguro que desea eliminar la auditoria #"+e.idAud,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        this.auditoriaProductoService.deleteAuditoria(e).subscribe( res => { 
+          this.actualizarProductoEliminado(e)
+        }, err => {alert("error")})
+        
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+  actualizarProductoEliminado(e){
+    var sumaProductos=0
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == e.producto.PRODUCTO){
+        switch (e.sucursal.nombre) {
+          case "matriz":
+            sumaProductos= element.sucursal1- e.m2diferencia
+            this.productoService.updateProductoSucursal1ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
+            break;
+          case "sucursal1":
+            sumaProductos= element.sucursal2- e.m2diferencia
+            this.productoService.updateProductoSucursal2ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
+            break;
+          case "sucursal2":
+            sumaProductos= element.sucursal3- e.m2diferencia
+          this.productoService.updateProductoSucursal3ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
+              break;
+          default:
+        }
+
+      }
+    })
+  }
+
+  eliminarTransaccion(e){
+    //alert(e.idPrincipal)
+    //alert(e.producto.PRODUCTO)
+    //alert(this.transacciones.length)
+    
+    this.transacciones.forEach(element=>{
+      if(element.documento == e.idAud && element.producto == e.producto.PRODUCTO){
+       this.transaccionesService.deleteTransaccion(element).subscribe( res => {this.mensajeOK()}, err => {alert("error")})
+      }
+    })
+  }
+
+  mensajeOK(){
+    Swal.close()
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se eliminó con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      window.location.reload()
+    })
   }
 
   separarAuditorias(){
@@ -824,24 +923,24 @@ export class AuditoriasComponent implements OnInit {
 
   calculardiferencia(){
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
-      var m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
+       this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
-      var m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.02
+      this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.02
     }
     
-    console.log("la diferencia es "+m2diferencia)
-    this.auditoria.cajas_diferencia=Math.trunc(m2diferencia /  this.auditoria.producto.M2);
+    console.log("la diferencia es "+this.auditoria.m2diferencia)
+    this.auditoria.cajas_diferencia=Math.trunc(this.auditoria.m2diferencia /  this.auditoria.producto.M2);
     console.log("cajas diferencia "+this.auditoria.cajas_diferencia)
     
-    this.auditoria.piezas_diferencia=Math.trunc(m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
+    this.auditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
 
-    this.auditoria.impacto = parseFloat((m2diferencia * this.auditoria.producto.precio).toFixed(2))
+    this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
     console.log("sss "+this.auditoria.impacto)
 
-    if(m2diferencia >0){
+    if(this.auditoria.m2diferencia >0){
       this.auditoria.condicion = "SOBRANTE"
-    }else if (m2diferencia<0){
+    }else if (this.auditoria.m2diferencia<0){
       this.auditoria.condicion = "FALTANTE"
     }else{
       this.auditoria.condicion= "OK"
@@ -851,27 +950,27 @@ export class AuditoriasComponent implements OnInit {
   calculardiferencia2(){
     //alert("sssss "+JSON.stringify(this.editAuditoria))
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
-      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
+      this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
-      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.02
+      this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.02
       console.log("22222 "+this.editAuditoria.m2fisico)
       console.log("22222 "+this.editAuditoria.m2base)
     }
     
-    console.log("la diferencia es "+m2diferencia)
-    this.editAuditoria.cajas_diferencia=Math.trunc(m2diferencia /  this.editAuditoria.producto.M2);
+    console.log("la diferencia es "+this.editAuditoria.m2diferencia)
+    this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);
     console.log("SSS "+this.editAuditoria.producto.M2)
     console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
     
-    this.editAuditoria.piezas_diferencia=Math.trunc(m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
+    this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
 
-    this.editAuditoria.impacto = parseFloat((m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
+    this.editAuditoria.impacto = parseFloat((this.editAuditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
     console.log("sss "+this.editAuditoria.impacto)
 
-    if(m2diferencia >0){
+    if(this.editAuditoria.m2diferencia >0){
       this.editAuditoria.condicion = "SOBRANTE"
-    }else if (m2diferencia<0){
+    }else if (this.editAuditoria.m2diferencia<0){
       this.editAuditoria.condicion = "FALTANTE"
     }else{
       this.editAuditoria.condicion= "OK"

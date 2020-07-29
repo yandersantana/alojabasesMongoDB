@@ -83,6 +83,7 @@ export class AuditoriaClComponent implements OnInit {
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.newAuditoria = new auditoria()
+    this.auditoria.valoracion= "Ok"
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
     

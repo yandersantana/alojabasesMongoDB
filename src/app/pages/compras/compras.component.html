@@ -415,9 +415,29 @@
                                 </tr>
                                 <tr>
                                     <th>DISPONIBILIDAD</th>
-                                    <td style="font-weight: bold;">{{disponibilidadProducto}}</td>
+                                    <td style="font-weight: bold;">{{disponibilidadProducto}}<button style="text-align: right;" (click)="mostrarDivUbicaciones()"><i class="fa fa-map-marker"></i></button></td>
                                 </tr>
                               </table>
+
+                              <br><br>
+                              <div id="bodegUbi" style="display: none;" >
+                                <div style="text-align: center;font-weight: bold;">UBICACIONES</div>
+                                <table style="width:100%">
+                                    <tr>
+                                      <th>MATRIZ</th>
+                                      <td>{{catalogoLeido.ubicacion1}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>SUCURSAL 1</th>
+                                        <td>{{catalogoLeido.ubicacion2}}</td>
+                                    </tr>
+                                    <tr>
+                                        <th>SUCURSAL 2</th>
+                                        <td>{{catalogoLeido.ubicacion3}}</td>
+                                    </tr>
+                                  </table>
+                              </div>
+                              <br><br>
                         </div>
                         <div class="col-md-1"></div>
                     </div>

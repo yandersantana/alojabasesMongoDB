@@ -1,0 +1,83 @@
+
+
+<!-- <qrcode [qrdata]="'Your data string'" elementType="img" [width]="256" [errorCorrectionLevel]="'M'"></qrcode> -->
+
+
+
+
+<br>
+<br>
+<br>
+<div class="col-md-12">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+
+            <div class="card">
+                <h3 class="card-header text-center font-weight-bold text-uppercase ">Generador QR</h3>
+                <div class="card-body">
+                    <div class="col-md-12">
+                      
+                        <div class="row">
+                            <div class="col-md-6"><h5>Generar código QR por:</h5></div>
+                            <div class="col-md-6"> <dx-select-box [items]="tiposCodigos" 
+                                [value]="tiposCodigos[0]" 
+                                [readOnly]="false" 
+                                [disabled]="false"
+                                (onValueChanged)="opcionMenu($event)"></dx-select-box></div>
+                        </div>
+                        <br><br> 
+                        
+                        <div class="row">
+                          <div class="col-md-4">Seleccione el producto:</div>
+                          <div class="col-md-4">
+                            <dx-select-box
+                                [dataSource]="productosActivos"
+                                displayExpr="PRODUCTO"
+                                [searchEnabled]="true"
+                                valueExpr="PRODUCTO"
+                                [(value)]="nombre_producto"
+                                (onValueChanged)="obtenerDatosDeProductoParaUnDetalle()"
+                                itemTemplate="item">
+                            </dx-select-box>
+                          </div>
+                          <div class="col-md-4"></div>
+                        </div>
+
+                        <div class="row" >
+                         
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6" class="bordeQR">
+                              <div class="row">
+                                <div class="col-md-4"><qrcode [qrdata]="'Your data string' " elementType="img" [width]="128" [errorCorrectionLevel]="'M'"></qrcode></div>
+                                <div class="col-md-8">
+                                  <br>
+                                  <p>{{nombre_producto}}</p>
+                                  <p>Piezas/Caja: {{cantidadPiezas}}</p>
+                                  <p>Metros/Caja: {{m2Caja}}</p>
+                                </div>
+                              </div>
+                            </div>
+                            <div class="col-md-3"></div>
+
+                            <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF()" >pdf
+                            </button>
+                          
+                       
+                           
+                         
+                          
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        
+            
+        
+    
+    
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>

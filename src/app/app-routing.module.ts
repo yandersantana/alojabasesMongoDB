@@ -100,6 +100,7 @@ import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.com
 import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 import { BodegasComponent } from './pages/bodegas/bodegas.component';
 import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
+import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
 
 
 const routes: Routes = [
@@ -241,6 +242,11 @@ const routes: Routes = [
   {
     path: 'auditorias2',
     component: AuditoriaClComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'generador-qr',
+    component: GenerarQRComponent,
     canActivate: [ AuthGuardService ]
   },
   {

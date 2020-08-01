@@ -62,6 +62,7 @@ export class AuditoriasComponent implements OnInit {
   contadorFirebase:contadoresDocumentos[]=[]
   lectura:boolean=false
   correo:string
+  pass:string
   usuarioLogueado:user
   seleccionado:boolean=false
   menuValoracion: string[] = [
@@ -88,6 +89,7 @@ export class AuditoriasComponent implements OnInit {
     this.newAuditoria = new auditoria()
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
+    
   }
 
   ngOnInit() {
@@ -100,6 +102,10 @@ export class AuditoriasComponent implements OnInit {
     this.traerTransacciones()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos()
+    /* var x = document.getElementById("newAudGlobal");
+    var y = document.getElementById("tabla3");
+    x.style.display= "block"
+    y.style.display= "none" */
    
   }
 
@@ -197,6 +203,8 @@ export class AuditoriasComponent implements OnInit {
         this.auditoria.nombreproducto = element.PRODUCTO
         if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos"){
           this.lectura=true
+        }else{
+          this.lectura=false
         }
         this.compararProducto()
       }
@@ -251,6 +259,17 @@ export class AuditoriasComponent implements OnInit {
     
   }
 
+  onExporting2 (e) {
+    e.component.beginUpdate();
+    e.component.columnOption("observaciones", "visible", true);
+    
+  };
+  onExported2 (e) {
+    e.component.columnOption("observaciones", "visible", false);
+    
+    e.component.endUpdate();
+  }
+
   opcionMenu(e){
     var x = document.getElementById("newAudGlobal");
     var y = document.getElementById("tabla3");
@@ -281,6 +300,7 @@ export class AuditoriasComponent implements OnInit {
         z0.style.display="none";
         z2.style.display="none";
         z3.style.display="none";
+        this.dataGrid2.instance.refresh()
        
        
         break;
@@ -544,15 +564,36 @@ export class AuditoriasComponent implements OnInit {
   }
 
   eliminarTransaccion(e){
-    //alert(e.idPrincipal)
-    //alert(e.producto.PRODUCTO)
-    //alert(this.transacciones.length)
-    
     this.transacciones.forEach(element=>{
       if(element.documento == e.idAud && element.producto == e.producto.PRODUCTO){
        this.transaccionesService.deleteTransaccion(element).subscribe( res => {this.mensajeOK()}, err => {alert("error")})
       }
     })
+  }
+
+  seguirAuditoria(i:number){
+    this.pass = localStorage.getItem("contrasena");
+    if (this.pass == this.auditoriasIniciadas[i].contrasena ) {
+      var x = document.getElementById("newAud");
+      var y = document.getElementById("newAudGlobal");
+      x.style.display = "block";
+      y.style.display = "none";
+      this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
+      this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
+      this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
+      this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
+      this.idAuditorialeida = this.auditoriasIniciadas[i]
+      this.auditoria.auditor = this.usuarioLogueado[0].name
+      this.numProductos = Number(this.auditoriasIniciadas[i].cantidad_productos+1)
+      this.llenarLista(this.auditoriasIniciadas[i].idAuditoria)
+    }else{
+      Swal.fire(
+        'Error',
+        'Usted no se encuentra realizando esta auditoria, debe primero ingresar el código',
+        'error'
+      )
+    }
+         
   }
 
   mensajeOK(){
@@ -568,6 +609,7 @@ export class AuditoriasComponent implements OnInit {
   }
 
   separarAuditorias(){
+   
     this.auditoriasBase.forEach(element=>{
       if(element.estado == "Iniciada"){
         this.auditoriasIniciadas.push(element)
@@ -575,6 +617,7 @@ export class AuditoriasComponent implements OnInit {
         this.auditoriasAcabadas.push(element)
       }
     })
+    
   }
 
   obtenerSucursal(e){
@@ -995,7 +1038,7 @@ export class AuditoriasComponent implements OnInit {
           //var z = document.getElementById("aprobaciones");
           x.style.display = "block";
           y.style.display = "none";
-
+          localStorage.setItem('contrasena',  result.value);
           this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
           this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
           this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre

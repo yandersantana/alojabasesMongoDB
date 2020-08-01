@@ -120,6 +120,9 @@ export const navigationAdmin = [
     items: [{
       text: 'Calculadora',
       path: '/calculadora',
+      },{
+        text: 'Generador QR',
+        path: '/generador-qr',
       }]
   },
   {

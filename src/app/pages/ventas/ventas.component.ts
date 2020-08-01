@@ -358,7 +358,7 @@ contadores:contadoresDocumentos[]
     }
         
     
-    this.number_transaccion = this.contadores[0].transacciones_Ndocumento+1 
+    //this.number_transaccion = this.contadores[0].transacciones_Ndocumento 
   }
 
   asignarIDdocumentos2(){
@@ -380,7 +380,7 @@ contadores:contadoresDocumentos[]
     }
         
     
-    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1 
+    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1
   }
 
 
@@ -1741,6 +1741,7 @@ var tipoDoc:boolean=false
               text: "Fecha:   "+this.mySimpleFormat,
               alignment:"right"
             },
+           
             ]
             
             //alignment: 'center'
@@ -3158,7 +3159,7 @@ var tipoDoc:boolean=false
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
-              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
                   //console.log(res + "entre por si");
@@ -3364,7 +3365,7 @@ var tipoDoc:boolean=false
           
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
-              this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
+              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
               this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
                 res => {
                   this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })

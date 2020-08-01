@@ -41,6 +41,8 @@ import { ControlPreciosComponent } from './pages/control-precios/control-precios
 import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 import { BodegasComponent } from './pages/bodegas/bodegas.component';
 import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
+import { QRCodeModule } from 'angularx-qrcode';
+import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
 
 
 
@@ -71,7 +73,8 @@ import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.componen
     ControlPreciosComponent,
     AuditoriasComponent,
     BodegasComponent,
-    AuditoriaClComponent
+    AuditoriaClComponent,
+    GenerarQRComponent
   ],
   imports: [
     BrowserModule,
@@ -95,7 +98,7 @@ import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.componen
     DxCheckBoxModule,
     DxScrollViewModule,
     DxNumberBoxModule,
-    
+    QRCodeModule,
     DxPopupModule,
     DxDateBoxModule,
     DxAutocompleteModule,

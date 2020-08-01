@@ -41,6 +41,9 @@
                                 <div class="col-md-8"><dx-select-box [items]="locales" [(value)]="nameSucursal" [readOnly]="false" [disabled]="false"
                                     [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre" (onValueChanged)="validarSucursal($event)">
                                 </dx-select-box></div>
+
+                                <div class="col-md-4" style="padding-top: 0.7em;">Auditado</div>
+                                <div class="col-md-8"><dx-text-box [(value)]="newAuditoria.auditado" [disabled]="false" [readOnly]="false"></dx-text-box></div>
                                 
                                 <div class="col-md-12">
                                     <div class="row">
@@ -227,13 +230,16 @@
                                         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                                         <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
                                         <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
+                                        <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
                                         <dxi-column dataField="fecha" dataType="date" [visible]="true"></dxi-column>
                                         <dxi-column dataField="auditor" [visible]="false"></dxi-column>
+                                        <dxi-column dataField="auditado" [visible]="true"></dxi-column>
                                         <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
                                         <dxi-column dataField="cajas_danadas"  dataType="number" caption="Cajas"></dxi-column>
                                         <dxi-column dataField="piezas_danadas"  dataType="number" caption="Piezas"></dxi-column>
                                         <dxi-column dataField="valoracion" caption="Condición" [visible]="true"></dxi-column>
                                         <dxi-column dataField="impactoDanado" caption="Impacto" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="auditor" caption="Auditor" [visible]="false"></dxi-column>
                                         <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
                                         <dxo-paging [pageSize]="10"></dxo-paging>
                                         <dxo-pager 

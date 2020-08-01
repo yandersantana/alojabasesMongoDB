@@ -824,7 +824,11 @@ export class AuditoriaClComponent implements OnInit {
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
       var m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
-      var m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.02
+      if(this.auditoria.m2fisico<this.auditoria.m2base){
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
+      }else{
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
+      }
     }
     
     console.log("la diferencia es "+m2diferencia)
@@ -851,9 +855,11 @@ export class AuditoriaClComponent implements OnInit {
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
-      var m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.02
-      console.log("22222 "+this.editAuditoria.m2fisico)
-      console.log("22222 "+this.editAuditoria.m2base)
+      if(this.auditoria.m2fisico<this.auditoria.m2base){
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
+      }else{
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
+      }
     }
     
     console.log("la diferencia es "+m2diferencia)
@@ -896,6 +902,7 @@ export class AuditoriaClComponent implements OnInit {
           localStorage.setItem('contrasena',  result.value);
           this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
           this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
+          this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
           this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
           this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
           this.idAuditorialeida = this.auditoriasIniciadas[i]
@@ -928,6 +935,7 @@ export class AuditoriaClComponent implements OnInit {
       y.style.display = "none";
       this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
       this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
+      this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
       this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
       this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
       this.idAuditorialeida = this.auditoriasIniciadas[i]

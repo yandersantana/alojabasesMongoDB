@@ -1226,6 +1226,7 @@ buscarCotizacion(){
       this.factura.coste_transporte=element.coste_transporte
       this.factura.observaciones=element.observaciones
       this.factura.cotizacion=element.documento_n
+      this.productosVendidos= element.productosVendidos
       this.nCotizacionFact ="Referecia Cotización: #"+element.documento_n
     }else{
       Swal.fire(
@@ -1239,7 +1240,7 @@ buscarCotizacion(){
   })
 
   if(bandera){
-    this.productosVendidos2.forEach(element=>{
+    /* this.productosVendidos2.forEach(element=>{
       console.log("entre aqui evntas" + element.factura_id +"tipo Docuemnto"+ element.tipoDocumentoVenta)
       if(element.factura_id == this.Ncotizacion && element.tipoDocumentoVenta == "Cotización"){
         
@@ -1247,7 +1248,7 @@ buscarCotizacion(){
         this.productosVendidos.push(element)
         console.log("entre aqui evntas")
       }
-    })
+    }) */
     this.buscarCantidadesPRODUCTOS()
     this.deleteProductoVendido(0)
     this.newButtonEnabled = false
@@ -3231,7 +3232,7 @@ var tipoDoc:boolean=false
    
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje
-  
+    this.factura.productosVendidos=this.productosVendidos
     this.guardarDatosCliente()
     this.factura.dni_comprador= this.factura.cliente.ruc
     if(this.ventasForm.instance.validate().isValid){
@@ -3260,28 +3261,8 @@ var tipoDoc:boolean=false
               })
             })
         });
-       
-   //     if(grabar)
-        /* this.db
-        .collection("/clientes")
-        .doc(this.factura.cliente.ruc).set({ ...this.factura.cliente })
-        .then(res => { }, err => reject(err));
-        //console.log("los datos"+this.factura.cliente.cliente_nombre)
-        this.db
-        .collection("/cotizaciones")
-        .doc(this.factura.documento_n.toString()).set({ ...Object.assign({}, this.factura) })
-        .then(res => { }, err => reject(err));
-        this.db
-        .collection("/proformas")
-        .doc("matriz").set({ n_documento:this.factura.documento_n })
-        .then(res => { }, err => reject(err));
-        this.productosVendidos.forEach(element => {
-          element.factura_id = this.factura.documento_n
-          this.db.collection("/productosVendidos").add({ ... element})
-          .then(res => { }, err => reject(err));
-        }); */
+
       });
-     // this.getProformas();
     this.crearPDF();
     }else{
       Swal.fire(

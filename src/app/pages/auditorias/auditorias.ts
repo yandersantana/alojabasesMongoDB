@@ -9,11 +9,13 @@ export class auditoria{
   fecha_inicio:Date
   estado:string
   fecha_fin:Date
+  auditado:string
   constructor(){
     this.fecha_inicio= new Date()
     this.fecha_fin= new Date()
     this.estado="Iniciada"
     this.cantidad_productos=0
+    this.auditado= ""
   }
 
 }
@@ -24,6 +26,7 @@ export class auditoria{
 export class auditoriasProductos{
   _id:string
   idPrincipal:number
+  auditado:string
   idAud:string
   fecha:string
   auditor:string

@@ -262,11 +262,14 @@ export class AuditoriasComponent implements OnInit {
   onExporting2 (e) {
     e.component.beginUpdate();
     e.component.columnOption("observaciones", "visible", true);
+    e.component.columnOption("auditor", "visible", true);
+    e.component.columnOption("sucursal.nombre", "visible", true);
     
   };
   onExported2 (e) {
     e.component.columnOption("observaciones", "visible", false);
-    
+    e.component.columnOption("auditor", "visible", false);
+    e.component.columnOption("sucursal.nombre", "visible", false);
     e.component.endUpdate();
   }
 
@@ -564,9 +567,13 @@ export class AuditoriasComponent implements OnInit {
   }
 
   eliminarTransaccion(e){
+    alert("ddd "+e.idPrincipal)
+    alert("ddd "+e.producto.PRODUCTO)
     this.transacciones.forEach(element=>{
-      if(element.documento == e.idAud && element.producto == e.producto.PRODUCTO){
-       this.transaccionesService.deleteTransaccion(element).subscribe( res => {this.mensajeOK()}, err => {alert("error")})
+      if(element.documento == e.idPrincipal &&  element.producto == e.producto.PRODUCTO){
+        if(element.tipo_transaccion=="ajuste-faltante" || element.tipo_transaccion=="ajuste-sobrante"){
+          this.transaccionesService.deleteTransaccion(element).subscribe( res => {this.mensajeOK()}, err => {alert("error")})
+        }
       }
     })
   }
@@ -580,6 +587,7 @@ export class AuditoriasComponent implements OnInit {
       y.style.display = "none";
       this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
       this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
+      this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
       this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
       this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
       this.idAuditorialeida = this.auditoriasIniciadas[i]
@@ -654,9 +662,8 @@ export class AuditoriasComponent implements OnInit {
   }
 
   guardarAuditoria(){
-    
-     console.log("datos "+JSON.stringify(this.newAuditoria))
-    if( this.newAuditoria.contrasena!=undefined && this.newAuditoria.sucursal != undefined){
+
+    if( this.newAuditoria.contrasena!=undefined && this.newAuditoria.sucursal != undefined && this.newAuditoria.auditado!= " "){
        this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
         this.auditoriasService.newAuditoria(this.newAuditoria).subscribe( res => {
@@ -773,7 +780,7 @@ export class AuditoriasComponent implements OnInit {
           
           this.transaccion.cantM2=0
           this.transaccion.costo_unitario=element.producto.precio
-          this.transaccion.documento=element.idAud
+          this.transaccion.documento=element.idPrincipal+""
           this.transaccion.factPro=""
           this.transaccion.maestro=""
           this.transaccion.producto=element.producto.PRODUCTO
@@ -968,7 +975,12 @@ export class AuditoriasComponent implements OnInit {
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
-      this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.02
+      if(this.auditoria.m2fisico<this.auditoria.m2base){
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
+      }else{
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
+      }
+      
     }
     
     console.log("la diferencia es "+this.auditoria.m2diferencia)
@@ -995,9 +1007,11 @@ export class AuditoriasComponent implements OnInit {
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
-      this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.02
-      console.log("22222 "+this.editAuditoria.m2fisico)
-      console.log("22222 "+this.editAuditoria.m2base)
+      if(this.auditoria.m2fisico<this.auditoria.m2base){
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
+      }else{
+        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
+      }
     }
     
     console.log("la diferencia es "+this.editAuditoria.m2diferencia)
@@ -1041,6 +1055,7 @@ export class AuditoriasComponent implements OnInit {
           localStorage.setItem('contrasena',  result.value);
           this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
           this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
+          this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
           this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
           this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
           this.idAuditorialeida = this.auditoriasIniciadas[i]

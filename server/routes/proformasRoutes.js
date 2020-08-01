@@ -26,6 +26,7 @@ router.put('/update/:id', async (req, res,next) => {
         subtotalF1:req.body.subtotalF1,
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
+        productosVendidos:req.body.productosVendidos,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado
     };
@@ -58,6 +59,7 @@ router.post('/newProforma', async (req, res) => {
         subtotalF1:req.body.subtotalF1,
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
+        productosVendidos:req.body.productosVendidos,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado
     });

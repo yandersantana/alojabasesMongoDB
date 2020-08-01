@@ -10,6 +10,7 @@ const AuditoriaSchema = new Schema({
     cantidad_productos: { type: Number, required: false},
     fecha_inicio: { type: Date, required: false},
     fecha_fin: { type: Date, required: false},
+    auditado: { type: String, required: false},
     estado: { type: String, required: false}
    
 },{

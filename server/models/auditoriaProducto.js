@@ -8,6 +8,7 @@ const AuditoriaProductoSchema = new Schema({
     idPrincipal: { type: Number, required: false},
     idAud: { type: String, required: false},
     auditor: { type: String, required: false},
+    auditado: { type: String, required: false},
     nombre_auditor: { type: String, required: false},
     sucursal: { type: SucursalSchema, required: false},
     producto: { type: ProductoSchema, required: false},

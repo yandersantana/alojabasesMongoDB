@@ -45,28 +45,31 @@
                         </div>
 
                         <div class="row" >
-                         
+                          <div class="col-md-12" style="margin-top: 2em;"></div>
                             <div class="col-md-3"></div>
                             <div class="col-md-6" class="bordeQR">
-                              <div class="row">
-                                <div class="col-md-4"><qrcode [qrdata]="'Your data string' " elementType="img" [width]="128" [errorCorrectionLevel]="'M'"></qrcode></div>
-                                <div class="col-md-8">
-                                  <br>
-                                  <p>{{nombre_producto}}</p>
-                                  <p>Piezas/Caja: {{cantidadPiezas}}</p>
-                                  <p>Metros/Caja: {{m2Caja}}</p>
+                              <div id="codigo" style="display: none;">
+                                <div class="row" >
+                                  <div class="col-md-4"><qrcode [qrdata]="texto" elementType="img" [width]="128" [errorCorrectionLevel]="'M'"></qrcode></div>
+                                  <div class="col-md-8">
+                                    <br>
+                                    <p>{{nombre_producto}}</p>
+                                    <p>Piezas/Caja: {{cantidadPiezas}}</p>
+                                    <p>Metros/Caja: {{m2Caja}}</p>
+                                  </div>
                                 </div>
-                              </div>
+                             </div>
                             </div>
                             <div class="col-md-3"></div>
 
-                            <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF()" >pdf
-                            </button>
-                          
-                       
-                           
-                         
-                          
+                        </div>
+
+                        <div class="row">
+                         <div class="col-md-12" style="margin-top: 2em;"></div>
+                          <div class="col-md-4" ></div>
+                            <div class="col-md-4" style="text-align: center;"><button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF()" >Descargar PDF
+                            </button></div>
+                            <div class="col-md-4"></div>
                         </div>
                     </div>
 

@@ -10,6 +10,7 @@ router.post('/newAuditoria', async (req, res) => {
       cantidad_productos:req.body.cantidad_productos,
       fecha_inicio:req.body.fecha_inicio,
       estado:req.body.estado,
+      auditado:req.body.auditado,
       fecha_fin:req.body.fecha_fin,
       fecha_fin:req.body.fecha_fin});
     await newAuditoria.save();
@@ -47,6 +48,7 @@ router.put('/update/:id', async (req, res,next) => {
       idAuditoria:req.body.idAuditoria, 
       contrasena:req.body.contrasena, 
       sucursal:req.body.sucursal,
+      auditado:req.body.auditado,
       cantidad_productos:req.body.cantidad_productos,
       fecha_inicio:req.body.fecha_inicio,
       fecha_fin:req.body.fecha_fin,

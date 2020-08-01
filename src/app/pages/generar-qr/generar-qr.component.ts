@@ -19,6 +19,7 @@ export class GenerarQRComponent implements OnInit {
   nombre_producto:string
   cantidadPiezas:number
   m2Caja:number
+  texto="hola"
 
   constructor(public productoService:ProductoService) { }
 
@@ -38,8 +39,13 @@ export class GenerarQRComponent implements OnInit {
       if(element.PRODUCTO == this.nombre_producto){
         this.cantidadPiezas= element.P_CAJA
         this.m2Caja= element.M2
+        this.texto = element.PRODUCTO
+        var x = document.getElementById("codigo");
+        x.style.display = "block";
       }
     })
+
+
 
   }
 
@@ -184,13 +190,13 @@ export class GenerarQRComponent implements OnInit {
     return {
       columns: [
         {
-          width: 200,
+          width: 175,
            table: {
             widths: ["35%","65%"],
             alignment:'center',
             body: [
               ...productos.map(ed =>{
-                return [ { qr: ed.PRODUCTO, fit: '70',margin: [20, 15, 0, 15] },
+                return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
                 {	type: 'none',
                 margin: [0, 15, 20, 15],
                 fontSize: 8,
@@ -205,15 +211,46 @@ export class GenerarQRComponent implements OnInit {
           layout: 'lightHorizontalLines',
         },
         {
-          // star-sized columns fill the remaining space
-          // if there's more than one star-column, available width is divided equally
-          width: 200,
-          text: 'Second column'
+          width: 175,
+          table: {
+           widths: ["35%","65%"],
+           alignment:'center',
+           body: [
+             ...productos.map(ed =>{
+               return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
+               {	type: 'none',
+               margin: [0, 15, 20, 15],
+               fontSize: 8,
+               ol: [
+                 ed.PRODUCTO,
+                 "Piezas/Caja: "+ed.P_CAJA,
+                 "Metros/Caja: "+ed.M2
+               ]}];
+             }),
+           ]
+         } ,
+         layout: 'lightHorizontalLines',
         },
         {
-          // fixed width
-          width: 100,
-          text: 'Third column'
+          width: 175,
+          table: {
+           widths: ["35%","65%"],
+           alignment:'center',
+           body: [
+             ...productos.map(ed =>{
+               return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
+               {	type: 'none',
+               margin: [0, 15, 20, 15],
+               fontSize: 8,
+               ol: [
+                 ed.PRODUCTO,
+                 "Piezas/Caja: "+ed.P_CAJA,
+                 "Metros/Caja: "+ed.M2
+               ]}];
+             }),
+           ]
+         } ,
+         layout: 'lightHorizontalLines',
         },
       ],
       /* table: {

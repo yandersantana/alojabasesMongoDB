@@ -976,8 +976,10 @@ export class AuditoriasComponent implements OnInit {
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
       if(this.auditoria.m2fisico<this.auditoria.m2base){
+        
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
       }else{
+        //alert("entre2")
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
       }
       
@@ -1007,10 +1009,10 @@ export class AuditoriasComponent implements OnInit {
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
-      if(this.auditoria.m2fisico<this.auditoria.m2base){
-        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
+      if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){
+        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.04
       }else{
-        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
+        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.03
       }
     }
     

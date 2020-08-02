@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { producto } from '../ventas/venta';
 import pdfMake from 'pdfmake/build/pdfmake';
+import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.service';
+import { opcionesCatalogo } from '../catalogo/catalogo';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-generar-qr',
@@ -20,11 +23,15 @@ export class GenerarQRComponent implements OnInit {
   cantidadPiezas:number
   m2Caja:number
   texto="hola"
+  opcionesCatalogo: opcionesCatalogo[]=[]
+  arrayClasif: string[]
+  arrayUnid: string[]
 
-  constructor(public productoService:ProductoService) { }
+  constructor(public productoService:ProductoService,public opcionesService:OpcionesCatalogoService) { }
 
   ngOnInit() {
     this.traerProductos()
+    this.traerOpcionesCatalogo()
   }
 
 
@@ -32,6 +39,21 @@ export class GenerarQRComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[]; 
    })
+  }
+
+  traerOpcionesCatalogo(){
+    this.opcionesService.getOpciones().subscribe(res => {
+      this.opcionesCatalogo = res as opcionesCatalogo[];
+      this.llenarCombos()
+   })
+  }
+
+  llenarCombos(){
+    this.opcionesCatalogo.forEach(element=>{
+      console.log(JSON.stringify(element))
+         this.arrayUnid= element.arrayUnidades
+         this.arrayClasif= element.arrayClasificación
+    })
   }
 
   obtenerDatosDeProductoParaUnDetalle(){
@@ -44,8 +66,15 @@ export class GenerarQRComponent implements OnInit {
         x.style.display = "block";
       }
     })
+  }
 
+  opcionMenu2(e){
+    console.log("la opciones "+e.value)
+    this.productosActivos.forEach(element=>{
+      if(element.CLASIFICA == e.value){
 
+      }
+    })
 
   }
 
@@ -55,12 +84,12 @@ export class GenerarQRComponent implements OnInit {
     var y = document.getElementById("op2");
 
     switch (e.value) {
-      case "De cajas a m2":
+      case "Producto Unitario":
         x.style.display = "block";
         y.style.display="none";
        break;
 
-      case "De m2 a cajas":
+      case "Grupo de Productos":
         x.style.display = "none";
         y.style.display="block";
         break;

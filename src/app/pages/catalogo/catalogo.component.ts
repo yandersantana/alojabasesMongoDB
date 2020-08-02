@@ -122,15 +122,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   ngOnInit() {
-   /*  this.getOpcionesCatalogo()
-    this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
-      new Promise<any>((resolve, reject) => {
-        this.productosCatalogo = data
-      })
-      this.separarProductos()
-    }) */
-
-    //this.verGaleria()
     this.traerProductosCatalogo()
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()

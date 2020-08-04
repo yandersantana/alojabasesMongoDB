@@ -93,7 +93,8 @@ export class CatalogoComponent implements OnInit {
     CANT_MINIMA:0,
     IMAGEN:[],
     IMAGEN_PRINCIPAL:"",
-    estado2:"Activo"
+    estado2:"Activo",
+    precio:0
 
   }
   elementRef
@@ -149,17 +150,7 @@ export class CatalogoComponent implements OnInit {
    })
   }
 
-  /* async getOpcionesCatalogo(){
-    await this.db.collection('/opcionesCatalogo').snapshotChanges().subscribe((opciones) => {
-      new Promise<any>((resolve, reject) => {
-        opciones.forEach((nt: any) => {
-          this.opcionesCatalogo.push(nt.payload.doc.data());
-        })
-      })
-      this.llenarCombos()
-    });;
-  } */
-
+  
 
   //----------------------archivos upload ------------------------
 
@@ -180,15 +171,24 @@ export class CatalogoComponent implements OnInit {
   }
 
   uploadFiles() {
+    
+   
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
-    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
-      var x = document.getElementById("nombreIM");
-      x.style.display = "none";
-      this.message = '';
-      this.contadorArchivos=this.selectedFiles.length
-      for (let i = 0; i < this.selectedFiles.length; i++) {
-        this.upload4(i, this.selectedFiles[i]);
+    if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.precio !=0 && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
+      
+      if(this.selectedFiles==undefined){
+        this.newProducto()
+      }else{
+        var x = document.getElementById("nombreIM");
+        x.style.display = "none";
+        this.message = '';
+        this.contadorArchivos=this.selectedFiles.length
+        for (let i = 0; i < this.selectedFiles.length; i++) {
+          this.upload4(i, this.selectedFiles[i]);
+        }
       }
+     
+      
     }else{
       Swal.fire({
         title: 'Error',
@@ -381,7 +381,7 @@ export class CatalogoComponent implements OnInit {
     this.nuevoProducto.nombre_comercial= this.catalogo2.NOMBRE_COMERCIAL
     this.nuevoProducto.APLICACION= this.catalogo2.APLICACION
     this.nuevoProducto.porcentaje_ganancia= this.catalogo2.porcentaje_ganancia
-    this.nuevoProducto.precio= 0
+    this.nuevoProducto.precio= this.catalogo2.precio
     this.nuevoProducto.suc1Pendiente= 0
     this.nuevoProducto.suc2Pendiente= 0
     this.nuevoProducto.suc3Pendiente= 0
@@ -686,7 +686,7 @@ _handleReaderLoaded(readerEvt) {
 
   updateProducto(){
     console.log("sdddddd "+JSON.stringify(this.catalogo2.IMAGEN.length))
-     if(this.selectedFiles.length >0){
+    if(this.selectedFiles!=undefined){
       this.uploadFiles2()
     } else{
       this.continuarGuardando()
@@ -707,7 +707,7 @@ _handleReaderLoaded(readerEvt) {
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
             ///updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
-            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.ESTADO).subscribe(
+            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
               res => {
                 
                 this.mostrarMensaje()

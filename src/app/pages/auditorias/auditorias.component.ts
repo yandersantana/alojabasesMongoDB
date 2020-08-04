@@ -263,12 +263,14 @@ export class AuditoriasComponent implements OnInit {
     e.component.beginUpdate();
     e.component.columnOption("observaciones", "visible", true);
     e.component.columnOption("auditor", "visible", true);
+    e.component.columnOption("auditado", "visible", true);
     e.component.columnOption("sucursal.nombre", "visible", true);
     
   };
   onExported2 (e) {
     e.component.columnOption("observaciones", "visible", false);
     e.component.columnOption("auditor", "visible", false);
+    e.component.columnOption("auditado", "visible", false);
     e.component.columnOption("sucursal.nombre", "visible", false);
     e.component.endUpdate();
   }
@@ -487,7 +489,9 @@ export class AuditoriasComponent implements OnInit {
     e.component.beginUpdate();
     e.component.columnOption("condicion", "visible", true);
     e.component.columnOption("auditor", "visible", true);
+    e.component.columnOption("auditado", "visible", true);
     e.component.columnOption("impacto", "visible", true);
+    e.component.columnOption("sucursal.nombre", "visible", true);
     e.component.columnOption("observaciones", "visible", true);
    
   };
@@ -496,6 +500,8 @@ export class AuditoriasComponent implements OnInit {
     e.component.columnOption("condicion", "visible", false);
     e.component.columnOption("impacto", "visible", false);
     e.component.columnOption("auditor", "visible", false);
+    e.component.columnOption("auditado", "visible", false);
+    e.component.columnOption("sucursal.nombre", "visible", false);
     e.component.columnOption("observaciones", "visible", false);
 
     e.component.endUpdate();

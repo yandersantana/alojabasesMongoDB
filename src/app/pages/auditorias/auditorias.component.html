@@ -176,6 +176,7 @@
                                         <dxi-column dataField="idPrincipal" [visible]="false"></dxi-column>
                                         <dxi-column dataField="fecha" dataType="date" [visible]="true"></dxi-column>
                                         <dxi-column dataField="auditor" [visible]="false"></dxi-column>
+                                        <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
                                         <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
                                         <dxi-column caption="Sistema"  dataField="sucursal1">
                                             <dxi-column dataField="cajas_sistema"  dataType="number" caption="Cajas" ></dxi-column>
@@ -195,6 +196,8 @@
                                         </dxi-column>
                                         <dxi-column dataField="condicion" caption="Condición" [visible]="false"></dxi-column>
                                         <dxi-column dataField="impacto" caption="Impacto" [visible]="false"></dxi-column>
+                                       
+                                        <dxi-column dataField="auditado" [visible]="false"></dxi-column>
                                         <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
                                         <dxo-paging [pageSize]="10"></dxo-paging>
                                         <dxo-pager 
@@ -233,7 +236,7 @@
                                         <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
                                         <dxi-column dataField="fecha" dataType="date" [visible]="true"></dxi-column>
                                         <dxi-column dataField="auditor" [visible]="false"></dxi-column>
-                                        <dxi-column dataField="auditado" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="auditado" [visible]="false"></dxi-column>
                                         <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
                                         <dxi-column dataField="cajas_danadas"  dataType="number" caption="Cajas"></dxi-column>
                                         <dxi-column dataField="piezas_danadas"  dataType="number" caption="Piezas"></dxi-column>

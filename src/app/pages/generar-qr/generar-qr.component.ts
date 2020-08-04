@@ -5,6 +5,7 @@ import pdfMake from 'pdfmake/build/pdfmake';
 import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.service';
 import { opcionesCatalogo } from '../catalogo/catalogo';
 import { element } from 'protractor';
+import { productoqr } from './productoqr';
 
 @Component({
   selector: 'app-generar-qr',
@@ -26,8 +27,12 @@ export class GenerarQRComponent implements OnInit {
   opcionesCatalogo: opcionesCatalogo[]=[]
   arrayClasif: string[]
   arrayUnid: string[]
+  productoqr: productoqr[]=[]
+  productoind:productoqr
 
-  constructor(public productoService:ProductoService,public opcionesService:OpcionesCatalogoService) { }
+  constructor(public productoService:ProductoService,public opcionesService:OpcionesCatalogoService) { 
+    this.productoind = new productoqr()
+  }
 
   ngOnInit() {
     this.traerProductos()
@@ -61,7 +66,11 @@ export class GenerarQRComponent implements OnInit {
       if(element.PRODUCTO == this.nombre_producto){
         this.cantidadPiezas= element.P_CAJA
         this.m2Caja= element.M2
-        this.texto = element.PRODUCTO
+        this.texto = "http://104.248.14.190:3000/#/info-productos/"+element._id
+        this.productoind.url= "http://104.248.14.190:3000/#/info-productos/"+element._id
+        this.productoind.nombre_producto= element.PRODUCTO
+        this.productoind.piezas_producto= element.P_CAJA
+        this.productoind.metros_producto= element.M2
         var x = document.getElementById("codigo");
         x.style.display = "block";
       }

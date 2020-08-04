@@ -45,7 +45,7 @@ router.put('/update/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
-router.put('/updatePCatalogo/:producto/:referencia/:nombre/:aplicacion/:m2/:pcaja/:ganancia/:estado', async (req, res,next) => {
+router.put('/updatePCatalogo/:producto/:referencia/:nombre/:aplicacion/:m2/:pcaja/:ganancia/:precio/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { producto } = req.params;
     const { referencia } = req.params;
@@ -54,8 +54,9 @@ router.put('/updatePCatalogo/:producto/:referencia/:nombre/:aplicacion/:m2/:pcaj
     const { m2 } = req.params;
     const { pcaja } = req.params;
     const { ganancia } = req.params;
+    const { precio } = req.params;
     const { estado } = req.params;
-    await Producto.findOneAndUpdate({"PRODUCTO":producto}, {$set: {REFERENCIA:referencia,nombre_comercial:nombre,APLICACION:aplicacion,M2:m2,P_CAJA:pcaja,porcentaje_ganancia:ganancia,ESTADO:estado}}, {new: true});
+    await Producto.findOneAndUpdate({"PRODUCTO":producto}, {$set: {REFERENCIA:referencia,nombre_comercial:nombre,APLICACION:aplicacion,M2:m2,P_CAJA:pcaja,porcentaje_ganancia:ganancia,precio:precio,ESTADO:estado}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

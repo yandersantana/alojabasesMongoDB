@@ -25,9 +25,12 @@
     <dxi-column caption="Imagen" width="15%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
     <dxi-column dataField="PRODUCTO" width="40%" caption="Producto" style="text-align: center;"></dxi-column>
     <dxi-column dataField="CLASIFICA" width="15%" caption="Clasificación"></dxi-column>
+    <dxi-column dataField="REFERENCIA" width="15%" caption="Referencia" [visible]="false"></dxi-column>
     <dxi-column dataField="P_CAJA" width="15%" caption="Piezas * Caja"></dxi-column>
     <dxi-column dataField="M2" width="15%" caption="Metros * Caja"></dxi-column>
     <dxi-column dataField="DIM" width="10%" caption="Dimensión"></dxi-column>
+    <dxi-column dataField="precio" width="10%" caption="Precio"></dxi-column>
+    <dxi-column dataField="porcentaje_ganancia" width="10%" caption="% Ganancia" [visible]="false"></dxi-column>
 
     <dxi-column dataField="UNIDAD" caption="Unidad" [visible]="false"></dxi-column>
     <dxi-column dataField="CAL"  caption="Cal" [visible]="false"></dxi-column>

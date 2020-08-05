@@ -19,6 +19,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { auditoriasProductos, auditoria } from '../auditorias/auditorias';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-auditoria-cl',
@@ -49,6 +50,7 @@ export class AuditoriaClComponent implements OnInit {
   auditoriaEditable: auditoria
   auditoriasAcabadas: auditoria[]=[]
   transacciones: transaccion[]=[]
+  productos22: DataSource;
   transaccion:transaccion
   idAuditorialeida:auditoria
   numProductos:number
@@ -182,6 +184,10 @@ export class AuditoriaClComponent implements OnInit {
         this.productos.push(element)
       }
     })
+    this.productos22 = new DataSource({  
+      store: this.productos,  
+      sort: [{ field: "PRODUCTO", asc: true }],    
+    });
   }
 
   separarAuditoriasProductos(){

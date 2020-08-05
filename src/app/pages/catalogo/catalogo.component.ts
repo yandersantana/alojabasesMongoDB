@@ -767,7 +767,10 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("TIPO", "visible", true);
     e.component.columnOption("ORIGEN", "visible", true);
     e.component.columnOption("ESTADO", "visible", true);
+    e.component.columnOption("REFERENCIA", "visible", true);
     e.component.columnOption("APLICACION", "visible", true);
+    e.component.columnOption("precio", "visible", true);
+    e.component.columnOption("porcentaje_ganancia", "visible", true);
     e.component.columnOption("VIGENCIA", "visible", true);
     e.component.columnOption("FEC_PRODUCCION", "visible", true);
     e.component.columnOption("CANT_MINIMA", "visible", true);
@@ -780,8 +783,11 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("TIPO", "visible", false);
     e.component.columnOption("ORIGEN", "visible", false);
     e.component.columnOption("ESTADO", "visible", false);
+    e.component.columnOption("REFERENCIA", "visible", true);
     e.component.columnOption("APLICACION", "visible", false);
     e.component.columnOption("VIGENCIA", "visible", false);
+    e.component.columnOption("precio", "visible", false);
+    e.component.columnOption("porcentaje_ganancia", "visible", false);
     e.component.columnOption("FEC_PRODUCCION", "visible", false);
     e.component.columnOption("CANT_MINIMA", "visible", false);
     e.component.endUpdate();

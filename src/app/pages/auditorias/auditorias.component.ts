@@ -20,6 +20,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DxDataGridComponent } from 'devextreme-angular';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-auditorias',
@@ -60,6 +61,7 @@ export class AuditoriasComponent implements OnInit {
   invetarioFaltante1: invFaltanteSucursal
   invetarioFaltante:invFaltanteSucursal[]=[]
   contadorFirebase:contadoresDocumentos[]=[]
+  productos22: DataSource;
   lectura:boolean=false
   correo:string
   pass:string
@@ -188,6 +190,11 @@ export class AuditoriasComponent implements OnInit {
         this.productos.push(element)
       }
     })
+
+    this.productos22 = new DataSource({  
+      store: this.productos,  
+      sort: [{ field: "PRODUCTO", asc: true }],    
+    });
   }
 
   separarAuditoriasProductos(){

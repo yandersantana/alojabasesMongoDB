@@ -71,6 +71,7 @@ export class GenerarQRComponent implements OnInit {
         this.productoind.nombre_producto= element.PRODUCTO
         this.productoind.piezas_producto= element.P_CAJA
         this.productoind.metros_producto= element.M2
+        this.productoqr.push(this.productoind)
         var x = document.getElementById("codigo");
         x.style.display = "block";
       }
@@ -109,9 +110,8 @@ export class GenerarQRComponent implements OnInit {
   crearPDF(){
     console.log("entre  a creaar PDF")
 
-    const documentDefinition = this.getDocumentDefinition();
-
-      pdfMake.createPdf(documentDefinition).download('Solicitud/Compra ', function() {  });
+    const documentDefinition = this.getDocumentDefinition2();
+      pdfMake.createPdf(documentDefinition).download('codigo ', function() {  });
     
   }
 
@@ -151,6 +151,105 @@ export class GenerarQRComponent implements OnInit {
       images: {
         mySuperImage: 'data:image/jpeg;base64,...content...'
       },
+      info: {
+        title: "Factura" + '_RESUME',
+        author: "this.resume.name",
+        subject: 'RESUME',
+        keywords: 'RESUME, ONLINE RESUME',
+      },
+        styles: {
+          header: {
+            fontSize: 18,
+            bold: true,
+            margin: [0, 20, 0, 10],
+            decoration: 'underline'
+          },
+          tableExample: {
+            margin: [0, 5, 0, 15]
+          },
+          tableExample2: {
+            margin: [-13, 5, 10, 15]
+          },
+          tableExample3: {
+            margin: [-13, -10, 10, 15]
+          },
+          tableExample4: {
+            margin: [10, -5, 0, 15]
+          },
+          texto6: {
+            fontSize: 14,
+            bold: true,
+            alignment: "center"
+          },
+          name: {
+            fontSize: 16,
+            bold: true
+          },
+          jobTitle: {
+            fontSize: 14,
+            bold: true,
+            italics: true
+          },
+          textFot: {   
+            alignment: 'center',
+            italics: true,
+            color: "#bebebe",
+            fontSize:18,
+          },
+          tableHeader: {
+            bold: true,
+          },
+          tableHeader2: {
+            bold: true,
+            fontSize:10,
+          },
+          
+          fondoFooter: {
+            fontSize: 8,
+            alignment: "center"
+          },
+          totales: {
+            margin: [0, 0, 15, 0],
+            alignment: "right",
+          },
+          totales2: {
+            margin: [0, 0, 5, 0],
+            alignment: "right",
+          },
+          detalleTotales: {
+            margin: [15, 0, 0, 0]
+          }
+        }
+    };
+  } 
+
+
+  getDocumentDefinition2() {
+    sessionStorage.setItem('resume', JSON.stringify("codigos"));
+    return {
+      pageSize: 'A4',
+      content: [
+  
+        this.getProductosVendidos2(this.productoqr),
+
+      ],
+      footer: function (currentPage, pageCount) {
+        return {
+          
+          table: {
+            body: [
+              
+              [],
+            ]
+          },
+          layout: 'noBorders'
+        };
+      }
+      , pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+        return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+     },
+      
+     
       info: {
         title: "Factura" + '_RESUME',
         author: "this.resume.name",
@@ -291,58 +390,43 @@ export class GenerarQRComponent implements OnInit {
          layout: 'lightHorizontalLines',
         },
       ],
-      /* table: {
-        widths: ["8%","6%","53%","9%","7%","13%","4%"],
-        alignment:'center',
-        body: [
-          
-          [{
-            text: 'Cant.',
-            style: 'tableHeader2',
-            alignment: 'center'
-          },
-          {
-            text: 'Unid.',
-            style: 'tableHeader2',
-            alignment: 'center'
-          },
-          {
-            text: 'Producto',
-            style: 'tableHeader2',
-            alignment: 'center'
-          },
-          {
-            text: 'V/Unid',
-            style: 'tableHeader2'
-            , alignment: 'center'
-          },
-          {
-            text: 'Dto(%)',
-            style: 'tableHeader2'
-            , alignment: 'center'
-          },
-          {
-            text: 'Total',
-            style: 'tableHeader2'
-            , alignment: 'center'
-          },
-          
-          {
-            text: 'Est',
-            style: 'tableHeader', 
-            alignment: 'center'
-          }
-          ],
-          
-          ...productos.map(ed =>{
-            return [ { text: ed.cantidad, alignment: 'center' },{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},ed.producto.PRODUCTO, {text:ed.precio_venta.toFixed(2), alignment:"center"}, {text:ed.descuento, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",style:"totales2"},
-            {text:ed.tipoDocumentoVenta, alignment:"center",style:"totales2"}];
-            
-          }),
-          
-          
-        ]
-      } */
+    };
+  }
+
+
+
+  getProductosVendidos2(productos: productoqr[]) {
+    return {
+      columns: [
+        {
+          width: 175,
+           table: {
+            widths: ["35%","65%"],
+            alignment:'center',
+            body: [
+              ...productos.map(ed =>{
+                return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+                {	type: 'none',
+                margin: [0, 15, 20, 15],
+                fontSize: 8,
+                ol: [
+                  ed.nombre_producto,
+                  "Piezas/Caja: "+ed.piezas_producto,
+                  "Metros/Caja: "+ed.metros_producto
+                ]}];
+              }),
+            ]
+          } ,
+          layout: 'lightHorizontalLines',
+        },
+        {
+        
+        },
+        {
+         
+        },
+      ],
+      
     };
   }
 }

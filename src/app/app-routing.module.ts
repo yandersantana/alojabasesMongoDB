@@ -101,6 +101,7 @@ import { AuditoriasComponent } from './pages/auditorias/auditorias.component';
 import { BodegasComponent } from './pages/bodegas/bodegas.component';
 import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
 import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
+import { InfoProductosComponent } from './pages/info-productos/info-productos.component';
 
 
 const routes: Routes = [
@@ -227,6 +228,11 @@ const routes: Routes = [
   {
     path: 'catalogo',
     component: CatalogoComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'info-productos/:id',
+    component: InfoProductosComponent,
     canActivate: [ AuthGuardService ]
   },
   {

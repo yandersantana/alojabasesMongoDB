@@ -12,6 +12,13 @@ router.get('/getProductosActivos', async (req, res) => {
     res.send(productos)      
 })
 
+router.get('/getProductobyID/:id', async (req, res) => {
+    const { id } = req.params;
+    const productos = await Producto.findById(id);
+    res.send(productos); 
+})
+
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;

@@ -6,6 +6,7 @@ import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.ser
 import { opcionesCatalogo } from '../catalogo/catalogo';
 import { element } from 'protractor';
 import { productoqr } from './productoqr';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-generar-qr',
@@ -28,10 +29,14 @@ export class GenerarQRComponent implements OnInit {
   arrayClasif: string[]
   arrayUnid: string[]
   productoqr: productoqr[]=[]
+  productoqrcol1: productoqr[]=[]
+  productoqrcol2: productoqr[]=[]
+  productoqrcol3: productoqr[]=[]
   productoind:productoqr
 
   constructor(public productoService:ProductoService,public opcionesService:OpcionesCatalogoService) { 
     this.productoind = new productoqr()
+    this.productoqr.push(this.productoind)
   }
 
   ngOnInit() {
@@ -62,6 +67,7 @@ export class GenerarQRComponent implements OnInit {
   }
 
   obtenerDatosDeProductoParaUnDetalle(){
+    this.limpiarArreglo()
     this.productosActivos.forEach(element=>{
       if(element.PRODUCTO == this.nombre_producto){
         this.cantidadPiezas= element.P_CAJA
@@ -78,13 +84,92 @@ export class GenerarQRComponent implements OnInit {
     })
   }
 
+  limpiarArreglo(){
+    var cont=0
+    this.productoqr.forEach(element=>{
+      cont++
+    })
+    if(cont>=0){
+      this.productoqr.forEach(element=>{
+        this.productoqr.splice(0)    
+      })
+    }
+  }
+
+  limpiarArreglo2(){
+    var cont=0
+    this.productoqrcol1.forEach(element=>{
+      cont++
+    })
+    if(cont>=0){
+      this.productoqrcol1.forEach(element=>{
+        this.productoqrcol1.splice(0)    
+      })
+    }
+  }
+
+  limpiarArreglo3(){
+    var cont=0
+    this.productoqrcol2.forEach(element=>{
+      cont++
+    })
+    if(cont>=0){
+      this.productoqrcol2.forEach(element=>{
+        this.productoqrcol2.splice(0)    
+      })
+    }
+  }
+
+  limpiarArreglo4(){
+    var cont=0
+    this.productoqrcol3.forEach(element=>{
+      cont++
+    })
+    if(cont>=0){
+      this.productoqrcol3.forEach(element=>{
+        this.productoqrcol3.splice(0)    
+      })
+    }
+  }
+
   opcionMenu2(e){
-    console.log("la opciones "+e.value)
+    this.limpiarArreglo()
+    this.limpiarArreglo2()
+    this.limpiarArreglo3()
+    this.limpiarArreglo4()
     this.productosActivos.forEach(element=>{
       if(element.CLASIFICA == e.value){
-
+        this.productoind = new productoqr()
+        this.productoind.url= "http://104.248.14.190:3000/#/info-productos/"+element._id
+        this.productoind.nombre_producto= element.PRODUCTO
+        this.productoind.piezas_producto= element.P_CAJA
+        this.productoind.metros_producto= element.M2
+        this.productoqr.push(this.productoind)
       }
     })
+    var cont=0
+    this.productoqr.forEach(element=>{
+      cont++
+      switch (cont) {
+        case 1:
+          this.productoqrcol1.push(element)
+          break;
+        case 2:
+          this.productoqrcol2.push(element)
+          break;
+        case 3:
+          this.productoqrcol3.push(element)
+          cont=0
+          break;
+        default:
+          break;
+      }
+    })
+    console.log("sssss 1"+this.productoqrcol1.length)
+    console.log("sssss 2"+this.productoqrcol2.length)
+    console.log("sssss 3"+this.productoqrcol3.length)
+
+   
 
   }
 
@@ -108,11 +193,45 @@ export class GenerarQRComponent implements OnInit {
   }
 
   crearPDF(){
-    console.log("entre  a creaar PDF")
-
-    const documentDefinition = this.getDocumentDefinition2();
-      pdfMake.createPdf(documentDefinition).download('codigo ', function() {  });
+    console.log("sssssss "+window.location)
+      if(this.productoqrcol1[0] == undefined){
+        this.mensajeError()
+      }else{
+        if(this.productoqrcol3[0] == undefined){
+          console.log("verda")
+          const documentDefinition = this.getDocumentDefinition3();
+          pdfMake.createPdf(documentDefinition).download('codigo ', function() {  });
+        }else{
+          console.log("faalse")
+          const documentDefinition = this.getDocumentDefinition();
+          pdfMake.createPdf(documentDefinition).download('codigo ', function() {  });
+        }
+      }
     
+  }
+
+  mensajeError(){
+    Swal.fire(
+      'Error!',
+      'No ha seleccionado ningun grupo',
+      'error'
+    )
+  }
+
+  crearPDF2(){
+    console.log(this.productoind.url)
+    if(this.productoind.url == undefined){
+      Swal.fire(
+        'Error!',
+        'No ha seleccionado ningun producto',
+        'error'
+      )
+    }else{    
+        const documentDefinition = this.getDocumentDefinition2();
+        pdfMake.createPdf(documentDefinition).download('codigo ', function() {  });
+      
+      
+    }
   }
 
 
@@ -122,104 +241,44 @@ export class GenerarQRComponent implements OnInit {
     return {
       pageSize: 'A4',
       content: [
-  
-        this.getProductosVendidos(this.productosActivos),
-
-        {
-          text:"Códigos QR",
-          style: 'texto6'
-        },
-      
-        
+        this.getProductosVendidos(this.productoqrcol1,this.productoqrcol2,this.productoqrcol3),
       ],
       footer: function (currentPage, pageCount) {
         return {
-          
-          table: {
-            body: [
-              
-              [],
-            ]
-          },
-          layout: 'noBorders'
         };
       }
       , pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
         return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
      },
-      
-      images: {
-        mySuperImage: 'data:image/jpeg;base64,...content...'
-      },
       info: {
         title: "Factura" + '_RESUME',
         author: "this.resume.name",
         subject: 'RESUME',
         keywords: 'RESUME, ONLINE RESUME',
-      },
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 20, 0, 10],
-            decoration: 'underline'
-          },
-          tableExample: {
-            margin: [0, 5, 0, 15]
-          },
-          tableExample2: {
-            margin: [-13, 5, 10, 15]
-          },
-          tableExample3: {
-            margin: [-13, -10, 10, 15]
-          },
-          tableExample4: {
-            margin: [10, -5, 0, 15]
-          },
-          texto6: {
-            fontSize: 14,
-            bold: true,
-            alignment: "center"
-          },
-          name: {
-            fontSize: 16,
-            bold: true
-          },
-          jobTitle: {
-            fontSize: 14,
-            bold: true,
-            italics: true
-          },
-          textFot: {   
-            alignment: 'center',
-            italics: true,
-            color: "#bebebe",
-            fontSize:18,
-          },
-          tableHeader: {
-            bold: true,
-          },
-          tableHeader2: {
-            bold: true,
-            fontSize:10,
-          },
-          
-          fondoFooter: {
-            fontSize: 8,
-            alignment: "center"
-          },
-          totales: {
-            margin: [0, 0, 15, 0],
-            alignment: "right",
-          },
-          totales2: {
-            margin: [0, 0, 5, 0],
-            alignment: "right",
-          },
-          detalleTotales: {
-            margin: [15, 0, 0, 0]
-          }
-        }
+      }
+    };
+  } 
+
+  getDocumentDefinition3() {
+    sessionStorage.setItem('resume', JSON.stringify("jj"));
+    return {
+      pageSize: 'A4',
+      content: [
+        this.getProductosVendidos3(this.productoqrcol1,this.productoqrcol2),
+      ],
+      footer: function (currentPage, pageCount) {
+        return {
+        };
+      }
+      , pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+        return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+     },
+      info: {
+        title: "Factura" + '_RESUME',
+        author: "this.resume.name",
+        subject: 'RESUME',
+        keywords: 'RESUME, ONLINE RESUME',
+      }
     };
   } 
 
@@ -323,7 +382,7 @@ export class GenerarQRComponent implements OnInit {
   } 
 
 
-  getProductosVendidos(productos: producto[]) {
+  getProductosVendidos(productos: productoqr[],productos2: productoqr[],productos3: productoqr[]) {
     return {
       columns: [
         {
@@ -333,14 +392,14 @@ export class GenerarQRComponent implements OnInit {
             alignment:'center',
             body: [
               ...productos.map(ed =>{
-                return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
+                return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
                 {	type: 'none',
                 margin: [0, 15, 20, 15],
                 fontSize: 8,
                 ol: [
-                  ed.PRODUCTO,
-                  "Piezas/Caja: "+ed.P_CAJA,
-                  "Metros/Caja: "+ed.M2
+                  ed.nombre_producto,
+                  "Piezas/Caja: "+ed.piezas_producto,
+                  "Metros/Caja: "+ed.metros_producto
                 ]}];
               }),
             ]
@@ -353,15 +412,15 @@ export class GenerarQRComponent implements OnInit {
            widths: ["35%","65%"],
            alignment:'center',
            body: [
-             ...productos.map(ed =>{
-               return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
+             ...productos2.map(ed =>{
+               return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
                {	type: 'none',
                margin: [0, 15, 20, 15],
                fontSize: 8,
                ol: [
-                 ed.PRODUCTO,
-                 "Piezas/Caja: "+ed.P_CAJA,
-                 "Metros/Caja: "+ed.M2
+                 ed.nombre_producto,
+                 "Piezas/Caja: "+ed.piezas_producto,
+                 "Metros/Caja: "+ed.metros_producto
                ]}];
              }),
            ]
@@ -374,20 +433,72 @@ export class GenerarQRComponent implements OnInit {
            widths: ["35%","65%"],
            alignment:'center',
            body: [
-             ...productos.map(ed =>{
-               return [ { qr: ed.PRODUCTO, fit: '58',margin: [20, 15, 0, 15] },
+             ...productos3.map(ed =>{
+               return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
                {	type: 'none',
                margin: [0, 15, 20, 15],
                fontSize: 8,
                ol: [
-                 ed.PRODUCTO,
-                 "Piezas/Caja: "+ed.P_CAJA,
-                 "Metros/Caja: "+ed.M2
+                 ed.nombre_producto,
+                 "Piezas/Caja: "+ed.piezas_producto,
+                 "Metros/Caja: "+ed.metros_producto
                ]}];
              }),
            ]
          } ,
          layout: 'lightHorizontalLines',
+        },
+      ],
+    };
+  }
+
+  getProductosVendidos3(productos: productoqr[],productos2: productoqr[]) {
+    return {
+      columns: [
+        {
+          width: 175,
+           table: {
+            widths: ["35%","65%"],
+            alignment:'center',
+            body: [
+              ...productos.map(ed =>{
+                return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+                {	type: 'none',
+                margin: [0, 15, 20, 15],
+                fontSize: 8,
+                ol: [
+                  ed.nombre_producto,
+                  "Piezas/Caja: "+ed.piezas_producto,
+                  "Metros/Caja: "+ed.metros_producto
+                ]}];
+              }),
+            ]
+          } ,
+          layout: 'lightHorizontalLines',
+        },
+        {
+          width: 175,
+          table: {
+           widths: ["35%","65%"],
+           alignment:'center',
+           body: [
+             ...productos2.map(ed =>{
+               return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+               {	type: 'none',
+               margin: [0, 15, 20, 15],
+               fontSize: 8,
+               ol: [
+                 ed.nombre_producto,
+                 "Piezas/Caja: "+ed.piezas_producto,
+                 "Metros/Caja: "+ed.metros_producto
+               ]}];
+             }),
+           ]
+         } ,
+         layout: 'lightHorizontalLines',
+        },
+        {
+        
         },
       ],
     };

@@ -31,7 +31,7 @@
                         <div id="op1" style="display: block;">
                           <div class="row">
                             <div class="col-md-4">Seleccione el producto:</div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                               <dx-select-box
                                   [dataSource]="productosActivos"
                                   displayExpr="PRODUCTO"
@@ -68,7 +68,7 @@
                           <div class="row">
                           <div class="col-md-12" style="margin-top: 2em;"></div>
                             <div class="col-md-4" ></div>
-                              <div class="col-md-4" style="text-align: center;"><button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF()" >Descargar PDF
+                              <div class="col-md-4" style="text-align: center;"><button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF2()" >Descargar PDF
                               </button></div>
                               <div class="col-md-4"></div>
                           </div>
@@ -77,7 +77,7 @@
                         <div id="op2" style="display: none;">
                           <div class="row">
                             <div class="col-md-4">Seleccione el producto:</div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                               <dx-select-box [items]="arrayClasif" 
                                 [value]="arrayClasif" 
                                 [readOnly]="false" 
@@ -87,6 +87,14 @@
                             </div>
                             <div class="col-md-4"></div>
                           </div>
+
+                          <div class="row">
+                            <div class="col-md-12" style="margin-top: 2em;"></div>
+                              <div class="col-md-4" ></div>
+                                <div class="col-md-4" style="text-align: center;"><button class="btn btn-primary " style="background-color: #ff4500;"  (click)="crearPDF()" >Descargar PDF
+                                </button></div>
+                                <div class="col-md-4"></div>
+                            </div>
                         </div>
                     </div>
 

@@ -24,6 +24,10 @@ export class ProductoService {
     return this.http.get(this.URL+'/getProductos');
   }
 
+  getProductobyId(id:string) {
+    return this.http.get(this.URL + `/getProductobyID/${id}`);
+  }
+
   getProductosActivos(){ 
     return this.http.get(this.URL+'/getProductosActivos');
   }

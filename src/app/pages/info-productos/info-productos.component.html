@@ -1,0 +1,64 @@
+<br>
+<br>
+<br>
+
+<div class="row">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <table style="width:100%">
+      <tr>
+        <th>Nombre</th>
+        <td>{{infoproducto.producto}}</td>
+      </tr>
+      <tr>
+          <th>Piezas/Caja</th>
+          <td>{{infoproducto.piezas}}</td>
+      </tr>
+      <tr>
+          <th>Metros/Caja</th>
+          <td>{{infoproducto.metros}}</td>
+      </tr>
+      <tr>
+          <th>Fabrica</th>
+          <td>{{infoproducto.fabrica}}</td>
+      </tr>
+      <tr>
+          <th>Disponibilidad</th>
+          <td>{{infoproducto.disponibilidad}}</td>
+      </tr>
+      <tr>
+          <th>Ubicación</th>
+          <td>{{infoproducto.ubicacion}}</td>
+      </tr>
+      <tr>
+          <th>Precio Socio</th>
+          <td>{{infoproducto.precioSocio}}</td>
+      </tr>
+      <tr>
+          <th>Precio Distribuidor</th>
+          <td>{{infoproducto.precioDist}}</td>
+      </tr>
+      <tr>
+          <th>Cliente</th>
+          <td>{{infoproducto.precioCliente}}</td>
+      </tr>
+      <tr>
+          <th>Notas</th>
+          <td>{{infoproducto.notas}}</td>
+     </tr>
+
+
+     
+      
+    </table>
+    <dx-gallery #gallery
+        id="gallery"
+        [dataSource]="imagenes"
+        [height]="200"
+        [loop]="true"
+        [showNavButtons]="true"
+        [showIndicator]="true">
+    </dx-gallery>
+  </div>
+  <div class="col-md-3"></div>
+</div>

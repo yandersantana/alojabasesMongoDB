@@ -43,6 +43,7 @@ import { BodegasComponent } from './pages/bodegas/bodegas.component';
 import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.component';
 import { QRCodeModule } from 'angularx-qrcode';
 import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
+import { InfoProductosComponent } from './pages/info-productos/info-productos.component';
 
 
 
@@ -74,7 +75,8 @@ import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
     AuditoriasComponent,
     BodegasComponent,
     AuditoriaClComponent,
-    GenerarQRComponent
+    GenerarQRComponent,
+    InfoProductosComponent
   ],
   imports: [
     BrowserModule,

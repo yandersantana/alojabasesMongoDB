@@ -45,22 +45,27 @@ export class LoginFormComponent implements OnInit {
 
 
   ngOnInit() {
-    localStorage.removeItem('token');
+    /* localStorage.removeItem('token');
     if("maily" in localStorage){ 
       localStorage.removeItem('maily');
       localStorage.removeItem('contrasena');
     } 
     if("currentUser" in localStorage){ 
       localStorage.removeItem('currentUser');
-    } 
+    }  */
     this.traerUsuarios()
+    //this.leerToken()
+    
   }
 
   traerUsuarios() {
     this.authenService.getUsers().subscribe(res => {
       this.authenService.usuarios = res as user[];
     })
+  }
 
+  leerToken(){
+    this.authService.loginIn();
   }
 
   signIn(e) {

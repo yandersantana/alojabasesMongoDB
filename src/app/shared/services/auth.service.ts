@@ -15,7 +15,7 @@ export class AuthService {
   password: ''
 
   }
-  constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
+  /* constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
     if(sessionStorage.getItem("logged") == undefined){
       sessionStorage.setItem("logged", false.toString())
     }
@@ -29,28 +29,74 @@ export class AuthService {
         sessionStorage.setItem('user', null);
       }
     })
+  } */
+
+  constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
+    if(localStorage.getItem("logged") == undefined){
+      localStorage.setItem("logged", false.toString())
+    }
+    this.loggedIn = JSON.parse(localStorage.getItem("logged"));
+    
+    this.afAuth.auth.onAuthStateChanged(user => {
+      if (user){
+        this.user = user;
+        localStorage.setItem('user', JSON.stringify(this.user.email));
+      } else {
+        localStorage.setItem('user', null);
+      }
+    })
   }
 
   async logIn(login: string, password: string) {
      this.user2.email=login
     this.user2.password=password
     try{
-      var result = await this.authenService.signIn(this.user2)
-      this.loggedIn = true;
-      sessionStorage.setItem("logged", this.loggedIn.toString())
-      
-      this.router.navigate(['/']);
+      //var result = await this.authenService.signIn(this.user2)
+      console.log(this.user2)
+      this.authenService.signIn(this.user2)
+        .subscribe(
+          res => {
+            localStorage.setItem('token', res.token);
+            this.loggedIn = true;
+            localStorage.setItem("logged", this.loggedIn.toString())
+            
+            this.router.navigate(['/']);
+
+          },
+          error => {
+            alert("Credenciales incorrectas")
+          }
+        );
+     
     }catch(e){
-      alert("Credenciales incorrectas")
+      
     }
     
+  }
+
+
+  async loginIn(){
+    
+
+    try{
+      if("token" in localStorage){ 
+        console.log("si estoy logeado")
+        this.router.navigate(['/home']);
+      }else{
+        console.log("no")
+      }
+     
+    }catch(e){
+      
+    }
   }
 
   async logOut() {
     await this.afAuth.auth.signOut();
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
     this.loggedIn = false;
-    sessionStorage.setItem("logged", this.loggedIn.toString())
+    localStorage.setItem("logged", this.loggedIn.toString())
     this.router.navigate(['/login-form']);
   }
 
@@ -66,8 +112,10 @@ export class AuthGuardService implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot): boolean {
         const isLoggedIn = this.authService.isLoggedIn;
         const isLoginForm = route.routeConfig.path === 'login-form';
-
+      console.log("33 "+isLoggedIn)
+      console.log("22 "+isLoginForm)
         if (isLoggedIn && isLoginForm) {
+          console.log("entre")
             this.router.navigate(['/']);
             return false;
         }
@@ -76,7 +124,7 @@ export class AuthGuardService implements CanActivate {
             this.router.navigate(['/login-form']);
         }
 
-        if (isLoggedIn) {
+        /* if (isLoggedIn) {
           //alert("entre")
           this.authenService.returnUserRol().subscribe((ordenes: user[]) => {
             new Promise<any>((resolve, reject) => {
@@ -100,7 +148,7 @@ export class AuthGuardService implements CanActivate {
           return true;
         }else{
          // alert("ll")
-        }
+        } */
 
         return isLoggedIn || isLoginForm;
     }

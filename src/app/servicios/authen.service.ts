@@ -15,9 +15,8 @@ export class AuthenService {
   estalogeado:boolean = true;
   
 
-  // private URL = 'http://localhost:3000/usuario';
-  //private URL = 'http://localhost:3000/usuario';
   private URL = 'http://104.248.14.190:3000/usuario';
+  //private URL = 'http://localhost:3000/usuario';
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -28,13 +27,13 @@ export class AuthenService {
 
   signIn(user) {
     this.userEmail = user.email;
-    console.log(JSON.stringify(user));
     localStorage.setItem('maily',  this.userEmail = user.email);
     return this.http.post<any>(this.URL + '/signIn', user);
   }
 
   loggedIn() {//comprobar si el usuario esta logeado
     return !!localStorage.getItem('token');
+
   }
 
   returnUserRol(){ 

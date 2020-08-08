@@ -76,8 +76,9 @@ export class ConsultasComponent implements OnInit {
   traerProductos(){
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[];
+      this.llenarComboProductos()
    })
-   this.llenarComboProductos()
+   
   }
 
   llenarComboProductos(){
@@ -86,6 +87,7 @@ export class ConsultasComponent implements OnInit {
         this.productos.push(element)
       }
     })
+    console.log("s "+this.productos.length)
 
     this.productos22 = new DataSource({  
       store: this.productos,  

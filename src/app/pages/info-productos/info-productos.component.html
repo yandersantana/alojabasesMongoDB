@@ -2,49 +2,52 @@
 <br>
 <br>
 
-<div class="row">
+<div class="row" style="background-color: white;">
   <div class="col-md-3"></div>
   <div class="col-md-6">
+      
     <table style="width:100%">
       <tr>
         <th>Nombre</th>
-        <td>{{infoproducto.producto}}</td>
+        <td colspan="2">{{infoproducto.producto}}</td>
       </tr>
       <tr>
           <th>Piezas/Caja</th>
-          <td>{{infoproducto.piezas}}</td>
+          <td colspan="2">{{infoproducto.piezas}}</td>
       </tr>
       <tr>
           <th>Metros/Caja</th>
-          <td>{{infoproducto.metros}}</td>
+          <td colspan="2">{{infoproducto.metros}}</td>
       </tr>
       <tr>
           <th>Fabrica</th>
-          <td>{{infoproducto.fabrica}}</td>
+          <td colspan="2"> {{infoproducto.fabrica}}</td>
       </tr>
       <tr>
           <th>Disponibilidad</th>
-          <td>{{infoproducto.disponibilidad}}</td>
+          <td colspan="2">{{infoproducto.disponibilidad}}</td>
       </tr>
       <tr>
           <th>Ubicación</th>
-          <td>{{infoproducto.ubicacion}}</td>
+          <td colspan="2">{{infoproducto.ubicacion}}</td>
       </tr>
       <tr>
-          <th>Precio Socio</th>
-          <td>{{infoproducto.precioSocio}}</td>
+          <th style="background-color: bisque;">Precio Socio</th>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;" colspan="2">{{infoproducto.precioSocio}}</td>
       </tr>
       <tr>
-          <th>Precio Distribuidor</th>
-          <td>{{infoproducto.precioDist}}</td>
+          <th style="background-color: bisque;">Precio Distribuidor</th>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;" colspan="2">{{infoproducto.precioDist}}</td>
       </tr>
-      <tr>
-          <th>Cliente</th>
-          <td>{{infoproducto.precioCliente}}</td>
+      <tr style="text-align: center;">
+          <th style="background-color: bisque;">Cliente</th>
+          <!-- <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td> -->
+          <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td>
       </tr>
       <tr>
           <th>Notas</th>
-          <td>{{infoproducto.notas}}</td>
+          <td colspan="2">{{infoproducto.notas}}</td>
      </tr>
 
 

@@ -94,7 +94,8 @@ export class CatalogoComponent implements OnInit {
     IMAGEN:[],
     IMAGEN_PRINCIPAL:"",
     estado2:"Activo",
-    precio:0
+    precio:0,
+    notas:""
 
   }
   elementRef

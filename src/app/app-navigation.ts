@@ -123,6 +123,9 @@ export const navigationAdmin = [
       },{
         text: 'Generador QR',
         path: '/generador-qr',
+      },{
+        text: 'Consultas',
+        path: '/consultas',
       }]
   },
   {

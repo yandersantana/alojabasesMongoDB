@@ -7,6 +7,9 @@ import { ProductoService } from 'src/app/servicios/producto.service';
 import { infoprod } from './info-productos';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { element } from 'protractor';
+import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
+import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
+import { preciosEspeciales, precios } from '../control-precios/controlPrecios';
 
 @Component({
   selector: 'app-info-productos',
@@ -21,15 +24,18 @@ export class InfoProductosComponent implements OnInit {
   idProducto:string=""
   infoproducto: infoprod
   imagenes:string[]
+  precios:precios[]=[]
+  preciosEspeciales:preciosEspeciales[]=[]
 
-  constructor(public catalogoService: CatalogoService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
+  constructor(public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
     this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
     this.infoproducto = new infoprod()
    }
 
   ngOnInit() {
     this.traerProductosCatalogo()
-    
+    this.traerPrecios()
+    this.traerPreciosEspeciales()
   }
 
   traerProductosCatalogo(){
@@ -40,6 +46,18 @@ export class InfoProductosComponent implements OnInit {
    })
   });
    
+  }
+
+  traerPrecios(){
+    this.preciosService.getPrecio().subscribe(res => {
+      this.precios = res as precios[];
+   })
+  }
+
+  traerPreciosEspeciales(){
+    this.preciosEspecialesService.getPrecio().subscribe(res => {
+      this.preciosEspeciales = res as preciosEspeciales[];
+   })
   }
 
   traerProductoId(){
@@ -59,6 +77,7 @@ export class InfoProductosComponent implements OnInit {
 
   cargarProductoTabla(){
     this.infoproducto.producto = this.productoLeido.PRODUCTO
+    this.infoproducto.productoLeido = this.productoLeido
     this.infoproducto.piezas = this.productoLeido.P_CAJA
     this.infoproducto.metros = this.productoLeido.M2
     this.infoproducto.fabrica = ""
@@ -67,16 +86,61 @@ export class InfoProductosComponent implements OnInit {
     this.infoproducto.precioCliente= 0
     this.infoproducto.precioDist= 0
     this.infoproducto.precioSocio= 0
-    this.infoproducto.notas= ""
-
-//alert(this.productosCatalogo.length)
+    
     this.productosCatalogo.forEach(element=>{
       if(element.PRODUCTO == this.infoproducto.producto ){
-        //alert("ssss")
+        this.infoproducto.notas= element.notas
         this.infoproducto.fabrica = element.CASA
         this.imagenes= element.IMAGEN
       }
     })
+    this.infoproducto.cantidad=1
+    this.infoproducto.precioCliente = this.infoproducto.productoLeido.precio
+    this.precios.forEach(element=>{
+      if(element.aplicacion == this.infoproducto.productoLeido.APLICACION){
+        if(this.infoproducto.cantidad >0 && this.infoproducto.cantidad <=element.cant1){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent1 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+          
+        }
+        if(this.infoproducto.cantidad >element.cant1 && this.infoproducto.cantidad <=element.cant2){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent2 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+          
+        }
+
+        if(this.infoproducto.cantidad >element.cant2){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent3 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+         
+        }
+      }
+    })
+     
+  //precio distribuidor
+  this.infoproducto.precioDist=parseFloat((this.infoproducto.productoLeido.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+  //precio socio
+  this.infoproducto.precioSocio=parseFloat((this.infoproducto.productoLeido.precio * this.preciosEspeciales[0].precioSocio / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
   }
+
+
+
+  
+  actualizarDato( event: any) {
+     this.infoproducto.cantidad = event.target.textContent;
+     this.precios.forEach(element=>{
+      if(element.aplicacion == this.infoproducto.productoLeido.APLICACION){
+        if(this.infoproducto.cantidad >0 && this.infoproducto.cantidad <=element.cant1){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent1 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+          
+        }
+        if(this.infoproducto.cantidad >element.cant1 && this.infoproducto.cantidad <=element.cant2){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent2 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+        }
+
+        if(this.infoproducto.cantidad >element.cant2){
+          this.infoproducto.precioCliente = parseFloat((this.infoproducto.productoLeido.precio * element.percent3 / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
+         
+        }
+      }
+    })
+   }
 
 }

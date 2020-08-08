@@ -27,6 +27,7 @@ router.post('/newCatalogo', async (req, res) => {
         IMAGEN:req.body.IMAGEN,
         IMAGEN_PRINCIPAL:req.body.IMAGEN_PRINCIPAL,
         estado2:req.body.estado2,
+        notas:req.body.notas,
         precio:req.body.precio});
     await newPCatalogo.save();
     res.json({status: 'Catalogo creado'});
@@ -69,6 +70,7 @@ router.put('/update/:id', async (req, res,next) => {
         IMAGEN:req.body.IMAGEN,
         IMAGEN_PRINCIPAL:req.body.IMAGEN_PRINCIPAL,
         estado2:req.body.estado2,
+        notas:req.body.notas,
         precio:req.body.precio};
     await Catalogo.findByIdAndUpdate(id, {$set: newPCatalogo}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

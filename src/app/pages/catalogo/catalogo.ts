@@ -20,6 +20,7 @@ export class catalogo{
     FEC_PRODUCCION:string
     CANT_MINIMA:number
     ESTADO:string
+    notas:string
     porcentaje_ganancia:number
     IMAGEN:[]
     IMAGEN_PRINCIPAL:string
@@ -39,6 +40,7 @@ export class catalogo{
             this.NOMBRE_COMERCIAL="",
             this.P_CAJA=0
             this.estado2="Activo"
+            this.notas=""
     }
 }
 

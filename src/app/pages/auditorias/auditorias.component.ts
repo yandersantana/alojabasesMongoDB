@@ -214,9 +214,28 @@ export class AuditoriasComponent implements OnInit {
           this.lectura=false
         }
         this.compararProducto()
+        this.obtenerUbicacion()
       }
     })
 
+  }
+
+  obtenerUbicacion(){
+    console.log("ssss "+this.auditoria.sucursal.nombre)
+    switch (this.auditoria.sucursal.nombre) {
+      case "Matriz":
+          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc1
+        break;
+      case "sucursal1":
+          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc2
+        break;
+      case "sucursal2":
+          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc3
+        break;
+    
+      default:
+        break;
+    }
   }
 
   compararProducto(){

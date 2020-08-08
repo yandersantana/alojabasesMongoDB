@@ -7,6 +7,9 @@ import { opcionesCatalogo } from '../catalogo/catalogo';
 import { element } from 'protractor';
 import { productoqr } from './productoqr';
 import Swal from 'sweetalert2';
+import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
+import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
+import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
 
 @Component({
   selector: 'app-generar-qr',
@@ -33,6 +36,8 @@ export class GenerarQRComponent implements OnInit {
   productoqrcol2: productoqr[]=[]
   productoqrcol3: productoqr[]=[]
   productoind:productoqr
+ 
+
 
   constructor(public productoService:ProductoService,public opcionesService:OpcionesCatalogoService) { 
     this.productoind = new productoqr()
@@ -57,6 +62,8 @@ export class GenerarQRComponent implements OnInit {
       this.llenarCombos()
    })
   }
+
+  
 
   llenarCombos(){
     this.opcionesCatalogo.forEach(element=>{
@@ -392,7 +399,7 @@ export class GenerarQRComponent implements OnInit {
             alignment:'center',
             body: [
               ...productos.map(ed =>{
-                return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+                return [ { qr: ed.url, fit: '65',margin: [20, 15, 0, 15] },
                 {	type: 'none',
                 margin: [0, 15, 20, 15],
                 fontSize: 8,
@@ -413,7 +420,7 @@ export class GenerarQRComponent implements OnInit {
            alignment:'center',
            body: [
              ...productos2.map(ed =>{
-               return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+               return [ { qr: ed.url, fit: '65',margin: [20, 15, 0, 15] },
                {	type: 'none',
                margin: [0, 15, 20, 15],
                fontSize: 8,
@@ -434,7 +441,7 @@ export class GenerarQRComponent implements OnInit {
            alignment:'center',
            body: [
              ...productos3.map(ed =>{
-               return [ { qr: ed.url, fit: '62',margin: [20, 15, 0, 15] },
+               return [ { qr: ed.url, fit: '65',margin: [20, 15, 0, 15] },
                {	type: 'none',
                margin: [0, 15, 20, 15],
                fontSize: 8,

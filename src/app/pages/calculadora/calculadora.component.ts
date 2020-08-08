@@ -88,7 +88,7 @@ export class CalculadorasComponent implements OnInit {
 
   calcularMetros(e) {
 
-      this.caltotal=parseFloat(((this.calmetros*this.cantidadcal)+((this.valorEnM2*this.calmetros)/this.calp)).toFixed(2))
+      this.caltotal=parseFloat(((this.calmetros*this.cantidadcal)+((this.valorEnM2*this.calmetros)/this.calp)).toFixed(5))
   }
 
 }

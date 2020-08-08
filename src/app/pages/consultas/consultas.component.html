@@ -1,0 +1,88 @@
+
+
+ <br>
+ <br>
+ <br>
+<div class="row" style="background-color: white;margin-right: 5px;">
+
+
+  
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+      Seleccione el producto:
+      <dx-select-box
+          [dataSource]="productos22"
+          displayExpr="PRODUCTO"
+          [searchEnabled]="true"
+          valueExpr="PRODUCTO"
+          [(value)]="nombre_producto"
+          (onValueChanged)="obtenerDatosDeProductoParaUnDetalle()"
+          itemTemplate="item">
+      </dx-select-box>
+    </div>
+    <div class="col-md-3"></div>
+ 
+    <div style="margin-top: 10px;"></div>
+
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+      
+    <table style="width:100%">
+      <tr>
+        <th>Nombre</th>
+        <td colspan="2">{{infoproducto.producto}}</td>
+      </tr>
+      <tr>
+          <th>Piezas/Caja</th>
+          <td colspan="2">{{infoproducto.piezas}}</td>
+      </tr>
+      <tr>
+          <th>Metros/Caja</th>
+          <td colspan="2">{{infoproducto.metros}}</td>
+      </tr>
+      <tr>
+          <th>Fabrica</th>
+          <td colspan="2"> {{infoproducto.fabrica}}</td>
+      </tr>
+      <tr>
+          <th>Disponibilidad</th>
+          <td colspan="2">{{infoproducto.disponibilidad}}</td>
+      </tr>
+      <tr>
+          <th>Ubicación</th>
+          <td colspan="2">{{infoproducto.ubicacion}}</td>
+      </tr>
+      <tr>
+          <th style="background-color: bisque;">Precio Socio</th>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;" colspan="2">{{infoproducto.precioSocio}}</td>
+      </tr>
+      <tr>
+          <th style="background-color: bisque;">Precio Distribuidor</th>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;" colspan="2">{{infoproducto.precioDist}}</td>
+      </tr>
+      <tr style="text-align: center;">
+          <th style="background-color: bisque;">Cliente</th>
+          <!-- <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td> -->
+          <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span>
+          <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td>
+      </tr>
+      <tr>
+          <th>Notas</th>
+          <td colspan="2">{{infoproducto.notas}}</td>
+     </tr>
+
+
+     
+      
+    </table>
+    <dx-gallery #gallery
+        id="gallery"
+        [dataSource]="imagenes"
+        [height]="200"
+        [loop]="true"
+        [showNavButtons]="true"
+        [showIndicator]="true">
+    </dx-gallery>
+  </div>
+  <div class="col-md-3"></div>
+</div>

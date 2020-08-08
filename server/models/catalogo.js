@@ -27,6 +27,7 @@ const CatalogoSchema = new Schema({
     IMAGEN: { type: Array, required: false},
     IMAGEN_PRINCIPAL: { type: String, required: false},
     estado2: { type: String, required: false},
+    notas: { type: String, required: false},
     precio: { type: Number, required: false}
 },{
     timestamps:true

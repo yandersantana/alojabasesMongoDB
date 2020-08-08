@@ -1,9 +1,12 @@
-import { StringifyEmployeesPipe } from '../orden-compra/orden-compra.component'
+import { producto } from '../ventas/venta'
+
 
 export class infoprod{
   producto:string
+  productoLeido:producto
   piezas:number
   metros:number
+  cantidad:number
   disponibilidad:string
   fabrica:string
   ubicacion:string
@@ -12,6 +15,6 @@ export class infoprod{
   precioCliente:number
   notas:string
   constructor(){
-
+     this.cantidad=0
   }
 }

@@ -265,7 +265,7 @@
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.REFERENCIA" name="REFERENCIA" class="form-control" placeholder="Ingrese la referencia"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">PRECIO</div>
+                                            <div class="col-md-4" style="text-align: left;">PRECIO <span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="number" [(ngModel)]="catalogo2.precio" name="precio" class="form-control" placeholder="Ingrese el precio"  required></div>
                                         </div>
                                         <div class="row espacio">
@@ -365,6 +365,10 @@
                                                 (onValueChanged)="asignarEstado($event)"
                                                 ></dx-select-box>
                                             </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">NOTAS</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.notas" name="Notas" class="form-control" placeholder="Notas"  required></div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-12">Escoja las imágenes a subir (Tamaño recomendado : <strong>720px x 960px</strong>)</div>
@@ -563,6 +567,10 @@
                                                 (onValueChanged)="asignarEstado($event)"
                                                 ></dx-select-box>
                                             </div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">NOTAS</div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.notas" name="Notas" class="form-control" placeholder="Opcional"  required></div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-12" style="text-align: center;font-weight: bold; font-size: 1.2em;">Fotos del producto</div>

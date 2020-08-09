@@ -30,7 +30,7 @@ export class auditoriasProductos{
   idAud:string
   fecha:string
   auditor:string
-  ubicacion:string[]
+  ubicacion:string
   sucursal:Sucursal
   producto:producto
   nombreproducto:string
@@ -61,6 +61,7 @@ export class auditoriasProductos{
     this.cajas_diferencia=0
     this.piezas_diferencia=0
     this.impacto=0
+    this.condicion="OK"
     //this.ubicacion=""
   }
 

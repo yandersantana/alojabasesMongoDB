@@ -205,13 +205,13 @@ export class AuditoriaClComponent implements OnInit {
           this.lectura=true
         }
         this.compararProducto()
-        this.obtenerUbicacion()
+        //this.obtenerUbicacion()
       }
     })
 
   }
 
-  obtenerUbicacion(){
+ /*  obtenerUbicacion(){
     console.log("ssss "+this.auditoria.sucursal.nombre)
     switch (this.auditoria.sucursal.nombre) {
       case "matriz":
@@ -227,7 +227,7 @@ export class AuditoriaClComponent implements OnInit {
       default:
         break;
     }
-  }
+  } */
 
   compararProducto(){
     //alert("si")
@@ -511,6 +511,54 @@ export class AuditoriaClComponent implements OnInit {
     })
   }
 
+
+  actualizarUbicacion(){
+     var cont=0
+        switch (this.auditoria.sucursal.nombre) {
+          case "matriz":
+             for (let index = 0; index < this.auditoria.producto.ubicacionSuc1.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc1[index];
+               if(element2 == this.auditoria.ubicacion){
+                cont++
+              }  
+            }
+            
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc1.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            } 
+            break;
+           case "sucursal1":
+            for (let index = 0; index < this.auditoria.producto.ubicacionSuc2.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc2[index];
+              if(element2 == this.auditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc2.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+            
+            break;
+          case "sucursal2":
+            for (let index = 0; index < this.auditoria.producto.ubicacionSuc3.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc3[index];
+              if(element2 == this.auditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc3.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+              break; 
+          default:
+            break;
+        } 
+  }
+
+
   validarSucursal(e){
     var cont=0
     this.auditoriasIniciadas.forEach(element=>{
@@ -559,6 +607,7 @@ export class AuditoriaClComponent implements OnInit {
     this.auditoria.fecha= new Date().toLocaleDateString()
     console.log("datos5555 "+JSON.stringify(this.auditoria))
    if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
+    this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {
         this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
@@ -866,13 +915,14 @@ export class AuditoriaClComponent implements OnInit {
     this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
     console.log("sss "+this.auditoria.impacto)
 
-    if(this.auditoria.m2diferencia >0){
-      this.auditoria.condicion = "SOBRANTE"
+    if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
+      this.auditoria.condicion= "OK"
+      this.auditoria.impacto=0
     }else if (this.auditoria.m2diferencia<0){
       this.auditoria.condicion = "FALTANTE"
-    }else{
-      this.auditoria.condicion= "OK"
-    }
+    }else if(this.auditoria.m2diferencia >0){
+      this.auditoria.condicion = "SOBRANTE"
+    } 
   }
 
   calculardiferencia2(){

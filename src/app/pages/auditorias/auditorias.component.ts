@@ -211,13 +211,13 @@ export class AuditoriasComponent implements OnInit {
           this.lectura=false
         }
         this.compararProducto()
-        this.obtenerUbicacion()
+        //this.obtenerUbicacion()
       }
     })
 
   }
 
-  obtenerUbicacion(){
+ /*  obtenerUbicacion(){
     console.log("ssss "+this.auditoria.sucursal.nombre)
     switch (this.auditoria.sucursal.nombre) {
       case "Matriz":
@@ -233,7 +233,7 @@ export class AuditoriasComponent implements OnInit {
       default:
         break;
     }
-  }
+  } */
 
   compararProducto(){
     //alert("si")
@@ -693,6 +693,7 @@ export class AuditoriasComponent implements OnInit {
   guardarAuditoria(){
 
     if( this.newAuditoria.contrasena!=undefined && this.newAuditoria.sucursal != undefined && this.newAuditoria.auditado!= " "){
+      
        this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
         this.auditoriasService.newAuditoria(this.newAuditoria).subscribe( res => {
@@ -711,8 +712,9 @@ export class AuditoriasComponent implements OnInit {
 
   guardarAuditoriaProducto(){
     this.auditoria.fecha= new Date().toLocaleDateString()
-    console.log("datos5555 "+JSON.stringify(this.auditoria))
+   
    if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
+    this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {
         this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
@@ -1022,15 +1024,14 @@ export class AuditoriasComponent implements OnInit {
     console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
 
     this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
-    console.log("sss "+this.auditoria.impacto)
-
-    if(this.auditoria.m2diferencia >0){
-      this.auditoria.condicion = "SOBRANTE"
+    if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
+      this.auditoria.condicion= "OK"
+      this.auditoria.impacto=0
     }else if (this.auditoria.m2diferencia<0){
       this.auditoria.condicion = "FALTANTE"
-    }else{
-      this.auditoria.condicion= "OK"
-    }
+    }else if(this.auditoria.m2diferencia >0){
+      this.auditoria.condicion = "SOBRANTE"
+    } 
   }
 
   calculardiferencia2(){
@@ -1065,6 +1066,58 @@ export class AuditoriasComponent implements OnInit {
     }
   }
 
+
+
+
+  actualizarUbicacion(){
+    //alert("entre")
+     var cont=0
+        switch (this.auditoria.sucursal.nombre) {
+          case "matriz":
+             for (let index = 0; index < this.auditoria.producto.ubicacionSuc1.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc1[index];
+               if(element2 == this.auditoria.ubicacion){
+                cont++
+              }  
+            }
+            
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc1.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            } 
+            break;
+           case "sucursal1":
+            for (let index = 0; index < this.auditoria.producto.ubicacionSuc2.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc2[index];
+              if(element2 == this.auditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc2.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+            
+            break;
+          case "sucursal2":
+            for (let index = 0; index < this.auditoria.producto.ubicacionSuc3.length; index++) {
+              const element2 = this.auditoria.producto.ubicacionSuc3[index];
+              if(element2 == this.auditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.auditoria.producto.ubicacionSuc3.push(this.auditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+              break; 
+          default:
+            break;
+        } 
+  }
+
+
+
   continuarAuditoria(i:number){
     Swal.fire({
       title: 'Código',
@@ -1080,9 +1133,10 @@ export class AuditoriasComponent implements OnInit {
         if(result.value == this.auditoriasIniciadas[i].contrasena){
           var x = document.getElementById("newAud");
           var y = document.getElementById("newAudGlobal");
-          //var z = document.getElementById("aprobaciones");
+          var z = document.getElementById("tabla3");
           x.style.display = "block";
           y.style.display = "none";
+          z.style.display = "none";
           localStorage.setItem('contrasena',  result.value);
           this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
           this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria

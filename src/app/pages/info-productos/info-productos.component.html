@@ -1,11 +1,10 @@
 <br>
-<br>
-<br>
 
-<div class="row" style="background-color: white;margin-right: 5px;">
+
+<div class="row" style="background-color: white;">
   <div class="col-md-3"></div>
   <div class="col-md-6">
-      
+    <h5 class="card-header text-center font-weight-bold text-uppercase " style="font-size: 1.2rem;">Gestión de Inventario</h5>
     <table style="width:100%">
       <tr>
         <th>Nombre</th>
@@ -13,11 +12,11 @@
       </tr>
       <tr>
           <th>Piezas/Caja</th>
-          <td colspan="2">{{infoproducto.piezas}}</td>
+          <td colspan="2" style="text-align: center;">{{infoproducto.piezas}}</td>
       </tr>
       <tr>
           <th>Metros/Caja</th>
-          <td colspan="2">{{infoproducto.metros}}</td>
+          <td colspan="2" style="text-align: center;">{{infoproducto.metros}}</td>
       </tr>
       <tr>
           <th>Fabrica</th>
@@ -42,7 +41,7 @@
       <tr style="text-align: center;">
           <th style="background-color: bisque;">Cliente</th>
           <!-- <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span> -->
-          <td style="width: 10%;"><dx-text-box [(value)]="infoproducto.cantidad" [readOnly]="false" (onValueChanged)="actualizarDato( $event)"></dx-text-box></td>
+          <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span>
           <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td>
       </tr>
       <tr>

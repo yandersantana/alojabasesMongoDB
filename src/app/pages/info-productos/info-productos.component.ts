@@ -124,7 +124,7 @@ export class InfoProductosComponent implements OnInit {
 
   
   actualizarDato( event: any) {
-     //this.infoproducto.cantidad = event.target.textContent;
+     this.infoproducto.cantidad = event.target.textContent;
      console.log("sss "+this.infoproducto.cantidad)
      this.precios.forEach(element=>{
       if(element.aplicacion == this.infoproducto.productoLeido.APLICACION){

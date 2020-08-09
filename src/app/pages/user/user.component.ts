@@ -48,7 +48,8 @@ export class UserComponent implements OnInit {
   
   menu1: string[] = [
     "Usuario",
-    "Administrador"
+    "Administrador",
+    "Usuario Web"
   ];
 
   constructor(public sucursalesService:SucursalesService, public userService:UserService) { }

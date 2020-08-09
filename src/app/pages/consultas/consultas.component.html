@@ -1,14 +1,13 @@
 
 
  <br>
- <br>
- <br>
-<div class="row" style="background-color: white;margin-right: 5px;">
 
+<div class="row" style="background-color: white;">
 
-  
     <div class="col-md-3"></div>
     <div class="col-md-6">
+        <h5 class="card-header text-center font-weight-bold text-uppercase " style="font-size: 1.2rem;">Consultas</h5>
+        <br>
       Seleccione el producto:
       <dx-select-box
           [dataSource]="productos22"
@@ -26,7 +25,7 @@
 
   <div class="col-md-3"></div>
   <div class="col-md-6">
-      
+   
     <table style="width:100%">
       <tr>
         <th>Nombre</th>
@@ -75,6 +74,7 @@
      
       
     </table>
+    <br>
     <dx-gallery #gallery
         id="gallery"
         [dataSource]="imagenes"

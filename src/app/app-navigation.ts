@@ -108,6 +108,43 @@ export const navigation = [
 
 
 
+export const navigationWEB = [
+  {
+    text: 'Home',
+    path: '/home',
+    icon: 'home'
+  },
+  {
+    text: 'Herramientas',
+    icon: 'home',
+    items: [{
+      text: 'Calculadora',
+      path: '/calculadora',
+      },{
+        text: 'Consultas',
+        path: '/consultas',
+      }]
+  },
+  {
+    text: 'Auditorias',  
+    icon: 'fa fa-list-alt',
+    items: [
+      {
+        text: 'Auditorias de Inventario',
+        path: '/auditorias2',  
+      }]
+  },
+
+  {
+    text: 'Profile',
+    path: '/profile',
+    icon: 'home'
+  },
+
+];
+
+
+
 export const navigationAdmin = [
   {
     text: 'Home',

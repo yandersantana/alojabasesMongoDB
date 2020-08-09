@@ -222,7 +222,7 @@
 
     <div class="card mb-3">
         <div class="card-header">
-        <i class="fa fa-lg fa-user  text-danger"></i> Administración de Catálogo
+         Administración de Catálogo de Productos
         </div>
         <div class="card-body">
     
@@ -804,5 +804,106 @@
                 
             </div>
         </div>
+    </div>
+</div>
+
+
+
+<div id="combos" style="display: none;">
+    <div class="card mb-3">
+        <div class="card-header">
+         Administración de Combos de Productos
         </div>
+        <div class="card-body">
+    
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row botones">
+                      
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar2(1)">Nuevo Combo</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar2(2)">Editar/Eliminar</button></div>
+                        
+                    </div>
+                </div>
+                <div class="col-md-10 card carIn">
+                    <div id="new2" style="display: block;">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10" >
+                                    
+                                    <div class="row">
+                                        <div class="col-md-12" style="text-align: center;"><h5>Nuevo combo de Productos</h5></div>
+                                    </div>
+
+                                    <div class="row espacio" >
+                                        <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
+                                        <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo4.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo4.CLASIFICA}} - {{catalogo4.NOMBRE_PRODUCTO}}" disabled="true" autocomplete="producto" required></div>
+                                    </div>
+                                    <div class="row espacio" >
+                                        <div class="col-md-4" style="text-align: left;">NOMBRE COMBO DE PRODUCTOS</div>
+                                        <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo4.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control"   placeholder="Ingrese el nombre del combo" autocomplete="producto" required></div>
+                                    </div>
+
+                                    <div class="row espacio">
+                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                           
+                                          <tr>
+                                            <th class="text-center" >Cantidad</th>
+                                            <th class="text-center">Producto</th>
+                                            <th class="text-center" >Costo</th>
+                                            <th class="text-center">P.Min.</th>
+                                            <th class="text-center">P.Combo</th>
+                                            <th class="text-center" >Calculo</th>
+                                            <th class="text-center" >P.Venta</th>
+                                          </tr>
+                                          
+                                          <!-- <tr *ngFor="let producto of productosEntregados; let id = index">
+                                            <td>
+                                              <span contenteditable="false" >{{producto.nombreComercial.PRODUCTO}}</span>
+                                            </td>
+                                             <td>
+                                              <span contenteditable="true" (blur)="actualizarDato(id, 'ubicacion', $event)">{{producto.ubicacion}}</span>
+                                            </td> 
+                                            <td>
+                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregada', $event)" >{{producto.cantidadEntregada}}</span>
+                                            </td>
+                                            <td>
+                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregadapiezas', $event)" >{{producto.cantidadEntregadapiezas}}</span>
+                                            </td>
+                                           
+                                            <td>
+                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevuelta', $event)">{{producto.cantidadDevuelta}}</span>
+                                            </td>
+                                            <td>
+                                                <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevueltapiezas', $event)">{{producto.cantidadDevueltapiezas}}</span>
+                                            </td>
+                                            <td>
+                                                <dx-select-box [items]="menuEstadoRecibo" 
+                                                [value]="menuEstadoRecibo[0]" 
+                                                [readOnly]="false" 
+                                                [disabled]="false"
+                                                (onValueChanged)="actualizarEstadoRec(id,$event)"
+                                                ></dx-select-box>
+                                            </td>
+                                            <td>
+                                                <span contenteditable="true" (blur)="actualizarDato(id, 'observaciones', $event)">{{producto.observaciones}}</span>
+                                            </td>
+                                          </tr> -->
+                                        </table>
+                                    </div>
+                                </div>
+                                <div class="col-md-1"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    
+
+                    
+                </div>
+                
+            </div>
+        </div>
+    </div>
 </div>

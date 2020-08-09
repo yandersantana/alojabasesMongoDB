@@ -1,3 +1,4 @@
+import { producto } from '../ventas/venta'
 
 
 export class catalogo{
@@ -48,7 +49,23 @@ export class catalogo{
 export class opcionesCatalogo{
     arrayClasificación: []
     arrayUnidades: []
-constructor(){
+    constructor(){
 
+    }
 }
+
+export class comboProducto{
+    nombreCombo:string
+    cantidadProductos:number
+    arrayProductos:productosCombo[]=[]
+}
+
+export class productosCombo{
+    producto:producto
+    cantidad:number
+    precioMin:number
+    costo:number
+    precioCombo:number
+    precioVenta:number
+    calculo:number
 }

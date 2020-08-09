@@ -79,8 +79,9 @@ export class AuditoriasComponent implements OnInit {
   ];
 
   sucursalesDefault: string[] = [
-    "Ver Auditorias",
-    "Nueva Auditoria"
+    
+    "Nueva Auditoria",
+    "Ver Auditorias"
   ];
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -133,7 +134,7 @@ export class AuditoriasComponent implements OnInit {
   traerAuditoriasProductos(){
     this.auditoriaProductoService.getAuditoriasProductos().subscribe(res => {
       this.auditoriaProductosBase = res as auditoriasProductos[];
-      this.separarAuditoriasProductos()
+      
    })
   }
 
@@ -197,11 +198,7 @@ export class AuditoriasComponent implements OnInit {
     });
   }
 
-  separarAuditoriasProductos(){
-    this.auditoriaProductosBase.forEach(element=>{
-      
-    })
-  }
+ 
 
   obtenerDetallesproducto(e){
     this.productosActivos.forEach(element=>{
@@ -332,8 +329,6 @@ export class AuditoriasComponent implements OnInit {
         z2.style.display="none";
         z3.style.display="none";
         this.dataGrid2.instance.refresh()
-       
-       
         break;
       default:    
     }     
@@ -615,8 +610,10 @@ export class AuditoriasComponent implements OnInit {
     if (this.pass == this.auditoriasIniciadas[i].contrasena ) {
       var x = document.getElementById("newAud");
       var y = document.getElementById("newAudGlobal");
+      var z = document.getElementById("tabla3");
       x.style.display = "block";
       y.style.display = "none";
+      z.style.display = "none";
       this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
       this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
       this.auditoria.auditado = this.auditoriasIniciadas[i].auditado

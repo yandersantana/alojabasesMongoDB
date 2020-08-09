@@ -45,8 +45,11 @@ export class CatalogoComponent implements OnInit {
   imagenPrincipal:string
   menu1: string[] = [
     "Catálogo",
+   
   "Administrar Productos"
   ];
+
+  //"Combos de Productos",
 
   menuOrigen: string[] = [
     "Nacional",
@@ -96,7 +99,33 @@ export class CatalogoComponent implements OnInit {
     estado2:"Activo",
     precio:0,
     notas:""
+  }
 
+  catalogo4 = {
+    PRODUCTO:"",
+    NOMBRE_PRODUCTO:"",
+    CLASIFICA:"COMBO",
+    REFERENCIA:"Sin Referencia",
+    UNIDAD:"",
+    DIM:"0",
+    NOMBRE_COMERCIAL:"",
+    P_CAJA:0,
+    M2:0,
+    CAL:"",
+    CASA:"",
+    TIPO:"",
+    ORIGEN:"",
+    ESTADO:"",
+    APLICACION:"",
+    porcentaje_ganancia:0,
+    VIGENCIA:"",
+    FEC_PRODUCCION:"",
+    CANT_MINIMA:0,
+    IMAGEN:[],
+    IMAGEN_PRINCIPAL:"",
+    estado2:"Activo",
+    precio:0,
+    notas:""
   }
   elementRef
   tempUrl:string=""
@@ -331,6 +360,30 @@ export class CatalogoComponent implements OnInit {
   }
 
   mostrar(i:number){
+    var x = document.getElementById("new");
+    var y = document.getElementById("edit");
+    var z = document.getElementById("delete");
+    switch (i) {
+      case 1:
+        x.style.display = "block";
+        y.style.display="none";
+        z.style.display="none";
+       break;
+      case 2:
+        x.style.display = "none";
+        y.style.display="block";
+        z.style.display="none";
+        break;
+      case 3:
+        x.style.display = "none";
+        y.style.display="none";
+        z.style.display="block";
+        break;
+      default:    
+    }      
+  }
+
+  mostrar2(i:number){
     var x = document.getElementById("new");
     var y = document.getElementById("edit");
     var z = document.getElementById("delete");
@@ -797,15 +850,22 @@ _handleReaderLoaded(readerEvt) {
   opcionMenu(e){
     var x = document.getElementById("catalogo");
     var y = document.getElementById("administracion");
+    var z = document.getElementById("combos");
     switch (e.value) {
       case "Catálogo":
         x.style.display = "block";
         y.style.display="none";
+        z.style.display="none";
        break;
       case "Administrar Productos":
-        console.log("entre aqui")
         x.style.display = "none";
         y.style.display="block";
+        z.style.display="none";
+        break;
+      case "Combos de Productos":
+        x.style.display = "none";
+        y.style.display="none";
+        z.style.display="block";
         break;
       default:    
     }     

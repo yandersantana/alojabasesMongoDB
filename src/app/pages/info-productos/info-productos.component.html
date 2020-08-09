@@ -2,7 +2,7 @@
 <br>
 <br>
 
-<div class="row" style="background-color: white;">
+<div class="row" style="background-color: white;margin-right: 5px;">
   <div class="col-md-3"></div>
   <div class="col-md-6">
       
@@ -41,8 +41,8 @@
       </tr>
       <tr style="text-align: center;">
           <th style="background-color: bisque;">Cliente</th>
-          <!-- <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td> -->
-          <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span>
+          <!-- <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span> -->
+          <td style="width: 10%;"><dx-text-box [(value)]="infoproducto.cantidad" [readOnly]="false" (onValueChanged)="actualizarDato( $event)"></dx-text-box></td>
           <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td>
       </tr>
       <tr>

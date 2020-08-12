@@ -6,18 +6,32 @@
 
     <div class="col-md-3"></div>
     <div class="col-md-6">
-        <h5 class="card-header text-center font-weight-bold text-uppercase " style="font-size: 1.2rem;">Consultas</h5>
+        <h5 class="card-header text-center font-weight-bold text-uppercase " style="font-size: 1.2rem;">Gestion Inventario</h5>
         <br>
       Seleccione el producto:
-      <dx-select-box
-          [dataSource]="productos22"
-          displayExpr="PRODUCTO"
-          [searchEnabled]="true"
-          valueExpr="PRODUCTO"
-          [(value)]="nombre_producto"
-          (onValueChanged)="obtenerDatosDeProductoParaUnDetalle()"
-          itemTemplate="item">
-      </dx-select-box>
+      <div class="row">
+          <div class="col-md-10">
+            <dx-select-box
+                [dataSource]="productos22"
+                displayExpr="PRODUCTO"
+                [searchEnabled]="true"
+                valueExpr="PRODUCTO"
+                [(value)]="nombre_producto"
+                (onValueChanged)="obtenerDatosDeProductoParaUnDetalle()"
+                itemTemplate="item">
+            </dx-select-box>
+          </div>
+         
+      </div>
+      <div class="col-md-12" style="text-align: center;">
+        <span>
+            <button class="btn btn-primary btn-xs" style="background-color: red;border-color: transparent;" (click)="mostrarEliminar()" >
+                <!-- <i class="fa fa-trash"></i> -->Limpiar
+            </button>
+          </span>
+      </div>
+     
+    
     </div>
     <div class="col-md-3"></div>
  
@@ -33,11 +47,11 @@
       </tr>
       <tr>
           <th>Piezas/Caja</th>
-          <td colspan="2">{{infoproducto.piezas}}</td>
+          <td colspan="2" style="text-align: center;">{{infoproducto.piezas}}</td>
       </tr>
       <tr>
           <th>Metros/Caja</th>
-          <td colspan="2">{{infoproducto.metros}}</td>
+          <td colspan="2" style="text-align: center;">{{infoproducto.metros}}</td>
       </tr>
       <tr>
           <th>Fabrica</th>

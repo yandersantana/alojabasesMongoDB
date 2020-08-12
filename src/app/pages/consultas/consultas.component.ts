@@ -105,14 +105,18 @@ export class ConsultasComponent implements OnInit {
     this.cargarProductoTabla()
   }
 
+  mostrarEliminar(){
+    this.nombre_producto=""
+  }
+
   cargarProductoTabla(){
     this.infoproducto.producto = this.productoLeido.PRODUCTO
     this.infoproducto.productoLeido = this.productoLeido
     this.infoproducto.piezas = this.productoLeido.P_CAJA
     this.infoproducto.metros = this.productoLeido.M2
     this.infoproducto.fabrica = ""
-    this.infoproducto.disponibilidad = this.productoLeido.sucursal1+"M "+this.productoLeido.sucursal2+"S1 "+this.productoLeido.sucursal3+"S2 "+this.productoLeido.bodegaProveedor+"P "
-    this.infoproducto.ubicacion = "Suc1 ("+this.productoLeido.ubicacionSuc1+") " +"Suc2 ("+this.productoLeido.ubicacionSuc2+") "+"Suc3 ("+this.productoLeido.ubicacionSuc3+") "
+    this.infoproducto.disponibilidad = this.productoLeido.sucursal1+"M  - "+this.productoLeido.sucursal2+"S1  - "+this.productoLeido.sucursal3+"S2  - "+this.productoLeido.bodegaProveedor+"P "
+    this.infoproducto.ubicacion = "M("+this.productoLeido.ubicacionSuc1+") - " +"S1("+this.productoLeido.ubicacionSuc2+") - "+"S2("+this.productoLeido.ubicacionSuc3+") "
 
     
     this.productosCatalogo.forEach(element=>{

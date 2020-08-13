@@ -103,6 +103,8 @@ import { AuditoriaClComponent } from './pages/auditoria-cl/auditoria-cl.componen
 import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
 import { InfoProductosComponent } from './pages/info-productos/info-productos.component';
 import { ConsultasComponent } from './pages/consultas/consultas.component';
+import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
+import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
 
 
 const routes: Routes = [
@@ -251,6 +253,17 @@ const routes: Routes = [
     component: AuditoriasComponent,
     canActivate: [ AuthGuardService ]
   },
+  {
+    path: 'auditorias/novedades',
+    component: Auditoria2Component,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'auditorias/tabla',
+    component:   AudTablaComponent,
+    canActivate: [ AuthGuardService ]
+  },
+
   {
     path: 'auditorias2',
     component: AuditoriaClComponent,

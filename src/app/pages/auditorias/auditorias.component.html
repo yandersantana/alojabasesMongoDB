@@ -6,8 +6,8 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-8"> </div>
-                    <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="sucursalesDefault" 
-                        [value]="sucursalesDefault[0]" 
+                    <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="menu" 
+                        [value]="menu[0]" 
                         [readOnly]="false" 
                         [disabled]="false"
                         (onValueChanged)="opcionMenu($event)"
@@ -118,7 +118,7 @@
                 </div>
 
                 
-                    <div id="tabla3" style="display: block;">
+                    <div id="tabla3" style="display: none;">
                         <div  class="col-md-12">
                             <div class="row">
                                 <div class="col-md-1"></div>
@@ -213,6 +213,7 @@
                             </div>
                         </div>
                     </div>
+
 
                     <div id="tabla4" style="display: none;">
                         <div class="col-md-12">

@@ -21,6 +21,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-auditorias',
@@ -78,15 +79,16 @@ export class AuditoriasComponent implements OnInit {
     "Manchado"
   ];
 
-  sucursalesDefault: string[] = [
+  menu: string[] = [
     
     "Nueva Auditoria",
-    "Ver Auditorias"
+    "Ver Auditorias",
+    "Novedades registradas"
   ];
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore,private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
@@ -306,6 +308,7 @@ export class AuditoriasComponent implements OnInit {
     var z1 = document.getElementById("newAud");
     var z2 = document.getElementById("editAud");
     var z3 = document.getElementById("tablaAuditoria");
+    var z4 = document.getElementById("novedades");
 
     
 
@@ -318,17 +321,15 @@ export class AuditoriasComponent implements OnInit {
         z0.style.display="none";
         z2.style.display="none";
         z3.style.display="none";
+        z4.style.display="none";
        
        break;
       case "Ver Auditorias":
-        x.style.display = "none";
-        y.style.display="block";
-        z.style.display="none";
-        z1.style.display="none";
-        z0.style.display="none";
-        z2.style.display="none";
-        z3.style.display="none";
-        this.dataGrid2.instance.refresh()
+        this.router.navigate(['/auditorias/tabla']);
+        break;
+      case "Novedades registradas":
+        this.router.navigate(['/auditorias/novedades']);
+        
         break;
       default:    
     }     
@@ -711,7 +712,7 @@ export class AuditoriasComponent implements OnInit {
   }
 
   guardarAuditoriaProducto(){
-    this.auditoria.fecha= new Date().toLocaleDateString()
+    this.auditoria.fecha= new Date().toLocaleString()
    
    if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
     this.actualizarUbicacion()

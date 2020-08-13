@@ -45,6 +45,8 @@ import { QRCodeModule } from 'angularx-qrcode';
 import { GenerarQRComponent } from './pages/generar-qr/generar-qr.component';
 import { InfoProductosComponent } from './pages/info-productos/info-productos.component';
 import { ConsultasComponent } from './pages/consultas/consultas.component';
+import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
+import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
 
 
 
@@ -78,7 +80,9 @@ import { ConsultasComponent } from './pages/consultas/consultas.component';
     AuditoriaClComponent,
     GenerarQRComponent,
     InfoProductosComponent,
-    ConsultasComponent
+    ConsultasComponent,
+    Auditoria2Component,
+    AudTablaComponent
   ],
   imports: [
     BrowserModule,

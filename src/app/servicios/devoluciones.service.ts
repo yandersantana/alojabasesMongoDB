@@ -10,7 +10,8 @@ export class DevolucionesService {
 
   facturas: factura[];
  //private URL = 'http://localhost:3000/devoluciones'; //localhost
- private URL = 'http://104.248.14.190:3000/devoluciones';
+ //private URL = 'http://104.248.14.190:3000/devoluciones';
+ private URL = 'http://104.131.82.174:3000/devoluciones';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newDevolucion(devolucion){

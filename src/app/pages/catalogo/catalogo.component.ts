@@ -247,6 +247,52 @@ export class CatalogoComponent implements OnInit {
     } 
   }
 
+  registrarProductos(){
+    var cont=0
+    this.productosCatalogo.forEach(element=>{
+      this.nuevoProducto.PRODUCTO= element.PRODUCTO
+      this.nuevoProducto.CAL= element.CAL
+      this.nuevoProducto.CASA= element.CASA
+      this.nuevoProducto.CLASIFICA= element.CLASIFICA
+      this.nuevoProducto.ESTADO= element.ESTADO
+      this.nuevoProducto.M2= element.M2
+      this.nuevoProducto.P_CAJA= element.P_CAJA
+      this.nuevoProducto.REFERENCIA= element.REFERENCIA
+      this.nuevoProducto.UNIDAD= element.UNIDAD
+      this.nuevoProducto.nombre_comercial= element.NOMBRE_COMERCIAL
+      this.nuevoProducto.APLICACION= element.APLICACION
+      this.nuevoProducto.porcentaje_ganancia= element.porcentaje_ganancia
+      this.nuevoProducto.precio= element.precio
+      this.nuevoProducto.suc1Pendiente= 0
+      this.nuevoProducto.suc2Pendiente= 0
+      this.nuevoProducto.suc3Pendiente= 0
+      this.nuevoProducto.sucursal1= 0
+      this.nuevoProducto.sucursal2= 0
+      this.nuevoProducto.sucursal3= 0
+      this.nuevoProducto.bodegaProveedor=0
+      this.nuevoProducto.ubicacionSuc1=[]
+      this.nuevoProducto.ubicacionSuc2=[]
+      this.nuevoProducto.ubicacionSuc3=[]
+      
+      new Promise<any>((resolve, reject) => {
+        this.productoService.newProducto(this.nuevoProducto).subscribe(
+          res => {
+            cont++
+            console.log(res + "entre por si"+ cont);
+            
+          },
+          err => {
+            Swal.fire({
+              title: err.error,
+              text: 'Revise e intente nuevamente',
+              icon: 'error'
+            })
+          })
+      }) 
+    })
+    //alert("hay "+this.productosCatalogo.length)
+  }
+
   upload5(idx, file) {
     
     this.progressInfos[idx] = { value: 0, fileName: file.name };

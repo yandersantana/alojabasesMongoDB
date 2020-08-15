@@ -79,8 +79,8 @@ export class GenerarQRComponent implements OnInit {
       if(element.PRODUCTO == this.nombre_producto){
         this.cantidadPiezas= element.P_CAJA
         this.m2Caja= element.M2
-        this.texto = "http://104.248.14.190:3000/#/info-productos/"+element._id
-        this.productoind.url= "http://104.248.14.190:3000/#/info-productos/"+element._id
+        this.texto = "http://104.131.82.174:3000/#/info-productos/"+element._id
+        this.productoind.url= "http://104.131.82.174:3000/#/info-productos/"+element._id
         this.productoind.nombre_producto= element.PRODUCTO
         this.productoind.piezas_producto= element.P_CAJA
         this.productoind.metros_producto= element.M2

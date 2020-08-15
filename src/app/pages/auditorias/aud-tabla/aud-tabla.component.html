@@ -292,13 +292,18 @@
                     
                                 <div class="col-md-12">
                                     <div class="row">
-                                        <div class="col-md-4"><p class="texto">Producto</p></div>
+                                        <div class="col-md-4"><p class="texto">Seleccione un producto</p></div>
                                         <div class="col-md-8"><dx-select-box  [dataSource]="productos22" [(value)]="productoEntregado" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
                                         </dx-select-box>
                                         <br>
                                         </div>
                                         <br>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Producto seleccionado</p></div>
+                                        <div class="col-md-8" style="font-size: 12pt;">{{auditoria.nombreproducto}}</div>
                                     </div>
                                 </div>
 
@@ -307,6 +312,7 @@
                                         <div class="col-md-4"><p class="texto">Ubicación</p></div>
                                         <div class="col-md-8"><dx-text-box [(value)]="auditoria.ubicacion" [disabled]="false" [readOnly]="false"></dx-text-box></div>
                                     </div>
+                                    <br>
                                 </div>
                     
                                 <div class="col-md-12">

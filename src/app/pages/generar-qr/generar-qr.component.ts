@@ -16,6 +16,7 @@ import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
   templateUrl: './generar-qr.component.html',
   styleUrls: ['./generar-qr.component.scss']
 })
+
 export class GenerarQRComponent implements OnInit {
 
   tiposCodigos: string[] = [

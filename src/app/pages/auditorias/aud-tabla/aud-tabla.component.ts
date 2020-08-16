@@ -78,6 +78,7 @@ export class AudTablaComponent implements OnInit {
     "Rayado",
     "Manchado"
   ];
+  fecha_inicio = new Date()
 
   menu: string[] = [
     
@@ -92,6 +93,7 @@ export class AudTablaComponent implements OnInit {
     this.auditoria = new auditoriasProductos()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
+    this.newAuditoria.fecha_inicio = new Date().toLocaleString()
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
     
@@ -761,7 +763,8 @@ export class AudTablaComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-          var fecha2=new Date()
+          var fecha2=new Date().toLocaleDateString()
+          this.auditoriasIniciadas[i].fecha_fin = new Date().toLocaleDateString()
           this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],fecha2,"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -931,7 +934,8 @@ export class AudTablaComponent implements OnInit {
     })
 
     if(this.auditoriaProductosleida.length==i){
-      var fecha2= new Date()
+      var fecha2= new Date().toLocaleDateString()
+      this.auditoriaEditable.fecha_fin = new Date().toLocaleDateString()
       this.auditoriasService.updateAuditoriaEstado(this.auditoriaEditable,fecha2,"Finalizada").subscribe( res => {
          Swal.fire({
           title: 'Correcto',

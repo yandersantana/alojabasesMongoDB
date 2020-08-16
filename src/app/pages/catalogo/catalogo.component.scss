@@ -39,16 +39,32 @@ height: 50px;
 table, th, td {
     border: 1px solid black;
     border-collapse: collapse;
+    text-align: center; 
   }
-  th, td {
+  table th, td {
     padding: 5px;
-    text-align: left;    
+    text-align: center;    
   }
 
   /* #gallery:hover {
     transform: scale(3.5); 
   } */
+  ::ng-deep  .dx-texteditor-input{
+    text-align: center;
+}
 
+.bt{
+  background-color: red;
+  color: white;
+  border-color: transparent;
+ 
+}
+
+.precioC{
+  text-align: center;
+  font-weight: bold;
+  font-size: 2rem;
+}
 
   .botones button{
     background-color: #0061a9;

@@ -7,7 +7,6 @@ router.post('/newAuditoriaProducto', async (req, res) => {
     const newAuditoria = new AuditoriaProducto({ 
       idAud:req.body.idAud, 
       idPrincipal:req.body.idPrincipal,
-      nombre_auditor:req.body.nombre_auditor, 
       sucursal:req.body.sucursal,
       producto:req.body.producto,
       fecha:req.body.fecha,
@@ -30,7 +29,8 @@ router.post('/newAuditoriaProducto', async (req, res) => {
       m2diferencia:req.body.m2diferencia,
       condicion:req.body.condicion,
       impactoDanado:req.body.impactoDanado,
-      observaciones:req.body.observaciones
+      observaciones:req.body.observaciones,
+      ubicacion:req.body.ubicacion
     });
     await newAuditoria.save();
     res.json({status: 'Cliente creado'});
@@ -65,7 +65,6 @@ router.put('/update/:id', async (req, res,next) => {
     const newAudit ={ 
       idAud:req.body.idAud, 
       idPrincipal:req.body.idPrincipal,
-      nombre_auditor:req.body.nombre_auditor, 
       sucursal:req.body.sucursal,
       fecha:req.body.fecha,
       auditor:req.body.auditor,
@@ -88,6 +87,7 @@ router.put('/update/:id', async (req, res,next) => {
       m2diferencia:req.body.m2diferencia,
       condicion:req.body.condicion,
       impactoDanado:req.body.impactoDanado,
+      ubicacion:req.body.ubicacion,
       observaciones:req.body.observaciones};
     await AuditoriaProducto.findByIdAndUpdate(id, {$set: newAudit}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

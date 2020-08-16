@@ -8,8 +8,8 @@ const AuditoriaSchema = new Schema({
     contrasena: { type: String, required: false},
     sucursal: { type: SucursalSchema, required: false},
     cantidad_productos: { type: Number, required: false},
-    fecha_inicio: { type: Date, required: false},
-    fecha_fin: { type: Date, required: false},
+    fecha_inicio: { type: String, required: false},
+    fecha_fin: { type: String, required: false},
     auditado: { type: String, required: false},
     estado: { type: String, required: false}
    

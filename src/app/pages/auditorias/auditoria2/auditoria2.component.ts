@@ -41,6 +41,7 @@ export class Auditoria2Component implements OnInit {
   number_transaccion:number=0
   auditoria:auditoriasProductos
   auditoriaProductosBase:auditoriasProductos[]=[]
+  nodedadesAuditorias:auditoriasProductos[]=[]
   auditoriaProductosleida:auditoriasProductos[]=[]
   auditoriaProductosleida2:auditoriasProductos[]=[]
   newAuditoria: auditoria
@@ -86,12 +87,14 @@ export class Auditoria2Component implements OnInit {
     "Novedades registradas"
   ];
 
+  fecha_inicio = new Date()
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
   constructor(private db: AngularFirestore,private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
+    this.newAuditoria.fecha_inicio = new Date().toLocaleString()
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
     
@@ -136,7 +139,7 @@ export class Auditoria2Component implements OnInit {
   traerAuditoriasProductos(){
     this.auditoriaProductoService.getAuditoriasProductos().subscribe(res => {
       this.auditoriaProductosBase = res as auditoriasProductos[];
-      
+      this.dividirAuditorias()
    })
   }
 
@@ -146,6 +149,14 @@ export class Auditoria2Component implements OnInit {
       this.newAuditoria.idAuditoria = this.contadores[0].auditorias_Ndocumento+1
       //this.number_transaccion= this.contadores[0].transacciones_Ndocumento
    })
+  }
+
+  dividirAuditorias(){
+    this.auditoriaProductosBase.forEach(element=>{
+      if(element.valoracion!="Ok"){
+        this.nodedadesAuditorias.push(element)
+      }
+    })
   }
 
   async getIDDocumentos() {
@@ -757,7 +768,8 @@ export class Auditoria2Component implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-          var fecha2=new Date()
+          var fecha2=new Date().toLocaleDateString()
+          this.auditoriaEditable.fecha_fin = new Date().toLocaleDateString()
           this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],fecha2,"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -927,7 +939,8 @@ export class Auditoria2Component implements OnInit {
     })
 
     if(this.auditoriaProductosleida.length==i){
-      var fecha2= new Date()
+      var fecha2= new Date().toLocaleDateString()
+      this.auditoriaEditable.fecha_fin = new Date().toLocaleDateString()
       this.auditoriasService.updateAuditoriaEstado(this.auditoriaEditable,fecha2,"Finalizada").subscribe( res => {
          Swal.fire({
           title: 'Correcto',

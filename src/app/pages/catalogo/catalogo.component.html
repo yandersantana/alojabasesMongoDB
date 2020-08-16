@@ -233,7 +233,7 @@
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">Nuevo Producto</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">Editar/Eliminar</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">Productos Eliminados</button></div>
-                        <div class="col-md-12"><button class="btn" type="button" (click)="registrarProductos()">registrar</button></div>
+                        <!-- <div class="col-md-12"><button class="btn" type="button" (click)="registrarProductos()">registrar</button></div> -->
                     </div>
                 </div>
                 <div class="col-md-10 card carIn">
@@ -833,56 +833,76 @@
                     <div id="new2" style="display: block;">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-1"></div>
-                                <div class="col-md-10" >
+                               
+                                <div class="col-md-12" >
                                     
                                     <div class="row">
-                                        <div class="col-md-12" style="text-align: center;"><h5>Nuevo combo de Productos</h5></div>
+                                        <div class="col-md-12" style="text-align: center;"><h5>Nuevo Combo de Productos</h5></div>
                                     </div>
 
                                     <div class="row espacio" >
-                                        <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
-                                        <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo4.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo4.CLASIFICA}} - {{catalogo4.NOMBRE_PRODUCTO}}" disabled="true" autocomplete="producto" required></div>
+                                        <div class="col-md-3" style="text-align: left;">PRODUCTO</div>
+                                        <div class="col-md-7">  <input type="text" [(ngModel)]="catalogo4.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo4.CLASIFICA}} - {{catalogo4.NOMBRE_PRODUCTO}}" disabled="true" autocomplete="producto" required></div>
+                                        <div class="col-md-2" class="precioC">$ {{precioVentaCombo}}</div>
                                     </div>
                                     <div class="row espacio" >
-                                        <div class="col-md-4" style="text-align: left;">NOMBRE COMBO DE PRODUCTOS</div>
-                                        <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo4.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control"   placeholder="Ingrese el nombre del combo" autocomplete="producto" required></div>
+                                        <div class="col-md-3" style="text-align: left;">NOMBRE COMBO</div>
+                                        <div class="col-md-9">  <input type="text" [(ngModel)]="catalogo4.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control"   placeholder="Ingrese el nombre del combo" autocomplete="producto" required></div>
                                     </div>
 
                                     <div class="row espacio">
-                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                        <div class="alinearBoton col-md-4" >
+                                            <dx-button icon="plus" [type]="'success'" [disabled]="false" (onClick)="anadirProducto($event)">
+                                        </dx-button>
+                                        <br>
+                                        </div>
+                                        
+                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
                                            
                                           <tr>
-                                            <th class="text-center" >Cantidad</th>
-                                            <th class="text-center">Producto</th>
-                                            <th class="text-center" >Costo</th>
-                                            <th class="text-center">P.Min.</th>
-                                            <th class="text-center">P.Combo</th>
-                                            <th class="text-center" >Calculo</th>
-                                            <th class="text-center" >P.Venta</th>
+                                            <th class="text-center" style="width: 9%;">Cantidad</th>
+                                            <th class="text-center" style="width: 40%;">Producto</th>
+                                            <th class="text-center" style="width: 9%;">Costo</th>
+                                            <th class="text-center" style="width: 9%;">P.Min.</th>
+                                            <th class="text-center" style="width: 9%;">P.Combo</th>
+                                            <th class="text-center" style="width: 9%;">Calculo(%)</th>
+                                            <th class="text-center" style="width: 9%;">P.Venta</th>
+                                            <th class="text-center" style="width: 6%;">Elim</th>
                                           </tr>
                                           
-                                          <!-- <tr *ngFor="let producto of productosEntregados; let id = index">
+                                          <tr *ngFor="let producto of productosCombo; let id = index">
                                             <td>
-                                              <span contenteditable="false" >{{producto.nombreComercial.PRODUCTO}}</span>
-                                            </td>
-                                             <td>
-                                              <span contenteditable="true" (blur)="actualizarDato(id, 'ubicacion', $event)">{{producto.ubicacion}}</span>
-                                            </td> 
-                                            <td>
-                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregada', $event)" >{{producto.cantidadEntregada}}</span>
+                                                <dx-number-box [(value)]="producto.cantidad" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
                                             </td>
                                             <td>
-                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadEntregadapiezas', $event)" >{{producto.cantidadEntregadapiezas}}</span>
-                                            </td>
-                                           
-                                            <td>
-                                              <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevuelta', $event)">{{producto.cantidadDevuelta}}</span>
+                                                <dx-select-box [items]="productosActivos" [(value)]="producto.nombreProducto" [readOnly]="false" [disabled]="false"
+                                            [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, id)">
+                                                </dx-select-box>
                                             </td>
                                             <td>
-                                                <span contenteditable="true" (blur)="actualizarDato(id, 'cantidadDevueltapiezas', $event)">{{producto.cantidadDevueltapiezas}}</span>
+                                                <dx-number-box [(value)]="producto.costo" [disabled]="false" [readOnly]="true"></dx-number-box>
                                             </td>
                                             <td>
+                                                <dx-number-box [(value)]="producto.precioMin" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                            </td>
+                                            <td>
+                                                <dx-number-box [(value)]="producto.precioCombo" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
+                                            </td>
+                                            <td>
+                                                <dx-number-box [(value)]="producto.calculo" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                            </td>
+                                            <td>
+                                                <dx-number-box [(value)]="producto.precioVenta" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                            </td>
+                                            <td>
+                                               <!--  <dx-button icon="clear" color="white" class="bt" (onClick)="deleteProductoCombo(id)"></dx-button>  -->
+                                                <button class="btn btn-primary btn-xs" class="bt" (click)="deleteProductoCombo(id)" >
+                                                    <i class="fa fa-trash"></i>
+                                                </button>
+                                            </td>
+                                            
+                                            
+                                            <!-- <td>
                                                 <dx-select-box [items]="menuEstadoRecibo" 
                                                 [value]="menuEstadoRecibo[0]" 
                                                 [readOnly]="false" 
@@ -892,12 +912,12 @@
                                             </td>
                                             <td>
                                                 <span contenteditable="true" (blur)="actualizarDato(id, 'observaciones', $event)">{{producto.observaciones}}</span>
-                                            </td>
-                                          </tr> -->
+                                            </td> -->
+                                          </tr> 
                                         </table>
                                     </div>
                                 </div>
-                                <div class="col-md-1"></div>
+                               
                             </div>
                         </div>
                     </div>

@@ -58,14 +58,22 @@ export class comboProducto{
     nombreCombo:string
     cantidadProductos:number
     arrayProductos:productosCombo[]=[]
+    precioVenta:number
+    constructor(){
+        this.precioVenta=0
+    }
 }
 
 export class productosCombo{
     producto:producto
+    nombreProducto:string
     cantidad:number
     precioMin:number
     costo:number
     precioCombo:number
     precioVenta:number
     calculo:number
+    constructor(){
+        this.cantidad=1
+    }
 }

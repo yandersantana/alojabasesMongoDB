@@ -78,6 +78,7 @@ export class AuditoriasComponent implements OnInit {
     "Rayado",
     "Manchado"
   ];
+  fecha_inicio= new Date()
 
   menu: string[] = [
     
@@ -85,6 +86,7 @@ export class AuditoriasComponent implements OnInit {
     "Ver Auditorias",
     "Novedades registradas"
   ];
+  
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -92,6 +94,10 @@ export class AuditoriasComponent implements OnInit {
     this.auditoria = new auditoriasProductos()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
+    this.newAuditoria.fecha_inicio = new Date().toLocaleString()
+    //alert("1 "+new Date().toLocaleDateString())
+    //alert("2 "+new Date().toLocaleString())
+    //alert("ssfecha "+this.newAuditoria.fecha_inicio)
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
     
@@ -736,6 +742,7 @@ export class AuditoriasComponent implements OnInit {
  guardarEditAuditoriaProducto(){
   this.editAuditoria.fecha= new Date().toLocaleDateString()
  if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
+  this.actualizarUbicacionEdit()
     this.mostrarMensaje()
    new Promise<any>((resolve, reject) => {
       this.auditoriaProductoService.updateAuditoriaProducto(this.editAuditoria).subscribe( res => {this.mensajeUpdate()}, err => {alert("error")})
@@ -761,7 +768,8 @@ export class AuditoriasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-          var fecha2=new Date()
+          var fecha2=new Date().toLocaleDateString()
+          this.auditoriasIniciadas[i].fecha_fin = new Date().toLocaleDateString()
           this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],fecha2,"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -931,7 +939,8 @@ export class AuditoriasComponent implements OnInit {
     })
 
     if(this.auditoriaProductosleida.length==i){
-      var fecha2= new Date()
+      var fecha2= new Date().toLocaleDateString()
+      this.auditoriaEditable.fecha_fin= new Date().toLocaleDateString()
       this.auditoriasService.updateAuditoriaEstado(this.auditoriaEditable,fecha2,"Finalizada").subscribe( res => {
          Swal.fire({
           title: 'Correcto',
@@ -1110,6 +1119,53 @@ export class AuditoriasComponent implements OnInit {
             if(cont==0){
               this.auditoria.producto.ubicacionSuc3.push(this.auditoria.ubicacion)
               this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+              break; 
+          default:
+            break;
+        } 
+  }
+
+  actualizarUbicacionEdit(){
+    //alert("entre")
+     var cont=0
+        switch (this.editAuditoria.sucursal.nombre) {
+          case "matriz":
+             for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc1.length; index++) {
+              const element2 = this.editAuditoria.producto.ubicacionSuc1[index];
+               if(element2 == this.editAuditoria.ubicacion){
+                cont++
+              }  
+            }
+            
+            if(cont==0){
+              this.editAuditoria.producto.ubicacionSuc1.push(this.editAuditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
+            } 
+            break;
+           case "sucursal1":
+            for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc2.length; index++) {
+              const element2 = this.editAuditoria.producto.ubicacionSuc2[index];
+              if(element2 == this.editAuditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.editAuditoria.producto.ubicacionSuc2.push(this.editAuditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
+            }
+            
+            break;
+          case "sucursal2":
+            for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc3.length; index++) {
+              const element2 = this.editAuditoria.producto.ubicacionSuc3[index];
+              if(element2 == this.editAuditoria.ubicacion){
+                cont++
+              } 
+            }
+            if(cont==0){
+              this.editAuditoria.producto.ubicacionSuc3.push(this.editAuditoria.ubicacion)
+              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
             }
               break; 
           default:

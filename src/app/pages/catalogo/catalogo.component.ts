@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { NgForm } from '@angular/forms';
-import { catalogo, opcionesCatalogo } from './catalogo';
+import { catalogo, opcionesCatalogo, productosCombo, comboProducto } from './catalogo';
 import { element } from 'protractor';
 import { on, trigger, off } from "devextreme/events";
 import Swal from 'sweetalert2';
@@ -45,7 +45,7 @@ export class CatalogoComponent implements OnInit {
   imagenPrincipal:string
   menu1: string[] = [
     "Catálogo",
-   
+    "Combos de Productos",
   "Administrar Productos"
   ];
 
@@ -67,6 +67,8 @@ export class CatalogoComponent implements OnInit {
   ];
   formData: FormData 
   opcionesCatalogo: opcionesCatalogo[]=[]
+  nuevoProductoCombo:productosCombo
+  productosCombo:productosCombo[]=[]
   arrayClasif: string[]
   arrayUnid: string[]
   contadorArchivos:number=0
@@ -139,8 +141,10 @@ export class CatalogoComponent implements OnInit {
   selectedFiles: FileList;
   progressInfos = [];
   message = '';
-
+  productosActivos:producto[]=[]
   fileInfos: Observable<any>;
+  precioVentaCombo:number=0
+  comboProductos: comboProducto
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
@@ -149,6 +153,9 @@ export class CatalogoComponent implements OnInit {
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
     this.nuevoProducto= new producto()
+    this.comboProductos= new comboProducto()
+    this.nuevoProductoCombo = new productosCombo()
+    this.productosCombo.push(this.nuevoProductoCombo)
 
   }
 
@@ -156,7 +163,7 @@ export class CatalogoComponent implements OnInit {
     this.traerProductosCatalogo()
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
-
+    this.traerProductos()
   }
 
 
@@ -164,6 +171,12 @@ export class CatalogoComponent implements OnInit {
     this.catalogoService.getCatalogo().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
       this.separarProductos()
+   })
+  }
+
+  traerProductos(){
+    this.productoService.getProductosActivos().subscribe(res => {
+      this.productosActivos = res as producto[]; 
    })
   }
 
@@ -180,12 +193,76 @@ export class CatalogoComponent implements OnInit {
    })
   }
 
-  
 
+  obtenerDatosDeProductoParaUnDetalle(e,i:number){
+    this.productosActivos.forEach(element=>{
+      if(element.PRODUCTO == this.productosCombo[i].nombreProducto){
+        this.productosCombo[i].producto = element
+        this.productosCombo[i].costo = element.precio
+        this.productosCombo[i].precioMin = (element.precio*(element.porcentaje_ganancia/100))+element.precio
+      }
+    })
+    this.buscarCoincidencia(i)
+  }
+
+  guardarComboProductos(){
+    
+  }
+
+  buscarCoincidencia(i:number){
+    var cont=0
+    this.productosCombo.forEach(element=>{
+      if(element.nombreProducto == this.productosCombo[i].nombreProducto ){
+        cont++
+      }
+    })
+    if(cont>1){
+      Swal.fire({
+        title: 'Error',
+        text: 'El producto ya esta asociado',
+        icon: 'error'
+      })
+      this.productosCombo.splice(i,1);
+    }
+
+  }
+
+  calcularIncremento(e,i:number){
+    
+    this.productosCombo[i].calculo = Math.round(((this.productosCombo[i].precioCombo/this.productosCombo[i].costo)*100)-100)
+    this.productosCombo[i].precioVenta = this.productosCombo[i].precioCombo * this.productosCombo[i].cantidad
+    if(this.productosCombo[i].precioCombo < this.productosCombo[i].costo){
+      Swal.fire({
+        title: 'Error',
+        text: 'El precio no puede ser menor al costo',
+        icon: 'error'
+      })
+      this.productosCombo[i].precioCombo=0
+      this.productosCombo[i].calculo=0
+      this.productosCombo[i].precioVenta=0
+    }
+    this.calcularTotalCombo()
+  }
+
+  calcularTotalCombo(){
+    this.comboProductos.precioVenta=0
+    this.productosCombo.forEach(element=>{
+      this.comboProductos.precioVenta = element.precioVenta +this.comboProductos.precioVenta
+    })
+    this.precioVentaCombo= this.comboProductos.precioVenta
+    
+  }
+  
+  anadirProducto(e){
+    this.productosCombo.push(new productosCombo())
+  }
+
+  deleteProductoCombo(i:number){
+    this.productosCombo.splice(i,1);
+  }
   //----------------------archivos upload ------------------------
 
   selectFiles(event) {
-    //alert("si entre")
     this.progressInfos = [];
     this.selectedFiles = event.target.files;
     var x = document.getElementById("nombreIM");
@@ -193,7 +270,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   selectFiles2(event) {
-    //alert("si entre")
     this.progressInfos = [];
     this.selectedFiles = event.target.files;
     var x = document.getElementById("nombreIM2");

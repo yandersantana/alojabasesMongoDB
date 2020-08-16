@@ -35,7 +35,7 @@
                                 <div class="col-md-8"><dx-text-box [(value)]="newAuditoria.contrasena" [disabled]="false" [readOnly]="false"></dx-text-box></div>
 
                                 <div class="col-md-4" style="padding-top: 0.7em;">Fecha Inicio</div>
-                                <div class="col-md-8"><dx-date-box [(value)]="newAuditoria.fecha_inicio" [disabled]="false" [readOnly]="true"></dx-date-box></div>
+                                <div class="col-md-8"><dx-date-box [(value)]="fecha_inicio" [disabled]="false" [readOnly]="true"></dx-date-box></div>
 
                                 <div class="col-md-4" style="padding-top: 0.7em;">Sucursal</div>
                                 <div class="col-md-8"><dx-select-box [items]="locales" [(value)]="nameSucursal" [readOnly]="false" [disabled]="false"
@@ -133,8 +133,8 @@
                                         <dxo-export [enabled]="true" fileName="Auditorias" [allowExportSelectedData]="true"></dxo-export>
                                         <dxi-column dataField="idAuditoria" sortOrder="desc"></dxi-column>
                                         <dxi-column dataField="sucursal.nombre" ></dxi-column>
-                                        <dxi-column dataField="fecha_inicio" dataType="date" [visible]="true"></dxi-column>
-                                        <dxi-column dataField="fecha_fin"  dataType="date"></dxi-column>
+                                        <dxi-column dataField="fecha_inicio"  [visible]="true"></dxi-column>
+                                        <dxi-column dataField="fecha_fin"  ></dxi-column>
                                         <dxi-column dataField="cantidad_productos"  dataType="number" caption="Prod.Aud"></dxi-column>
                                         <dxi-column type="buttons"  caption="Ver lista">
                                             <dxi-button icon="fa fa-list fa-1x" [onClick]="getCourseFile"></dxi-button>     
@@ -235,7 +235,7 @@
                                         <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
                                         <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
                                         <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
-                                        <dxi-column dataField="fecha" dataType="date" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="fecha"  [visible]="true"></dxi-column>
                                         <dxi-column dataField="auditor" [visible]="false"></dxi-column>
                                         <dxi-column dataField="auditado" [visible]="false"></dxi-column>
                                         <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
@@ -419,6 +419,14 @@
                                         </div>
                                         <br>
                                     </div>
+                                </div>
+
+                                <div class="col-md-12">
+                                    <div class="row">
+                                        <div class="col-md-4"><p class="texto">Ubicación</p></div>
+                                        <div class="col-md-8"><dx-text-box [(value)]="editAuditoria.ubicacion" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                                    </div>
+                                    <br>
                                 </div>
                     
                                 <div class="col-md-12">

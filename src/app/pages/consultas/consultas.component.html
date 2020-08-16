@@ -10,7 +10,7 @@
         <br>
       Seleccione el producto:
       <div class="row">
-          <div class="col-md-10">
+          <div class="col-md-12">
             <dx-select-box
                 [dataSource]="productos22"
                 displayExpr="PRODUCTO"
@@ -89,14 +89,27 @@
       
     </table>
     <br>
-    <dx-gallery #gallery
-        id="gallery"
-        [dataSource]="imagenes"
-        [height]="200"
-        [loop]="true"
-        [showNavButtons]="true"
-        [showIndicator]="true">
-    </dx-gallery>
+    <div id="galeria" style="display: none;">
+        <dx-gallery #gallery
+            id="gallery"
+            [dataSource]="imagenes"
+            height="200"
+            [loop]="true"
+            [showNavButtons]="true"
+            [showIndicator]="true">
+        </dx-gallery>
+    </div>
+
+    <div id="galeria2" style="display: none;">
+        <dx-gallery #gallery
+            id="gallery"
+            [dataSource]="imagenes"
+            height="auto"
+            [loop]="true"
+            [showNavButtons]="true"
+            [showIndicator]="true">
+        </dx-gallery>
+    </div>
   </div>
   <div class="col-md-3"></div>
 </div>

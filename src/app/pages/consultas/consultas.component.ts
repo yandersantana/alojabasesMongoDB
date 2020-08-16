@@ -12,6 +12,8 @@ import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service
 import { preciosEspeciales, precios } from '../control-precios/controlPrecios';
 import { infoprod } from '../info-productos/info-productos';
 import DataSource from 'devextreme/data/data_source';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 @Component({
   selector: 'app-consultas',
   templateUrl: './consultas.component.html',
@@ -29,9 +31,11 @@ export class ConsultasComponent implements OnInit {
   precios:precios[]=[]
   productos22: DataSource;
   nombre_producto:string
+  usuarioLogueado:user
+  correo:string=""
   preciosEspeciales:preciosEspeciales[]=[]
 
-  constructor(public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
+  constructor(public authenService: AuthenService,public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
     //this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
     this.infoproducto = new infoprod()
    }
@@ -41,6 +45,7 @@ export class ConsultasComponent implements OnInit {
     this.traerPrecios()
     this.traerPreciosEspeciales()
     this.traerProductos()
+    this.cargarUsuarioLogueado()
   }
 
   traerProductosCatalogo(){
@@ -78,7 +83,31 @@ export class ConsultasComponent implements OnInit {
       this.productosActivos = res as producto[];
       this.llenarComboProductos()
    })
-   
+  }
+
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            if( this.usuarioLogueado[0].rol == "Usuario Web"){
+              var z = document.getElementById("galeria");
+                  z.style.display = "block";
+            }else{
+              var z = document.getElementById("galeria2");
+                  z.style.display = "block";
+            }
+
+          },
+          err => {
+          }
+        )
+    });
   }
 
   llenarComboProductos(){

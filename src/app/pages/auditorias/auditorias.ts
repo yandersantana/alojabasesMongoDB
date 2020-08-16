@@ -6,13 +6,13 @@ export class auditoria{
   idAuditoria:number
   contrasena:string
   cantidad_productos:number
-  fecha_inicio:Date
+  fecha_inicio:string
   estado:string
-  fecha_fin:Date
+  fecha_fin:string
   auditado:string
   constructor(){
-    this.fecha_inicio= new Date()
-    this.fecha_fin= new Date()
+    this.fecha_inicio= new Date().toLocaleDateString()
+    //this.fecha_fin= new Date().toLocaleDateString()
     this.estado="Iniciada"
     this.cantidad_productos=0
     this.auditado= ""

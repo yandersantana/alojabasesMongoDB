@@ -85,6 +85,7 @@ export class AuditoriaClComponent implements OnInit {
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.newAuditoria = new auditoria()
+    this.newAuditoria.fecha_inicio= new Date().toLocaleString()
     this.auditoria.valoracion= "Ok"
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
@@ -604,8 +605,7 @@ export class AuditoriaClComponent implements OnInit {
   }
 
   guardarAuditoriaProducto(){
-    this.auditoria.fecha= new Date().toLocaleDateString()
-    console.log("datos5555 "+JSON.stringify(this.auditoria))
+    this.auditoria.fecha= new Date().toLocaleString()
    if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
     this.actualizarUbicacion()
       this.mostrarMensaje()
@@ -626,7 +626,7 @@ export class AuditoriaClComponent implements OnInit {
  }
 
  guardarEditAuditoriaProducto(){
-  this.editAuditoria.fecha= new Date().toLocaleDateString()
+  this.editAuditoria.fecha= new Date().toLocaleString()
  if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
     this.mostrarMensaje()
    new Promise<any>((resolve, reject) => {
@@ -653,7 +653,8 @@ export class AuditoriaClComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         new Promise<any>((resolve, reject) => {
-          var fecha2=new Date()
+          var fecha2=new Date().toLocaleString()
+          this.auditoriaEditable.fecha_fin = new Date().toLocaleString()
           this.auditoriasService.updateAuditoriaEstado(this.auditoriasIniciadas[i],fecha2,"Finalizada").subscribe( res => {this.mensajeCorrecto2()}, err => {alert("error")})
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -822,7 +823,8 @@ export class AuditoriaClComponent implements OnInit {
     })
 
     if(this.auditoriaProductosleida.length==i){
-      var fecha2= new Date()
+      var fecha2= new Date().toLocaleString()
+      this.auditoriaEditable.fecha_fin = new Date().toLocaleString()
       this.auditoriasService.updateAuditoriaEstado(this.auditoriaEditable,fecha2,"Finalizada").subscribe( res => {
          Swal.fire({
           title: 'Correcto',
@@ -928,7 +930,7 @@ export class AuditoriaClComponent implements OnInit {
   calculardiferencia2(){
     //alert("sssss "+JSON.stringify(this.editAuditoria))
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
-      this.auditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
+      this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
       if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){
         this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.04
@@ -937,15 +939,15 @@ export class AuditoriaClComponent implements OnInit {
       }
     }
     
-    console.log("la diferencia es "+this.auditoria.m2diferencia)
-    this.editAuditoria.cajas_diferencia=Math.trunc(this.auditoria.m2diferencia /  this.editAuditoria.producto.M2);
+    console.log("la diferencia es "+this.editAuditoria.m2diferencia)
+    this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);
     console.log("SSS "+this.editAuditoria.producto.M2)
     console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
     
-    this.editAuditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
+    this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
 
-    this.editAuditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
+    this.editAuditoria.impacto = parseFloat((this.editAuditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
     console.log("sss "+this.editAuditoria.impacto)
 
     if(this.auditoria.m2diferencia >0){

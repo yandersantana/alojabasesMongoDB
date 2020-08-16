@@ -1955,13 +1955,13 @@ anadirDetallePago = (e) => {
                 new Promise<any>((resolve, reject) => {
                   switch (e.sucursal.nombre) {
                     case "matriz":
-                      this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                      this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.nombreComercial.precio).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                       break;
                     case "sucursal1":
-                      this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                      this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.nombreComercial.precio).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                       break;
                     case "sucursal2":
-                    this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.precio_compra).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
+                    this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.nombreComercial.precio).subscribe( res => {console.log(res + "entre por si");}, err => {this.errorMensaje()})
                         break;
                     default:
                   }

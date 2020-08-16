@@ -30,7 +30,8 @@ const AuditoriaProductoSchema = new Schema({
     m2base:{ type: Number, required: false},
     m2fisico:{ type: Number, required: false},
     m2daño:{ type: Number, required: false},
-    m2diferencia:{ type: Number, required: false}
+    m2diferencia:{ type: Number, required: false},
+    ubicacion:{ type: String, required: false}
 },{
     timestamps:true
 });

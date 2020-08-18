@@ -310,7 +310,13 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-4"><p class="texto">Ubicación</p></div>
-                                        <div class="col-md-8"><dx-text-box [(value)]="auditoria.ubicacion" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                                        <div class="col-md-8">
+                                            <!-- <dx-autocomplete
+                                                [items]="ubicaciones" 
+                                                [(value)]="auditoria.ubicacion">
+                                            </dx-autocomplete> -->
+                                            
+                                             <dx-text-box [(value)]="auditoria.ubicacion" [disabled]="false" name='ubicaciones' [inputAttr]="{ autocomplete: 'on', name: 'ubicaciones' }" [readOnly]="false"></dx-text-box> </div>
                                     </div>
                                     <br>
                                 </div>
@@ -502,8 +508,55 @@
                                     <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar()">Regresar</button></div>
                                     <div class="col-md-10"></div>
                                 </div>
+                                <!-- <dx-load-indicator id="medium-indicator" [(visible)]="loadIndicatorVisible" height="40" width="40"></dx-load-indicator> -->
                                 
-                                <div class="card">
+                                <div class="col-md-12">
+                                    <dx-data-grid #datag2
+                                    id="gridContainer"
+                                    [dataSource]="auditoriaProductosleida"
+                                    [showBorders]="true"
+                                    >   
+                                        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                                        <dxo-export [enabled]="true" fileName=" Productos Auditoria" [allowExportSelectedData]="true"></dxo-export>
+                                        <dxi-column dataField="_id" [visible]="false"></dxi-column>
+                                        <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
+                                        <dxi-column dataField="fecha" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="nombreproducto" width="25%" [visible]="true"></dxi-column>
+                                        <dxi-column caption="Sistema" width="15%">
+                                            <dxi-column dataField="cajas_sistema" caption="Cajas"></dxi-column>
+                                            <dxi-column dataField="piezas_sistema"  caption="Piezas"></dxi-column>
+                                        </dxi-column>
+                                        <dxi-column caption="Fisico" width="15%">
+                                            <dxi-column dataField="cajas_fisico" caption="Cajas"></dxi-column>
+                                            <dxi-column dataField="piezas_fisico"  caption="Piezas"></dxi-column>
+                                        </dxi-column>
+                                        <dxi-column caption="Diferencia" width="15%">
+                                            <dxi-column dataField="cajas_diferencia" caption="Cajas" dataType="number"></dxi-column>
+                                            <dxi-column dataField="piezas_diferencia"  caption="Piezas" dataType="number"></dxi-column>
+                                        </dxi-column>
+                                        <dxi-column dataField="valoracion" caption="Valoracion" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="impacto" caption="Impacto" width="8%" [visible]="true"></dxi-column>
+                                        
+                                            <dxi-column type="buttons"  caption="Edit." width="6%">
+                                                <dxi-button icon="fa fa-pencil" [onClick]="verEdit"></dxi-button>     
+                                            </dxi-column>
+                                            <dxi-column type="buttons"  caption="Elim." width="6%">
+                                                <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd"></dxi-button>     
+                                            </dxi-column>
+                                        
+                                        <dxo-paging [pageSize]="10"></dxo-paging>
+                                        <dxo-pager 
+                                            [showPageSizeSelector]="true"
+                                            [allowedPageSizes]="[5, 10, 20]"
+                                            [showInfo]="true">
+                                        </dxo-pager>
+                                       
+                                        <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+                                    </dx-data-grid>
+                                </div>
+                                
+                                <!-- <div class="card">
                                     <h5 class="card-header text-center font-weight-bold text-uppercase ">Auditorias 1</h5>
                                     <div class="card-body">
                                       <div id="table" class="table-editable">
@@ -571,7 +624,7 @@
                                         </div>
                                       </div>
                                     </div>
-                                  </div>
+                                </div> -->
                             </div>
                         </div>
                     </div>

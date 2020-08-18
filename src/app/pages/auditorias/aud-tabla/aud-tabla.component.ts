@@ -247,7 +247,7 @@ export class AudTablaComponent implements OnInit {
       this.auditoriaProductosleida.forEach(element=>{
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
           Swal.fire({
-            title: 'Error',
+            title: 'Atención',
             text: "Este producto ya ha sido auditado, Desea editar el producto?",
             icon: 'error',
             showCancelButton: true,
@@ -316,14 +316,7 @@ export class AudTablaComponent implements OnInit {
 
     switch (e.value) {
       case  "Nueva Auditoria":
-        x.style.display = "block";
-        y.style.display="none";
-        z.style.display="none";
-        z1.style.display="none";
-        z0.style.display="none";
-        z2.style.display="none";
-        z3.style.display="none";
-        z4.style.display="none";
+        this.router.navigate(['/auditorias']);
        
        break;
       case "Ver Auditorias":

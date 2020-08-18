@@ -288,7 +288,12 @@
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">NOMBRE_COMERCIAL<span class="obligat"> *</span></div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_COMERCIAL" name="NOMBRE_COMERCIAL" class="form-control" placeholder="Ingrese el nombre comercial"  required></div>
+                                            <div class="col-md-8">  
+                                                <dx-autocomplete
+                                                [items]="arrayNombreComercial" 
+                                                [(value)]="catalogo2.NOMBRE_COMERCIAL" >
+                                            </dx-autocomplete>
+                                                <!-- <input type="text" [(ngModel)]="catalogo2.NOMBRE_COMERCIAL" autocomplete='nombre' name="nombre" class="form-control" placeholder="Ingrese el nombre comercial"  required> --></div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">P_CAJA<span class="obligat"> *</span></div>
@@ -349,7 +354,7 @@
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.VIGENCIA" name="VIGENCIA" class="form-control" placeholder="Opcional"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">FECHA PRODUCCCIÓN</div>
+                                            <div class="col-md-4" style="text-align: left;">FECHA PRODUCCCIÓN </div>
                                             <div class="col-md-8">  <input type="date" [(ngModel)]="catalogo2.FEC_PRODUCCION" name="CASA" class="form-control" placeholder="Opcional"  required></div>
                                         </div>
                                         <div class="row espacio">
@@ -453,15 +458,15 @@
                                     <div class="col-md-1"></div>
                                     <div class="col-md-10">
                                         <div class="row espacio" >
-                                            <div class="col-md-4" style="text-align: left;">PRODUCTO</div>
+                                            <div class="col-md-4" style="text-align: left;">PRODUCTO<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo2.CLASIFICA}} - {{catalogo2.NOMBRE_PRODUCTO}} - {{catalogo2.DIM}}" disabled="true" autocomplete="producto" required></div>
                                         </div>
                                         <div class="row espacio" >
-                                            <div class="col-md-4" style="text-align: left;">NOMBRE PRODUCTO</div>
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE PRODUCTO<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control" disabled="true"  placeholder="Ingrese el producto" autocomplete="producto" required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">CLASIFICACIÓN</div>
+                                            <div class="col-md-4" style="text-align: left;">CLASIFICACIÓN<span class="obligat"> *</span></div>
                                             <div class="col-md-8" style="text-align: center;"  ><dx-autocomplete
                                                 disabled="true"
                                                 [items]="arrayClasif" 
@@ -470,15 +475,15 @@
                                         </div>
                                        
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">REFERENCIA</div>
+                                            <div class="col-md-4" style="text-align: left;">REFERENCIA<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.REFERENCIA" name="REFERENCIA" class="form-control" placeholder="Ingrese la referencia"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">PRECIO</div>
+                                            <div class="col-md-4" style="text-align: left;">PRECIO<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="number" [(ngModel)]="catalogo2.precio" name="precio" class="form-control" placeholder="Ingrese el precio"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">(%) GANANCIA</div>
+                                            <div class="col-md-4" style="text-align: left;">(%) GANANCIA<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="number" [(ngModel)]="catalogo2.porcentaje_ganancia" name="porcentaje_ganancia" class="form-control" placeholder="Ingrese el porcentaje de ganancia"  required></div>
                                         </div>
                                         <div class="row espacio">
@@ -491,19 +496,22 @@
                                            
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">DIM</div>
+                                            <div class="col-md-4" style="text-align: left;">DIM<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.DIM" name="DIM" disabled="true" class="form-control" placeholder="Ingrese las dimensiones"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">NOMBRE_COMERCIAL</div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.NOMBRE_COMERCIAL" name="NOMBRE_COMERCIAL" class="form-control" placeholder="Ingrese el nombre comercial"  required></div>
+                                            <div class="col-md-4" style="text-align: left;">NOMBRE_COMERCIAL<span class="obligat"> *</span></div>
+                                            <div class="col-md-8">  <dx-autocomplete
+                                                [items]="arrayNombreComercial" 
+                                                [(value)]="catalogo2.NOMBRE_COMERCIAL" >
+                                            </dx-autocomplete></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">P_CAJA</div>
+                                            <div class="col-md-4" style="text-align: left;">P_CAJA<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.P_CAJA" name="P_CAJA" class="form-control" [disabled]="varPC" placeholder="Ingrese los productos por caja"  required></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">M2</div>
+                                            <div class="col-md-4" style="text-align: left;">M2<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.M2" name="M2" class="form-control" [disabled]="varM2" placeholder="Ingrese los m2"  required></div>
                                         </div>
                                         <div class="row espacio">
@@ -536,7 +544,7 @@
                                                 ></dx-select-box></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">APLICACIÓN</div>
+                                            <div class="col-md-4" style="text-align: left;">APLICACIÓN<span class="obligat"> *</span></div>
                                             <div class="col-md-8">  
                                                 <dx-select-box [items]="aplicaciones" 
                                                 [(value)]="catalogo2.APLICACION" 
@@ -682,7 +690,8 @@
                             <dxi-column dataField="TIPO" caption="Tipo" [visible]="false"></dxi-column>
                             <dxi-column dataField="ORIGEN" caption="Origen" [visible]="false"></dxi-column>
                             <dxi-column dataField="ESTADO" caption="Estado" [visible]="false"></dxi-column>
-                            <dxi-column dataField="bt" caption="Acciones" [visible]="true"></dxi-column>
+                            <dxi-column dataField="bt" caption="Restaurar" [visible]="true"></dxi-column>
+                            <dxi-column dataField="bt" caption="Eliminar" [visible]="true"></dxi-column>
                         
                             <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
                             </dxi-column> -->
@@ -696,7 +705,8 @@
                                     <!-- <td style="font-size: 1.5em;text-align: center;font-weight: bold;">{{employee.data.CLASIFICA}}</td> -->
                                     <td style="vertical-align: middle;">{{employee.data.CLASIFICA}}</td>
                                     <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
-                                    <td style="vertical-align: middle;text-align: center;"><button class="btn btn4" (click)="restaurar(employee.data.PRODUCTO)">Restaurar</button></td>
+                                    <td style="vertical-align: middle;text-align: center;"><button class="btn btn10" (click)="restaurar(employee.data.PRODUCTO)"><i class="fa fa-repeat"></i></button></td>
+                                    <td style="vertical-align: middle;text-align: center;"><button class="btn btn4" (click)="eliminarProducto(employee.data.PRODUCTO)"><i class="fa fa-trash"></i></button></td>
                             </tbody>
                             <dxo-paging [pageSize]="12"></dxo-paging>
                             <dxo-pager

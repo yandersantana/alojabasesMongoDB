@@ -71,10 +71,12 @@ export class CatalogoComponent implements OnInit {
   productosCombo:productosCombo[]=[]
   arrayClasif: string[]
   arrayUnid: string[]
+  arrayNombreComercial: string[]
   contadorArchivos:number=0
   varM2:boolean=true
   varPC:boolean=true
   nuevoProducto:producto
+  productoElim:producto
   catalogo3:catalogo
   catalogo2 = {
     PRODUCTO:"",
@@ -175,7 +177,7 @@ export class CatalogoComponent implements OnInit {
   }
 
   traerProductos(){
-    this.productoService.getProductosActivos().subscribe(res => {
+    this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[]; 
    })
   }
@@ -474,10 +476,9 @@ export class CatalogoComponent implements OnInit {
   llenarCombos(){
     console.log("entre qii")
     this.opcionesCatalogo.forEach(element=>{
-      console.log(JSON.stringify(element))
          this.arrayUnid= element.arrayUnidades
          this.arrayClasif= element.arrayClasificación
-         console.log("sdsdsd "+this.arrayClasif )
+         this.arrayNombreComercial = element.arrayNombreComercial
     })
   }
 
@@ -531,17 +532,18 @@ export class CatalogoComponent implements OnInit {
 
   asignarOrigen(e){
      this.catalogo2.ORIGEN= e.value
-     console.log("asigne "+this.catalogo2.ORIGEN)
   }
+
+  asignarNombreComercial(e){
+    this.catalogo2.NOMBRE_COMERCIAL= e.value   
+ }
 
   asignarTipo(e){
     this.catalogo2.TIPO= e.value
-    console.log("asigne "+this.catalogo2.TIPO)
   }
 
   asignarEstado(e){
     this.catalogo2.ESTADO= e.value
-    console.log("asigne "+this.catalogo2.ESTADO)
   }
 
   crearNuevoProducto(){
@@ -595,7 +597,7 @@ export class CatalogoComponent implements OnInit {
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
     this.comparardatos()
     this.comparardatos2()
-    console.log("los datos soon "+JSON.stringify(this.catalogo2))
+    this.comparardatos3()
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       //this.catalogo2.IMAGEN[0]=+this.base64textString
       new Promise<any>((resolve, reject) => {
@@ -654,13 +656,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   comparardatos(){
-   
-   /*  this.opcionesService.newOpciones(this.opcionesCatalogo).subscribe(
-      res => {
-        console.log(res);
-      },
-      err => { console.log(err); this.mensajeError() }
-    ) */
     var cont=0
     this.arrayUnid.forEach(element=>{
       if(element == this.catalogo2.UNIDAD){
@@ -669,7 +664,7 @@ export class CatalogoComponent implements OnInit {
         
       }
     })
-
+    
     if(cont==0){
       this.arrayUnid.push(this.catalogo2.UNIDAD)
       this.opcionesService.updateOpciones(this.opcionesCatalogo[0]).subscribe(
@@ -678,7 +673,6 @@ export class CatalogoComponent implements OnInit {
         },
         err => { console.log(err); this.mensajeError() }
       )
-       // this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayUnidades":this.arrayUnid})
     }
   }
 
@@ -700,7 +694,29 @@ export class CatalogoComponent implements OnInit {
         },
         err => { console.log(err); this.mensajeError() }
       )
-        //this.db.collection("/opcionesCatalogo").doc("clasificacion").update({"arrayClasificación":this.arrayClasif})
+       
+    }
+  }
+
+  comparardatos3(){
+    var cont=0
+    this.arrayNombreComercial.forEach(element=>{
+      if(element == this.catalogo2.NOMBRE_COMERCIAL){
+        cont++
+      }else{
+        
+      }
+    })
+
+    if(cont==0){
+      this.arrayNombreComercial.push(this.catalogo2.NOMBRE_COMERCIAL)
+      this.opcionesService.updateOpciones(this.opcionesCatalogo[0]).subscribe(
+        res => {
+          console.log(res);
+        },
+        err => { console.log(err); this.mensajeError() }
+      )
+       
     }
   }
 
@@ -1060,7 +1076,55 @@ _handleReaderLoaded(readerEvt) {
         
       }
     })
-   
+  }
+
+
+  eliminarProducto(producto:string){
+    
+    //alert(this.productosCatalogoElim.length)
+    this.productosCatalogoElim.forEach(element=>{
+      if(element.PRODUCTO == producto){
+        this.catalogo3 = element
+      }
+    })
+
+    this.productosActivos.forEach(element=>{
+      if(element.PRODUCTO == producto){
+        this.productoElim = element
+       //alert(element)
+      }
+    })
+    Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro que desea eliminar el producto",
+      icon: 'warning',
+      showCancelButton: true,
+      cancelButtonText:"No",
+      confirmButtonText: 'Si'
+    }).then((result) => {
+      if (result.value) {
+        new Promise<any>((resolve, reject) => {
+          this.mensajeGuardando()
+          this.catalogoService.deleteCatalogo(this.catalogo3).subscribe(res => {
+            this.productoService.deleteProducto(this.productoElim).subscribe(res => {
+              Swal.fire({
+                title: 'Correcto',
+                text: 'Se eliminó su producto con éxito',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+              }).then((result) => {
+                window.location.reload()
+              })
+            },
+            err => { console.log(err); this.mensajeError() })
+          },
+          err => { console.log(err); this.mensajeError() }
+        )
+         // this.db.collection("/catalogo").doc(producto).update({"estado2":"Activo"}).then(res => { this.cambiarEstado2(producto)}, err => reject(err));
+        })
+        
+      }
+    })
   }
   
 

@@ -66,6 +66,7 @@ export class AuditoriasComponent implements OnInit {
   lectura:boolean=false
   correo:string
   pass:string
+  loadIndicatorVisible=true
   usuarioLogueado:user
   seleccionado:boolean=false
   menuValoracion: string[] = [
@@ -86,7 +87,7 @@ export class AuditoriasComponent implements OnInit {
     "Ver Auditorias",
     "Novedades registradas"
   ];
-  
+  ubicaciones:string[]
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -119,6 +120,16 @@ export class AuditoriasComponent implements OnInit {
     y.style.display= "none" */
    
   }
+
+  onShown() {
+    setTimeout(() => {
+        this.loadIndicatorVisible = false;
+    }, 3000);
+    }
+
+onHidden() {
+    //this.employeeInfo = this.employee;
+}
 
   traerParametrizaciones(){
     this.parametrizacionService.getParametrizacion().subscribe(res => {
@@ -166,8 +177,8 @@ export class AuditoriasComponent implements OnInit {
     })
     
   }
-  asignarIDdocumentos2(){
-    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento
+   asignarIDdocumentos2(){
+     this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento;
   }
 
   traerProductos(){
@@ -213,13 +224,13 @@ export class AuditoriasComponent implements OnInit {
       if(element.PRODUCTO == this.productoEntregado){
         this.auditoria.producto = element
         this.auditoria.nombreproducto = element.PRODUCTO
+        
         if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos"){
           this.lectura=true
         }else{
           this.lectura=false
         }
         this.compararProducto()
-        //this.obtenerUbicacion()
       }
     })
 
@@ -243,15 +254,15 @@ export class AuditoriasComponent implements OnInit {
     }
   } */
 
-  compararProducto(){
+  async compararProducto(){
     //alert("si")
     if(this.auditoriaProductosleida.length == 0){
       this.buscarInformacion()
     }else{
-      this.auditoriaProductosleida.forEach(element=>{
+     await  this.auditoriaProductosleida.forEach(element=>{
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
           Swal.fire({
-            title: 'Error',
+            title: 'Atención..!',
             text: "Este producto ya ha sido auditado, Desea editar el producto?",
             icon: 'error',
             showCancelButton: true,
@@ -348,19 +359,19 @@ export class AuditoriasComponent implements OnInit {
           case "matriz":
             this.auditoria.cajas_sistema= element.cantidadCajas
             this.auditoria.piezas_sistema= element.cantidadPiezas
-            
+            this.ubicaciones= element.producto.ubicacionSuc1
             this.calcularTotalM2Base()
             break;
           case "sucursal1":
             this.auditoria.cajas_sistema= element.cantidadCajas2
             this.auditoria.piezas_sistema= element.cantidadPiezas2
-            
+            this.ubicaciones= element.producto.ubicacionSuc2
             this.calcularTotalM2Base()
             break;
           case "sucursal2":
             this.auditoria.cajas_sistema= element.cantidadCajas3
             this.auditoria.piezas_sistema= element.cantidadPiezas3
-            
+            this.ubicaciones= element.producto.ubicacionSuc3
             this.calcularTotalM2Base()
             break;
           default:
@@ -419,7 +430,7 @@ export class AuditoriasComponent implements OnInit {
       y.style.display = "block";
   }
 
-  verLista(id:number){
+   verLista(id:number){
     var cont=0
     this.auditoriaProductosleida.forEach(element=>{
       cont++
@@ -431,9 +442,10 @@ export class AuditoriasComponent implements OnInit {
     }
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idPrincipal == id){
-        this.auditoriaProductosleida.push(element)
+         this.auditoriaProductosleida.push(element)
       }
     })
+    //this.loadIndicatorVisible=false
     var x = document.getElementById("tablaAuditoria");
     var y = document.getElementById("newAudGlobal");
     var z = document.getElementById("tabla3");
@@ -550,6 +562,19 @@ export class AuditoriasComponent implements OnInit {
   getCourseFile3 = (e) => {
     this.eliminarAuditoria(e.row.data)  
   }
+
+  verEdit= (e) =>{
+    this.editarPro(e.row.data)
+  }
+
+  eliminarProd = (e) => {
+    this.eliminarAuditoriaProducto(e.row.data)
+  }
+
+  editarPro(e:any){
+    this.editarAuditoriaProducto(e.idAud , e.nombreproducto)
+  }
+
 
   eliminarAuditoria(e){
     Swal.fire({
@@ -782,11 +807,10 @@ export class AuditoriasComponent implements OnInit {
     })
   }
 
-  eliminarAuditoriaProducto(id:number){
-    
+  eliminarAuditoriaProducto(e:any){
     Swal.fire({
       title: 'Eliminar Auditoria',
-      text: "Desea eliminar la auditoria del producto "+this.auditoriaProductosBase[id].nombreproducto,
+      text: "Desea eliminar la auditoria del producto "+e.nombreproducto,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
@@ -794,8 +818,17 @@ export class AuditoriasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.auditoriaProductosBase.forEach(element=>{
-          if(element.idAud ==this.auditoriaProductosleida[id].idAud ){
-            this.auditoriaProductoService.deleteAuditoria(this.auditoriaProductosleida[id]).subscribe( res => {this.auditoriaProductosleida.splice(id,1)}, err => {alert("error")})
+          if(element._id ==e._id ){
+            this.auditoriaProductoService.deleteAuditoria(element).subscribe( res => {
+              Swal.fire({
+                title: 'Correcto',
+                text: 'Se ha realizado su proceso con éxito',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+              }).then((result) => {
+                window.location.reload()
+              })
+            }, err => {alert("error")})
           }
         })
         
@@ -887,16 +920,14 @@ export class AuditoriasComponent implements OnInit {
   contadorValidaciones(i:number){
     if(this.auditoriaProductosleida.length==i){
       this.actualizarProductos()
-     //alert("termine")
     }else{
       console.log("no he entrado "+i)
     }
   }
 
-  editarAuditoriaProducto(id:string){
-    //alert("entre editar"+id)
+  editarAuditoriaProducto(id:string,producto:string){
     this.auditoriaProductosBase.forEach(element=>{
-      if(element.idAud ==id ){
+      if(element.idAud ==id && element.nombreproducto == producto){
         this.editAuditoria = element
         this.editAuditoria.idAud = element.idAud
         this.productoEntregado= element.nombreproducto

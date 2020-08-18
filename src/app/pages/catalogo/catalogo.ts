@@ -49,6 +49,7 @@ export class catalogo{
 export class opcionesCatalogo{
     arrayClasificación: []
     arrayUnidades: []
+    arrayNombreComercial: []
     constructor(){
 
     }

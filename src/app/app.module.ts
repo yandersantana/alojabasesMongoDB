@@ -10,7 +10,7 @@ import { VentasComponent } from './pages/ventas/ventas.component';
 import { ComprasComponent } from './pages/compras/compras.component';
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 import { ProductoComponent } from './pages/producto/producto.component';
-import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule, DxAutocompleteModule, DxTemplateModule, DxFileUploaderModule, DxGalleryModule, DxScrollViewModule, DxAccordionModule } from 'devextreme-angular';
+import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule, DxAutocompleteModule, DxTemplateModule, DxFileUploaderModule, DxGalleryModule, DxScrollViewModule, DxAccordionModule, DxLoadIndicatorModule, DxLoadPanelModule } from 'devextreme-angular';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
@@ -100,7 +100,9 @@ import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.compon
     DxDataGridModule,
     DxFileUploaderModule,
     DxGalleryModule,
+    DxLoadPanelModule,
     DxAccordionModule,
+    DxLoadIndicatorModule,
     DxSelectBoxModule,
     FormsModule,
     DxCheckBoxModule,

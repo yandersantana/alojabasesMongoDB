@@ -231,14 +231,13 @@ export class AuditoriaClComponent implements OnInit {
   } */
 
   compararProducto(){
-    //alert("si")
     if(this.auditoriaProductosleida.length == 0){
       this.buscarInformacion()
     }else{
       this.auditoriaProductosleida.forEach(element=>{
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
           Swal.fire({
-            title: 'Error',
+            title: 'Atención',
             text: "Este producto ya ha sido auditado, Desea editar el producto?",
             icon: 'error',
             showCancelButton: true,

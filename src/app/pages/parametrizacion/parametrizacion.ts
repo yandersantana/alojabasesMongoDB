@@ -6,6 +6,8 @@ export class parametrizacionsuc{
     ruc:string
     nombre:string
     razon_social:string
+    contactoPrincipal:string
+    celularPrincipal:string
     sri:string
     fecha:string
     inicio:number

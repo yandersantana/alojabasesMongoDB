@@ -28,7 +28,9 @@ export class ParametrizacionComponent implements OnInit {
     inicio:0,
     fin:0,
     direccion:"",
-    telefonos:""
+    telefonos:"",
+    contactoPrincipal:"",
+    celularPrincipal:""
   }
   varDis:boolean=true
   parametrizacionesData:parametrizacionsuc[]=[]
@@ -164,8 +166,6 @@ export class ParametrizacionComponent implements OnInit {
   }
 
   actualizarContadores(){
-    
-
     switch (this.parametroSuc.sucursal) {
       case "matriz":
         this.contadores[0].facturaMatriz_Ndocumento = this.parametroSuc.inicio
@@ -198,7 +198,7 @@ export class ParametrizacionComponent implements OnInit {
 
   correcto(){
     Swal.fire({
-      title: 'Proceso guardado',
+      title: 'Correcto',
       text: 'Se ha guardado con éxito',
       icon: 'success',
       confirmButtonText: 'Ok'
@@ -247,14 +247,22 @@ export class ParametrizacionComponent implements OnInit {
     
   } 
 
+  actualizarConsecutivos(){
+    alert("dd")
+  }
+
+
   actualizarsucursal(){
     this.locales.forEach(element=>{
       if(this.parametroSuc.sucursal == element.nombre){
         //alert(this.nombreSucursal)
         element.nombreComercial= this.nombreSucursal
+        element.celular = this.parametroSuc.celularPrincipal
+        element.contacto = this.parametroSuc.contactoPrincipal
         this.sucursalesService.updateSucursales(element).subscribe(
           res => {
-            this.actualizarContadores()
+            this.correcto()
+            //this.actualizarContadores()
           },
           err => {
             Swal.fire({

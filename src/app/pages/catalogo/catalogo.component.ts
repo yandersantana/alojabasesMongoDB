@@ -261,6 +261,7 @@ export class CatalogoComponent implements OnInit {
 
   deleteProductoCombo(i:number){
     this.productosCombo.splice(i,1);
+    this.calcularTotalCombo()
   }
   //----------------------archivos upload ------------------------
 
@@ -1080,8 +1081,6 @@ _handleReaderLoaded(readerEvt) {
 
 
   eliminarProducto(producto:string){
-    
-    //alert(this.productosCatalogoElim.length)
     this.productosCatalogoElim.forEach(element=>{
       if(element.PRODUCTO == producto){
         this.catalogo3 = element

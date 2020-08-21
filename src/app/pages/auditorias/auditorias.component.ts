@@ -150,15 +150,14 @@ onHidden() {
    })
   }
 
-  traerAuditoriasProductos(){
-    this.auditoriaProductoService.getAuditoriasProductos().subscribe(res => {
+  async traerAuditoriasProductos(){
+    await this.auditoriaProductoService.getAuditoriasProductos().subscribe(res => {
       this.auditoriaProductosBase = res as auditoriasProductos[];
-      
    })
   }
 
-  traerContadoresDocumentos(){
-    this.contadoresService.getContadores().subscribe(res => {
+   traerContadoresDocumentos(){
+     this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.newAuditoria.idAuditoria = this.contadores[0].auditorias_Ndocumento+1
       //this.number_transaccion= this.contadores[0].transacciones_Ndocumento
@@ -353,6 +352,7 @@ onHidden() {
   }
 
   buscarInformacion(){
+    console.log("ssss "+JSON.stringify(this.auditoria))
     this.invetarioP.forEach(element=>{
       if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
         switch (this.auditoria.sucursal.nombre) {
@@ -440,6 +440,7 @@ onHidden() {
         this.auditoriaProductosleida.splice(0)    
       })
     }
+    //alert(this.auditoriaProductosBase.length)
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idPrincipal == id){
          this.auditoriaProductosleida.push(element)
@@ -765,7 +766,7 @@ onHidden() {
  }
 
  guardarEditAuditoriaProducto(){
-  this.editAuditoria.fecha= new Date().toLocaleDateString()
+  this.editAuditoria.fecha= new Date().toLocaleString()
  if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
   this.actualizarUbicacionEdit()
     this.mostrarMensaje()
@@ -1089,7 +1090,6 @@ onHidden() {
     
     console.log("la diferencia es "+this.editAuditoria.m2diferencia)
     this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);
-    console.log("SSS "+this.editAuditoria.producto.M2)
     console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
     
     this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
@@ -1111,7 +1111,6 @@ onHidden() {
 
 
   actualizarUbicacion(){
-    //alert("entre")
      var cont=0
         switch (this.auditoria.sucursal.nombre) {
           case "matriz":

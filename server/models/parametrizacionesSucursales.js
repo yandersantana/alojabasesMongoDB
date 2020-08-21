@@ -9,6 +9,8 @@ const ParametrizacionesSucursalesSchema = new Schema({
     sri: { type: String, required: false},
     nombre: { type: String, required: false},
     fecha: { type: String, required: false},
+    contactoPrincipal: { type: String, required: false},
+    celularPrincipal: { type: String, required: false},
     inicio: { type: Number, required: false},
     fin: { type: Number, required: false},
     direccion: { type: String, required: false},

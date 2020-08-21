@@ -16,6 +16,8 @@ router.put('/update/:id', async (req, res,next) => {
         sri: req.body.sri,
         fecha: req.body.fecha,
         nombre: req.body.nombre,
+        contactoPrincipal: req.body.contactoPrincipal,
+        celularPrincipal: req.body.celularPrincipal,
         inicio: req.body.inicio,
         fin: req.body.fin,
         direccion: req.body.direccion,
@@ -42,6 +44,8 @@ router.post('/newParametrizacion', async (req, res) => {
         inicio: req.body.inicio,
         fin: req.body.fin,
         nombre: req.body.nombre,
+        contactoPrincipal: req.body.contactoPrincipal,
+        celularPrincipal: req.body.celularPrincipal,
         direccion: req.body.direccion,
         telefonos: req.body.telefonos 
         });

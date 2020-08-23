@@ -33,6 +33,7 @@ export class ParametrizacionComponent implements OnInit {
     celularPrincipal:""
   }
   varDis:boolean=true
+  varDis2:boolean=true
   parametrizacionesData:parametrizacionsuc[]=[]
   parametrizacionSucu:parametrizacionsuc
   contadores:contadoresDocumentos
@@ -100,7 +101,6 @@ export class ParametrizacionComponent implements OnInit {
   } */
 
   desbloquear(){
-
     if(this.varDis){
       this.varDis=false
     }else{
@@ -108,16 +108,15 @@ export class ParametrizacionComponent implements OnInit {
     }
   }
 
- /*  getParametrizaciones2(){
-    this.db.collection('/parametrizacionSucursales').snapshotChanges().subscribe((locales) => {
-      new Promise<any>((resolve, reject) => {
-        locales.forEach((nt: any) => {
-          this.parametrizacionesData.push(nt.payload.doc.data());
-        })
-      })
-      
-    })
-  } */
+
+  desbloquear2(){
+    if(this.varDis2){
+      this.varDis2=false
+    }else{
+      this.varDis2=true
+    }
+  }
+
 
   obtenerData(){
     var cont=0
@@ -166,6 +165,7 @@ export class ParametrizacionComponent implements OnInit {
   }
 
   actualizarContadores(){
+    this.mensajeGuardando()
     switch (this.parametroSuc.sucursal) {
       case "matriz":
         this.contadores[0].facturaMatriz_Ndocumento = this.parametroSuc.inicio
@@ -248,7 +248,25 @@ export class ParametrizacionComponent implements OnInit {
   } 
 
   actualizarConsecutivos(){
-    alert("dd")
+    Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro de realizar la actualización, esto afectará los números de facturas ",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.actualizarContadores()
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+    
   }
 
 

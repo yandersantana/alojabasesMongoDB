@@ -66,3 +66,12 @@ export class auditoriasProductos{
   }
 
 }
+
+
+export class coincidencias{
+  nombreProducto:string
+  cantidad:number
+  constructor(){
+
+  }
+}

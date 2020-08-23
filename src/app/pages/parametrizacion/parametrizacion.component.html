@@ -73,21 +73,7 @@
                                             <div class="col-md-8">  <input type="date" [(ngModel)]="parametroSuc.fecha" name="fecha" class="form-control"  [disabled]="varDis" placeholder="Vigencia" autocomplete="fecha" required></div>
                                         </div>
 
-                                        <div class="card mb-3 texto row espacio">
-                                            <div class="col-md-12" style="text-align: center;margin-top: 1rem;">Consecutivos</div>
-                                            <div class="col-md-12" style="margin-top: 1rem;margin-bottom: 1rem;">  
-                                                <div class="row">
-                                                    <div class="col-md-5" ><input type="number" class="cons" [(ngModel)]="parametroSuc.inicio" name="inicio"  [disabled]="varDis" class="form-control" placeholder="inicio" autocomplete="cc-number" required></div>
-                                                    <div class="col-md-2" style="text-align: center;font-size: 1em;"> hasta </div>
-                                                    <div class="col-md-5" ><input type="number" class="cons" [(ngModel)]="parametroSuc.fin" name="fin"  [disabled]="varDis" class="form-control" placeholder="fin" autocomplete="cc-number" required></div>
-                                                </div>
-                                               <!--  <div class="row">
-                                                    <div class="col-md-4"></div>
-                                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="actualizarConsecutivos()">Guardar</button></div>
-                                                    <div class="col-md-4"></div>
-                                                </div> -->
-                                            </div>
-                                        </div>
+                                        
         
                                         <!-- <div class="row espacio" >
                                             
@@ -117,7 +103,7 @@
                                 </div>
                             </div>
                                
-                                <div class="col-md-12">
+                                <div class="col-md-12" style="margin-top: -3rem;">
                                     <div class="row">
                                         <div class="col-md-4"></div>
                                         <div class="col-md-4"><button class="btn btn2" type="button" (click)="newParametrizacion()">Guardar</button></div>
@@ -125,6 +111,33 @@
                                         <div class="col-md-4"></div>
                                     </div>
                                 </div>
+
+
+                                
+                                <div class="row" style="margin-top: 4em;" >
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div style="text-align: center;"><h2>Consecutivos </h2></div>
+                                        <div class="card mb-3 row ">
+                                            <div class="col-md-12" style="text-align: right;"><button class="btn"  type="button" (click)="desbloquear2()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button></div>
+                                            <div class="col-md-12" style="text-align: center;margin-top: 1rem;"></div>
+                                            <div class="col-md-12" style="margin-top: 1rem;margin-bottom: 1rem;">  
+                                                <div class="row">
+                                                    <div class="col-md-5" ><input type="number" class="cons" [(ngModel)]="parametroSuc.inicio" name="inicio"  [disabled]="varDis2" class="form-control" placeholder="inicio" autocomplete="cc-number" required></div>
+                                                    <div class="col-md-2" style="text-align: center;font-size: 1em;"> hasta </div>
+                                                    <div class="col-md-5" ><input type="number" class="cons" [(ngModel)]="parametroSuc.fin" name="fin"  [disabled]="varDis2" class="form-control" placeholder="fin" autocomplete="cc-number" required></div>
+                                                </div>
+                                                <div class="row" >
+                                                    <div class="col-md-4"></div>
+                                                    <div class="col-md-4"><button class="btn btn2" type="button" (click)="actualizarConsecutivos()">Actualizar</button></div>
+                                                    <div class="col-md-4"></div>
+                                                </div> 
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                
                             <!-- <dx-accordion
                             #accordion
                             [dataSource]="locales"

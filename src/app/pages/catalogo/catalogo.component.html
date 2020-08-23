@@ -23,7 +23,7 @@
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
     <dxo-export [enabled]="true" fileName="catalogo" [allowExportSelectedData]="true"></dxo-export>
     <dxi-column caption="Imagen" width="15%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
-    <dxi-column dataField="PRODUCTO" width="40%" caption="Producto" style="text-align: center;"></dxi-column>
+    <dxi-column dataField="PRODUCTO" width="40%" caption="Producto" ></dxi-column>
     <dxi-column dataField="CLASIFICA" width="15%" caption="Clasificación"></dxi-column>
     <dxi-column dataField="REFERENCIA" width="15%" caption="Referencia" [visible]="false"></dxi-column>
     <dxi-column dataField="P_CAJA" width="15%" caption="Piezas * Caja"></dxi-column>
@@ -51,12 +51,13 @@
         <tr class="main-row">
         <td rowspan="2" class="imgProducto" style="text-align: center;"><button (click)="mostrarPopup(employee.data.PRODUCTO)" class="btIm"><img class="imgProducto" [src]="employee.data.IMAGEN_PRINCIPAL"></button>
         </td>
-            <td style="vertical-align: middle;" >{{employee.data.PRODUCTO}}</td>
-            <!-- <td style="font-size: 1.5em;text-align: center;font-weight: bold;">{{employee.data.CLASIFICA}}</td> -->
-            <td style="vertical-align: middle;">{{employee.data.CLASIFICA}}</td>
+            <td style="vertical-align: middle;" style="text-align: left;" >{{employee.data.PRODUCTO}}</td>
+            
+            <td style="vertical-align: middle;"  style="text-align: left;">{{employee.data.CLASIFICA}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.P_CAJA}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.M2}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.precio}}</td>
     </tbody>
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

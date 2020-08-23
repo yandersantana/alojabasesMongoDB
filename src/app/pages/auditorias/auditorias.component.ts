@@ -5,7 +5,7 @@ import { ProductoService } from 'src/app/servicios/producto.service';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { Sucursal } from '../compras/compra';
 import { producto, contadoresDocumentos } from '../ventas/venta';
-import { auditoria, auditoriasProductos } from './auditorias';
+import { auditoria, auditoriasProductos, coincidencias } from './auditorias';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { element } from 'protractor';
 import { AuditoriasService } from 'src/app/servicios/auditorias.service';
@@ -22,6 +22,7 @@ import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
+import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-auditorias',
@@ -42,6 +43,8 @@ export class AuditoriasComponent implements OnInit {
   auditoria:auditoriasProductos
   auditoriaProductosBase:auditoriasProductos[]=[]
   auditoriaProductosleida:auditoriasProductos[]=[]
+  auditoriaProductosleidarepetidos:auditoriasProductos[]=[]
+  auditoriaProductosleidarepetidos2:auditoriasProductos[]=[]
   auditoriaProductosleida2:auditoriasProductos[]=[]
   newAuditoria: auditoria
   editAuditoria: auditoriasProductos
@@ -69,6 +72,9 @@ export class AuditoriasComponent implements OnInit {
   loadIndicatorVisible=true
   usuarioLogueado:user
   seleccionado:boolean=false
+  numCoinc:coincidencias
+  arreglocoincidencias:coincidencias[]=[]
+  arreglocoincidencias2:coincidencias[]=[]
   menuValoracion: string[] = [
     "Ok",
     "Roto",
@@ -93,6 +99,7 @@ export class AuditoriasComponent implements OnInit {
 
   constructor(private db: AngularFirestore,private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
+    this.numCoinc = new coincidencias()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
     this.newAuditoria.fecha_inicio = new Date().toLocaleString()
@@ -160,7 +167,7 @@ onHidden() {
      this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.newAuditoria.idAuditoria = this.contadores[0].auditorias_Ndocumento+1
-      //this.number_transaccion= this.contadores[0].transacciones_Ndocumento
+     // this.number_transaccion= this.contadores[0].transacciones_Ndocumento
    })
   }
 
@@ -300,11 +307,14 @@ onHidden() {
     
   }
 
+ 
+
   onExporting2 (e) {
     e.component.beginUpdate();
     e.component.columnOption("observaciones", "visible", true);
     e.component.columnOption("auditor", "visible", true);
     e.component.columnOption("auditado", "visible", true);
+    e.component.columnOption("ubicacion", "visible", true);
     e.component.columnOption("sucursal.nombre", "visible", true);
     
   };
@@ -312,10 +322,23 @@ onHidden() {
     e.component.columnOption("observaciones", "visible", false);
     e.component.columnOption("auditor", "visible", false);
     e.component.columnOption("auditado", "visible", false);
+    e.component.columnOption("ubicacion", "visible", false);
     e.component.columnOption("sucursal.nombre", "visible", false);
     e.component.endUpdate();
   }
 
+
+  onExporting3 (e) {
+    e.component.beginUpdate();
+    e.component.columnOption("ubicacion", "visible", true);
+    e.component.columnOption("observaciones", "visible", true);
+    
+  };
+  onExported3 (e) {
+    e.component.columnOption("observacubicacioniones", "visible", false);
+    e.component.columnOption("observaciones", "visible", false);
+    e.component.endUpdate();
+  }
   opcionMenu(e){
     var x = document.getElementById("newAudGlobal");
     var y = document.getElementById("tabla3");
@@ -532,6 +555,7 @@ onHidden() {
     e.component.columnOption("auditor", "visible", true);
     e.component.columnOption("auditado", "visible", true);
     e.component.columnOption("impacto", "visible", true);
+    e.component.columnOption("ubicacion", "visible", true);
     e.component.columnOption("sucursal.nombre", "visible", true);
     e.component.columnOption("observaciones", "visible", true);
    
@@ -542,6 +566,7 @@ onHidden() {
     e.component.columnOption("impacto", "visible", false);
     e.component.columnOption("auditor", "visible", false);
     e.component.columnOption("auditado", "visible", false);
+    e.component.columnOption("ubicacion", "visible", false);
     e.component.columnOption("sucursal.nombre", "visible", false);
     e.component.columnOption("observaciones", "visible", false);
 
@@ -840,6 +865,70 @@ onHidden() {
     })
   }
 
+
+  revisarDuplicados(){
+    var matriz = {};
+    var matriz2 = {};
+
+    
+    this.auditoriaProductosleida.forEach(element=> { 
+      var nombreproducto = element.nombreproducto
+      matriz[nombreproducto] = matriz[nombreproducto] ? (matriz[nombreproducto] + 1) : 1;
+      this.numCoinc = new coincidencias()
+      this.numCoinc.nombreProducto=nombreproducto
+      this.numCoinc.cantidad=matriz[nombreproducto] 
+      this.arreglocoincidencias.push(this.numCoinc)
+    });
+     
+    matriz = Object.keys(matriz).map(function(nombreproducto) {
+      return { nombre: nombreproducto, cant: matriz[nombreproducto] };
+   });
+   
+
+   this.arreglocoincidencias.forEach(element=>{
+     if(element.cantidad>1){
+       this.arreglocoincidencias2.push(element)
+     }
+   })
+
+  
+   if(this.arreglocoincidencias2.length>0){
+    
+    Swal.fire({
+      title: 'ERROR',
+      text: 'Se han encontrado productos duplicados en la auditoria, resuelvalos e intente nuevamente',
+      icon: 'error',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      var x = document.getElementById("tablaRepetidos");
+      x.style.display = "block";
+    })
+   }else{
+     Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro de realizar la actualización, esto afectará los inventarios de productos",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.realizarActualizaciones()
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+   }
+
+ 
+
+  }
+
+
   realizarActualizaciones(){
     this.mostrarMensaje()
     var contVal=0
@@ -1045,6 +1134,8 @@ onHidden() {
   }
 
   calculardiferencia(){
+    var impactoNeto=0
+    impactoNeto=this.auditoria.m2fisico-this.auditoria.m2base
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
@@ -1065,7 +1156,7 @@ onHidden() {
     this.auditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
 
-    this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
+    this.auditoria.impacto = parseFloat((impactoNeto * this.auditoria.producto.precio).toFixed(2))
     if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
       this.auditoria.condicion= "OK"
       this.auditoria.impacto=0
@@ -1077,7 +1168,8 @@ onHidden() {
   }
 
   calculardiferencia2(){
-    //alert("sssss "+JSON.stringify(this.editAuditoria))
+    var impactoNeto=0
+    impactoNeto=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
@@ -1095,7 +1187,7 @@ onHidden() {
     this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
 
-    this.editAuditoria.impacto = parseFloat((this.editAuditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
+    this.editAuditoria.impacto = parseFloat((impactoNeto * this.editAuditoria.producto.precio).toFixed(2))
     console.log("sss "+this.editAuditoria.impacto)
 
     if(this.editAuditoria.m2diferencia >0){

@@ -199,6 +199,7 @@
                                        
                                         <dxi-column dataField="auditado" [visible]="false"></dxi-column>
                                         <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
+                                        <dxi-column dataField="ubicacion" caption="Ubicacion" [visible]="false"></dxi-column>
                                         <dxo-paging [pageSize]="10"></dxo-paging>
                                         <dxo-pager 
                                             [showPageSizeSelector]="true"
@@ -244,6 +245,7 @@
                                         <dxi-column dataField="valoracion" caption="Condición" [visible]="true"></dxi-column>
                                         <dxi-column dataField="impactoDanado" caption="Impacto" [visible]="true"></dxi-column>
                                         <dxi-column dataField="auditor" caption="Auditor" [visible]="false"></dxi-column>
+                                        <dxi-column dataField="ubicacion" caption="Ubicacion" [visible]="false"></dxi-column>
                                         <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
                                         <dxo-paging [pageSize]="10"></dxo-paging>
                                         <dxo-pager 
@@ -515,7 +517,8 @@
                                     id="gridContainer"
                                     [dataSource]="auditoriaProductosleida"
                                     [showBorders]="true"
-                                    >   
+                                    (onExporting)="onExporting3($event)"
+                                    (onExported)="onExported3($event)">   
                                         <dxo-filter-row [visible]="true" ></dxo-filter-row>
                                         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                                         <dxo-export [enabled]="true" fileName=" Productos Auditoria" [allowExportSelectedData]="true"></dxo-export>
@@ -535,8 +538,12 @@
                                             <dxi-column dataField="cajas_diferencia" caption="Cajas" dataType="number"></dxi-column>
                                             <dxi-column dataField="piezas_diferencia"  caption="Piezas" dataType="number"></dxi-column>
                                         </dxi-column>
-                                        <dxi-column dataField="valoracion" caption="Valoracion" [visible]="true"></dxi-column>
+                                       <!--  <dxi-column dataField="valoracion" caption="Valoracion" [visible]="true"></dxi-column> -->
+                                        <dxi-column dataField="condicion" caption="Condicion" width="8%" [visible]="true"></dxi-column>
                                         <dxi-column dataField="impacto" caption="Impacto" width="8%" [visible]="true"></dxi-column>
+                                        <dxi-column dataField="ubicacion" caption="Ubicacion"  [visible]="false"></dxi-column>
+                                        <dxi-column dataField="observaciones" caption="Observaciones"  [visible]="false"></dxi-column>
+                                        
                                         
                                             <dxi-column type="buttons"  caption="Edit." width="6%">
                                                 <dxi-button icon="fa fa-pencil" [onClick]="verEdit"></dxi-button>     
@@ -554,11 +561,40 @@
                                        
                                         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
                                     </dx-data-grid>
-                                    <div class="row">
+                                    <!-- <div class="row">
                                         <div class="col-md-4"></div>
                                         <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="realizarActualizaciones()">Actualizar Productos</button></div>
                                         <div class="col-md-4"></div>
+                                    </div> -->
+
+                                    <div style="margin: 2rem;">
+
                                     </div>
+
+                                    <div class="row" id="tablaRepetidos" style="display: none;">
+                                        <div class="col-md-12">
+                                            <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                                            <tr>
+                                                <th class="text-center">Productos repetidos</th>
+                                            </tr>                                                 
+                                              <tr *ngFor="let audit of arreglocoincidencias2; let id = index">
+                                                <td><span>{{audit.nombreProducto}}</span></td>
+                                              </tr>
+                                            </table>
+                                        </div>
+                                    </div>
+
+                                    <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="revisarDuplicados()">Actualizar Productos</button></div>
+                                        <div class="col-md-4"></div>
+                                    </div>
+
+                                   <!--  <div class="row">
+                                        <div class="col-md-4"></div>
+                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="revisarDuplicados()">Revisar Productos repetidos</button></div>
+                                        <div class="col-md-4"></div>
+                                    </div> -->
                                 </div>
                                 
                                 <!-- <div class="card">

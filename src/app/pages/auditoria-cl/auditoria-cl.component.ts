@@ -896,6 +896,8 @@ export class AuditoriaClComponent implements OnInit {
   }
 
   calculardiferencia(){
+    var impactoNeto=0
+    impactoNeto=this.auditoria.m2fisico-this.auditoria.m2base
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
@@ -913,7 +915,7 @@ export class AuditoriaClComponent implements OnInit {
     this.auditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
 
-    this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
+    this.auditoria.impacto = parseFloat((impactoNeto * this.auditoria.producto.precio).toFixed(2))
     console.log("sss "+this.auditoria.impacto)
 
     if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
@@ -927,7 +929,8 @@ export class AuditoriaClComponent implements OnInit {
   }
 
   calculardiferencia2(){
-    //alert("sssss "+JSON.stringify(this.editAuditoria))
+    var impactoNeto=0
+    impactoNeto=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
@@ -946,7 +949,7 @@ export class AuditoriaClComponent implements OnInit {
     this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
     console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
 
-    this.editAuditoria.impacto = parseFloat((this.editAuditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
+    this.editAuditoria.impacto = parseFloat((impactoNeto* this.editAuditoria.producto.precio).toFixed(2))
     console.log("sss "+this.editAuditoria.impacto)
 
     if(this.auditoria.m2diferencia >0){

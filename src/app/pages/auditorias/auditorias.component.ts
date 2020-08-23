@@ -469,6 +469,7 @@ onHidden() {
          this.auditoriaProductosleida.push(element)
       }
     })
+    
     //this.loadIndicatorVisible=false
     var x = document.getElementById("tablaAuditoria");
     var y = document.getElementById("newAudGlobal");
@@ -1009,6 +1010,7 @@ onHidden() {
 
   contadorValidaciones(i:number){
     if(this.auditoriaProductosleida.length==i){
+      
       this.actualizarProductos()
     }else{
       console.log("no he entrado "+i)
@@ -1032,15 +1034,18 @@ onHidden() {
 
 
   actualizarProductos(){
+   // alert("entre actualizar")
     var contVal=0
     this.auditoriaProductosleida.forEach(element=>{
         switch (element.sucursal.nombre) {
+          
           case "matriz":
             element.producto.sucursal1=element.m2fisico-element.producto.suc1Pendiente
             this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {})
             break;
           case "sucursal1":
             element.producto.sucursal2=element.m2fisico-element.producto.suc2Pendiente
+            console.log("aquiiii "+ element.producto.sucursal2)
             this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {})
             break;
           case "sucursal2":

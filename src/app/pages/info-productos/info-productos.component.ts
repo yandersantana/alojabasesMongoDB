@@ -95,7 +95,7 @@ export class InfoProductosComponent implements OnInit {
       }
     })
     this.infoproducto.cantidad=1
-    this.infoproducto.precioCliente = this.infoproducto.productoLeido.precio
+    this.infoproducto.precioCliente =parseFloat(((this.infoproducto.productoLeido.precio*(this.infoproducto.productoLeido.porcentaje_ganancia/100))+this.infoproducto.productoLeido.precio).toFixed(2))
     this.precios.forEach(element=>{
       if(element.aplicacion == this.infoproducto.productoLeido.APLICACION){
         if(this.infoproducto.cantidad >0 && this.infoproducto.cantidad <=element.cant1){

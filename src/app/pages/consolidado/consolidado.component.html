@@ -150,6 +150,7 @@
 </div>
 
 <div id="admin" class="remiPro" style="display: none;">
+    
         <dx-data-grid #datag2
             id="gridContainer"
             [dataSource]="invetarioP"
@@ -186,7 +187,7 @@
                 width="15%"
                 [visible]="false">
             </dxi-column>
-            <dxi-column caption="Milagro"  dataField="sucursal1">
+            <dxi-column caption="Matriz"  dataField="sucursal1">
                 <dxi-column
                     dataField="cantidadCajas"
                     caption="Cajas"
@@ -214,7 +215,7 @@
                 </dxi-column>
              </dxi-column>
 
-             <dxi-column caption="Naranjito">
+             <dxi-column caption="Sucursal 1">
                 <dxi-column
                     dataField="cantidadCajas2"
                     caption="Cajas"
@@ -240,7 +241,7 @@
                 </dxi-column>
              </dxi-column>
 
-             <dxi-column caption="El Triunfo">
+             <dxi-column caption="Sucursal 2">
                 <dxi-column
                     dataField="cantidadCajas3"
                     caption="Cajas"
@@ -317,6 +318,15 @@
                 [allowedPageSizes]="[8, 12, 20]"
             ></dxo-pager>
         </dx-data-grid>
+        
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4"><button class="btn btn-block btn-success " (click)="mensajeActualizar()">Actualizar Productos</button></div>
+            <div class="col-md-4"></div>
+        </div>
+
+        
 
 
         <!-- <h2>Productos Facturados Pendientes de entregar</h2>

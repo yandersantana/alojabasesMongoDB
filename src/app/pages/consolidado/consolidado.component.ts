@@ -404,16 +404,86 @@ export class ConsolidadoComponent implements OnInit {
     //this.transformarM2()
   }
 
+  mensajeActualizando(){
+    let timerInterval
+          Swal.fire({
+          title: 'Actualizando !',
+          html: 'Procesando',
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+            Swal.showLoading()
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent()
+              if (content) {
+              }
+            }, 100)
+          },
+          onClose: () => {
+            clearInterval(timerInterval)
+          }
+        })
+  }
+
+
+  mensajeActualizar(){
+    Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro de realizar la actualización, este proceso actualizará los productos existentes ",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.actualizarInventario()
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+  
+
   actualizarInventario(){
     var m2s1=0
     var m2s2=0
     var m2s3=0
+    var contVal=0
+    this.mensajeActualizando()
     this.invetarioP.forEach(element=>{
       m2s1=parseInt(element.cantidadM2.toFixed(0))
       m2s2=parseInt(element.cantidadM2b2.toFixed(0))
       m2s3=parseInt(element.cantidadM2b3.toFixed(0))
+      element.producto.sucursal1=m2s1
+      element.producto.sucursal1=m2s2
+      element.producto.sucursal1=m2s3
+      console.log(element)
+      this.productoService.updateProductosSucursales(element.producto,m2s1,m2s2,m2s3).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {alert("error")})
      // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
     })
+    //alert(this.invetarioP.length)
+  }
+
+
+  contadorValidaciones2(i:number){
+
+    if(this.invetarioP.length==i){
+      Swal.close()
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se ha realizado con exito su actualizacion',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        window.location.reload()
+      })
+    }else{
+      console.log("no he entrado "+i)
+    }
   }
 
   opcionMenu(e){

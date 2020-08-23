@@ -140,6 +140,18 @@ router.put('/updateProductoPenSuc3/:id/:num', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+
+router.put('/updateProductosSucursales/:id/:suc1/:suc2/:suc3', async (req, res,next) => {
+    const { id } = req.params;
+    const { suc1 } = req.params;
+    const { suc2 } = req.params;
+    const { suc3 } = req.params;
+    console.log("sd "+req.body.PRODUCTO + " suc1 "+suc1+ " suc2 "+suc2+ " suc3 "+suc3)
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:suc1,sucursal2:suc2,sucursal3:suc3}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
 router.put('/updateProductoSuc1/:id', async (req, res,next) => {
     const { id } = req.params;
     await Producto.findByIdAndUpdate(id, {$set: {sucursal1:req.body.sucursal1}}, {new: true});
@@ -148,6 +160,7 @@ router.put('/updateProductoSuc1/:id', async (req, res,next) => {
 
 router.put('/updateProductoSuc2/:id', async (req, res,next) => {
     const { id } = req.params;
+    //console.log("sss "+req.body.PRODUCTO+" y "+req.body.sucursal2)
     await Producto.findByIdAndUpdate(id, {$set: {sucursal2:req.body.sucursal2}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

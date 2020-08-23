@@ -40,6 +40,10 @@ export class ProductoService {
   deleteProducto(producto){
     return this.http.delete(this.URL + `/delete/${producto._id}`, producto); 
   }
+
+  updateProductosSucursales(producto,suc1:number,suc2:number,suc3:number){
+    return this.http.put(this.URL + `/updateProductosSucursales/${producto._id}/${suc1}/${suc2}/${suc3}`, producto); 
+  }
   
   updateProductoEstado(producto:string, estado:string){
     return this.http.put(this.URL + `/updateEstado/${producto}/${estado}`, producto); 

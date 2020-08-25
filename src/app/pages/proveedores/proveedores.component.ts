@@ -1249,7 +1249,8 @@ anadirDetallePago = (e) => {
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.datoNsolicitud == element.n_orden){
-            this.totalOrden=element.total  - element.costeUnitaTransport-element.otrosCostosGen
+        //this.totalOrden=element.total  - element.costeUnitaTransport-element.otrosCostosGen
+        this.totalOrden=element.total
             this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
       }
     })

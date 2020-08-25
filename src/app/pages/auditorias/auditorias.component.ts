@@ -770,9 +770,9 @@ onHidden() {
   }
 
   guardarAuditoriaProducto(){
-    this.auditoria.fecha= new Date().toLocaleString()
-   
-   if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
+
+  this.auditoria.fecha= new Date().toLocaleString()
+   if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null ){
     this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {

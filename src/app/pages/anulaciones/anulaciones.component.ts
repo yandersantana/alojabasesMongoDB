@@ -316,7 +316,7 @@ subtotal:number=0
 
   obtenerOrdenesPendientes(){
     this.ordenesCompra.forEach(element=>{
-      if(element.estadoOrden=="PENDIENTE" ){
+      if(element.estadoOrden=="PENDIENTE"){
         this.ordenesCompraPendientes.push(element)
       }else if(element.estadoOrden=="Pendiente-Anulacion"){
         this.ordenesCompraPendientesAnulacion.push(element)
@@ -340,21 +340,12 @@ subtotal:number=0
       this.eliminarTransacciones5(e)
      var cont=0
      var contVal=0
-      
-
-      /* this.ordenesCompraPendientesAnulacion.forEach(element=>{
-        if(e.documento == element.documento){
-         console.log("sssasasasasasasass"+ JSON.stringify(element))
-          
-          this.productosComprados2=element.productosComprados
-          alert("entre"+this.productosComprados2)
-        }
-      }) */
-     console.log("entre a actualizar")
+  
       var sumaProductos =0
       var num1:number=0
       var num2:number=0
-      var num3:number=0
+      var numBod:number=0
+      var bodega:number=0
       var cont3ing=0
        var contIng:number=0
        var entre:boolean=true   
@@ -366,17 +357,23 @@ subtotal:number=0
                case "matriz":
                  num1=element.cantidad
                  num2=elemento1.sucursal1
+                 numBod=elemento1.bodegaProveedor
                  sumaProductos =Number(num2) - Number(num1)
+                 bodega =Number(numBod) - Number(num1)
                  break;
                case "sucursal1":
                  num1=element.cantidad
                  num2=elemento1.sucursal2
+                 numBod=elemento1.bodegaProveedor
                  sumaProductos =Number(num2) - Number(num1)
+                 bodega =Number(numBod) - Number(num1)
                  break;
                case "sucursal2":
                  num1=element.cantidad
                  num2=elemento1.sucursal3
+                 numBod=elemento1.bodegaProveedor
                  sumaProductos =Number(num2) - Number(num1)
+                 bodega =Number(numBod) - Number(num1)
                    break;
                default:
              }
@@ -389,14 +386,17 @@ subtotal:number=0
              switch (e.sucursal.nombre) {
                case "matriz":
                  element.nombreComercial.sucursal1=sumaProductos
+                 element.nombreComercial.bodegaProveedor=0
                  this.productoService.updateProductoSucursal1(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)}, err => {alert("error")})
                  break;
                case "sucursal1":
                  element.nombreComercial.sucursal2=sumaProductos
+                 element.nombreComercial.bodegaProveedor=0
                  this.productoService.updateProductoSucursal2(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)}, err => {alert("error")})
                  break;
                case "sucursal2":
                  element.nombreComercial.sucursal3=sumaProductos
+                 element.nombreComercial.bodegaProveedor=0
                  this.productoService.updateProductoSucursal3(element.nombreComercial).subscribe( res => {cont3ing++, this.contadorValidaciones3(cont3ing)
                 }, err => {alert("error")})
                 break;

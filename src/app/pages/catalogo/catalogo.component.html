@@ -234,7 +234,7 @@
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">Nuevo Producto</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">Editar/Eliminar</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">Productos Eliminados</button></div>
-                        <div class="col-md-12"><button class="btn" type="button" (click)="registrarProductos()">registrar</button></div>
+                        <!-- <div class="col-md-12"><button class="btn" type="button" (click)="registrarProductos()">registrar</button></div> -->
                     </div>
                 </div>
                 <div class="col-md-10 card carIn">
@@ -508,12 +508,12 @@
                                             </dx-autocomplete></div>
                                         </div>
                                         <div class="row espacio">
-                                            <div class="col-md-4" style="text-align: left;">P_CAJA<span class="obligat"> *</span></div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.P_CAJA" name="P_CAJA" class="form-control" [disabled]="varPC" placeholder="Ingrese los productos por caja"  required></div>
+                                            <div class="col-md-4" style="text-align: left;">P_CAJAS<span class="obligat"> *</span></div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.P_CAJA" name="P_CAJA" disabled="true" class="form-control" [disabled]="varPC" placeholder="Ingrese los productos por caja"  required></div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">M2<span class="obligat"> *</span></div>
-                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.M2" name="M2" class="form-control" [disabled]="varM2" placeholder="Ingrese los m2"  required></div>
+                                            <div class="col-md-8">  <input type="text" [(ngModel)]="catalogo2.M2" name="M2" disabled="true" class="form-control" [disabled]="varM2" placeholder="Ingrese los m2"  required></div>
                                         </div>
                                         <div class="row espacio">
                                             <div class="col-md-4" style="text-align: left;">CAL</div>

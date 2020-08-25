@@ -34,6 +34,10 @@ export class ConsultasComponent implements OnInit {
   usuarioLogueado:user
   correo:string=""
   preciosEspeciales:preciosEspeciales[]=[]
+  prodSuc1=0
+  prodSuc2=0
+  prodSuc3=0
+  prodBod=0
 
   constructor(public authenService: AuthenService,public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
     //this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
@@ -144,7 +148,12 @@ export class ConsultasComponent implements OnInit {
     this.infoproducto.piezas = this.productoLeido.P_CAJA
     this.infoproducto.metros = this.productoLeido.M2
     this.infoproducto.fabrica = ""
+    
     this.infoproducto.disponibilidad = this.productoLeido.sucursal1+"M  - "+this.productoLeido.sucursal2+"S1  - "+this.productoLeido.sucursal3+"S2  - "+this.productoLeido.bodegaProveedor+"P "
+    this.prodSuc1 =this.productoLeido.sucursal1
+    this.prodSuc2 =this.productoLeido.sucursal2
+    this.prodSuc3 =this.productoLeido.sucursal3
+    this.prodBod =this.productoLeido.bodegaProveedor
     this.infoproducto.ubicacion = "M("+this.productoLeido.ubicacionSuc1+") - " +"S1("+this.productoLeido.ubicacionSuc2+") - "+"S2("+this.productoLeido.ubicacionSuc3+") "
 
     

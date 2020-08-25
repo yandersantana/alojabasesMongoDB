@@ -89,6 +89,22 @@ export class ProductoService {
     return this.http.put(this.URL + `/updateProductoSuc3/${producto._id}`, producto); 
   }
 
+
+
+  updateProductoSucursal1conBodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc1conBodega/${producto._id}`, producto); 
+  }
+
+  updateProductoSucursal2conBodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc2conBodega/${producto._id}`, producto); 
+  }
+  
+  updateProductoSucursal3conBodega(producto){
+    return this.http.put(this.URL + `/updateProductoSuc3conBodega/${producto._id}`, producto); 
+  }
+
+
+
   updateProductoSucursal1Bodega(producto){
     return this.http.put(this.URL + `/updateProductoSuc1Bodega/${producto._id}`, producto); 
   }

@@ -457,7 +457,8 @@ contadorF:number=0
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.NordenFact == element.n_orden){
-            this.totalOrden=element.total-element.costeUnitaTransport-element.otrosCostosGen
+        //this.totalOrden=element.total-element.costeUnitaTransport-element.otrosCostosGen
+        this.totalOrden=element.total
       }
     })
 

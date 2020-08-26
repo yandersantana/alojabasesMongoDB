@@ -1872,7 +1872,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
     var m2Totales=0
     this.productosEntregados.forEach(element=>{
-      element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+(element.cantidadEntregadapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
+      element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+((element.cantidadEntregadapiezas-1)*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
 
       element.metros2Devueltos= ((element.nombreComercial.M2*element.cantidadDevuelta)+(element.cantidadDevueltapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
       element.metros2totales = element.metros2+element.metros2Devueltos

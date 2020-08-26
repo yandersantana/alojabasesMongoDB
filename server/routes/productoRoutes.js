@@ -160,7 +160,7 @@ router.put('/updateProductoSuc1/:id', async (req, res,next) => {
 
 router.put('/updateProductoSuc2/:id', async (req, res,next) => {
     const { id } = req.params;
-    //console.log("sss "+req.body.PRODUCTO+" y "+req.body.sucursal2)
+    console.log("sss "+req.body.PRODUCTO+" y "+req.body.sucursal2)
     await Producto.findByIdAndUpdate(id, {$set: {sucursal2:req.body.sucursal2}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

@@ -1872,7 +1872,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
     var m2Totales=0
     this.productosEntregados.forEach(element=>{
-      element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+((element.cantidadEntregadapiezas-1)*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
+      element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+((element.cantidadEntregadapiezas)*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
 
       element.metros2Devueltos= ((element.nombreComercial.M2*element.cantidadDevuelta)+(element.cantidadDevueltapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
       element.metros2totales = element.metros2+element.metros2Devueltos
@@ -1882,7 +1882,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     
     this.productosControlFinal.forEach(element=>{
       if(this.productosEntregados[id].nombreComercial.PRODUCTO== element.nombre_comercial){
-        if(this.productosEntregados[id].metros2totales > element.saldom2){
+        if((this.productosEntregados[id].metros2totales-0.33) > element.saldom2){
           
           alert("la cantidad solicitada es mayor")
           this.productosEntregados[id].cantidadEntregada=0
@@ -1914,7 +1914,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         var cantidadPiezas=Math.trunc(cantM2 * this.productosEntregados[id].nombreComercial.P_CAJA / this.productosEntregados[id].nombreComercial.M2) - (cantidadCajas * this.productosEntregados[id].nombreComercial.P_CAJA);
         
 
-        if(cantidadCajas== element.saldo && cantidadPiezas == element.saldopiezas){
+        if(cantidadCajas== element.saldo && cantidadPiezas >= element.saldopiezas ){
           element.estado= "COMPLETO"
         }
         else{

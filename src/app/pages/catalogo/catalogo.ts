@@ -42,6 +42,7 @@ export class catalogo{
             this.P_CAJA=0
             this.estado2="Activo"
             this.notas=""
+            //this.APLICACION=null
     }
 }
 

@@ -896,6 +896,9 @@ _handleReaderLoaded(readerEvt) {
         if(this.catalogo2.P_CAJA ==0){
           this.catalogo2.P_CAJA=1
         }
+        if(this.catalogo2.APLICACION ==null){
+          this.catalogo2.APLICACION="Default"
+        }
        // this.actualizarEstado()
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {

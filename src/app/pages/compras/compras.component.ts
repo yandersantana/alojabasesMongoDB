@@ -582,8 +582,11 @@ setSelectedProducto(i:number){
 
   llenarPR(){
     this.productosActivos.forEach(element=>{
-      if(element.CLASIFICA== "Porcelanatos" || element.CLASIFICA=="Ceramicas"  || element.CLASIFICA=="Cerámicas"){
+     /*  if(element.CLASIFICA== "Porcelanatos" || element.CLASIFICA=="Ceramicas"  || element.CLASIFICA=="Cerámicas"){
           this.productos2.push(element)
+      } */
+      if(element.UNIDAD == "Metros"){
+        this.productos2.push(element)
       }
     })
   }
@@ -810,7 +813,7 @@ verGaleria(imagenes:string[]){
       this.ordenDeCompra.total= parseFloat((this.subtotal-subtotal4).toFixed(2))
 
     }else{
-      this.ordenDeCompra.total=this.subtotal
+      this.ordenDeCompra.total=parseFloat(this.subtotal.toFixed(2))
     }
     this.subtotal1 =this.subtotal
     this.subtMenosDesc=this.ordenDeCompra.subtotalDetalles-this.ordenDeCompra.subtDetalles2

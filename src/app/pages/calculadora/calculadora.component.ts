@@ -37,8 +37,11 @@ export class CalculadorasComponent implements OnInit {
 
   llenarPR(){
     this.productosActivos.forEach(element=>{
-      if(element.CLASIFICA== "Porcelanatos" || element.CLASIFICA=="Ceramicas"  || element.CLASIFICA=="Cerámicas"){
+      /* if(element.CLASIFICA== "Porcelanatos" || element.CLASIFICA=="Ceramicas"  || element.CLASIFICA=="Cerámicas"){
           this.productos2.push(element)
+      } */
+      if(element.UNIDAD == "Metros"){
+        this.productos2.push(element)
       }
     })
   }

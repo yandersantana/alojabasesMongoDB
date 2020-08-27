@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-//const URI = 'mongodb+srv://yanderst:Estud1ante@alojabases-8gbum.mongodb.net/alojabases?retryWrites=true&w=majority';   ---base yander
+//const URI = 'mongodb+srv://yanderst:Estud1ante@alojabases-8gbum.mongodb.net/alojabases?retryWrites=true&w=majority';  // ---base yander
 const URI = 'mongodb+srv://yander:AB1234cd@cluster0.srcdl.mongodb.net/alojabases?retryWrites=true&w=majority';  // ---base yander
 ////////////////const URI= 'mongodb://104.248.14.190/alojabases'    //base mia
 //const URI= 'mongodb://104.131.82.174/alojabases'   //base de Juan

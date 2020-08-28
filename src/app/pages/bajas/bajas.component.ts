@@ -350,7 +350,7 @@ export class BajasComponent implements OnInit {
        //alert("voy a "+ this.productosBajaLeido.length)
      this.productosBajaLeido.forEach(element=>{
         this.transaccion = new transaccion()
-        this.transaccion.fecha_mov=this.bajaLeida.fecha
+        this.transaccion.fecha_mov=new Date().toLocaleString()
         this.transaccion.fecha_transaccion=new Date()
         this.transaccion.sucursal=this.bajaLeida.sucursal
         this.transaccion.bodega="bodega2"

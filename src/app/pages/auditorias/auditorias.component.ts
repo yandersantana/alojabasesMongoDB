@@ -936,7 +936,7 @@ onHidden() {
     this.auditoriaProductosleida.forEach(element=>{
       if(element.condicion != "OK"){
           this.transaccion = new transaccion()
-          this.transaccion.fecha_mov= new Date().toLocaleDateString()
+          this.transaccion.fecha_mov=new Date().toLocaleString()
           this.transaccion.fecha_transaccion=new Date()
           this.transaccion.sucursal=element.sucursal.nombre
           this.transaccion.totalsuma=element.impacto

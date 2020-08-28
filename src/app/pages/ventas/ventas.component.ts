@@ -334,12 +334,11 @@ contadores:contadoresDocumentos[]
     await this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
-     // this.asignarIDdocumentos()
+      this.asignarIDdocumentos()
    })
   }
 
   asignarIDdocumentos(){
-    console.log("entree connnn")
     switch (this.factura.sucursal) {
       case "matriz":
         this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
@@ -358,7 +357,7 @@ contadores:contadoresDocumentos[]
     }
         
     
-    //this.number_transaccion = this.contadores[0].transacciones_Ndocumento 
+    this.number_transaccion = this.contadores[0].transacciones_Ndocumento 
   }
 
   asignarIDdocumentos2(){
@@ -393,7 +392,7 @@ contadores:contadoresDocumentos[]
           this.contadorFirebase = data
         } 
       })
-      this.asignarIDdocumentos2()
+      //this.asignarIDdocumentos2()
     })
     
   }
@@ -759,7 +758,8 @@ setSelectedProducto(i:number){
           }).then((result) => {
             if (result.value) {
               this.limpiarArreglo()
-              this.asignarIDdocumentos2()
+              this.asignarIDdocumentos()
+              //this.asignarIDdocumentos2()
               this.productosVendidos.push(new venta())
             } else if (result.dismiss === Swal.DismissReason.cancel) {
              
@@ -767,7 +767,8 @@ setSelectedProducto(i:number){
            
           })
          }else{
-          this.asignarIDdocumentos2()
+          this.asignarIDdocumentos()
+          //this.asignarIDdocumentos2()
          }
           
         }
@@ -2979,7 +2980,7 @@ var tipoDoc:boolean=false
           this.validarExistencias(element)
           element.factura_id = this.factura.documento_n
           this.transaccion = new transaccion()
-          this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
+          this.transaccion.fecha_mov=new Date().toLocaleString()
           this.transaccion.fecha_transaccion=this.factura.fecha
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
@@ -3164,7 +3165,7 @@ var tipoDoc:boolean=false
           element.factura_id = this.factura.documento_n
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
-          this.transaccion.fecha_mov=this.factura.fecha.toLocaleDateString()
+          this.transaccion.fecha_mov=new Date().toLocaleString()
           this.transaccion.fecha_transaccion=this.factura.fecha
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal

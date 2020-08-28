@@ -610,7 +610,13 @@ export class CatalogoComponent implements OnInit {
           }
         })
         if(contador==0){
-          //alert("el contador esta en "+contador)
+
+          if(this.catalogo2.M2 ==0){
+            this.catalogo2.M2=1
+          }
+          if(this.catalogo2.P_CAJA ==0){
+            this.catalogo2.P_CAJA=1
+          }
           this.catalogoService.newCatalogo(this.catalogo2).subscribe(
             res => {
               console.log(res + "entre por si");
@@ -896,7 +902,7 @@ _handleReaderLoaded(readerEvt) {
         if(this.catalogo2.P_CAJA ==0){
           this.catalogo2.P_CAJA=1
         }
-        console.log("erorrrrrrrrrrrrrrrrrrr "+this.catalogo2.APLICACION)
+        
         if(this.catalogo2.APLICACION ==null || this.catalogo2.APLICACION==""){
           this.catalogo2.APLICACION="Default"
         }

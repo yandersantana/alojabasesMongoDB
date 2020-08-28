@@ -839,7 +839,7 @@ export class TrasladosComponent implements OnInit {
           this.detalleTraslados.forEach(element => {
             element.id=this.id2
             this.transaccion = new transaccion()    
-            this.transaccion.fecha_mov=new Date().toLocaleDateString()
+            this.transaccion.fecha_mov=new Date().toLocaleString()
             this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_origen.nombre
             this.transaccion.totalsuma=0
@@ -888,7 +888,7 @@ export class TrasladosComponent implements OnInit {
             /* this.db.collection("/productosTrasladados").add({ ...Object.assign({}, element)})
             .then(res => {}, err => reject(err)); */
             this.transaccion = new transaccion()    
-            this.transaccion.fecha_mov=new Date().toLocaleDateString()
+            this.transaccion.fecha_mov=new Date().toLocaleString()
             this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_destino.nombre
             this.transaccion.totalsuma=0

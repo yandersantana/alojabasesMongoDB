@@ -1030,7 +1030,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             //alert("sssssssssssss entre")
             this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {alert("error")})
               this.transaccion = new transaccion()
-              this.transaccion.fecha_mov=this.remisionProducto.fechaP
+              this.transaccion.fecha_mov=new Date().toLocaleString()
               this.transaccion.fecha_transaccion=new Date()
               this.transaccion.sucursal=this.remisionProducto.sucursal
               this.transaccion.totalsuma=0
@@ -1139,7 +1139,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.productosIngresadoService.newProductoIngresado(element).subscribe( res => {console.log("logrado" + contacoincidencias),contacoincidencias++}, err => {alert("error")})
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
-          this.transaccion.fecha_mov=this.remisionProducto.fechaP
+          this.transaccion.fecha_mov=new Date().toLocaleString()
           this.transaccion.fecha_transaccion=new Date()
           this.transaccion.sucursal=this.remisionProducto.sucursal
           this.transaccion.bodega=this.remisionProducto.bodega

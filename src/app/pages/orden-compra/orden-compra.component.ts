@@ -1308,10 +1308,12 @@ anadirDetallePago = (e) => {
       console.log("mostrando despues"+this.productosComprados2.length)
     }
     this.textoDes= "SOLICITUD / COMPRA 001-000"
-    console.log("entre a buscar555" )
+    
     var orden_n=e.documento
+    var docuOrden=e.n_orden
+    //alert("enteeee + "+orden_n)
     this.ordenesCompra.forEach(element=>{
-      if(element.documento==orden_n){
+      if(element.documento==orden_n && element.n_orden==docuOrden){
         console.log("si encontre...222"+ orden_n)
          this.ordenDeCompra2 = element
          console.log("hhh "+JSON.stringify(this.ordenDeCompra2))
@@ -1320,6 +1322,7 @@ anadirDetallePago = (e) => {
           this.numOrden= element.n_orden
           this.textoDes= "ORDEN / COMPRA 001-000"
         }
+        console.log(element)
         
         this.cargarValoresFactura()
         

@@ -334,7 +334,7 @@ contadores:contadoresDocumentos[]
     await this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
-      this.asignarIDdocumentos()
+      //this.asignarIDdocumentos()
    })
   }
 
@@ -392,7 +392,7 @@ contadores:contadoresDocumentos[]
           this.contadorFirebase = data
         } 
       })
-      //this.asignarIDdocumentos2()
+      this.asignarIDdocumentos2()
     })
     
   }
@@ -758,8 +758,8 @@ setSelectedProducto(i:number){
           }).then((result) => {
             if (result.value) {
               this.limpiarArreglo()
-              this.asignarIDdocumentos()
-              //this.asignarIDdocumentos2()
+              //this.asignarIDdocumentos()
+              this.asignarIDdocumentos2()
               this.productosVendidos.push(new venta())
             } else if (result.dismiss === Swal.DismissReason.cancel) {
              
@@ -767,8 +767,8 @@ setSelectedProducto(i:number){
            
           })
          }else{
-          this.asignarIDdocumentos()
-          //this.asignarIDdocumentos2()
+          //this.asignarIDdocumentos()
+          this.asignarIDdocumentos2()
          }
           
         }

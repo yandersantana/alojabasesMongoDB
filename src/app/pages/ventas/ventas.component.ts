@@ -199,7 +199,7 @@ contadores:contadoresDocumentos[]
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
-    this.factura.fecha = new Date()
+    this.factura.fecha = this.now
     this.maxDate = new Date(this.maxDate.setDate(this.maxDate.getDate() - 2));
     //this.fechaMaxima = new Date(this.now.setDate(this.now.getDate() + 7));
     this.minDate = this.now
@@ -207,7 +207,7 @@ contadores:contadoresDocumentos[]
     this.productosVendidos.push(new venta)
     //this.sucursales = []
     this.factura.coste_transporte= 0
-    this.factura.fecha2= this.mySimpleFormat
+    this.factura.fecha2= this.now.toLocaleString()
  
     
    
@@ -1041,7 +1041,6 @@ llenarComboProductos(){
 buscarCotizacion(){
   if(this.contadorBusqueda==0){
   var bandera:boolean=false
-  console.log("ncotizacion "+this.Ncotizacion)
   this.proformas.forEach(element=>{
     if(element.documento_n == this.Ncotizacion ){
       this.contadorBusqueda++
@@ -1583,7 +1582,7 @@ var tipoDoc:boolean=false
             {
               width:410,
               margin: [0, 20, 0, 10],
-              text: "Fecha:   "+this.mySimpleFormat,
+              text: "Fecha:   "+this.factura.fecha.toLocaleDateString(),
               alignment:"right"
             },
            
@@ -1915,7 +1914,7 @@ var tipoDoc:boolean=false
             {
               width:410,
               margin: [0, 20, 0, 10],
-              text: "Fecha:   "+this.mySimpleFormat,
+              text: "Fecha:   "+this.factura.fecha.toLocaleDateString(),
               alignment:"right"
             },
             ]
@@ -2181,7 +2180,7 @@ var tipoDoc:boolean=false
             {
               width:410,
               margin: [0, 20, 0, 10],
-              text: "Fecha:   "+this.mySimpleFormat,
+              text: "Fecha:   "+this.factura.fecha.toLocaleDateString(),
               alignment:"right"
             },
             ]
@@ -2806,6 +2805,8 @@ var tipoDoc:boolean=false
     }
   
     guardarFactura(){
+      this.factura.fecha= this.now
+      this.factura.fecha2= this.now.toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
       this.facturasService.newFactura(this.factura).subscribe(
         res => {
@@ -2822,6 +2823,8 @@ var tipoDoc:boolean=false
     }
 
     guardarFactura2(){
+      this.factura.fecha= this.now
+      this.factura.fecha2= this.now.toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
       this.notasVentService.newNotaVenta(this.factura).subscribe(
         res => {
@@ -2839,6 +2842,8 @@ var tipoDoc:boolean=false
 
 
     guardarCotización(){
+      this.factura.fecha= this.now
+      this.factura.fecha2= this.now.toLocaleString()
       this.proformasService.newProforma(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");

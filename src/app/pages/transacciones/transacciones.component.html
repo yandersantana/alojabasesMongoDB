@@ -21,7 +21,7 @@
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Transacciones" [allowExportSelectedData]="true"></dxo-export>
         <!-- <dxi-column dataField="idTransaccion" ></dxi-column> -->
-        <dxi-column dataField="fecha_transaccion"  [visible]="false"></dxi-column>
+        <dxi-column dataField="fecha_transaccion" dataType="date" [visible]="false"></dxi-column>
         <dxi-column dataField="fecha_mov" sortOrder="desc"></dxi-column>
         <dxi-column dataField="sucursal"></dxi-column>
         <dxi-column dataField="tipo_transaccion"></dxi-column>

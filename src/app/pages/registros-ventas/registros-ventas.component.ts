@@ -244,6 +244,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   onExporting (e) {
     e.component.beginUpdate();
+    e.component.columnOption("fecha2", "visible", true);
     e.component.columnOption("cliente.ruc", "visible", true);
     e.component.columnOption("tipo_venta", "visible", true);
     e.component.columnOption("cotizacion", "visible", true);
@@ -254,6 +255,7 @@ export class RegistrosVentasComponent implements OnInit {
     e.component.columnOption("observaciones", "visible", true); 
   };
   onExported (e) {
+    e.component.columnOption("fecha2", "visible", false);
     e.component.columnOption("cliente.ruc", "visible", false);
     e.component.columnOption("tipo_venta", "visible", false);
     e.component.columnOption("cotizacion", "visible", false);

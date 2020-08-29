@@ -475,7 +475,7 @@ subtotal:number=0
   dividirFacturas(){
     //alert("si entroo" + this.facturas.length)
     this.facturas.forEach(element=>{
-      if(element.estado == "ELIMINADA"){
+      if(element.estado == "ANULADA"){
         this.facturasELI.push(element)
       }else if(element.estado == "PENDIENTE"){
         this.facturasPEN.push(element)
@@ -488,7 +488,7 @@ subtotal:number=0
 
   dividirNotasVenta(){
     this.notasVenta.forEach(element=>{
-      if(element.estado == "ELIMINADA"){
+      if(element.estado == "ANULADA"){
         this.notasVentaELI.push(element)
       }else if(element.estado == "PENDIENTE"){
         this.notasVentaPEN.push(element)
@@ -1844,7 +1844,9 @@ subtotal:number=0
         this.mostrarMensaje()
         //this.db.collection('/facturas').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos(e)}, err => alert(err));
         var obs= e.observaciones + ".. Documento Anulado"  
-        this.facturasService.updateFacturasEstado2(e,"ELIMINADA",obs).subscribe(
+        console.log("observ "+obs)
+        e.observaciones= obs
+        this.facturasService.updateFacturasEstado2(e,"ANULADA").subscribe(
           res => {
             console.log(res + "entre por si");this.actualizarProductos(e)
           },err => {alert("error")})
@@ -1873,7 +1875,7 @@ subtotal:number=0
         this.mostrarMensaje()
         //this.db.collection('/notas_venta').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos2(e)}, err => alert(err));  
         var obs= e.observaciones + "... Documento Anulado" 
-        this.notasventaService.updateNotasVentaEstado2(e,"ELIMINADA",obs).subscribe(
+        this.notasventaService.updateNotasVentaEstado2(e,"ANULADA",obs).subscribe(
           res => {
             console.log(res + "entre por si");this.actualizarProductos2(e)
           },err => {alert("error")})

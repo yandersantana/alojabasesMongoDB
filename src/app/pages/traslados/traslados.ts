@@ -29,6 +29,7 @@ export class traslados{
 export class detalleTraslados{
     cajas:number
     piezas:number
+    desPiezas:boolean
     producto:string
     tipo:string
     id:number

@@ -38,6 +38,7 @@ export class TrasladosComponent implements OnInit {
     tipo_vehiculo:string
     placa:string
     id2:number
+    now:Date
     sucursal_origen:string
     bodega_origen:string
     sucursal_destino:string
@@ -110,6 +111,8 @@ export class TrasladosComponent implements OnInit {
     this.transportista= new transportista()
       this.detalleTraslado= new detalleTraslados()
       this.detalleTraslados.push(new detalleTraslados())
+      this.now = new Date()
+      //this.traslados.fecha = this.now
     
   }
 
@@ -204,9 +207,10 @@ export class TrasladosComponent implements OnInit {
   }
 
   traerProductos(){
-    this.productoService.getProducto().subscribe(res => {
+    this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[];
-      this.llenarComboProductos2()
+      this.productos = res as producto[];
+      //this.llenarComboProductos2()
       
    })
   }
@@ -787,6 +791,7 @@ export class TrasladosComponent implements OnInit {
   guardarTraslado(){
     //guardarTranportista
     //alert("dsds"+this.identificacion)
+    //this.transportista= new transportista()
     this.transportista.identificacion=this.identificacion
     this.transportista.nombre=this.nombre_transportista
     this.transportista.celular=this.celular
@@ -795,18 +800,19 @@ export class TrasladosComponent implements OnInit {
     // aqui termina
     var contVal=0
     this.traslados.idT= this.id2
-    this.traslados.transportista.nombre= this.nombre_transportista
+    this.traslados.transportista=this.transportista
+    /* this.traslados.transportista.nombre= this.nombre_transportista
     this.traslados.transportista.celular= this.celular
     this.traslados.transportista.identificacion= this.identificacion
     this.traslados.transportista.placa= this.placa
-    this.traslados.transportista.vehiculo= this.tipo_vehiculo
+    this.traslados.transportista.vehiculo= this.tipo_vehiculo */
    // this.traslados.transportista.nombre= this.nombre_transportista
    // this.traslados.transportista.celular= this.celular
    // this.traslados.transportista.placa= this.placa
    // this.traslados.transportista.vehiculo= this.tipo_vehiculo 
     this.traslados.observaciones= this.observaciones
     this.traslados.detalleTraslados=this.detalleTraslados
-    this.traslados.fecha=new Date().toLocaleDateString()
+    this.traslados.fecha=this.now.toLocaleString()
     console.log("version1 "+ new Date().toLocaleString())
     console.log("version1 "+ new Date().toLocaleTimeString())
     console.log("version1 "+ new Date().toTimeString())
@@ -1151,6 +1157,7 @@ contadorValidaciones2(i:number){
             break;
           case "Unidad":
             this.detalleTraslados[i].tipo="Unidades"
+            this.detalleTraslados[i].desPiezas=true
             break;
         
           default:
@@ -1163,9 +1170,6 @@ contadorValidaciones2(i:number){
     var cont=0
     this.detalleTraslados.forEach(element=>{
       if(element.producto == e.value){
-
-        console.log("55"+element.producto)
-        console.log("55"+e.value)
         cont++;
       }
     })
@@ -1375,7 +1379,7 @@ contadorValidaciones2(i:number){
           {
             width:410,
             margin: [0, 20, 0, 10],
-            text:" ",
+            text:"Fecha : "+this.traslados.fecha,
             alignment:"right"
           },
           ]

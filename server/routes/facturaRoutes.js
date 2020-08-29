@@ -35,11 +35,12 @@ router.put('/updateEstadoMensaje/:id/:estado/:mensaje', async (req, res,next) =>
 
 
 
-router.put('/updateEstadoOb/:id/:estado/:observaciones', async (req, res,next) => {
+router.put('/updateEstadoOb/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
-    const { observaciones } = req.params;
-    await Factura.findByIdAndUpdate(id, {$set: {estado:estado, observaciones:observaciones}}, {new: true});
+    //const { observaciones } = req.params;
+    console.log("22 "+req.body.observaciones)
+    await Factura.findByIdAndUpdate(id, {$set: {estado:estado, observaciones:req.body.observaciones}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

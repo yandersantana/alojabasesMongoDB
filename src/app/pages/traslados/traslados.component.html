@@ -52,7 +52,7 @@
             </div>
             <div class="row">
                 <div class="col-md-6"><p>Celular</p> </div>
-                <div class="col-md-6"><dx-number-box [(value)]="celular" [readOnly]="false" ></dx-number-box></div>
+                <div class="col-md-6"><dx-text-box [(value)]="celular" [readOnly]="false" ></dx-text-box></div>
             </div>
             <div class="row">
                 <div class="col-md-6"><p>Tipo/Vehículo</p> </div>
@@ -102,9 +102,23 @@
     
         <div class="col-md-12">
             <div class="row">
-                <div class="col-md-3"><p>Observaciones</p> </div>
-                <div class="col-md-9"><dx-text-box [(value)]="observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-6"><p>Fecha</p> </div>
+                        <div class="col-md-6">
+                            <dx-date-box [(value)]="now" [type]="'date'" [showClearButton]="true"> </dx-date-box>
+                        </div>
+                    </div>
+                    
+                </div>
+                <div class="col-md-6">
+                    <div class="row">
+                        <div class="col-md-3"><p>Observaciones</p> </div>
+                        <div class="col-md-9"><dx-text-box [(value)]="observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                    </div>
+                </div>
             </div>
+            
         </div>
         
     </div>
@@ -165,7 +179,7 @@
                         <dx-number-box [(value)]="p.cajas" [disabled]="false" [readOnly]="false" (onChange)="validarCantidad(i)"></dx-number-box>
                     </div>
                     <div class="col-1">
-                        <dx-number-box [(value)]="p.piezas" [disabled]="textpiezas1" [readOnly]="false" (onChange)="validarCantidad(i)"></dx-number-box>
+                        <dx-number-box [(value)]="p.piezas" [disabled]="p.desPiezas" [readOnly]="false" (onChange)="validarCantidad(i)"></dx-number-box>
                     </div>
                     <div class="col-3">
                         <dx-text-box [(value)]="p.observaciones" [disabled]="false" [readOnly]="false"></dx-text-box>

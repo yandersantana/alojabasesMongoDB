@@ -208,6 +208,7 @@ contadores:contadoresDocumentos[]
     //this.sucursales = []
     this.factura.coste_transporte= 0
     this.factura.fecha2= this.now.toLocaleString()
+    this.factura.tipoDocumento = "Factura"
  
     
    
@@ -336,7 +337,22 @@ contadores:contadoresDocumentos[]
       this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
       //this.asignarIDdocumentos()
    })
+   //this.contadores= await this.contadoresService.getContadores().toPromise()
   }
+
+  //contadores usando firebase para actualizacion automatica
+  async getIDDocumentos() {
+    //REVISAR OPTIMIZACION
+    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+      new Promise<any>((resolve, reject) => {
+        if(data != null){
+          this.contadorFirebase = data
+        } 
+      })
+      this.asignarIDdocumentos2()
+    }) 
+  }
+
 
   asignarIDdocumentos(){
     switch (this.factura.sucursal) {
@@ -361,6 +377,51 @@ contadores:contadoresDocumentos[]
   }
 
   asignarIDdocumentos2(){
+    switch (this.factura.tipoDocumento) {
+      case "Factura":
+        switch (this.factura.sucursal) {
+          case "matriz":
+            //normales
+            this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+            //firebase
+            this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+            this.numeroFactura2=this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+            break;
+          case "sucursal1":
+            //normales
+            this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
+            //firebase
+            this.factura.documento_n =this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+            this.numeroFactura2=this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+            break;
+          case "sucursal2":
+            //normales
+            this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
+            //firebase
+            this.factura.documento_n =this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+            this.numeroFactura2=this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+            break;
+          default:
+            break;
+        } 
+        break;
+      case "Nota de Venta":
+        this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
+        break;
+      case "Cotización":
+        this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
+        break;
+      default:
+        break;
+    }
+
+
+
+
+/* 
     switch (this.factura.sucursal) {
       case "matriz":
         this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
@@ -376,26 +437,14 @@ contadores:contadoresDocumentos[]
         break;
       default:
         break;
-    }
+    } */
         
-    
+    this.numeroID= this.contadorFirebase[0].contProductosPendientes_Ndocumento+1
     this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1
   }
 
 
-  //contadores usando firebase para actualizacion automatica
-  async getIDDocumentos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
-      new Promise<any>((resolve, reject) => {
-        if(data != null){
-          this.contadorFirebase = data
-        } 
-      })
-      this.asignarIDdocumentos2()
-    })
-    
-  }
+  
 
   separarClientes(){
     this.clientes.forEach(element=>{
@@ -429,6 +478,7 @@ contadores:contadoresDocumentos[]
           break;
         case "Nota de Venta":
           this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
+          this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
           break;
         case "Cotización":
           this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
@@ -2751,9 +2801,11 @@ var tipoDoc:boolean=false
           }
 
           this.productosPendientesService.newProductoPendiente(this.productoPendienteE).subscribe( res => {
-            console.log(res + "entre por si");
             this.contadores[0].contProductosPendientes_Ndocumento=this.numeroID
-            this.contadoresService.updateContadoresIDProductosPendientes(this.contadores[0]).subscribe( res => {},err => {this.error()})
+            this.contadoresService.updateContadoresIDProductosPendientes(this.contadores[0]).subscribe( res => {
+              this.db.collection("/consectivosBaseMongoDB").doc("base").update({ contProductosPendientes_Ndocumento:this.contadores[0].contProductosPendientes_Ndocumento})
+              .then(res => { }, err => (this.error()));
+            },err => {this.error()})
           },err => {this.error()})
           /* this.db.collection("/productosPendientesEntrega").doc(""+this.productoPendienteE.id_Pedido).set({ ...Object.assign({}, this.productoPendienteE) })
           .then(res => {console.log("listo")}, err => reject(err));
@@ -2771,6 +2823,7 @@ var tipoDoc:boolean=false
       this.parametrizaciones.forEach(element=>{
         if(element.sucursal == this.factura.sucursal){
           this.parametrizacionSucu= element
+          this.factura.rucFactura = element.ruc
         }
       })
     }
@@ -2805,6 +2858,7 @@ var tipoDoc:boolean=false
     }
   
     guardarFactura(){
+      
       this.factura.fecha= this.now
       this.factura.fecha2= this.now.toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
@@ -2903,7 +2957,8 @@ var tipoDoc:boolean=false
       this.contadores[0].notasVenta_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDNotasVenta(this.contadores[0]).subscribe(
         res => {
-          console.log(res + "entre por si");
+          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ notasVenta_Ndocumento:this.factura.documento_n })
+          .then(res => { }, err => (err));
         },
         err => {
           Swal.fire({

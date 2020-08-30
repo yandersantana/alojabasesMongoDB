@@ -67,6 +67,7 @@ router.put('/update/:id', async (req, res,next) => {
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
         mensaje:req.body.mensaje,
+        rucFactura:req.body.rucFactura,
         productosVendidos:req.body.productosVendidos
     };
     console.log("llegue hasta aquu")
@@ -103,6 +104,7 @@ router.post('/newFactura', async (req, res) => {
         maestro:req.body.maestro,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
+        rucFactura:req.body.rucFactura,
         mensaje:req.body.mensaje,
         productosVendidos:req.body.productosVendidos
     });

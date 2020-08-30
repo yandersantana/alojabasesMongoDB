@@ -131,6 +131,7 @@ export class factura {
         estado:string
         mensaje:string
         maestro:string
+        rucFactura:string
         productosVendidos:venta[]=[]
         constructor(
             ) { 

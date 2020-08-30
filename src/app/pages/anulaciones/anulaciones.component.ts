@@ -1875,7 +1875,8 @@ subtotal:number=0
         this.mostrarMensaje()
         //this.db.collection('/notas_venta').doc(e.documento_n+"").update({"estado":"ELIMINADA"}).then(res => { this.actualizarProductos2(e)}, err => alert(err));  
         var obs= e.observaciones + "... Documento Anulado" 
-        this.notasventaService.updateNotasVentaEstado2(e,"ANULADA",obs).subscribe(
+        e.observaciones= obs
+        this.notasventaService.updateNotasVentaEstado2(e,"ANULADA").subscribe(
           res => {
             console.log(res + "entre por si");this.actualizarProductos2(e)
           },err => {alert("error")})

@@ -32,6 +32,10 @@
             [visible]=false>
         </dxi-column>
         <dxi-column
+            dataField="rucFactura"
+            caption="RUC Suc">
+        </dxi-column>
+        <dxi-column
             dataField="sucursal"
             caption="Sucursal"
             dataType="string"
@@ -57,13 +61,6 @@
         <dxi-column
             dataField="cotizacion"
             caption="Cotización"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        
-        <dxi-column
-            dataField="tipo_cliente"
-            caption="Tipo Cliente"
             dataType="string"
             [visible]=false>
         </dxi-column>
@@ -95,7 +92,7 @@
             dataField="caja"
             caption="Caja"
             dataType="string"
-            [visible]=true>
+            [visible]=false>
         </dxi-column>
         <dxi-column
             dataField="username"
@@ -150,7 +147,7 @@
             [visible]="true" 
             [width]="240" 
             placeholder="Buscar..."></dxo-search-panel>
-            <dxi-column
+        <dxi-column
             dataField="documento_n"
             caption="Factura #"
             dataType="string"
@@ -167,6 +164,7 @@
             dataType="string"
             [visible]=false>
         </dxi-column>
+      
         <dxi-column
             dataField="sucursal"
             caption="Sucursal"
@@ -196,12 +194,7 @@
             [visible]=false>
         </dxi-column>
         
-        <dxi-column
-            dataField="tipo_cliente"
-            caption="Tipo Cliente"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
+        
         <dxi-column
             dataField="coste_transporte"
             caption="Transporte"
@@ -230,7 +223,7 @@
             dataField="caja"
             caption="Caja"
             dataType="string"
-            [visible]=true>
+            [visible]=false>
         </dxi-column>
         <dxi-column
             dataField="username"
@@ -327,12 +320,7 @@
             dataType="string"
             [visible]=false>
         </dxi-column>
-        <dxi-column
-            dataField="tipo_cliente"
-            caption="Tipo Cliente"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
+       
         <dxi-column
             dataField="coste_transporte"
             caption="Transporte"

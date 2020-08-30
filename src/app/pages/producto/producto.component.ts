@@ -316,6 +316,8 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
 
   asignarIDdocumentos2(){
     this.number_transaccion=this.contadorFirebase[0].transacciones_Ndocumento+1
+    this.Id_remision=this.contadorFirebase[0].contRemisiones_Ndocumento+1
+    //alert("ddd "+this.Id_remision)
     //this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
   }
 
@@ -526,8 +528,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
 
   compararCantidades(e:any){
     this.productosEntregadosBase.forEach(element=>{
-      if(element.numeroRemision == e.id_remision){
-          console.log("encontre elllll "+element.numeroOrden+" prod "+element.nombreComercial)
+      if(element.numeroRemision == e.id_remision && e.num_orden == element.numeroOrden){
           this.productosEntregadosBase2.push(element)
       }
     })
@@ -714,34 +715,16 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
         }
       })
 
-      this.eliminarTransacciones(e.id_remision)
+      this.eliminarTransacciones(e.id_remision, e.num_orden)
      
   }
 
-  eliminarTransacciones(num:number){
+  eliminarTransacciones(num:number,num2:number){
    this.transacciones.forEach(element=>{
-     if(element.factPro== num+""){
+     if(element.factPro== num+"" && element.orden_compra == num2){
       this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
-    //  this.db.collection('/transacciones').doc(data).delete()
-      /* this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
-      this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
-        querySnapshot.forEach(function(doc) {
-          doc.ref.delete();
-        });
-      }) */;
      }
    })
-  }
-
-  eliminarP(){
-   // let query = db.collection('productosIngresados').where('facilityId', '==', facilityId).where('ownerId', '==', ownerId);
-    /* this.expensesCollection = this.db.collection('/productosIngresados', ref => ref.where('numeroRemision', '==', 108));
-    console.log("sss "+(this.expensesCollection.snapshotChanges()))
-    this.expensesCollection.get().toPromise().then(function(querySnapshot) {
-      querySnapshot.forEach(function(doc) {
-        doc.ref.delete();
-      });
-    }); */
   }
 
   cargarDatosRemisión(e: any){
@@ -757,7 +740,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
      }
 
       this.productosEntregadosBase.forEach(element=>{
-        if(e.id_remision == element.numeroRemision){
+        if(e.id_remision == element.numeroRemision && e.num_orden == element.numeroOrden){
             console.log(element.nombreComercial)
             this.productosControlIngresados.push(element)
         }

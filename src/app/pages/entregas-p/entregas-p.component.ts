@@ -972,7 +972,7 @@ export class EntregasPComponent implements OnInit {
     this.limpiarArreglo()
     this.productosPendientes.forEach(element=>{
       this.popupvisible= true
-      if(element.id_Pedido == e.id_Pedido){
+      if(element.id_Pedido == e.id_Pedido && element.documento == e.documento){
         this.titulo= element.tipo_documento + " "+element.documento + "  -  "+element.producto.PRODUCTO
         this.productoLeido= element
         this.entregaProducto.productoPorEntregar=element
@@ -980,7 +980,8 @@ export class EntregasPComponent implements OnInit {
     })
 
     this.productosEntregasSuc.forEach(element=>{
-      if(element.productoPorEntregar.id_Pedido == this.productoLeido.id_Pedido  && element.estado == "ENTREGADO"){
+      if(element.productoPorEntregar.id_Pedido == this.productoLeido.id_Pedido  && element.estado == "ENTREGADO"
+      && element.productoPorEntregar.producto.PRODUCTO == e.producto.PRODUCTO){
         this.productosEntregasSuc2.push(element)
          this.entDir=true
       }
@@ -1005,7 +1006,7 @@ export class EntregasPComponent implements OnInit {
     this.limpiarArreglo()
     this.productosPendientes.forEach(element=>{
 
-      if(element.id_Pedido == e.id_Pedido){
+      if(element.id_Pedido == e.id_Pedido && element.documento == e.documento){
         this.titulo= element.tipo_documento + " "+element.documento + "  -  "+element.producto.PRODUCTO
         this.productoLeido= element
         
@@ -1014,7 +1015,8 @@ export class EntregasPComponent implements OnInit {
     })
 
     this.productosEntregasSuc.forEach(element=>{
-      if(element.productoPorEntregar.id_Pedido == this.productoLeido.id_Pedido){
+      if(element.productoPorEntregar.id_Pedido == this.productoLeido.id_Pedido
+        && element.productoPorEntregar.producto.PRODUCTO == e.producto.PRODUCTO){
         this.productosEntregasSuc2.push(element)
          
       }

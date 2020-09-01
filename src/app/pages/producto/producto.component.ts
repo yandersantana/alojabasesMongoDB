@@ -867,6 +867,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       sumatot=sum5-(sum5*element.descuentoGeneral/100)
       //sumatot=(element.metros2*element.valorunitario)+
       })
+      console.log("total es +++++++++++++ "+sumatot)
     this.remisionProducto.total= sumatot
   }
 
@@ -952,8 +953,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     })
   }
 
+ 
+
   guardarRemision(){
-    console.log("eeeeee888")
     var sumatot=0
     var sum5=0
     this.productosEntregados.forEach(element => {
@@ -964,10 +966,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       //sumatot=(element.metros2*element.valorunitario)+
       })
     this.remisionProducto.total=parseFloat(sumatot.toFixed(2))
-    console.log("kkkkkkkkkkkkllllll "+this.remisionProducto.total)
     var contVal=0
     var contVal2=0
-    console.log("entre por aqqqqqqqq")
     this.remisionProducto.fechaP= this.fecha1.toLocaleDateString()
     this.remisionProducto.id_remision= this.Id_remision
     
@@ -998,7 +998,10 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         this.facturasProveedorService.updateEstado3(this.ifFacturaP,"Ingresada").subscribe( res => {},err => {})
         this.remisionesService.newRemision(this.remisionProducto).subscribe( res => {
           this.contadores[0].contRemisiones_Ndocumento=this.Id_remision
-          this.contadoresService.updateContadoresIDRemisiones(this.contadores[0]).subscribe( res => {},err => {})
+          this.contadoresService.updateContadoresIDRemisiones(this.contadores[0]).subscribe( res => {
+            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ contRemisiones_Ndocumento:this.Id_remision })
+            .then(res => { }, err => (err));
+          },err => {})
         },err => {})
         if(this.productosObsequios.length >0){
           //alert("entre a productos")
@@ -1798,7 +1801,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         this.productosEntregados1.valorunitario=element.precio_compra
         this.productosEntregados1.valortotal=element.total
         this.productosEntregados1.descuentoGeneral=element.descGeneral
-        this.productosEntregados1.descuentoProducto=element.descProducto
+        this.productosEntregados1.descuentoProducto=element.desct
         this.productosEntregados1.cantidadSolicitadacajas=Math.trunc(element.cantidad / element.nombreComercial.M2);
         this.productosEntregados1.cantidadSolicitadapiezas=(Math.trunc(element.cantidad *element.nombreComercial.P_CAJA / element.nombreComercial.M2) - (Math.trunc(element.cantidad / element.nombreComercial.M2) * element.nombreComercial.P_CAJA));
         this.productosEntregados1.fecha=this.fecha1
@@ -1850,6 +1853,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
   }
 
   calcularm2(id:number){
+
     /*(metrosCaja * cantCajas) + (cantPiezas * metrosCaja / piezasCaja)
     let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
     let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
@@ -1865,7 +1869,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     
     this.productosControlFinal.forEach(element=>{
       if(this.productosEntregados[id].nombreComercial.PRODUCTO== element.nombre_comercial){
-        if((this.productosEntregados[id].metros2totales-0.33) > element.saldom2){
+        if((this.productosEntregados[id].metros2totales-1) > element.saldom2){
           
           alert("la cantidad solicitada es mayor")
           this.productosEntregados[id].cantidadEntregada=0
@@ -1912,15 +1916,16 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       })
 
     })
+    
 
     
 
-    this.productosControlFinal.forEach(element=>{
+/*     this.productosControlFinal.forEach(element=>{
       console.log("gg "+element.estado)
     })
     this.productosEntregados.forEach(element=>{ 
       console.log("fff "+element.metros2)
-    })
+    }) */
       
   }
 

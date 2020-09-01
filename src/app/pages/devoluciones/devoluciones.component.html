@@ -146,7 +146,7 @@
             <div *ngFor="let p of productosDevueltos;let i = index" style="text-align: center;margin-top: 1em;">
                 <div class="row altura">
                     <div class="col-3">
-                        <dx-select-box [items]="productosVendidos2" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
+                        <dx-select-box  [items]="productosVendidos2" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
                         [searchEnabled]="true"  
                         valueExpr="producto.PRODUCTO" displayExpr="producto.PRODUCTO" (onValueChanged)="obtenerDetallesDoc($event,i)">
                     </dx-select-box>

@@ -24,6 +24,7 @@ import { TransportistaService } from 'src/app/servicios/transportista.service';
 import { TrasladosService } from 'src/app/servicios/traslados.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-traslados',
@@ -105,6 +106,7 @@ export class TrasladosComponent implements OnInit {
     @ViewChild('selectId') select: dxSelectBox;
     expensesCollection3: AngularFirestoreCollection<transaccion>;
     contadorFirebase:contadoresDocumentos[]=[]
+    productos22: DataSource;
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
      public bodegasService:BodegaService,public transaccionesService:TransaccionesService, public sucursalesService:SucursalesService,) { 
     this.traslados= new traslados()
@@ -128,7 +130,7 @@ export class TrasladosComponent implements OnInit {
    // this.getTransacciones()
    // this.getParametrizaciones()
 
-   this.traerTransacciones()
+   
    this.traerParametrizaciones()
    this.traerSucursales()
    this.traerBodegas()
@@ -137,6 +139,7 @@ export class TrasladosComponent implements OnInit {
    this.traerTransportistas()
    this.traerContadoresDocumentos()
    this.getIDDocumentos()
+   this.traerTransacciones()
    //this.cargarUsuarioLogueado()
   }
 
@@ -211,8 +214,16 @@ export class TrasladosComponent implements OnInit {
       this.productosActivos = res as producto[];
       this.productos = res as producto[];
       //this.llenarComboProductos2()
+      this.llenarC()
       
    })
+  }
+
+  llenarC(){
+    this.productos22 = new DataSource({  
+      store: this.productos,  
+      sort: [{ field: "PRODUCTO", asc: true }],    
+    });
   }
 
   traerTransportistas(){

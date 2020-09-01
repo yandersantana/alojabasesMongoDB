@@ -165,7 +165,7 @@
             <div *ngFor="let p of detalleTraslados;let i = index" style="text-align: center;margin-top: 1em;">
                 <div class="row altura">
                     <div class="col-4">
-                        <dx-select-box [items]="productos" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
+                    <dx-select-box  [dataSource]="productos22" [(value)]="p.producto" [readOnly]="false" [disabled]="false"
                         [searchEnabled]="true"  
                         valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesProducto($event,i)">
                     </dx-select-box>

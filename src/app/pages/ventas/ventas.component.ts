@@ -196,6 +196,7 @@ contadores:contadoresDocumentos[]
   usuarioLogueado:user
   preciosEspeciales:preciosEspeciales[]=[]
   productos22: DataSource;
+  RucSucursal:string="";
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -320,6 +321,7 @@ contadores:contadoresDocumentos[]
   traerParametrizaciones(){
     this.parametrizacionService.getParametrizacion().subscribe(res => {
       this.parametrizaciones = res as parametrizacionsuc[];
+      this.buscarDatosSucursal()
    })
   }
 
@@ -795,8 +797,7 @@ setSelectedProducto(i:number){
       
         asignarsucursalD(e){
           this.factura.sucursal= e.value
-          console.log("Pertenece a "+this.factura.sucursal)
-         // this.factura.sucursal= this.factura.sucursal
+          
          if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
           Swal.fire({
             title: 'Cambiar de sucursal',
@@ -810,6 +811,7 @@ setSelectedProducto(i:number){
               this.limpiarArreglo()
               //this.asignarIDdocumentos()
               this.asignarIDdocumentos2()
+              this.buscarDatosSucursal()
               this.productosVendidos.push(new venta())
             } else if (result.dismiss === Swal.DismissReason.cancel) {
              
@@ -819,6 +821,7 @@ setSelectedProducto(i:number){
          }else{
           //this.asignarIDdocumentos()
           this.asignarIDdocumentos2()
+          this.buscarDatosSucursal()
          }
           
         }
@@ -2820,10 +2823,12 @@ var tipoDoc:boolean=false
     
 
     buscarDatosSucursal(){
+      //alert("netre" +this.factura.sucursal)
       this.parametrizaciones.forEach(element=>{
         if(element.sucursal == this.factura.sucursal){
           this.parametrizacionSucu= element
           this.factura.rucFactura = element.ruc
+          this.RucSucursal = element.ruc
         }
       })
     }

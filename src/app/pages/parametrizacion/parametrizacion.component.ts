@@ -277,6 +277,7 @@ export class ParametrizacionComponent implements OnInit {
         element.nombreComercial= this.nombreSucursal
         element.celular = this.parametroSuc.celularPrincipal
         element.contacto = this.parametroSuc.contactoPrincipal
+        element.direccion = this.parametroSuc.direccion
         this.sucursalesService.updateSucursales(element).subscribe(
           res => {
             this.correcto()

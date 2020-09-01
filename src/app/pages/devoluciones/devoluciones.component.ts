@@ -25,6 +25,7 @@ import { DevolucionesService } from 'src/app/servicios/devoluciones.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-devoluciones',
@@ -98,6 +99,7 @@ parametrizacionSucu:parametrizacionsuc
 contadores:contadoresDocumentos[]=[]
 contadorFirebase:contadoresDocumentos[]=[]
 correo:string=""
+productos22: DataSource;
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public authenService:AuthenService, public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
     this.devolucion = new devolucion
     this.productosDevueltos.push(new productosDevueltos)

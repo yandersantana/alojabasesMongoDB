@@ -711,15 +711,18 @@ setSelectedProducto(i:number){
         if (element.PRODUCTO == e.value) {
           switch (this.factura.sucursal) {
             case "matriz":
-              this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
+              //this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
+              this.productosVendidos[i].disponible = element.sucursal1
               this.productosVendidos[i].producto = element
               break;
             case "sucursal1":
-              this.productosVendidos[i].disponible = element.sucursal2+element.suc2Pendiente
+              //this.productosVendidos[i].disponible = element.sucursal2+element.suc2Pendiente
+              this.productosVendidos[i].disponible = element.sucursal2
               this.productosVendidos[i].producto = element
               break;
             case "sucursal2":
-              this.productosVendidos[i].disponible = element.sucursal3+element.suc3Pendiente
+              //this.productosVendidos[i].disponible = element.sucursal3+element.suc3Pendiente
+              this.productosVendidos[i].disponible = element.sucursal3
               this.productosVendidos[i].producto = element
                 break;
             default:

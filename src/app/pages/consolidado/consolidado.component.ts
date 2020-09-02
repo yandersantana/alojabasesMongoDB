@@ -455,9 +455,9 @@ export class ConsolidadoComponent implements OnInit {
     var contVal=0
     this.mensajeActualizando()
     this.invetarioP.forEach(element=>{
-      m2s1=parseInt(element.cantidadM2.toFixed(0))
-      m2s2=parseInt(element.cantidadM2b2.toFixed(0))
-      m2s3=parseInt(element.cantidadM2b3.toFixed(0))
+      m2s1=parseFloat(element.cantidadM2.toFixed(2))
+      m2s2=parseFloat(element.cantidadM2b2.toFixed(2))
+      m2s3=parseFloat(element.cantidadM2b3.toFixed(2))
       element.producto.sucursal1=m2s1
       element.producto.sucursal1=m2s2
       element.producto.sucursal1=m2s3

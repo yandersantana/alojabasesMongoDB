@@ -168,7 +168,8 @@
             </dxi-column>
             <dxi-column
                 dataField="total"
-                alignment="right"  >
+                alignment="right"
+                dataType="number">
             </dxi-column>
             <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="15%" [visible]="false">
                 <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
@@ -474,7 +475,7 @@
             </dxi-column>
             <dxi-column
                 dataField="valor"
-                dataType="string"
+                dataType="number"
                 [visible]="true" > 
             </dxi-column>
             <dxi-column
@@ -484,7 +485,7 @@
             </dxi-column>
             <dxi-column
                 dataField="total"
-                dataType="string" 
+                dataType="number" 
                 [visible]="false"> 
             </dxi-column>
             <dxi-column
@@ -557,7 +558,7 @@
             </dxi-column>
             <dxi-column
                 dataField="valor"
-                dataType="string"
+                dataType="number"
                 [visible]="false" > 
             </dxi-column>
             <dxi-column
@@ -567,7 +568,7 @@
             </dxi-column>
             <dxi-column
                 dataField="total"
-                dataType="string" 
+                dataType="number" 
                 [visible]="true"> 
             </dxi-column>
             <dxi-column
@@ -609,7 +610,7 @@
         <dxi-column dataField="productos" caption="Productos" width="35%"></dxi-column>
         <dxi-column dataField="fechaExpiracion" caption="Fecha Vencimiento"></dxi-column>
         <dxi-column dataField="" caption="Estado" ></dxi-column>
-        <dxi-column dataField="total" caption="Total"></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="number"></dxi-column>
         <dxo-paging [pageSize]="8"></dxo-paging>
         <dxo-pager 
             [showPageSizeSelector]="true"

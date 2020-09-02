@@ -7,6 +7,7 @@ export class transaccion{
     tipo_transaccion:string
     totalsuma:number
     documento:string
+    rucSucursal:string
     producto:string
     cajas:number
     costo_unitario:number

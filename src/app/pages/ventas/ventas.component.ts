@@ -2865,7 +2865,8 @@ var tipoDoc:boolean=false
     guardarFactura(){
       
       this.factura.fecha= this.now
-      this.factura.fecha2= this.now.toLocaleString()
+      //this.factura.fecha2= this.now.toLocaleString()
+      this.factura.fecha2= new Date().toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
       this.facturasService.newFactura(this.factura).subscribe(
         res => {
@@ -2883,7 +2884,8 @@ var tipoDoc:boolean=false
 
     guardarFactura2(){
       this.factura.fecha= this.now
-      this.factura.fecha2= this.now.toLocaleString()
+     // this.factura.fecha2= this.now.toLocaleString()
+      this.factura.fecha2= new Date().toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
       this.notasVentService.newNotaVenta(this.factura).subscribe(
         res => {
@@ -2902,7 +2904,8 @@ var tipoDoc:boolean=false
 
     guardarCotización(){
       this.factura.fecha= this.now
-      this.factura.fecha2= this.now.toLocaleString()
+      //this.factura.fecha2= this.now.toLocaleString()
+      this.factura.fecha2= new Date().toLocaleString()
       this.proformasService.newProforma(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");
@@ -3054,6 +3057,7 @@ var tipoDoc:boolean=false
           this.transaccion.cantM2=element.cantidad
           this.transaccion.costo_unitario=element.producto.precio
           this.transaccion.documento=this.factura.documento_n+""
+          this.transaccion.rucSucursal = this.factura.rucFactura
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.maestro=this.factura.maestro
           this.transaccion.producto=element.producto.PRODUCTO
@@ -3240,6 +3244,7 @@ var tipoDoc:boolean=false
           this.transaccion.documento=this.factura.documento_n+""
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.producto=element.producto.PRODUCTO
+          this.transaccion.rucSucursal = this.factura.rucFactura
           this.transaccion.maestro=this.factura.maestro
           this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
           this.transaccion.cantM2=element.cantidad

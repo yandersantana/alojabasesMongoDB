@@ -11,6 +11,7 @@ const TransaccionesSchema = new Schema({
     tipo_transaccion: { type: String, required: false},
     totalsuma: { type: String, required: false},
     documento: { type: String, required: false},
+    rucSucursal:{ type: String, required: false},
     producto: { type: String, required: false},
     cajas: { type: String, required: false},
     piezas: { type: String, required: false},

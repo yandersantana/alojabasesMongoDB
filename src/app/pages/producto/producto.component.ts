@@ -1869,7 +1869,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     
     this.productosControlFinal.forEach(element=>{
       if(this.productosEntregados[id].nombreComercial.PRODUCTO== element.nombre_comercial){
-        if((this.productosEntregados[id].metros2totales-1) > element.saldom2){
+        if((this.productosEntregados[id].metros2totales-0.33) > element.saldom2){
           
           alert("la cantidad solicitada es mayor")
           this.productosEntregados[id].cantidadEntregada=0
@@ -3145,7 +3145,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           ],
           
           ...productos.map(ed =>{
-            return [ {text:ed.nombreComercial.PRODUCTO, fontSize:9}, { text: ed.metros2.toFixed(0), alignment: 'center', fontSize:9 }, { text: ed.cantidadEntregada +"C "+ed.cantidadEntregadapiezas+"P", alignment: 'center', fontSize:9 },
+            return [ {text:ed.nombreComercial.PRODUCTO, fontSize:9}, { text: ed.metros2.toFixed(2), alignment: 'center', fontSize:9 }, { text: ed.cantidadEntregada +"C "+ed.cantidadEntregadapiezas+"P", alignment: 'center', fontSize:9 },
             {text:ed.cantidadDevuelta, alignment:"center", fontSize:9},{text:ed.cantidadDevueltapiezas, alignment:"center", fontSize:9},{text:ed.estado, alignment:"center", fontSize:9},
             {text:ed.observaciones, alignment:"center", fontSize:9}];
             

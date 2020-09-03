@@ -18,6 +18,7 @@ import { BajasService } from 'src/app/servicios/bajas.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-bajas',
@@ -57,6 +58,7 @@ export class BajasComponent implements OnInit {
   productosActivos: producto[] = []
   contadorFirebase:contadoresDocumentos[]=[]
   usuarioLogueado:user
+  productos22: DataSource
 
   menuMotivo: string[] = [
     "Caducidad",
@@ -234,6 +236,11 @@ export class BajasComponent implements OnInit {
         this.productos.push(element)
       }
     })
+      this.productos22 = new DataSource({  
+        store: this.productos,  
+        sort: [{ field: "PRODUCTO", asc: true }],    
+      });
+    
   }
 
   getCourseFile = (e) => {  

@@ -675,9 +675,9 @@ verGaleria(imagenes:string[]){
 
 
   calcularMetros2(e) {
-      this.cantidadcal=Math.trunc(this.caltotal / this.calmetros);
+      this.cantidadcal=Math.trunc((this.caltotal+0.01) / this.calmetros);
       
-      this.valorEnM2=Math.trunc(this.caltotal * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
+      this.valorEnM2=Math.trunc((this.caltotal+0.01) * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
       
       console.log("entre a calcualr"+this.caltotal)
       console.log("entre a calcualr"+this.calmetros)

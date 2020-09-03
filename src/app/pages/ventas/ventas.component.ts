@@ -626,38 +626,19 @@ setSelectedProducto(i:number){
    // console.log("entre a calcualr"+(this.valorEnM2*this.calmetros/this.calp))
 
      // this.caltotal= (this.calmetros * this.cantidadcal)
-      this.caltotal=parseFloat(((this.calmetros*this.cantidadcal)+((this.valorEnM2*this.calmetros)/this.calp)).toFixed(2))
-      //this.caltotal= 150
+      this.caltotal=parseFloat(((this.calmetros*this.cantidadcal)+(((this.valorEnM2)*this.calmetros)/this.calp)).toFixed(2))
 
-
-   /*  if (this.stringIsNumber(e.event.key)){ //on focus
-      this.ct = this.ct + e.event.key
-    let tmp = this.productosVendidos[this.selected]
-
-      this.productos.forEach(element => {
-        if (element.REFERENCIA == tmp.producto.REFERENCIA) {
-          let metros = (element.M2 * tmp.cantidad) + (this.cantidadPiezas * element.M2 / element.P_CAJA);
-          this.valorEnM2 = metros
-        }
-      }calcularMetros)
-
-  
-    } */
     
   }
 
   calcularMetros2(e) {
 
-/*let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
-        let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);*/
-
-
 
       //this.cantidadcal=parseInt((this.caltotal/this.calmetros).toFixed(0))
-      this.cantidadcal=Math.trunc(this.caltotal / this.calmetros);
+      this.cantidadcal=Math.trunc((this.caltotal+0.01) / this.calmetros);
       //this.cantidadcal=(this.caltotal/this.calmetros)
      // this.valorEnM2=parseInt(((this.caltotal*this.calp/this.calmetros)-(this.cantidadcal*this.calp)).toFixed(0))
-      this.valorEnM2=Math.trunc(this.caltotal * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
+      this.valorEnM2=Math.trunc((this.caltotal+0.01) * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
       
       console.log("entre a calcualr"+this.caltotal)
       console.log("entre a calcualr"+this.calmetros)
@@ -1354,8 +1335,8 @@ cambiarestado(e,i:number){
     this.productos.forEach(element => {
 
       if(element.PRODUCTO == this.productosVendidos[i].producto.PRODUCTO){
-        let cajas = Math.trunc(this.productosVendidos[i].cantidad / element.M2);
-        let piezas = Math.trunc(this.productosVendidos[i].cantidad * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);
+        let cajas = Math.trunc((this.productosVendidos[i].cantidad+0.01) / element.M2);
+        let piezas = Math.trunc((this.productosVendidos[i].cantidad+0.01) * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);
         console.log("mirando productos por caja"+element.P_CAJA)
         this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
       }
@@ -2764,10 +2745,10 @@ var tipoDoc:boolean=false
         this.productoPendienteE = new productosPendientesEntrega
         this.productoPendienteE.cantM2=resta
         
-        this.cantidadcal=Math.trunc(this.caltotal / this.calmetros);
-        this.valorEnM2=Math.trunc(this.caltotal * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
-        this.productoPendienteE.cajas=Math.trunc(resta / element.producto.M2)
-        this.productoPendienteE.piezas=Math.trunc(resta* element.producto.P_CAJA / element.producto.M2) - ( this.productoPendienteE.cajas * element.producto.P_CAJA);
+        this.cantidadcal=Math.trunc((this.caltotal+0.01) / this.calmetros);
+        this.valorEnM2=Math.trunc((this.caltotal+0.01) * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
+        this.productoPendienteE.cajas=Math.trunc((resta+0.01) / element.producto.M2)
+        this.productoPendienteE.piezas=Math.trunc((resta+0.01)* element.producto.P_CAJA / element.producto.M2) - ( this.productoPendienteE.cajas * element.producto.P_CAJA);
         this.productoPendienteE.cajasPen= this.productoPendienteE.cajas
         this.productoPendienteE.piezasPen= this.productoPendienteE.piezas
         this.productoPendienteE.cantM2Pen= this.productoPendienteE.cantM2
@@ -3064,8 +3045,8 @@ var tipoDoc:boolean=false
           this.transaccion.factPro=this.factura.documento_n+""
           this.transaccion.maestro=this.factura.maestro
           this.transaccion.producto=element.producto.PRODUCTO
-          this.transaccion.cajas=Math.trunc(element.cantidad / element.producto.M2);
-          this.transaccion.piezas=(Math.trunc(element.cantidad *element.producto.P_CAJA / element.producto.M2) - (Math.trunc(element.cantidad / element.producto.M2) * element.producto.P_CAJA));
+          this.transaccion.cajas=Math.trunc((element.cantidad+0.01) / element.producto.M2);
+          this.transaccion.piezas=(Math.trunc((element.cantidad+0.01) *element.producto.P_CAJA / element.producto.M2) - (Math.trunc((element.cantidad+0.01) / element.producto.M2) * element.producto.P_CAJA));
           this.transaccion.observaciones=this.factura.observaciones
           this.transaccion.tipo_transaccion="venta-fact"
           this.transaccion.movimiento=-1
@@ -3251,8 +3232,8 @@ var tipoDoc:boolean=false
           this.transaccion.maestro=this.factura.maestro
           this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
           this.transaccion.cantM2=element.cantidad
-          this.transaccion.cajas=Math.trunc(element.cantidad / element.producto.M2)
-          this.transaccion.piezas=(Math.trunc(element.cantidad *element.producto.P_CAJA / element.producto.M2) - (Math.trunc(element.cantidad / element.producto.M2) * element.producto.P_CAJA));
+          this.transaccion.cajas=Math.trunc((element.cantidad+0.01) / element.producto.M2)
+          this.transaccion.piezas=(Math.trunc((element.cantidad+0.01) *element.producto.P_CAJA / element.producto.M2) - (Math.trunc((element.cantidad+0.01) / element.producto.M2) * element.producto.P_CAJA));
           this.transaccion.observaciones=this.factura.observaciones
           this.transaccion.tipo_transaccion="venta-not"
           this.transaccion.movimiento=-1

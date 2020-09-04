@@ -25,6 +25,9 @@ export class InfoProductosComponent implements OnInit {
   infoproducto: infoprod
   imagenes:string[]
   precios:precios[]=[]
+  ubi1:string[]=[]
+  ubi2:string[]=[]
+  ubi3:string[]=[]
   preciosEspeciales:preciosEspeciales[]=[]
   prodSuc1=0
   prodSuc2=0
@@ -95,6 +98,10 @@ export class InfoProductosComponent implements OnInit {
     if(this.prodSuc3<0){this.prodSuc3=0}
     if(this.prodBod<0){this.prodBod=0}
     this.infoproducto.ubicacion = "M("+this.productoLeido.ubicacionSuc1+") - " +"S1("+this.productoLeido.ubicacionSuc2+") - "+"S2("+this.productoLeido.ubicacionSuc3+") "
+    
+    this.ubi1=this.productoLeido.ubicacionSuc1
+    this.ubi2=this.productoLeido.ubicacionSuc2
+    this.ubi3=this.productoLeido.ubicacionSuc3
     this.infoproducto.precioCliente= 0
     this.infoproducto.precioDist= 0
     this.infoproducto.precioSocio= 0

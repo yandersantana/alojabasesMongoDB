@@ -76,6 +76,7 @@
 </div>
 
 <!--ENCABEZADO DEL FORMULARIO-->
+<br>
 <div class="prueba">
 <dx-form id="form" #ventasForm [(formData)]="factura" [readOnly]="false" [colCount]="3" [width]="1000">
     <dxi-item itemType="group" [colCount]="3" [colSpan]="3">
@@ -92,8 +93,15 @@
             <dxo-label [visible]="false"></dxo-label>
 
         </dxi-item>
-        <dxi-item dataField="username" [editorOptions]="{ placeholder: 'Vendedor',disabled:true }"  >
-            <dxo-label [visible]="false" cssClass="prueba2"></dxo-label>
+        <dxi-item dataField="">
+            <dx-select-box [items]="usuarios" 
+            [(value)]="username" 
+            [readOnly]="false" 
+            [disabled]="false"
+            displayExpr="username"
+            valueExpr="username"
+            (onValueChanged)="asignarMaestro($event)"></dx-select-box>
+           <!--  <dxo-label [visible]="false" cssClass="prueba2"></dxo-label> -->
         </dxi-item>
         <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
             <dxo-label

@@ -38,6 +38,9 @@ export class ConsultasComponent implements OnInit {
   prodSuc2=0
   prodSuc3=0
   prodBod=0
+  ubi1:string[]=[]
+  ubi2:string[]=[]
+  ubi3:string[]=[]
 
   constructor(public authenService: AuthenService,public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
     //this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
@@ -159,7 +162,9 @@ export class ConsultasComponent implements OnInit {
     if(this.prodSuc3<0){this.prodSuc3=0}
     if(this.prodBod<0){this.prodBod=0}
     this.infoproducto.ubicacion = "M("+this.productoLeido.ubicacionSuc1+") - " +"S1("+this.productoLeido.ubicacionSuc2+") - "+"S2("+this.productoLeido.ubicacionSuc3+") "
-
+    this.ubi1=this.productoLeido.ubicacionSuc1
+    this.ubi2=this.productoLeido.ubicacionSuc2
+    this.ubi3=this.productoLeido.ubicacionSuc3
     
     this.productosCatalogo.forEach(element=>{
       if(element.PRODUCTO == this.infoproducto.producto ){

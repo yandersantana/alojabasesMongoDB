@@ -47,6 +47,7 @@ import DataSource from 'devextreme/data/data_source';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { threadId } from 'worker_threads';
+import { UserService } from 'src/app/servicios/user.service';
 
 
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
@@ -145,6 +146,7 @@ export class VentasComponent implements OnInit {
   imagenesData:string[]
   titulo:string=""
   catalogoLeido:catalogo
+  username:string
 
   @ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
   @ViewChild("data2", { static: false }) dataGrid: dxAutocomplete;
@@ -188,6 +190,7 @@ maestroConstructor:string
 contR=this.numeroID
 disponibilidadProducto:string=""
 parametrizaciones:parametrizacionsuc[]=[]
+usuarios: user[] = []
 parametrizacionSucu:parametrizacionsuc
 contadores:contadoresDocumentos[]
   mySimpleFormat = this.pipe.transform(this.now2, 'MM/dd/yyyy');
@@ -197,7 +200,7 @@ contadores:contadoresDocumentos[]
   preciosEspeciales:preciosEspeciales[]=[]
   productos22: DataSource;
   RucSucursal:string="";
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, private alerts: AlertsService) {
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public ventaService: VentasService,public preciosEspecialesService:PrecioEspecialService, public notasVentService:NotasVentasService, public productosPendientesService:ProductosPendientesService, public authenService:AuthenService, public proformasService:ProformasService, public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, public userService:UserService, private alerts: AlertsService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = this.now
@@ -229,6 +232,7 @@ contadores:contadoresDocumentos[]
     this.traerPrecios()
     this.traerPreciosEspeciales()
     this.getIDDocumentos()
+    this.traerUsuarios()
    //this.crearClientes()
    // this.factura.username = sessionStorage.getItem('user')
     this.factura.tipo_venta="Normal"
@@ -240,7 +244,6 @@ contadores:contadoresDocumentos[]
   }
 
   cargarUsuarioLogueado() {
-   
     const promesaUser = new Promise((res, err) => {
       if (localStorage.getItem("maily") != '') {
         this.correo = localStorage.getItem("maily");
@@ -250,6 +253,7 @@ contadores:contadoresDocumentos[]
           res => {
             this.usuarioLogueado = res as user;
             this.factura.username=this.usuarioLogueado[0].username
+            this.username =this.factura.username
             this.factura.sucursal=this.usuarioLogueado[0].sucursal
             this.validarRol()
           },
@@ -257,6 +261,12 @@ contadores:contadoresDocumentos[]
           }
         )
     });
+  }
+
+  traerUsuarios(){
+    this.userService.getUsers().subscribe(res => {
+      this.usuarios= res as user[];
+    },err => {})
   }
 
   validarRol(){
@@ -775,6 +785,11 @@ setSelectedProducto(i:number){
 
         asignarMaestro(e){
           this.factura.maestro = e.value
+          //alert("asigne "+this.factura.maestro)
+        }
+
+        asignarUsuario(e){
+          this.factura.username = e.value
           //alert("asigne "+this.factura.maestro)
         }
       
@@ -2847,7 +2862,7 @@ var tipoDoc:boolean=false
     }
   
     guardarFactura(){
-      
+      this.factura.username= this.username
       this.factura.fecha= this.now
       //this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
@@ -2867,6 +2882,7 @@ var tipoDoc:boolean=false
     }
 
     guardarFactura2(){
+      this.factura.username= this.username
       this.factura.fecha= this.now
      // this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
@@ -2887,6 +2903,7 @@ var tipoDoc:boolean=false
 
 
     guardarCotización(){
+      this.factura.username= this.username
       this.factura.fecha= this.now
       //this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
@@ -3050,8 +3067,8 @@ var tipoDoc:boolean=false
           this.transaccion.observaciones=this.factura.observaciones
           this.transaccion.tipo_transaccion="venta-fact"
           this.transaccion.movimiento=-1
-          this.transaccion.usu_autorizado=this.usuarioLogueado[0].username
-          this.transaccion.usuario=this.usuarioLogueado[0].username
+          this.transaccion.usu_autorizado=this.factura.username
+          this.transaccion.usuario=this.factura.username
           this.transaccion.idTransaccion=this.number_transaccion++
           this.transaccion.cliente=this.factura.cliente.cliente_nombre  
 

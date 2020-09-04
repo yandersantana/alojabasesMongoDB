@@ -41,6 +41,9 @@
         <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
             <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
+        </dxi-column>
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
@@ -79,6 +82,7 @@
             <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
                 <dxi-button icon="fa fa-eye" [onClick]="getCourseFile2"></dxi-button>   
             </dxi-column>
+            
             <dxo-paging [pageSize]="12"></dxo-paging>
             <dxo-pager
                 [showPageSizeSelector]="true"

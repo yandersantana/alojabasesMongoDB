@@ -25,6 +25,7 @@ export class ProductosPendientesService {
   }
 
   deleteProductoPendiente(productoPen){
+    //alert("sssssssssss "+productoPen._id)
     return this.http.delete(this.URL + `/delete/${productoPen._id}`, productoPen); 
   }
 

@@ -256,8 +256,7 @@ export class EntregasPComponent implements OnInit {
 
   calcularEquivalencia(producto: producto){
     this.cantidadEntM2= ((producto.M2*this.cantidadEntCajas)+(this.cantidadEntPiezas*producto.M2/producto.P_CAJA))
-    console.log("2222 "+this.cantidadEntM2)
-    console.log("2222333 "+this.entregaProducto.productoPorEntregar.cantM2)
+
     if(this.cantidadEntM2 >this.entregaProducto.productoPorEntregar.cantM2){
       Swal.fire({
         title: 'Error',
@@ -291,8 +290,8 @@ export class EntregasPComponent implements OnInit {
    
     totalPiezasEntregar= (this.entregaProducto.productoPorEntregar.cajas* this.entregaProducto.productoPorEntregar.producto.P_CAJA) +this.entregaProducto.productoPorEntregar.piezas
     var contM2t=this.entregaProducto.productoPorEntregar.cantM2-this.entregaProducto.m2
-    this.cajasP2=Math.trunc(contM2t / this.entregaProducto.productoPorEntregar.producto.M2);
-    this.piezasP2=Math.trunc(contM2t * this.entregaProducto.productoPorEntregar.producto.P_CAJA /this.entregaProducto.productoPorEntregar.producto.M2 ) - (this.cajasP2* this.entregaProducto.productoPorEntregar.producto.P_CAJA);
+    this.cajasP2=Math.trunc((contM2t+0.01) / this.entregaProducto.productoPorEntregar.producto.M2);
+    this.piezasP2=Math.trunc((contM2t+0.01) * this.entregaProducto.productoPorEntregar.producto.P_CAJA /this.entregaProducto.productoPorEntregar.producto.M2 ) - (this.cajasP2* this.entregaProducto.productoPorEntregar.producto.P_CAJA);
     totalPiezas= (this.cajasP*this.entregaProducto.productoPorEntregar.producto.P_CAJA)+this.piezasP
     this.restam2= this.entregaProducto.productoPorEntregar.cantM2 - this.entregaProducto.m2
    
@@ -363,12 +362,15 @@ export class EntregasPComponent implements OnInit {
        this.productoL= element
       }
     })
+    var m2Entregar=Number(this.entregaProducto.m2.toFixed(2))
 
     switch (this.entregaProducto.productoPorEntregar.sucursal) {
       case "matriz":
-        if(this.productoL.sucursal1>=this.entregaProducto.m2){
-          this.autorizarEntrega2()
+        if(this.productoL.sucursal1>= m2Entregar){
+          alert("si pase")
+          //this.autorizarEntrega2()
         }else{
+          alert("error "+this.entregaProducto.m2)
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
@@ -675,6 +677,10 @@ export class EntregasPComponent implements OnInit {
     this.eliminarDocumento(e.row.data)  
   }
 
+  getCourseFile7= (e) => {  
+    this.eliminarEntregaPendiente(e.row.data)  
+  }
+
 
   cargarDatos(e:any){
     this.limpiarArreglo2()
@@ -966,6 +972,44 @@ export class EntregasPComponent implements OnInit {
         this.productosEntregasSuc2.splice(0)    
       })
     }
+  }
+
+  eliminarEntregaPendiente(e:any){ 
+
+      Swal.fire({
+        title: 'Eliminar Producto Pendiente',
+        text: "Se eliminará la solicitud de entrega #"+e.id_Pedido,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.mostrarMensaje()
+         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
+         this.productosPendientesService.deleteProductoPendiente(e).subscribe( res => {
+           Swal.close()
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Se ha realizado su proceso con exito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+            //this.asignarValores()
+          })
+         }, err => {alert("error")})
+        
+          
+       
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          Swal.fire(
+            'Cancelado!',
+            'Se ha cancelado su proceso.',
+            'error'
+          )
+        }
+      })
   }
 
   mostrarPopup(e:any){

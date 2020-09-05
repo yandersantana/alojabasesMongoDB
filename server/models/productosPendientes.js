@@ -23,6 +23,7 @@ const ProductosPendientesSchema = new Schema({
     m2Entregados: { type: Number, required: false},
     valor_unitario: { type: Number, required: false},
     total: { type: Number, required: false},
+    mensaje: { type: String, required: false},
     usuario: { type: String, required: false},
     fechaEntrega: { type: String, required: false},
     estado: { type: String, required: false},

@@ -263,6 +263,7 @@ export class productosPendientesEntrega{
     valor_unitario:number	
     total:number
     usuario:string
+    mensaje:string
     fechaEntrega:string
     estado:string
     tipo_documento:string

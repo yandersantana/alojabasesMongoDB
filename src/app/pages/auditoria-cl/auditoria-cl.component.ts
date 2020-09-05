@@ -339,6 +339,7 @@ export class AuditoriaClComponent implements OnInit {
         
       }
     })
+    this.calcularTotalM2()
   }
 
   buscarInformacionEdit(){
@@ -605,7 +606,7 @@ export class AuditoriaClComponent implements OnInit {
 
   guardarAuditoriaProducto(){
     this.auditoria.fecha= new Date().toLocaleString()
-   if( this.auditoria.m2fisico!=0 && this.auditoria.valoracion!= undefined){
+   if(  this.auditoria.valoracion!= undefined){
     this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {

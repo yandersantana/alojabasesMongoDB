@@ -25,6 +25,7 @@ export class documentoGenerado{
     fechaEntrega:string
     observaciones:string
     estado:string
+    mensaje:string
     constructor(){
         this.estado="ENTREGADO"
     }

@@ -25,6 +25,8 @@ export class EntregasPComponent implements OnInit {
   productoLeido: productosPendientesEntrega
   productosPendientes: productosPendientesEntrega[]=[]
   productosPendientesNoEN: productosPendientesEntrega[]=[]
+  productosPendientesParaElim: productosPendientesEntrega[]=[]
+  productosPendientesEliminados: productosPendientesEntrega[]=[]
   productosPendientesEntregados: productosPendientesEntrega[]=[]
   popupvisible:boolean=false
   popupvisible2:boolean=false
@@ -224,6 +226,10 @@ export class EntregasPComponent implements OnInit {
     this.productosPendientes.forEach(element=>{
       if(element.estado == "PENDIENTE"){
           this.productosPendientesNoEN.push(element)
+      }else if(element.estado == "PENDIENTE-ELIMINACION"){
+        this.productosPendientesParaElim.push(element)
+      }else if(element.estado == "ELIMINADA"){
+        this.productosPendientesEliminados.push(element)
       }else{
         this.productosPendientesEntregados.push(element)
       }
@@ -367,10 +373,10 @@ export class EntregasPComponent implements OnInit {
     switch (this.entregaProducto.productoPorEntregar.sucursal) {
       case "matriz":
         if(this.productoL.sucursal1>= m2Entregar){
-          alert("si pase")
-          //this.autorizarEntrega2()
+          //alert("si pase")
+          this.autorizarEntrega2()
         }else{
-          alert("error "+this.entregaProducto.m2)
+          //alert("error "+this.entregaProducto.m2)
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
@@ -681,6 +687,10 @@ export class EntregasPComponent implements OnInit {
     this.eliminarEntregaPendiente(e.row.data)  
   }
 
+  getCourseFile8= (e) => {  
+    this.aprobarEliminacion(e.row.data)  
+  }
+
 
   cargarDatos(e:any){
     this.limpiarArreglo2()
@@ -975,7 +985,43 @@ export class EntregasPComponent implements OnInit {
   }
 
   eliminarEntregaPendiente(e:any){ 
+    
+    Swal.fire({
+      title: 'Eliminar Producto Pendiente',
+      text: "Motivo de rechazo",
+      icon: 'warning',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        e.estado="PENDIENTE-ELIMINACION"
+        e.mensaje=result.value
+        this.productosPendientesService.updateProductoPendienteEstado(e).subscribe( res => {
+          Swal.fire({
+          title: 'Correcto',
+          text: 'Un administrador aprobará su solicitud de eliminación',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })}, err => {alert("error")})
+        
+         
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'error'
+        )
+      }
+    })
 
+
+     
+  }
+
+  aprobarEliminacion(e:any){
       Swal.fire({
         title: 'Eliminar Producto Pendiente',
         text: "Se eliminará la solicitud de entrega #"+e.id_Pedido,
@@ -986,8 +1032,8 @@ export class EntregasPComponent implements OnInit {
       }).then((result) => {
         if (result.value) {
           this.mostrarMensaje()
-         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
-         this.productosPendientesService.deleteProductoPendiente(e).subscribe( res => {
+          e.estado="ELIMINADA"
+          this.productosPendientesService.updateProductoPendienteEstado(e).subscribe( res => {
            Swal.close()
           Swal.fire({
             title: 'Correcto',
@@ -1009,7 +1055,7 @@ export class EntregasPComponent implements OnInit {
             'error'
           )
         }
-      })
+      }) 
   }
 
   mostrarPopup(e:any){

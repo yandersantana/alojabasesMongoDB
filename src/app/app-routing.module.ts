@@ -105,6 +105,7 @@ import { InfoProductosComponent } from './pages/info-productos/info-productos.co
 import { ConsultasComponent } from './pages/consultas/consultas.component';
 import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
 import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
+import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo.component';
 
 
 const routes: Routes = [
@@ -166,6 +167,11 @@ const routes: Routes = [
   {
     path: 'consultas',
     component:ConsultasComponent,
+    canActivate: [ AuthGuardService ]
+  },
+  {
+    path: 'consultas-grupo',
+    component:ConsultasGrupoComponent,
     canActivate: [ AuthGuardService ]
   },
   {

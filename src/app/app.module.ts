@@ -47,6 +47,7 @@ import { InfoProductosComponent } from './pages/info-productos/info-productos.co
 import { ConsultasComponent } from './pages/consultas/consultas.component';
 import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
 import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
+import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo.component';
 
 
 
@@ -82,7 +83,8 @@ import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.compon
     InfoProductosComponent,
     ConsultasComponent,
     Auditoria2Component,
-    AudTablaComponent
+    AudTablaComponent,
+    ConsultasGrupoComponent
   ],
   imports: [
     BrowserModule,

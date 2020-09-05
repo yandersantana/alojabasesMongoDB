@@ -1,0 +1,69 @@
+
+<div class="row remiPro titulos">
+  <div class="col-md-4 col-4">
+      <div style="font-weight: bold;font-size: 1.1rem;">
+        Sucursal
+  </div></div>
+  <div class="col-md-8 col-8"><dx-select-box [items]="sucursalesDefault" 
+    [(value)]="sucursalLeida" 
+    [readOnly]="false" 
+    [disabled]="false"
+    (onValueChanged)="asignarsucursalD($event)"></dx-select-box>
+      </div>
+</div>
+
+<div class="row remiPro titulos">
+    <div class="col-md-4 col-4">
+        <div style="font-weight: bold;font-size: 1.1rem;">
+        Grupo
+    </div></div>
+    <div class="col-md-8 col-8"> <dx-select-box [items]="arrayClasif" 
+        [(value)]="grupo" 
+        [readOnly]="false" 
+        [disabled]="false"
+        (onValueChanged)="seleccionarGrupo()">
+      </dx-select-box></div>
+  </div>
+
+
+
+  <dx-data-grid 
+      id="gridContainer"
+      [dataSource]="inventarioConsultaGrupo"
+      [showBorders]="true"
+      [columnHidingEnabled]="true">
+     
+      <dxo-search-panel 
+      [visible]="true" 
+      [width]="240" 
+      placeholder="Buscar..."></dxo-search-panel>
+      <dxo-grouping [contextMenuEnabled]="true" expandMode="rowClick"></dxo-grouping>
+      <dxi-column
+          dataField="producto"
+          caption="Producto"
+          dataType="string"
+          sortOrder="asc">
+      </dxi-column>
+      <dxi-column
+              dataField="cajas"
+              caption="Cajas"
+              dataType="number"
+              >
+          </dxi-column>
+          <dxi-column
+              dataField="piezas"
+              caption="Piezas"
+              dataType="number" >
+          </dxi-column>
+
+      <dxo-paging [pageSize]="12"></dxo-paging>
+
+      <dxo-pager
+        [allowedPageSizes]="[ 8, 12, 30]"
+        [showInfo]="true"
+        [showNavigationButtons]="true"
+        [showPageSizeSelector]="true"
+        [visible]="true">
+    </dxo-pager>
+  </dx-data-grid>
+

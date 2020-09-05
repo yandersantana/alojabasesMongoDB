@@ -163,6 +163,9 @@ export const navigationAdmin = [
       },{
         text: 'Consultas',
         path: '/consultas',
+      },{
+        text: 'Consultas Grupo',
+        path: '/consultas-grupo',
       }]
   },
   {

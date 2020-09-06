@@ -4,7 +4,7 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AlertsService } from 'angular-alert-module';
 import { devolucion, productosDevueltos } from './devoluciones';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { venta, factura, producto, contadoresDocumentos, sucursal } from '../ventas/venta';
+import { venta, factura, producto, contadoresDocumentos, sucursal, productosPendientesEntrega } from '../ventas/venta';
 import { element } from 'protractor';
 import { ProductoDetalleVenta } from '../producto/producto';
 import Swal from 'sweetalert2';
@@ -26,6 +26,7 @@ import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import DataSource from 'devextreme/data/data_source';
+import { ProductosPendientesService } from 'src/app/servicios/productos-pendientes.service';
 
 @Component({
   selector: 'app-devoluciones',
@@ -98,9 +99,10 @@ productosVendidos:venta[]=[]
 parametrizacionSucu:parametrizacionsuc
 contadores:contadoresDocumentos[]=[]
 contadorFirebase:contadoresDocumentos[]=[]
+productosPendientes: productosPendientesEntrega[]=[]
 correo:string=""
 productos22: DataSource;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public authenService:AuthenService, public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public authenService:AuthenService, public transaccionesService:TransaccionesService, public devolucionesService:DevolucionesService, public contadoresService:ContadoresDocumentosService, public notasVentaService:NotasVentasService, public facturasService:FacturasService,public productosPendientesService:ProductosPendientesService, public ordenesService:OrdenesCompraService, public sucursalesService:SucursalesService, public productoService:ProductoService) { 
     this.devolucion = new devolucion
     this.productosDevueltos.push(new productosDevueltos)
     //this.variablesucursal="matriz"
@@ -127,6 +129,7 @@ productos22: DataSource;
     this.traerParametrizaciones()
     this.traerSucursales()
     this.getIDDocumentos()
+    this.traerProductosPendientesEntrega()
   }
 
   cargarUsuarioLogueado() {
@@ -219,6 +222,13 @@ productos22: DataSource;
   asignarIDdocumentos(){
     //this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
     this.id_devolucion=this.contadores[0].contDevoluciones_Ndocumento+1
+  }
+
+  traerProductosPendientesEntrega(){
+    this.productosPendientesService.getProductosPendientesEntrega().subscribe(res => {
+      this.productosPendientes = res as productosPendientesEntrega[];
+      //alert(this.productosPendientes.length)
+   })
   }
 
   async getIDDocumentos() {
@@ -526,13 +536,12 @@ productos22: DataSource;
     this.devolucion.productosDevueltos=this.productosDevueltos
     var contV=0
     var text=""
-    console.log("ssssssttttttttttttttttttttttttt "+JSON.stringify(this.devolucion))
+   
     text=this.facturaTraida.observaciones+ "/ Documento Devolucion "+this.id_devolucion
     if(this.devolucion.cliente!=undefined && this.devolucion.fecha!=undefined && this.devolucion.sucursal!=undefined && this.devolucion.fecha_transaccion!=undefined){
       this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
-       // this.db.collection('/devoluciones').doc(this.id_devolucion+"").set({...Object.assign({},this.devolucion )}) ;
-        //this.db.collection('/devoluciones_ID').doc("matriz").update({"documento_n" :this.id_devolucion});
+       
         this.devolucionesService.newDevolucion(this.devolucion).subscribe( res => {
           this.contadores[0].contDevoluciones_Ndocumento=this.id_devolucion
           this.contadoresService.updateContadoresDevoluciones(this.contadores[0]).subscribe( res => {},err => {})
@@ -619,6 +628,8 @@ productos22: DataSource;
     }) 
   }
 
+  
+
 
   aceptarDevolucion(e:any){
     Swal.fire({
@@ -668,6 +679,51 @@ productos22: DataSource;
       })
   }
 
+  buscarProductosPendientes(){
+    var bandera=true
+
+    this.productosDevueltos.forEach(element=>{
+      this.productosPendientes.forEach(element1=>{
+        
+        if(element1.documento == this.idDocumento && element1.tipo_documento == this.devolucion.tipo_documento &&
+          element.producto.PRODUCTO == element1.producto.PRODUCTO){
+            bandera=false
+            //alert("si encontre")
+            
+
+        }
+
+      }) 
+    })
+    //alert("termine")
+   
+
+    if(bandera){
+      this.guardarDevolucion()
+    }else{
+      Swal.fire({
+        title: 'Advertencia',
+        text: "Los productos devueltos tienen solicitudes de entrega asociadas , desea continuar?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          //this.mostrarMensaje()
+          this.guardarDevolucion()
+       
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+           Swal.fire(
+            'Cancelado!',
+            'Se ha cancelado su proceso.',
+            'error'
+          ) 
+        }
+      }) 
+    }
+  }
+
 
   realizarTransacciones(e:any){
     var contVal=0
@@ -678,8 +734,11 @@ productos22: DataSource;
       }
     })
 
+   // this.productosDevueltosCarga.forEach(element=>{
+
      new Promise<any>((resolve, reject) => {
      this.productosDevueltosCarga.forEach(element=>{
+       //this.buscarProductosPendientes(element,contVal++)
         this.transaccion = new transaccion()
         this.transaccion.fecha_mov=new Date().toLocaleString()
         this.transaccion.fecha_transaccion=new Date()
@@ -699,11 +758,6 @@ productos22: DataSource;
         this.transaccion.usuario=this.devolucioLeida.usuario
         this.transaccion.factPro=this.devolucioLeida.num_documento+""
         this.transaccion.idTransaccion=this.number_transaccion++
-        /* this.db.collection("/transacciones")
-        .add({ ...this.transaccion })
-        .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-        this.db.collection("/transacciones_ID").doc("matriz").set({ documento_n:this.number_transaccion })
-          .then(res => { }, err => reject(err)); */
           this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
             this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
             this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(res => {

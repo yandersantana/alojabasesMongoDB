@@ -13,6 +13,14 @@ router.get('/getProductosPend/:documento', async (req, res) => {
     res.json(productospen); 
 })
 
+router.get('/getProductosPendientesEntrega/', async (req, res) => {
+    const productospen = await ProductosPendientes.find({"estado":"PENDIENTE"});
+    res.json(productospen); 
+})
+
+
+
+
 
 
 router.put('/updateEstado/:id', async (req, res,next) => {

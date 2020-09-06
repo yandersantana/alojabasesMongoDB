@@ -261,79 +261,63 @@
 </div>
 
 <div id="historial" style="display: none;">
-    <div class="mover">
-        <button class="btn btn-primary btn-xs" (click)="mostrarEliminar()" >
-            <i class="fa fa-trash"></i>
-        </button>
-    </div>
-    <dx-data-grid #datag3
-        id="gridContainer"
-        [dataSource]="trasladosG"
+    <div ><h4>Traslados Enviados</h4></div>
+    <dx-data-grid #datag3 id="gridContainer"
+        [dataSource]="trasladosEnviados"
         [showBorders]="true">
         <dxo-filter-row 
         [visible]="true" ></dxo-filter-row>
-        <dxo-search-panel 
-        [visible]="true" 
-        [width]="240" 
-        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-search-panel  [visible]="true"  [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column
-            dataField="_id"
-            caption="Traslado N"
-            dataType="string"
-            [visible]="false" >
-        </dxi-column>
-        <dxi-column
-            dataField="idT"
-            caption="Traslado N"
-            dataType="string"
-            sortOrder="desc">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            caption="Fecha"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal_origen.nombre"
-            caption="Sucursal Origen"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal_destino.nombre"
-            caption="Sucursal Destino"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="transportista.nombre"
-            caption="Transportista"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-       
-        
-       <!--  <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
-            <dxi-button text="Descargar" [onClick]="getCourseFile"></dxi-button>   
-        </dxi-column> -->
-        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
+        <dxi-column dataField="_id" caption="Traslado N" dataType="string" [visible]="false" ></dxi-column>
+        <dxi-column dataField="idT" caption="Traslado N" dataType="string" sortOrder="desc"> </dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal_origen.nombre" caption="Sucursal Origen" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="sucursal_destino.nombre" caption="Sucursal Destino" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="transportista.nombre" caption="Transportista" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
-        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="false">
+         <dxi-column type="buttons"caption="Recibido" width="15%" [visible]="true">
+            <dxi-button text="Recibido" [onClick]="getCourseRecibido"></dxi-button>   
+        </dxi-column> 
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
+    </dx-data-grid>
+
+
+
+    <br>
+    <div ><h4>Traslados Recibidos</h4></div>
+    <dx-data-grid #datag4 id="datag4"
+        [dataSource]="trasladosRecibidos"
+        [showBorders]="true">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel  [visible]="true"  [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="_id" caption="Traslado N" dataType="string" [visible]="false" ></dxi-column>
+        <dxi-column dataField="idT" caption="Traslado N" dataType="string" sortOrder="desc"> </dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal_origen.nombre" caption="Sucursal Origen" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="sucursal_destino.nombre" caption="Sucursal Destino" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="transportista.nombre" caption="Transportista" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="10%" [visible]="true">
             <dxi-button icon="clear" [onClick]="getCourseFile3"></dxi-button>   
         </dxi-column>
         <dxo-paging [pageSize]="12"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
     </dx-data-grid>
 
     <br>
     <br>
     <br>
-    <div style="text-align: center;"><h6>Traslados Pendientes de Eliminación</h6></div>
+    <div><h4>Traslados Pendientes de Eliminación</h4></div>
     <dx-data-grid 
         id="gridContainer"
         [dataSource]="trasladosGR"
@@ -388,4 +372,30 @@
             [allowedPageSizes]="[8, 12, 20]"
         ></dxo-pager>
     </dx-data-grid>
+
+
+    <br>
+    <div ><h4>Traslados Eliminados</h4></div>
+    <dx-data-grid #datag4 id="datag4"
+        [dataSource]="trasladosEliminados"
+        [showBorders]="true">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel  [visible]="true"  [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="_id" caption="Traslado N" dataType="string" [visible]="false" ></dxi-column>
+        <dxi-column dataField="idT" caption="Traslado N" dataType="string" sortOrder="desc"> </dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal_origen.nombre" caption="Sucursal Origen" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="sucursal_destino.nombre" caption="Sucursal Destino" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="transportista.nombre" caption="Transportista" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
+    </dx-data-grid>
+
 </div>

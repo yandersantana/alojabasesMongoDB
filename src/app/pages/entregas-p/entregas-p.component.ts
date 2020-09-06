@@ -1059,6 +1059,7 @@ export class EntregasPComponent implements OnInit {
   }
 
   mostrarPopup(e:any){
+    this.entDir=false
     this.limpiarArreglo()
     this.productosPendientes.forEach(element=>{
       this.popupvisible= true
@@ -1074,6 +1075,8 @@ export class EntregasPComponent implements OnInit {
       && element.productoPorEntregar.producto.PRODUCTO == e.producto.PRODUCTO){
         this.productosEntregasSuc2.push(element)
          this.entDir=true
+      }else{
+        //this.entDir=false
       }
     })
    

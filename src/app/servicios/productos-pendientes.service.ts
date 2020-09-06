@@ -20,6 +20,10 @@ export class ProductosPendientesService {
     return this.http.get(this.URL+'/getProductosPendientes');
   }
 
+  getProductosPendientesEntrega(){ 
+    return this.http.get(this.URL+'/getProductosPendientesEntrega');
+  }
+
   updateProductoPendiente(productoPen){
     return this.http.put(this.URL + `/update/${productoPen._id}`, productoPen); 
   }

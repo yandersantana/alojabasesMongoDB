@@ -19,8 +19,9 @@ export class traslados{
     estado:string
     usuario:string
     detalleTraslados:detalleTraslados[]=[]
+    
     constructor(){
-        this.estado="Listo"
+        this.estado="ENVIADO"
        // this.sucursal_origen= new sucursal
     }
 

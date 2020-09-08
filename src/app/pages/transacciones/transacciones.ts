@@ -1,6 +1,6 @@
 export class transaccion{
     idTransaccion:number
-    fecha_transaccion:Date
+    fecha_transaccion:string
     fecha_mov:string
     sucursal:string
     bodega:string

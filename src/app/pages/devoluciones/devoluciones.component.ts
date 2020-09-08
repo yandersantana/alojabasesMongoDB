@@ -740,8 +740,8 @@ productos22: DataSource;
      this.productosDevueltosCarga.forEach(element=>{
        //this.buscarProductosPendientes(element,contVal++)
         this.transaccion = new transaccion()
-        this.transaccion.fecha_mov=new Date().toLocaleString()
-        this.transaccion.fecha_transaccion=new Date()
+        this.transaccion.fecha_mov=this.devolucioLeida.fecha_transaccion
+        this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
         this.transaccion.sucursal=this.devolucioLeida.sucursal.nombre
         this.transaccion.bodega="bodega2"
         this.transaccion.documento=this.devolucioLeida.id_devolucion+""

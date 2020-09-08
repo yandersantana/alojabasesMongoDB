@@ -1972,7 +1972,7 @@ anadirDetallePago = (e) => {
               /*  this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"cantidad" :sumaProductos, "precio":element.precio_compra})  */  
                 this.transaccion = new transaccion()
                 this.transaccion.fecha_mov=new Date().toLocaleString()
-                this.transaccion.fecha_transaccion=new Date()
+                this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
                 this.transaccion.sucursal=e.sucursal.nombre
                 this.transaccion.valor=element.precio_compra
                 this.transaccion.totalsuma=element.total-(element.total*(element.descGeneral/100))

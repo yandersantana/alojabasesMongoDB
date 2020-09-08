@@ -2864,6 +2864,7 @@ var tipoDoc:boolean=false
     guardarFactura(){
       this.factura.username= this.username
       this.factura.fecha= this.now
+     // alert(this.factura.fecha)
       //this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
@@ -3050,7 +3051,9 @@ var tipoDoc:boolean=false
           element.factura_id = this.factura.documento_n
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov=new Date().toLocaleString()
-          this.transaccion.fecha_transaccion=this.factura.fecha
+          alert(this.factura.fecha)
+          alert(this.factura.fecha.toLocaleDateString())
+          this.transaccion.fecha_transaccion=this.factura.fecha.toLocaleDateString()
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"
@@ -3236,7 +3239,7 @@ var tipoDoc:boolean=false
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=new Date().toLocaleString()
-          this.transaccion.fecha_transaccion=this.factura.fecha
+          this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
           this.transaccion.sucursal=this.factura.sucursal
           this.transaccion.totalsuma=element.subtotal
           this.transaccion.bodega="12"

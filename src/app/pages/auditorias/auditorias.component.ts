@@ -937,7 +937,7 @@ onHidden() {
       if(element.condicion != "OK"){
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov=new Date().toLocaleString()
-          this.transaccion.fecha_transaccion=new Date()
+          this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
           this.transaccion.sucursal=element.sucursal.nombre
           this.transaccion.totalsuma=element.impacto
           this.transaccion.bodega="12"

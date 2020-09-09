@@ -129,6 +129,21 @@
                 width="10%">
             </dxi-column>
          </dxi-column>
+         <dxi-column
+            dataField="ultimoPrecioCompra"
+            caption="Ult.Pre.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaCompra"
+            caption="Ult.Fech.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+         
          <dxi-column type="buttons" dataField="bt1" caption="Ubicación" width="7%">
             <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
         </dxi-column>
@@ -310,7 +325,19 @@
                     [showInGroupFooter]="true">
                 </dxi-group-item> -->
             </dxo-summary>
-            
+            <dxi-column
+            dataField="ultimoPrecioCompra"
+            caption="Ult.Pre.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaCompra"
+            caption="Ult.Fech.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
             <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
             <dxo-paging [pageSize]="12"></dxo-paging>
             <dxo-pager

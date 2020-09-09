@@ -27,6 +27,8 @@ export class producto {
         ubicacionSuc2:string[]=[]
         ubicacionSuc3:string[]=[]
         bodegaProveedor:number
+        ultimoPrecioCompra:number
+        ultimaFechaCompra:string
         constructor(
             ) {
                 this.REFERENCIA=""
@@ -137,6 +139,7 @@ export class factura {
             ) { 
                 this.estado="CONTABILIZADA"
                 this.mensaje=" "
+                this.maestro=""
                 //this.cliente = new cliente()
     }
 }

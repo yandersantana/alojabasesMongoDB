@@ -816,7 +816,7 @@ export class TrasladosComponent implements OnInit {
             element.id=this.id2
             this.transaccion = new transaccion()    
             this.transaccion.fecha_mov=this.traslados.fecha.toLocaleString()
-            this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
+            this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_destino.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_destino
@@ -913,7 +913,7 @@ export class TrasladosComponent implements OnInit {
             element.id=this.id2
             this.transaccion = new transaccion()    
             this.transaccion.fecha_mov=this.traslados.fecha.toLocaleString()
-            this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
+            this.transaccion.fecha_transaccion=new Date()
             this.transaccion.sucursal=this.traslados.sucursal_origen.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_origen

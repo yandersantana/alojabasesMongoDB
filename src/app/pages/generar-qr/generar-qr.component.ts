@@ -10,6 +10,7 @@ import Swal from 'sweetalert2';
 import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
 import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
 import { precios, preciosEspeciales } from '../control-precios/controlPrecios';
+import DataSource from 'devextreme/data/data_source';
 
 @Component({
   selector: 'app-generar-qr',
@@ -25,6 +26,7 @@ export class GenerarQRComponent implements OnInit {
   ];
 
   productosActivos:producto[]=[]
+  productos22: DataSource;
   nombre_producto:string
   cantidadPiezas:number
   m2Caja:number
@@ -54,6 +56,10 @@ export class GenerarQRComponent implements OnInit {
   traerProductos(){
     this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[]; 
+      this.productos22 = new DataSource({  
+        store: this.productosActivos,  
+        sort: [{ field: "PRODUCTO", asc: true }],    
+      });
    })
   }
 
@@ -148,7 +154,7 @@ export class GenerarQRComponent implements OnInit {
     this.productosActivos.forEach(element=>{
       if(element.CLASIFICA == e.value){
         this.productoind = new productoqr()
-        this.productoind.url= "http://104.248.14.190:3000/#/info-productos/"+element._id
+        this.productoind.url= "http://104.131.82.174:3000/#/info-productos/"+element._id
         this.productoind.nombre_producto= element.PRODUCTO
         this.productoind.piezas_producto= element.P_CAJA
         this.productoind.metros_producto= element.M2

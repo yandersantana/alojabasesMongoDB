@@ -1017,7 +1017,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {alert("error")})
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=new Date().toLocaleString()
-              this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
+              this.transaccion.fecha_transaccion=new Date()
               this.transaccion.sucursal=this.remisionProducto.sucursal
               this.transaccion.totalsuma=0
               this.transaccion.bodega=this.remisionProducto.bodega
@@ -1113,6 +1113,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
 
   seguirGuardando(){
+    //alert("eer")
     var contVal=0
     var contacoincidencias=0
     new Promise<any>((resolve, reject) => {
@@ -1126,7 +1127,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=new Date().toLocaleString()
-          this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
+          this.transaccion.fecha_transaccion=new Date()
           this.transaccion.sucursal=this.remisionProducto.sucursal
           this.transaccion.bodega=this.remisionProducto.bodega
           this.transaccion.documento=this.remisionProducto.num_FactPro
@@ -1375,12 +1376,19 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
 
               case "matriz":
+               element.nombreComercial.ultimoPrecioCompra=element.precio
+               element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
+               
                 this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                 break;
               case "sucursal1":
+                element.nombreComercial.ultimoPrecioCompra=element.precio
+                element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
                 this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                 break;
               case "sucursal2":
+                element.nombreComercial.ultimoPrecioCompra=element.precio
+               element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
               this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                   break;
               default:

@@ -698,7 +698,7 @@ export class AuditoriaClComponent implements OnInit {
       if(element.condicion != "OK"){
           this.transaccion = new transaccion()
           this.transaccion.fecha_mov= new Date().toLocaleDateString()
-          this.transaccion.fecha_transaccion=new Date().toLocaleDateString()
+          this.transaccion.fecha_transaccion=new Date()
           this.transaccion.sucursal=element.sucursal.nombre
           this.transaccion.bodega="12"
           this.transaccion.cantM2=0

@@ -375,6 +375,9 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.cantidadPiezas3=contPiezas3
       //this.invetarioProd.bodega= "S1 ("+this.bodegasMatriz+" ) S2 ("+this.bodegasSucursal1+") S3("+this.bodegasSucursal2+")"
       this.invetarioProd.bodega= "S1 ("+element2.ubicacionSuc1+" ) S2 ("+element2.ubicacionSuc2+") S3("+element2.ubicacionSuc3+")"
+      
+      this.invetarioProd.ultimoPrecioCompra= element2.ultimoPrecioCompra
+      this.invetarioProd.ultimaFechaCompra= element2.ultimaFechaCompra
       this.invetarioP.push(this.invetarioProd)
 
      console.log("el producto "+element2.PRODUCTO+" tiene "+contCajas +" cajas")
@@ -615,6 +618,8 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.CLASIFICA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
     e.component.columnOption("bodega", "visible", true);
+    e.component.columnOption("ultimoPrecioCompra", "visible", true);
+    e.component.columnOption("ultimaFechaCompra", "visible", true);
    
   };
  
@@ -624,6 +629,8 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
     e.component.columnOption("bodega", "visible", false);
+    e.component.columnOption("ultimoPrecioCompra", "visible", false);
+    e.component.columnOption("ultimaFechaCompra", "visible", false);
     e.component.endUpdate();
   }
 
@@ -632,12 +639,16 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.CLASIFICA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
     e.component.columnOption("bodega", "visible", true);
+    e.component.columnOption("ultimoPrecioCompra", "visible", true);
+    e.component.columnOption("ultimaFechaCompra", "visible", true);
    
   };
   onExported2 (e) {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
     e.component.columnOption("bodega", "visible", false);
+    e.component.columnOption("ultimoPrecioCompra", "visible", false);
+    e.component.columnOption("ultimaFechaCompra", "visible", false);
     e.component.endUpdate();
   }
 

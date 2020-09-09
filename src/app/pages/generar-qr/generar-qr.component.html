@@ -33,7 +33,8 @@
                             <div class="col-md-4">Seleccione el producto:</div>
                             <div class="col-md-6">
                               <dx-select-box
-                                  [dataSource]="productosActivos"
+                                  [dataSource]="productos22"
+                                  
                                   displayExpr="PRODUCTO"
                                   [searchEnabled]="true"
                                   valueExpr="PRODUCTO"
@@ -52,11 +53,15 @@
                                 <div id="codigo" style="display: none;">
                                   <div class="row" >
                                     <div class="col-md-4"><qrcode [qrdata]="texto" elementType="img" [width]="128" [errorCorrectionLevel]="'M'"></qrcode></div>
-                                    <div class="col-md-8">
+                                    <div class="col-md-8" >
+                                     <div style="margin-left: 2rem;">
                                       <br>
                                       <p>{{nombre_producto}}</p>
                                       <p>Piezas/Caja: {{cantidadPiezas}}</p>
                                       <p>Metros/Caja: {{m2Caja}}</p>
+                                     </div>
+                  
+                                      
                                     </div>
                                   </div>
                               </div>

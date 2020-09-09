@@ -46,7 +46,9 @@ router.put('/update/:id', async (req, res,next) => {
         ubicacionSuc1: req.body.ubicacionSuc1,
         ubicacionSuc2: req.body.ubicacionSuc2,
         ubicacionSuc3: req.body.ubicacionSuc3,
-        bodegaProveedor: req.body.bodegaProveedor
+        bodegaProveedor: req.body.bodegaProveedor,
+        ultimoPrecioCompra: req.body.ultimoPrecioCompra,
+        ultimaFechaCompra:req.body.ultimaFechaCompra
     };
     await Producto.findByIdAndUpdate(id, {$set: productos}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
@@ -96,9 +98,10 @@ router.put('/updateBodega/:id', async (req, res,next) => {
 
 router.put('/updateProductoSuc1Dir/:id/:cantidad/:precio', async (req, res,next) => {
     const { id } = req.params;
-    const { precio } = req.params;
     const { cantidad } = req.params;
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio:precio}}, {new: true});
+    const { precio } = req.params;
+    console.log(cantidad+ "ddd "+ precio)
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio:precio , ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -251,7 +254,9 @@ router.post('/newProducto', async (req, res) => {
         ubicacionSuc1: req.body.ubicacionSuc1,
         ubicacionSuc2: req.body.ubicacionSuc2,
         ubicacionSuc3: req.body.ubicacionSuc3,
-        bodegaProveedor: req.body.bodegaProveedor
+        bodegaProveedor: req.body.bodegaProveedor,
+        ultimoPrecioCompra: req.body.ultimoPrecioCompra,
+        ultimaFechaCompra:req.body.ultimaFechaCompra
     });
     await nuevoProducto.save();
     res.json({status: 'Se ha creado un nuevo producto'});  

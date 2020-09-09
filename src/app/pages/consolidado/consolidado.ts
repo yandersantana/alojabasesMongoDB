@@ -17,6 +17,8 @@ export class inventario{
     totalb2:number
     totalb3:number
     bodega:string
+    ultimoPrecioCompra:number
+    ultimaFechaCompra:string
     constructor(){
 
     }

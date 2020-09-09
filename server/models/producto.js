@@ -27,7 +27,9 @@ const ProductoSchema = new Schema({
     ubicacionSuc1: { type: Array, required: false},
     ubicacionSuc2: { type: Array, required: false},
     ubicacionSuc3: { type: Array, required: false},
-    bodegaProveedor: { type: Number, required: false}
+    bodegaProveedor: { type: Number, required: false},
+    ultimoPrecioCompra: { type: Number, required: false},
+    ultimaFechaCompra: { type: String, required: false}
 },{
     timestamps:true
 });

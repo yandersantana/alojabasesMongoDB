@@ -110,7 +110,7 @@ let upload = multer({
     console.log(file[0].path);
     res.json({
         'message': 'File uploaded succesfully.',
-        'url':'http://161.35.224.215/'+pathy.path,
+        'url':'http://104.131.82.174/'+pathy.path,
         'size': parseInt(pathy.size/1024)
         
     });

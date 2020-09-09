@@ -62,6 +62,7 @@ export class ProductoService {
   }
 
   updateProductoSucursal1ComD(producto,suma:number, precio:number){
+   //alert(producto)
     return this.http.put(this.URL + `/updateProductoSuc1Dir/${producto._id}/${suma}/${precio}`, producto); 
   }
 

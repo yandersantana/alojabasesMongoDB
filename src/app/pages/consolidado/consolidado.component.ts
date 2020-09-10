@@ -462,9 +462,11 @@ export class ConsolidadoComponent implements OnInit {
       m2s2=parseFloat(element.cantidadM2b2.toFixed(2))
       m2s3=parseFloat(element.cantidadM2b3.toFixed(2))
       element.producto.sucursal1=m2s1
-      element.producto.sucursal1=m2s2
-      element.producto.sucursal1=m2s3
-      console.log(element)
+      element.producto.sucursal2=m2s2
+      element.producto.sucursal3=m2s3
+      if(element.producto.ultimoPrecioCompra!=undefined){ 
+        element.producto.precio = element.producto.ultimoPrecioCompra  
+      }
       this.productoService.updateProductosSucursales(element.producto,m2s1,m2s2,m2s3).subscribe( res => {contVal++,this.contadorValidaciones2(contVal)}, err => {alert("error")})
      // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
     })

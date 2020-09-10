@@ -751,10 +751,9 @@ onHidden() {
   }
 
   guardarAuditoria(){
-
-    if( this.newAuditoria.contrasena!=undefined && this.newAuditoria.sucursal != undefined && this.newAuditoria.auditado!= " "){
-      
-       this.mostrarMensaje()
+     if( this.newAuditoria.contrasena!="" && this.newAuditoria.sucursal != undefined && this.newAuditoria.auditado!= " "){
+     
+      this.mostrarMensaje()
       new Promise<any>((resolve, reject) => {
         this.auditoriasService.newAuditoria(this.newAuditoria).subscribe( res => {
           this.contadores[0].auditorias_Ndocumento=this.newAuditoria.idAuditoria
@@ -767,7 +766,7 @@ onHidden() {
         text: 'Hay campos vacios',
         icon: 'error'
       })
-    }
+    } 
   }
 
   guardarAuditoriaProducto(){

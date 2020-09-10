@@ -150,7 +150,7 @@ router.put('/updateProductosSucursales/:id/:suc1/:suc2/:suc3', async (req, res,n
     const { suc2 } = req.params;
     const { suc3 } = req.params;
     console.log("sd "+req.body.PRODUCTO + " suc1 "+suc1+ " suc2 "+suc2+ " suc3 "+suc3)
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:suc1,sucursal2:suc2,sucursal3:suc3}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:suc1,sucursal2:suc2,sucursal3:suc3,precio:req.body.precio}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

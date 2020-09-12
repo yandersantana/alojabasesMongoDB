@@ -815,8 +815,8 @@ export class TrasladosComponent implements OnInit {
      this.detalleTraslados.forEach(element => {
             element.id=this.id2
             this.transaccion = new transaccion()    
-            this.transaccion.fecha_mov=this.traslados.fecha.toLocaleString()
-            this.transaccion.fecha_transaccion=new Date()
+            this.transaccion.fecha_mov=new Date().toLocaleString()
+            this.transaccion.fecha_transaccion=this.traslados.fecha
             this.transaccion.sucursal=this.traslados.sucursal_destino.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_destino
@@ -879,7 +879,7 @@ export class TrasladosComponent implements OnInit {
    // this.traslados.transportista.vehiculo= this.tipo_vehiculo 
     this.traslados.observaciones= this.observaciones
     this.traslados.detalleTraslados=this.detalleTraslados
-    this.traslados.fecha=this.now.toLocaleString()
+    this.traslados.fecha=this.now
     console.log("version1 "+ new Date().toLocaleString())
     console.log("version1 "+ new Date().toLocaleTimeString())
     console.log("version1 "+ new Date().toTimeString())
@@ -912,8 +912,8 @@ export class TrasladosComponent implements OnInit {
           this.detalleTraslados.forEach(element => {
             element.id=this.id2
             this.transaccion = new transaccion()    
-            this.transaccion.fecha_mov=this.traslados.fecha.toLocaleString()
-            this.transaccion.fecha_transaccion=new Date()
+            this.transaccion.fecha_mov=new Date().toLocaleString()
+            this.transaccion.fecha_transaccion=this.traslados.fecha
             this.transaccion.sucursal=this.traslados.sucursal_origen.nombre
             this.transaccion.totalsuma=0
             this.transaccion.bodega=this.traslados.bodega_origen
@@ -1484,7 +1484,7 @@ contadorValidaciones2(i:number){
           {
             width:410,
             margin: [0, 20, 0, 10],
-            text:"Fecha : "+this.traslados.fecha,
+            text:"Fecha : "+this.traslados.fecha.toLocaleString(),
             alignment:"right"
           },
           ]

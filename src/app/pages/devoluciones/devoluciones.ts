@@ -7,8 +7,8 @@ export class devolucion{
     usuario:string
     observaciones:string
     sucursal:Sucursal
-    fecha:string
-    fecha_transaccion:string
+    fecha:Date
+    fecha_transaccion:Date
     id_devolucion:number
     totalDevolucion:number
     num_documento:number

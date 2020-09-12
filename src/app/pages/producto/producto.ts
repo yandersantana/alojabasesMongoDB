@@ -132,7 +132,7 @@ export class ProductoDetalleEntrega{
 export class RemisionProductos{
     num_orden:number
     num_FactPro:string
-    fechaP: string
+    fechaP: Date
     num_remEnt:string
     fechaRecibo:string
     id_remision:number

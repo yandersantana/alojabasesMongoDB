@@ -359,14 +359,15 @@ productos22: DataSource;
         this.sucursal=""
       }
     }else if(e.value=="Nota de Venta"){
+      this.limpiarArreglo()
       this.notas_venta.forEach(element=>{
-        this.limpiarArreglo()
         if(element.documento_n == this.idDocumento){
           this.facturaTraida=element
           this.cliente=element.cliente.cliente_nombre
           this.fecha_transaccion=element.fecha2
           this.sucursal=element.sucursal
           this.productosVendidos2=element.productosVendidos
+          alert(this.productosVendidos2)
           bandera=false
           //this.obtenerDetalleProductosNot()
         }
@@ -525,8 +526,8 @@ productos22: DataSource;
 
   guardarDevolucion(){
     this.devolucion.cliente=this.cliente
-    this.devolucion.fecha=this.fecha.toLocaleDateString()
-    this.devolucion.fecha_transaccion=this.fecha_transaccion
+    this.devolucion.fecha=this.fecha
+    this.devolucion.fecha_transaccion=new Date(this.fecha_transaccion)
     this.devolucion.observaciones=this.observaciones
     //this.devolucion.sucursal=this.sucursal
     this.devolucion.usuario=this.usuario
@@ -740,8 +741,8 @@ productos22: DataSource;
      this.productosDevueltosCarga.forEach(element=>{
        //this.buscarProductosPendientes(element,contVal++)
         this.transaccion = new transaccion()
-        this.transaccion.fecha_mov=this.devolucioLeida.fecha_transaccion
-        this.transaccion.fecha_transaccion=new Date()
+        this.transaccion.fecha_mov=new Date().toLocaleString() 
+        this.transaccion.fecha_transaccion=this.devolucioLeida.fecha
         this.transaccion.sucursal=this.devolucioLeida.sucursal.nombre
         this.transaccion.bodega="bodega2"
         this.transaccion.documento=this.devolucioLeida.id_devolucion+""
@@ -1044,8 +1045,8 @@ productos22: DataSource;
                         type: 'none',
                         fontSize:9,
                         ul: [
-                          ''+this.devolucioLeida.fecha,
-                          ''+this.devolucioLeida.fecha_transaccion,
+                          ''+this.devolucioLeida.fecha.toLocaleString(),
+                          ''+this.devolucioLeida.fecha_transaccion.toLocaleString(),
                           ''+this.devolucioLeida.usuario,
                         ]
                       }

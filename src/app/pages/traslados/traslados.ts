@@ -15,7 +15,7 @@ export class traslados{
     sucursal_destino:Sucursal
     bodega_destino:string
     observaciones:string
-    fecha:string
+    fecha:Date
     estado:string
     usuario:string
     detalleTraslados:detalleTraslados[]=[]

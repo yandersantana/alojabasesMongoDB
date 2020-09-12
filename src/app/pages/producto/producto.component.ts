@@ -968,7 +968,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     this.remisionProducto.total=parseFloat(sumatot.toFixed(2))
     var contVal=0
     var contVal2=0
-    this.remisionProducto.fechaP= this.fecha1.toLocaleDateString()
+    this.remisionProducto.fechaP= this.fecha1
     this.remisionProducto.id_remision= this.Id_remision
     
     this.remisionProducto.nombre_recibe= this.nombre_recibe
@@ -1017,7 +1017,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {alert("error")})
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=new Date().toLocaleString()
-              this.transaccion.fecha_transaccion=new Date()
+              this.transaccion.fecha_transaccion=this.fecha1
               this.transaccion.sucursal=this.remisionProducto.sucursal
               this.transaccion.totalsuma=0
               this.transaccion.bodega=this.remisionProducto.bodega
@@ -1127,7 +1127,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=new Date().toLocaleString()
-          this.transaccion.fecha_transaccion=new Date()
+              this.transaccion.fecha_transaccion=this.fecha1
           this.transaccion.sucursal=this.remisionProducto.sucursal
           this.transaccion.bodega=this.remisionProducto.bodega
           this.transaccion.documento=this.remisionProducto.num_FactPro
@@ -1552,6 +1552,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     this.facturaProveedor.forEach(element => {
       if(element.nFactura==e.value){
         this.ifFacturaP=element._id
+        this.fecha1 = new Date(element.fecha)
         console.log(element.total)
        // alert("xsxs "+JSON.stringify(element))
         this.remisionProducto.total=element.total
@@ -2308,7 +2309,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
                         fontSize:9,
                         ul: [
                           ''+this.remisionProductoleido.num_orden,
-                          ''+this.remisionProductoleido.fechaP,
+                          ''+this.remisionProductoleido.fechaP.toLocaleString(),
                           ''+this.remisionProductoleido.sucursal,
                           ''+this.remisionProductoleido.nombre_proveedor,
                           ''+this.remisionProductoleido.num_FactPro,
@@ -2480,269 +2481,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     };
   } 
   
- /* 
-  getDocumentDefinition() {
-    //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
-  //console.log("holaaaa"+fecha2); 
-    this.setearNFactura()
-    
-    sessionStorage.setItem('resume', JSON.stringify("jj"));
-    //let tipoDocumento="Factura";
-    return {
-      pageSize: 'A4',
-      pageOrientation: 'portrait', 
-      content: [
-        {
-          columns: [{
-            image: this.imagenLogotipo,
-          width: 100,
-          margin: [0, 20, 0, 10],
-          },
-          {
-            width:410,
-            margin: [0, 20, 0, 10],
-            text:" ",
-            alignment:"right"
-          },
-          ]
-          
-          //alignment: 'center'
-        }, 
-       
-        {
-          columns: [
-            
-            [
-              {
-              
-              text: "FORERO DELGADO JUAN ",
-            },
-            {
-              text: "RUC: 0961654563",
-            },
-            
-            {
-              text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:9
-            },
-            {
-              text: "Dirección: Av. Juan Montalvo entre Seminario y Olmedo 423 ",
-            },
-            {
-              text: "Teléfonos: 0986951573 - 0997975089 - Milagro ",
-            },
-            {
-              text: "Auto SRI 1124706493",
-            },{
-              columns: [{
-              width:300,
-              text: "REMISIÓN  001 - 000",
-              bold: true,
-              fontSize: 20,
-            },
-            {
-              width:455,
-              text: "NO "+this.numeroFactura,
-              color: 'red',
-              bold: true,
-              fontSize: 20,
-              alignment:"right"
-            },
-            ]
-            },
-            {
-            //Desde aqui comienza los datos del cliente
-            style: 'tableExample',
-            table: {
-              widths: [170,190,170,195],
-              body: [
-                [
-                  {
-                    stack: [
-                      {
-                        type: 'none',
-                        bold: true,
-                        ul: [
-                          'Numero Orden',
-                          'Fecha',
-                          'Sucursal',
-                          'Nombre Proveedor',
-                          'Factura proveedor',
-                          
-                           
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    stack: [
-                      {
-                        type: 'none',
-                    
-                        ul: [
-                          ''+this.remisionProductoleido.num_orden,
-                          ''+this.remisionProductoleido.fechaP,
-                          ''+this.remisionProductoleido.sucursal,
-                          ''+this.remisionProductoleido.nombre_proveedor,
-                          ''+this.remisionProductoleido.num_FactPro,
-                        ]
-                      }
-                    ]
-                  },
-                  {
-                    stack: [
-                      {
-                        type: 'none',
-                        bold: true,
-                        ul: [
-
-                          'Numero Remisión entrega',
-                          'Nombre quien recibe',
-                          'Nombre transportador',
-                          'Placa vehículo transportador', 
-                           
-                        ]
-                      }
-                    ]
-                  },
-                  [{
-                    stack: [
-                      {
-                        type: 'none',
-                        ul: [
-                          ''+this.remisionProductoleido.num_remEnt,
-                          ''+this.remisionProductoleido.nombre_recibe,
-                          ''+this.remisionProductoleido.nombre_transportador,
-                          ''+this.remisionProductoleido.placa,
-                        ]
-                      }
-                    ]
-                  },
-                  ],
-                 
-                ]
-              ]
-            }
-            },
-           
-            ],
-            [
-              
-            ]
-          ]
-        },
-       
-        this.getProductosIngresados2(this.productosControlIngresados),
-        {text:" "},{text:" "}, {text:" "},{text:" "},
-          {
-          columns: [{
-           text:"Firma conformidad entrega",
-          width: 365,
-          alignment:"right",
-          margin: [55, 20, 40, 10],
-          },
-          {
-            width:365,
-            margin: [40, 20, 20, 10],
-            text:"Firma conformidad recibo ",
-            alignment:"left"
-          },
-          ]
-          
-          //alignment: 'center'
-        }, 
-      ],
-      footer: function (currentPage, pageCount) {
-        return {
-          table: {
-            body: [
-              
-              [{text: '  ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL   ORIGINAL ', alignment: 'center', style:"textFot"}],
-            ]
-          },
-          layout: 'noBorders'
-        };
-      }, pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
-        return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
-     },
-      
-      images: {
-        mySuperImage: 'data:image/jpeg;base64,...content...'
-      },
-      info: {
-        title: "Factura" + '_RESUME',
-        author: "this.resume.name",
-        subject: 'RESUME',
-        keywords: 'RESUME, ONLINE RESUME',
-      },
-        styles: {
-          header: {
-            fontSize: 18,
-            bold: true,
-            margin: [0, 20, 0, 10],
-            decoration: 'underline'
-          },
-          textoPro:{
-            bold: true,
-            margin: [0, -12, 0, -5]
-          },
-          tableExample: {
-            margin: [0, 5, 0, 15]
-          },
-          tableExample2: {
-            margin: [-13, 5, 10, 15]
-          },
-          tableExample3: {
-            margin: [-13, -10, 10, 15]
-          },
-          tableExample4: {
-            margin: [10, -5, 0, 15]
-          },
-          texto6: {
-            fontSize: 14,
-            bold: true,
-            alignment: "center"
-          },
-          name: {
-            fontSize: 16,
-            bold: true
-          },
-          jobTitle: {
-            fontSize: 14,
-            bold: true,
-            italics: true
-          },
-          textFot: {   
-            alignment: 'center',
-            italics: true,
-            color: "#bebebe",
-            fontSize:18,
-          },
-          tableHeader: {
-            bold: true,
-          },
-          tableHeader2: {
-            bold: true,
-            fontSize:10,
-          },
-          
-          fondoFooter: {
-            fontSize: 8,
-            alignment: "center"
-          },
-          totales: {
-            margin: [0, 0, 15, 0],
-            alignment: "right",
-          },
-          totales2: {
-            margin: [0, 0, 5, 0],
-            alignment: "right",
-          },
-          detalleTotales: {
-            margin: [15, 0, 0, 0]
-          }
-        }
-    };
-  } */
+ 
 
   getDocumentDefinition2() {
     //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
@@ -2844,7 +2583,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
                         fontSize:9,
                         ul: [
                           ''+this.remisionProducto.num_orden,
-                          ''+this.remisionProducto.fechaP,
+                          ''+this.remisionProducto.fechaP.toLocaleString(),
                           ''+this.remisionProducto.sucursal,
                           ''+this.remisionProducto.nombre_proveedor,
                           ''+this.remisionProducto.num_FactPro,

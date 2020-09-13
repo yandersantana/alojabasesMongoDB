@@ -60,7 +60,10 @@ export class OrdenesCompraService {
 
   updateOrdenEstadoAprobado(id:string, variable:string , orden:number , usuario:string, estado2:string){
     return this.http.put(this.URL + `/updateEstadoAprobado/${id}/${variable}/${orden}/${usuario}/${estado2}`, variable); 
-    
+  }
+
+  actualizarNota(orden,nota:string){
+    return this.http.put(this.URL + `/actualizarNota/${orden._id}/${nota}`, orden); 
   }
 
   deleteOrden(ordenes){

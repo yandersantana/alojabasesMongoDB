@@ -431,6 +431,10 @@
                                     <th>Total</th>
                                     <td>{{productoLeido.total}}</td>
                                 </tr>
+                                <tr>
+                                    <th>Notas</th>
+                                    <td><dx-text-box [(value)]="notasProducto"  (onChanged)="enviarNota()" [disabled]="false" [readOnly]="false"></dx-text-box></td>
+                                </tr>
                                
                               </table>
                               <div id="mostrar" style="display: block;">

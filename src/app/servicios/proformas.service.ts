@@ -26,6 +26,10 @@ export class ProformasService {
     return this.http.put(this.URL + `/update/${proforma._id}`, proforma); 
   }
 
+  actualizarNota(proforma,nota:string){
+    return this.http.put(this.URL + `/actualizarNota/${proforma._id}/${nota}`, proforma); 
+  }
+
   deleteProformas(proforma){
     return this.http.delete(this.URL + `/delete/${proforma._id}`, proforma); 
   }

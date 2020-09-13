@@ -10,7 +10,7 @@ import { VentasComponent } from './pages/ventas/ventas.component';
 import { ComprasComponent } from './pages/compras/compras.component';
 import { CalculadoraComponent } from './pages/ventas/calculadora/calculadora.component';
 import { ProductoComponent } from './pages/producto/producto.component';
-import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule, DxAutocompleteModule, DxTemplateModule, DxFileUploaderModule, DxGalleryModule, DxScrollViewModule, DxAccordionModule, DxLoadIndicatorModule, DxLoadPanelModule } from 'devextreme-angular';
+import { DxButtonModule, DxTextBoxModule, DxFormModule, DxDataGridModule, DxSelectBoxModule, DxCheckBoxModule, DxNumberBoxModule, DxPopupModule, DxDateBoxModule, DxValidatorModule, DxAutocompleteModule, DxTemplateModule, DxFileUploaderModule, DxGalleryModule, DxScrollViewModule, DxAccordionModule, DxLoadIndicatorModule, DxLoadPanelModule, DxListModule } from 'devextreme-angular';
 import { AngularFireModule } from 'angularfire2';
 import { AngularFirestoreModule } from 'angularfire2/firestore';
 import { environment } from 'src/environments/environment';
@@ -48,6 +48,7 @@ import { ConsultasComponent } from './pages/consultas/consultas.component';
 import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
 import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
 import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo.component';
+import { IndicadoresComponent } from './pages/indicadores/indicadores.component';
 
 
 
@@ -84,7 +85,8 @@ import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo
     ConsultasComponent,
     Auditoria2Component,
     AudTablaComponent,
-    ConsultasGrupoComponent
+    ConsultasGrupoComponent,
+    IndicadoresComponent
   ],
   imports: [
     BrowserModule,
@@ -97,6 +99,7 @@ import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo
     HttpClientModule,
     DxButtonModule,
     DxTextBoxModule,
+    DxListModule,
     DxFormModule,
     PinchZoomModule,
     DxDataGridModule,

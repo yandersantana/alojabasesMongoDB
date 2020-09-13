@@ -26,6 +26,7 @@ router.put('/update/:id', async (req, res,next) => {
         subtotalF1:req.body.subtotalF1,
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
+        nota:req.body.nota,
         productosVendidos:req.body.productosVendidos,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado
@@ -39,6 +40,16 @@ router.delete('/delete/:id', async (req, res,next) => {
     await Proformas.findByIdAndRemove(req.params.id);
     res.json({status: 'Factura Eliminada'});
 })
+
+
+router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
+    const { id } = req.params;
+    const { nota } = req.params;
+    await Proformas.findByIdAndUpdate(id, {$set: {nota:nota}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
 
 router.post('/newProforma', async (req, res) => {
    const NewProforma = new Proformas({
@@ -59,6 +70,7 @@ router.post('/newProforma', async (req, res) => {
         subtotalF1:req.body.subtotalF1,
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
+        nota:req.body.nota,
         productosVendidos:req.body.productosVendidos,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado

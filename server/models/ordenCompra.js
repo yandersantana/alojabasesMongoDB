@@ -34,6 +34,7 @@ const OrdenCompraSchema = new Schema({
     TotalIva: { type: Number, required: false},
     tipo: { type: String, required: false},
     factPro: { type: String, required: false},
+    nota: { type: String, required: false},
     estadoOrden: { type: String, required: false},
     estadoIngreso: { type: String, required: false},
     productosComprados: { type: Array, required: false}

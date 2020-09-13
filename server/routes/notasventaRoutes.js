@@ -59,6 +59,7 @@ router.put('/update/:id', async (req, res,next) => {
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
         maestro:req.body.maestro,
+        nota:req.body.nota,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
         mensaje:req.body.mensaje,
@@ -68,6 +69,14 @@ router.put('/update/:id', async (req, res,next) => {
     await NotasVenta.findByIdAndUpdate(id, {$set: notasv}, {new: true});
     res.json({status: 'factura Updated'});  
 })
+
+router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
+    const { id } = req.params;
+    const { nota } = req.params;
+    await NotasVenta.findByIdAndUpdate(id, {$set: {nota:nota}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
 
 
 router.delete('/delete/:id', async (req, res,next) => {
@@ -95,6 +104,7 @@ router.post('/newNotaVenta', async (req, res) => {
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
         maestro:req.body.maestro,
+        nota:req.body.nota,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
         mensaje:req.body.mensaje,

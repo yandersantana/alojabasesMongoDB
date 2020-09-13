@@ -144,8 +144,12 @@
         </dxi-column>
 
          
-         <dxi-column type="buttons" dataField="bt1" caption="Ubicación" width="7%">
+         <dxi-column type="buttons" dataField="bt1" caption="Ubic." width="7%">
             <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
+        </dxi-column>
+
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
         <dxi-column
                 dataField="bodega"
@@ -311,19 +315,7 @@
                     summaryType="sum"
                     alignment="right">
                 </dxi-total-item>
-              <!--   <div class="col-4">
-                    <dx-select-box [items]="productos" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
-                    valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint="hh">
-                </dx-select-box>
-                </div> -->
-               <!--  <dxi-group-item
-                    column="totalb2"
-                    summaryType="sum"
-                    valueFormat="currency"
-                    displayFormat="Total: {0}"
-                    [showInGroupFooter]="true">
-                </dxi-group-item> -->
+   
             </dxo-summary>
             <dxi-column
             dataField="ultimoPrecioCompra"
@@ -355,111 +347,7 @@
             <div class="col-md-4"></div>
         </div>
 
-        
-
-
-        <!-- <h2>Productos Facturados Pendientes de entregar</h2>
-   <dx-data-grid id="gridContainer"
-    [dataSource]="invetarioFaltante"
-    [showBorders]="true"
-    [remoteOperations]="true">
-    <dxo-search-panel 
-        [visible]="true" 
-        [width]="240" 
-        placeholder="Buscar..."></dxo-search-panel>
-       
-    <dxi-column
-        dataField="producto.PRODUCTO"
-        caption="Producto"
-        dataType="string"
-        sortOrder="desc">
-    </dxi-column>
-    <dxi-column
-        dataField="cantidadCajas"
-        caption="Cajas"
-        dataType="string">
-    </dxi-column>
-    <dxi-column
-        dataField="cantidadPiezas"
-        caption="Piezas"
-        dataType="string">
-    </dxi-column>
-    <dxi-column
-        dataField="cantidadM2"
-        caption="M2"
-        dataType="string">
-    </dxi-column>
-    <dxi-column
-        dataField="totalb1"
-        caption="Total"
-        dataType="string">
-    </dxi-column>
-    <dxi-column
-        dataField="sucursal"
-        dataType="string">
-    </dxi-column>
-    <dxi-column dataField="sucursal" [groupIndex]="0"></dxi-column>
-    <dxo-grouping #expand [autoExpandAll]="true">
-    </dxo-grouping>
     
-    
-    <dxo-paging [pageSize]="5"></dxo-paging>
-    <dxo-pager
-        [showPageSizeSelector]="true"
-        [allowedPageSizes]="[8, 12, 20]"
-    ></dxo-pager>
-</dx-data-grid> 
-
-
-    <dx-data-grid id="gridContainer"
-        [dataSource]="productosPendientesNoEN"
-        [showBorders]="true"
-        [remoteOperations]="true">
-        <dxo-search-panel 
-            [visible]="true" 
-            [width]="240" 
-            placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column
-            dataField="producto.PRODUCTO"
-            caption="Producto"
-            dataType="string"
-            sortOrder="desc">
-        </dxi-column>
-        <dxi-column
-            dataField="cajas"
-            caption="Cajas"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="piezas"
-            caption="Piezas"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cantM2"
-            caption="M2"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="total"
-            caption="Total"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal"
-            dataType="string">
-        </dxi-column>
-        <dxi-column dataField="sucursal" [groupIndex]="0"></dxi-column>
-        <dxo-grouping #expand [autoExpandAll]="true">
-        </dxo-grouping>
-
-
-        <dxo-paging [pageSize]="5"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
-    </dx-data-grid> -->
 
 </div>
 
@@ -545,10 +433,53 @@
                 <div class="col-md-4"></div>
             </div>
         </div>
-        <!-- <p>
-            Position:
-            <span>{{currentEmployee.Position}}</span>
-        </p> -->
+    </dx-scroll-view>
+    </div>
+</dx-popup>
+
+
+
+
+
+<dx-popup [width]="600" [height]="450" [showTitle]="true" title="Notas:  {{nameProducto}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleNotas">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-10" style="text-align: center;padding-top: 0.5em;"><h6>Notas</h6> </div>
+                <div class="col-md-2"><span style="text-align: right;"><button class="btn3" type="button"
+                    (click)="nuevaNota()"> + </button></span></div>
+                <table>
+                    <tr>
+                        <th class="text-center" >Texto</th>
+                        <th class="text-center">Acciones</th>
+                    </tr>
+                    <tr *ngFor="let ubi1 of arregloNotas; let id = index">
+                        <td style="text-align: center;width: 85%;">
+                            <span contenteditable="true" (blur)="modificar4(id, $event)" >{{ubi1}}</span>
+                        </td>
+                        <td style="text-align: center;width: 15%;">
+                            <button class="btn btn-primary btn-xs" (click)="eliminar4(id)">
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+                        
+                    </tr>
+                </table>
+                
+            </div>
+           
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><button class="btn btn2" type="button"
+                        (click)="actualizarNotas()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
     </dx-scroll-view>
     </div>
 </dx-popup>

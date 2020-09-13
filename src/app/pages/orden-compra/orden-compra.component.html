@@ -211,10 +211,18 @@
                 dataType="string"
                 [visible]="false">
             </dxi-column>
+            <dxi-column
+                dataField="nota"
+                caption="Notas"
+                dataType="string"
+                [visible]="false">
+            </dxi-column>
             <dxi-column type="buttons"  caption="Ver">
                 <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
             </dxi-column>
-            
+            <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+                <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+            </dxi-column>
             <dxo-grouping #expand [autoExpandAll]="true">
             </dxo-grouping>
             <dxo-paging [pageSize]="5"></dxo-paging>
@@ -459,10 +467,7 @@
         <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile" ></dxi-button>    
         </dxi-column>
-        <!-- <dxi-column type="buttons"    dataField="bt2"  caption="Acciones" width="15%">
-            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button> 
-            <dxi-button text="Rechazar" [onClick]="getCourseFile6"></dxi-button>      
-        </dxi-column> -->
+        
         
         <dxo-grouping #expand [autoExpandAll]="true">
         </dxo-grouping>

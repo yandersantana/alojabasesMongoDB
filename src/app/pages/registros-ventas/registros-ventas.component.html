@@ -118,8 +118,17 @@
             dataType="string"
             [visible]=false>
         </dxi-column>
+        <dxi-column
+        dataField="nota"
+        caption="Notas"
+        dataType="string"
+        [visible]=false>
+    </dxi-column>
       <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
         <dxo-paging [pageSize]="5"></dxo-paging>
         <dxo-group-panel [visible]="true"></dxo-group-panel>
@@ -249,8 +258,17 @@
             dataType="string"
             [visible]=false>
         </dxi-column>
+        <dxi-column
+            dataField="nota"
+            caption="Notas"
+            dataType="string"
+            [visible]=false>
+        </dxi-column>
       <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile2"></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotasVenta"></dxi-button>
         </dxi-column>
         <dxo-paging [pageSize]="5"></dxo-paging>
         <dxo-pager
@@ -357,8 +375,17 @@
             dataType="string"
             [visible]=false>
         </dxi-column>
+        <dxi-column
+            dataField="nota"
+            caption="Notas"
+            dataType="string"
+            [visible]=false>
+        </dxi-column>
       <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile3"></dxi-button>    
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotasCtiza"></dxi-button>
         </dxi-column>
         
         <dxo-paging [pageSize]="5"></dxo-paging>

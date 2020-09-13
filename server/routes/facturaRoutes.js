@@ -44,6 +44,15 @@ router.put('/updateEstadoOb/:id/:estado', async (req, res,next) => {
     res.json({status: 'factura Updated'});  
 })
 
+router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
+    const { id } = req.params;
+    const { nota } = req.params;
+    await Factura.findByIdAndUpdate(id, {$set: {nota:nota}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
@@ -67,6 +76,7 @@ router.put('/update/:id', async (req, res,next) => {
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
         mensaje:req.body.mensaje,
+        nota:req.body.nota,
         rucFactura:req.body.rucFactura,
         productosVendidos:req.body.productosVendidos
     };
@@ -102,6 +112,7 @@ router.post('/newFactura', async (req, res) => {
         subtotalF2:req.body.subtotalF2,
         totalIva:req.body.totalIva,
         maestro:req.body.maestro,
+        nota:req.body.nota,
         totalDescuentos:req.body.totalDescuentos,
         estado:req.body.estado,
         rucFactura:req.body.rucFactura,

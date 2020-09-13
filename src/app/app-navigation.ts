@@ -5,6 +5,17 @@ export const navigation = [
     icon: 'home'
   },
   {
+    text: 'Herramientas',
+    icon: 'home',
+    items: [{
+      text: 'Calculadora',
+      path: '/calculadora',
+      },{
+        text: 'Consultas',
+        path: '/consultas',
+      }]
+  },
+  {
     text: 'Comercial',  
     icon: 'home',
     items: [{
@@ -13,9 +24,6 @@ export const navigation = [
         }, {
           text: 'Registros Ventas',
           path:"/registrosVentas"
-        }, {
-          text: 'Cambios',
-          path:"/cambios"
         }, {
           text: 'Devoluciones',
           path:"/devoluciones"    
@@ -40,12 +48,7 @@ export const navigation = [
         },{
           text: 'Catalago',
           path: '/catalogo',   
-        },
-         {
-          text: 'Bajas',
-          path: '/bajas',
-         
-    }]
+        }]
   },
   {
     text: 'Compras',  
@@ -354,6 +357,14 @@ export const navigationAdmin = [
     items: [{
         text: 'Tiquets',
         path: '',
+      }]
+  },
+  {
+    text: 'Business Inteligence',  
+    icon: 'fa fa-bar-chart',
+    items: [{
+        text: 'Indicadores',
+        path: 'menu-indicadores',
       }]
   },
   {

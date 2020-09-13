@@ -27,6 +27,7 @@ const ProformasSchema = new Schema({
     totalIva: { type: Number, required: false},
     totalDescuentos: { type: Number, required: false},
     estado: { type: String, required: false},
+    nota: { type: String, required: false},
     productosVendidos: { type: Array, required: false}
 },{
     timestamps:true

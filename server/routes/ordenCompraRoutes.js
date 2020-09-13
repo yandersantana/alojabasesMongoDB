@@ -32,6 +32,7 @@ router.put('/update/:id', async (req, res,next) => {
         otrosDescuentosGen:req.body.otrosDescuentosGen,
         observaciones:req.body.observaciones,
         total:req.body.total,
+        nota:req.body.nota,
         productoDetalle:req.body.productoDetalle,
         estado:req.body.estado,
         subtotal:req.body.subtotal,
@@ -131,6 +132,13 @@ router.put('/updateEstadosOrdenes/:id/:estado/:estado2', async (req, res,next) =
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
+    const { id } = req.params;
+    const { nota } = req.params;
+    await OrdenCompra.findByIdAndUpdate(id, {$set: {nota:nota}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
 
 router.delete('/delete/:id', async (req, res,next) => {
     await OrdenCompra.findByIdAndRemove(req.params.id);
@@ -161,6 +169,7 @@ router.post('/newOrdenes', async (req, res) => {
     n_orden:req.body.n_orden,
     fechaAP:req.body.fechaAP,
     msjAdmin:req.body.msjAdmin,
+    nota:req.body.nota,
     msjGeneral:req.body.msjGeneral,
     subtotalIva:req.body.subtotalIva,
     subtotalDetalles:req.body.subtotalDetalles,

@@ -51,5 +51,9 @@ export class FacturasService {
     return this.http.delete(this.URL + `/delete/${facturas._id}`, facturas); 
   }
 
+  actualizarNota(facturas,nota:string){
+    return this.http.put(this.URL + `/actualizarNota/${facturas._id}/${nota}`, facturas); 
+  }
+
   
 }

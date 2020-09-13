@@ -13,6 +13,7 @@ import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.se
 import { FacturasService } from 'src/app/servicios/facturas.service';
 import { ProformasService } from 'src/app/servicios/proformas.service';
 import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-registros-ventas',
@@ -130,6 +131,111 @@ export class RegistrosVentasComponent implements OnInit {
   }
   getCourseFile3 = (e) => {  
     this.cargarCotización(e.row.data)  
+  }
+
+  mostrarNotas = (e) => {  
+    this.popupNotas(e.row.data)  
+  }
+
+  mostrarNotasCtiza= (e) => {  
+    this.popupNotasCoti(e.row.data)  
+  }
+
+  mostrarNotasVenta= (e) => {  
+    this.popupNotasVenta(e.row.data)  
+  }
+
+  popupNotasVenta(e){
+    Swal.fire({
+      title: "Notas",
+      icon: 'warning',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        e.nota=result.value
+        //alert(e)
+        this.notasventaService.actualizarNota(e,result.value).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+  popupNotasCoti(e){
+    Swal.fire({
+      title: "Notas",
+      icon: 'warning',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        e.nota=result.value
+        //alert(e)
+        this.proformasService.actualizarNota(e,result.value).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+  popupNotas(e){
+    Swal.fire({
+      title: "Notas",
+      icon: 'warning',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        e.nota=result.value
+        //alert(e)
+        this.facturasService.actualizarNota(e,result.value).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
   }
 
   cargarFactura(e){
@@ -252,6 +358,7 @@ export class RegistrosVentasComponent implements OnInit {
     e.component.columnOption("coste_transportea", "visible", true);
     e.component.columnOption("maestro", "visible", true);
     e.component.columnOption("observaciones", "visible", true); 
+    e.component.columnOption("nota", "visible", true); 
   };
   onExported (e) {
     e.component.columnOption("fecha2", "visible", false);
@@ -262,6 +369,7 @@ export class RegistrosVentasComponent implements OnInit {
     e.component.columnOption("coste_transportea", "visible", false);
     e.component.columnOption("maestro", "visible", false);
     e.component.columnOption("observaciones", "visible", false);
+    e.component.columnOption("nota", "visible", false);
     e.component.endUpdate();
   }
 

@@ -819,6 +819,42 @@ contadorFirebase:contadoresDocumentos[]=[]
     }
   }
 
+  mostrarNotas= (e) => {  
+    this.popupOrdenes(e.row.data)  
+  }
+
+  popupOrdenes(e){
+    Swal.fire({
+      title: "Notas",
+      icon: 'warning',
+      input: 'textarea',
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        e.nota=result.value
+        //alert(e)
+        this.ordenesService.actualizarNota(e,result.value).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+
   cerrarAlert(){
     Swal.close()
     Swal.fire({
@@ -1047,19 +1083,18 @@ contadorFirebase:contadoresDocumentos[]=[]
     onExporting2 (e) {
       e.component.beginUpdate();
       e.component.columnOption("usuario", "visible", true);
-      e.component.columnOption("usuarioAuth", "visible", true);
       e.component.columnOption("msjGeneral", "visible", true);
+      e.component.columnOption("nota", "visible", true);
     };
     onExported2 (e) {
       e.component.columnOption("usuario", "visible", false);
-      e.component.columnOption("usuarioAuth", "visible", false);
       e.component.columnOption("msjGeneral", "visible", false);
+      e.component.columnOption("nota", "visible", false);
       e.component.endUpdate();
     }
   
 
   mapearArreglo(){
-    console.log("sdsdsdsdsdsd"+this.selectedRows)
     for (let index = 0; index < this.selectedRows.length; index++) {
     console.log("producto "[index]+" es "+ this.selectedRows[index])
     }

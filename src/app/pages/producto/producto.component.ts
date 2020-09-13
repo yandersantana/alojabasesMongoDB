@@ -1127,7 +1127,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.transaccion = new transaccion()
           //this.transaccion.fecha_mov = new Date(this.transaccion.marca_temporal.getDate())
           this.transaccion.fecha_mov=new Date().toLocaleString()
-              this.transaccion.fecha_transaccion=this.fecha1
+          this.transaccion.fecha_transaccion=this.fecha1
           this.transaccion.sucursal=this.remisionProducto.sucursal
           this.transaccion.bodega=this.remisionProducto.bodega
           this.transaccion.documento=this.remisionProducto.num_FactPro
@@ -1153,15 +1153,6 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           this.transaccion.usuario=this.usuarioLogueado[0].username
           this.transaccion.factPro=this.Id_remision+""
           this.transaccion.idTransaccion=this.number_transaccion++
-          //this.getIDTransacciones()
-
-          /* this.db.collection("/transacciones")
-          .add({ ...this.transaccion })
-          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-          this.db
-            .collection("/transacciones_ID")
-            .doc("matriz").set({ documento_n:this.number_transaccion })
-            .then(res => { }, err => reject(err)); */
 
             this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
                 this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
@@ -1305,7 +1296,9 @@ console.log("si entre verdadero" + this.solicitudNOrden)
 
 
   actualizarProductos(){
-  console.log("entre a actualizar")
+  var precio1=0
+  var precio2=0
+  var precio3=0
    var sumaProductos =0
    var num1:number=0
    var num2:number=0
@@ -1318,10 +1311,13 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       this.productosEntregados.forEach(element=>{
        
         this.productos.forEach(elemento1=>{
-          
+         
           if(elemento1.PRODUCTO == element.nombreComercial.PRODUCTO){
+            precio1=elemento1.precio2
+            precio2=elemento1.precio3
+            precio3=element.precio
+            //alert(JSON.stringify(elemento1))
             cantDis= elemento1.bodegaProveedor-parseInt(element.metros2.toFixed(0))
-            //alert(cantDis)
             element.nombreComercial.bodegaProveedor= cantDis
               this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe( res => {console.log(res + "entre por si");},err => {
                   Swal.fire({
@@ -1348,14 +1344,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
                   break;
               default:
             }
-           // contIng=0
-           // num1=element.cantidadEntregada
-          /*   num2=elemento1.cantidad
-            num3=element.cantidadDevuelta
-            sumaProductos =Number(num1) + Number(num2)-Number(num3)
-            console.log("producto "+ elemento1.PRODUCTO + " cantidad "+ elemento1.cantidad)
-            console.log("producto2 "+ element.nombreComercial + " cantidad2 "+ element.cantidadEntregada)
-            console.log("estoy sumando "+sumaProductos) */
+
           }
        
        })
@@ -1363,32 +1352,46 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         new Promise<any>((resolve, reject) => {
          
           switch (this.remisionProducto.sucursal) {
-            /* case "matriz":
-              this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
-              break;
-            case "sucursal1":
-              this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
-              break;
-            case "sucursal2":
-              this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos, "precio":element.precio}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
-                break;
-            default: */
-
+ 
 
               case "matriz":
                element.nombreComercial.ultimoPrecioCompra=element.precio
                element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
+               element.nombreComercial.precio1=precio1
+               element.nombreComercial.precio2=precio2
+               element.nombreComercial.precio3=precio3
+               if(precio1==null){precio1=0}
+               if(precio2==null){precio2=0}
+               element.nombreComercial.precio=parseFloat(((precio1+precio2+precio3)/3).toFixed(2))
+               if(precio1==0){element.nombreComercial.precio=parseFloat(((precio2+precio3)/2).toFixed(2))}
+               if(precio2==0){element.nombreComercial.precio=precio3 }
                
                 this.productoService.updateProductoSucursal1ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                 break;
               case "sucursal1":
                 element.nombreComercial.ultimoPrecioCompra=element.precio
-                element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
+               element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
+               element.nombreComercial.precio1=precio1
+               element.nombreComercial.precio2=precio2
+               element.nombreComercial.precio3=precio3
+               if(precio1==null){precio1=0}
+               if(precio2==null){precio2=0}
+               element.nombreComercial.precio=parseFloat(((precio1+precio2+precio3)/3).toFixed(2))
+               if(precio1==0){element.nombreComercial.precio=parseFloat(((precio2+precio3)/2).toFixed(2))}
+               if(precio2==0){element.nombreComercial.precio=precio3 }
                 this.productoService.updateProductoSucursal2ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                 break;
               case "sucursal2":
                 element.nombreComercial.ultimoPrecioCompra=element.precio
                element.nombreComercial.ultimaFechaCompra=new Date().toLocaleString()
+               element.nombreComercial.precio1=precio1
+               element.nombreComercial.precio2=precio2
+               element.nombreComercial.precio3=precio3
+               if(precio1==null){precio1=0}
+               if(precio2==null){precio2=0}
+               element.nombreComercial.precio=parseFloat(((precio1+precio2+precio3)/3).toFixed(2))
+               if(precio1==0){element.nombreComercial.precio=parseFloat(((precio2+precio3)/2).toFixed(2))}
+               if(precio2==0){element.nombreComercial.precio=precio3 }
               this.productoService.updateProductoSucursal3ComD(element.nombreComercial,sumaProductos,element.precio).subscribe( res => {contVr++ ,this.validarentrada(contVr) }, err => {alert("error")})
                   break;
               default:
@@ -1396,18 +1399,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         })
        
          console.log("entre porque el contador esta en "+contIng)
-       // this.db.collection('/productos').doc( element.nombreComercial.PRODUCTO).update({"cantidad" :sumaProductos, "precio":element.precio})
 
-        // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
-
-
-        /* this.precioP= new PrecioProductos()
-        this.precioP.fecha=this.fecha1
-        this.precioP.nombre_comercial= element.nombreComercial.PRODUCTO
-        this.precioP.precio=element.precio
-        this.precioP.n_orden=element.numeroOrden
-        this.preciosProductos.push(this.precioP) */
-        //entre=false
        }
        //contIng++
        

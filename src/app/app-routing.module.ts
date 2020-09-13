@@ -106,6 +106,7 @@ import { ConsultasComponent } from './pages/consultas/consultas.component';
 import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.component';
 import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
 import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo.component';
+import { IndicadoresComponent } from './pages/indicadores/indicadores.component';
 
 
 const routes: Routes = [
@@ -179,6 +180,13 @@ const routes: Routes = [
     canActivate: [ AuthGuardService ],
     data: { roles: ['Administrador'] } ,
     component: ParametrizacionComponent,
+    
+  },
+  {
+    path: 'menu-indicadores',
+    canActivate: [ AuthGuardService ],
+    data: { roles: ['Administrador'] } ,
+    component: IndicadoresComponent,
     
   },
   {

@@ -37,12 +37,14 @@ export class EntregasPComponent implements OnInit {
   cantidadEntPiezas=0
   cantidadEntM2=0
   btDesc:boolean=false
+  arregloNotas:string[]=[]
   contm2=0
   cajasP=0
   cajasP2=0
   piezasP=0
   piezasP2=0
   restam2=0
+  notasProducto=""
   number_transaccionEnt:number=0
   productoL:producto
   productos:producto[]=[]
@@ -284,7 +286,23 @@ export class EntregasPComponent implements OnInit {
     totalPiezasEntregar= (this.entregaProducto.cajas* this.entregaProducto.productoPorEntregar.producto.P_CAJA) +this.entregaProducto.piezas
   }
 
+  actualizarNotas(){
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == this.entregaProducto.productoPorEntregar.producto.PRODUCTO){
+        this.arregloNotas = element.notas
+        this.arregloNotas.push(this.notasProducto)
+        element.notas=this.arregloNotas
+        this.productoService.updateProductoNotas(element).subscribe( res => {
+        }, err => {alert("error")})
+      }
+    })
+    
+  }
+
   guardarEntrega(e){
+    if(this.notasProducto!=""){
+      this.actualizarNotas()
+    }
     var totalPiezas=0
     var totalPiezasEntregar=0
   
@@ -358,6 +376,9 @@ export class EntregasPComponent implements OnInit {
   }
 
   guardarEntregaDirecta(e){
+    if(this.notasProducto!=""){
+      this.actualizarNotas()
+    }
     this.entregaProducto.identrega= this.number_transaccionEnt
     this.entregaProducto.cajas=this.entregaProducto.productoPorEntregar.cajas
     this.entregaProducto.piezas=this.entregaProducto.productoPorEntregar.piezas
@@ -610,15 +631,6 @@ export class EntregasPComponent implements OnInit {
       this.contadores[0].contProductosEntregadosSucursal_Ndocumento=this.number_transaccionEnt
       this.contadoresService.updateContadoresIDProductosEntregados(this.contadores[0]).subscribe( res => { },err => {})
     },err => {})
-      
-
-
-       /*  this.db.collection('/productosPendientesEntrega').doc(cont+"").update({"estado":"ENTREGADO", "cajas":0 , "piezas":0 , "cantM2":0, "cajasEntregadas":this.productoLeido.cajas,
-        "piezasEntregadas":this.productoLeido.piezas, "m2Entregados":this.productoLeido.cantM2})
-        this.db.collection("/productosEntregadosSucursal").doc(this.number_transaccionEnt+"").set({ ...Object.assign({}, this.entregaProducto)})
-        .then(resolve => {this.actualizarPendientes()}, err => reject(err));
-        this.db.collection('/productosEntregadosSucursalID').doc("matriz").update({"documento_n" :this.number_transaccionEnt}); */   
-       
     })
   }
 
@@ -632,6 +644,10 @@ export class EntregasPComponent implements OnInit {
     }).then((result) => {
       window.location.reload()
     })
+  }
+
+  enviarNota(){
+    console.log(this.notasProducto)
   }
 
   

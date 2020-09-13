@@ -29,10 +29,12 @@ export class ConsolidadoComponent implements OnInit {
 
 
   popupVisible:boolean=false
+  popupVisibleNotas:boolean=false
   productos:producto[]=[]
   arregloUbicaciones1:string[]=[]
   arregloUbicaciones2:string[]=[]
   arregloUbicaciones3:string[]=[]
+  arregloNotas:string[]=[]
   transacciones:transaccion[]=[]
   invetarioP:inventario[]=[]
   invetarioFaltante1: invFaltanteSucursal
@@ -48,6 +50,7 @@ export class ConsolidadoComponent implements OnInit {
   ubicacion1:string=""
   ubicacion2:string=""
   ubicacion3:string=""
+  nota:string=""
   nameProducto: string=""
   
   
@@ -138,6 +141,26 @@ export class ConsolidadoComponent implements OnInit {
     
   }
 
+  actualizarNotas(){
+    this.popupVisibleNotas=false
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == this.nameProducto){
+        element.notas= this.arregloNotas
+        this.productoService.updateProductoNotas(element).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+        }, err => {alert("error")})
+      }
+    })
+    
+  }
+
  
 
 
@@ -162,8 +185,11 @@ export class ConsolidadoComponent implements OnInit {
     this.arregloUbicaciones3.push(this.ubicacion3)
   }
 
+  nuevaNota(){
+    this.arregloNotas.push(this.nota)
+  }
+
   eliminar1(id: number){
-    console.log("es el ID "+id)
     this.arregloUbicaciones1.splice(id,1)
   }
 
@@ -173,6 +199,10 @@ export class ConsolidadoComponent implements OnInit {
 
   eliminar3(id: number){
     this.arregloUbicaciones3.splice(id,1)
+  }
+
+  eliminar4(id: number){
+    this.arregloNotas.splice(id,1)
   }
 
   modificar1(id: number,  event: any){
@@ -185,6 +215,10 @@ export class ConsolidadoComponent implements OnInit {
 
   modificar3(id: number,  event: any){
     this.arregloUbicaciones3[id]= event.target.textContent;
+  }
+
+  modificar4(id: number,  event: any){
+    this.arregloNotas[id]= event.target.textContent;
   }
 
 
@@ -658,6 +692,10 @@ export class ConsolidadoComponent implements OnInit {
     this.mostrarPopup(e.row.data)
   }
 
+  mostrarNotas = (e) => {  
+    this.mostrarPopupNotas(e.row.data)
+  }
+
    mostrarPopup(e:any){
      this.nameProducto = e.producto.PRODUCTO
      this.productos.forEach(element=>{
@@ -669,6 +707,17 @@ export class ConsolidadoComponent implements OnInit {
      })
     this.popupVisible=true
   }
+
+  mostrarPopupNotas(e:any){
+    this.nameProducto = e.producto.PRODUCTO
+    this.productos.forEach(element=>{
+      if(element.PRODUCTO == e.producto.PRODUCTO){
+        this.arregloNotas=element.notas
+        
+      }
+    })
+   this.popupVisibleNotas=true
+ }
 
   
 

@@ -129,9 +129,13 @@ export class Producto {
     ubicacionSuc1:string[]=[]
     ubicacionSuc2:string[]=[]
     ubicacionSuc3:string[]=[]
+    notas:string[]=[]
     bodegaProveedor:number
     ultimoPrecioCompra:number
     ultimaFechaCompra:string
+    precio1:number
+    precio2:number
+    precio3:number
     constructor(
         ) {
 }

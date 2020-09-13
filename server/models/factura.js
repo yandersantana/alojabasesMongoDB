@@ -29,6 +29,7 @@ const FacturaSchema = new Schema({
     maestro: { type: String, required: false},
     mensaje: { type: String, required: false},
     rucFactura: { type: String, required: false},
+    nota: { type: String, required: false},
     productosVendidos: { type: Array, required: false}
 },{
     timestamps:true

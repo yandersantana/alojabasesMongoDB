@@ -586,8 +586,12 @@
                                             <div class="col-md-12" style="text-align: center;font-weight: bold; font-size: 1.2em;">Fotos del producto</div>
                                             <div class="row">
                                                 <div class="col-md-3" *ngFor="let d of catalogo2.IMAGEN; let id = index">
-                                                    <img src="{{ d }}" alt="Girl in a jacket" width="100%" height="auto">
-                                                    <button class="btn btn6" type="button" (click)="deleteImagen(id)">Eliminar</button>
+                                                  
+                                                        <img src="{{ d }}"  width="100%" height="auto">
+                                                        <button class="btn btn6" type="button" (click)="deleteImagen(id)">Eliminar</button>
+                                                        
+                                                 
+                                                    
                                                     
                                                 </div>   
                                             </div>

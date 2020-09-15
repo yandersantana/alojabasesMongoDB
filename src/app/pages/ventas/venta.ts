@@ -145,6 +145,7 @@ export class factura {
                 this.estado="CONTABILIZADA"
                 this.mensaje=" "
                 this.maestro=""
+                this.nota=""
                 //this.cliente = new cliente()
     }
 }
@@ -275,10 +276,12 @@ export class productosPendientesEntrega{
     fechaEntrega:string
     estado:string
     tipo_documento:string
+    notas:string
     constructor(){
         this.cajasEntregadas=0
         this.piezasEntregadas=0
         this.m2Entregados=0
+        this.notas=""
     }
 
 }

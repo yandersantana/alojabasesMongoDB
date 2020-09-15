@@ -252,6 +252,77 @@ export class EntregasPComponent implements OnInit {
     })
   }
 
+  mostrarNotas= (e) => {  
+    this.popupNotas(e.row.data)  
+  }
+
+  popupNotas(e){
+    Swal.fire({
+      title: "Notas",
+      icon: 'warning',
+      input: 'textarea',
+      inputValue: e.notas,
+      showCancelButton: true,
+      confirmButtonText: 'Enviar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        e.notas=result.value
+        this.productosPendientesService.actualizarNota(e,result.value).subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Su proceso se realizó con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })}, err => {alert("error")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+
+  rechazarEliminacionEntrega(e){
+    Swal.fire({
+      title: 'Rechazar Eliminación',
+      text: "Se rechazará la eliminación del documento #"+e.id_Pedido,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        e.estado="PENDIENTE"
+        this.productosPendientesService.updateProductoPendienteEstado(e).subscribe( res => {
+         Swal.close()
+        Swal.fire({
+          title: 'Correcto',
+          text: 'Se ha realizado su proceso con exito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+          //this.asignarValores()
+        })
+       }, err => {alert("error")})
+      
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
 
   verEntrega(){
     var x = document.getElementById("ent");
@@ -707,6 +778,10 @@ export class EntregasPComponent implements OnInit {
     this.aprobarEliminacion(e.row.data)  
   }
 
+  getCourseRechazar= (e) => {  
+    this.rechazarEliminacionEntrega(e.row.data)  
+  }
+
 
   cargarDatos(e:any){
     this.limpiarArreglo2()
@@ -793,14 +868,6 @@ export class EntregasPComponent implements OnInit {
         }).then((result) => {
           window.location.reload()
         }) },err => {})
-      /*   this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"ENTREGADO"}).then(res => {  Swal.fire({
-          title: 'Correcto',
-          text: 'Se realizó su proceso con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => alert(err)); */  
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -1154,7 +1221,7 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("cajas", "visible", true);
     e.component.columnOption("piezas", "visible", true);
     e.component.columnOption("cantM2", "visible", true);
-    //e.component.columnOption("total", "visible", true);
+    e.component.columnOption("notas", "visible", true);
    
   };
   onExported (e) {
@@ -1164,7 +1231,7 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("cajas", "visible", false);
     e.component.columnOption("piezas", "visible", false);
     e.component.columnOption("cantM2", "visible", false);
-  //  e.component.columnOption("total", "visible", false);
+    e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
   }
 

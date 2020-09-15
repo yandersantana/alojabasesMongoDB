@@ -150,6 +150,7 @@ export class RegistrosVentasComponent implements OnInit {
       title: "Notas",
       icon: 'warning',
       input: 'textarea',
+      inputValue: e.nota,
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar'
@@ -181,6 +182,7 @@ export class RegistrosVentasComponent implements OnInit {
       title: "Notas",
       icon: 'warning',
       input: 'textarea',
+      inputValue: e.nota,
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar'
@@ -212,6 +214,7 @@ export class RegistrosVentasComponent implements OnInit {
       title: "Notas",
       icon: 'warning',
       input: 'textarea',
+      inputValue: e.nota,
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar'

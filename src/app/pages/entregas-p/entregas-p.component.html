@@ -38,13 +38,18 @@
         <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+        <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
        
-        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
             <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
-        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
             <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
         </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+        </dxi-column>
+      
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
@@ -80,12 +85,18 @@
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="mensaje" caption="Motivo" dataType="string" [visible]="true"></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="false"></dxi-column>
-       
+        <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
             <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
         <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
-            <dxi-button icon="clear" [onClick]="getCourseFile8"></dxi-button>   
+            <dxi-button text="Aprobar" [onClick]="getCourseFile8"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="10%" [visible]="true">
+            <dxi-button text="Rechazar" [onClick]="getCourseRechazar"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
@@ -120,9 +131,12 @@
         <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
-       
+        <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
             <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
@@ -431,10 +445,7 @@
                                     <th>Total</th>
                                     <td>{{productoLeido.total}}</td>
                                 </tr>
-                                <tr>
-                                    <th>Notas</th>
-                                    <td><dx-text-box [(value)]="notasProducto"  (onChanged)="enviarNota()" [disabled]="false" [readOnly]="false"></dx-text-box></td>
-                                </tr>
+                               
                                
                               </table>
                               <div id="mostrar" style="display: block;">

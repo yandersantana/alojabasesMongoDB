@@ -25,6 +25,7 @@ const ProductosPendientesSchema = new Schema({
     total: { type: Number, required: false},
     mensaje: { type: String, required: false},
     usuario: { type: String, required: false},
+    notas: { type: String, required: false},
     fechaEntrega: { type: String, required: false},
     estado: { type: String, required: false},
     tipo_documento: { type: String, required: false}

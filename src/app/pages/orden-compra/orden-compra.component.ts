@@ -828,13 +828,13 @@ contadorFirebase:contadoresDocumentos[]=[]
       title: "Notas",
       icon: 'warning',
       input: 'textarea',
+      inputValue: e.nota,
       showCancelButton: true,
       confirmButtonText: 'Enviar',
       cancelButtonText: 'Cancelar'
     }).then((result) => {
       if (result.value) {
         e.nota=result.value
-        //alert(e)
         this.ordenesService.actualizarNota(e,result.value).subscribe( res => {
           Swal.fire({
             title: 'Correcto',

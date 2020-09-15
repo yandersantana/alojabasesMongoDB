@@ -18,13 +18,18 @@ router.get('/getProductosPendientesEntrega/', async (req, res) => {
     res.json(productospen); 
 })
 
-
+router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
+    const { id } = req.params;
+    const { nota } = req.params;
+    console.log("netre "+nota + "s "+id)
+    await ProductosPendientes.findByIdAndUpdate(id, {$set: {notas:nota}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
 
 
 
 
 router.put('/updateEstado/:id', async (req, res,next) => {
-    console.log("estado "+req.body.estado)
     const { id } = req.params;
     await ProductosPendientes.findByIdAndUpdate(id, {$set: {estado:req.body.estado , mensaje:req.body.mensaje}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
@@ -52,6 +57,7 @@ router.put('/update/:id', async (req, res,next) => {
         valor_unitario: req.body.valor_unitario,
         total: req.body.total,
         mensaje:req.body.mensaje,
+        notas:req.body.notas,
         usuario: req.body.usuario,
         fechaEntrega: req.body.fechaEntrega,
         estado: req.body.estado,
@@ -89,6 +95,7 @@ router.post('/newProductoPendiente', async (req, res) => {
         total: req.body.total,
         mensaje:req.body.mensaje,
         usuario: req.body.usuario,
+        notas:req.body.notas,
         fechaEntrega: req.body.fechaEntrega,
         estado: req.body.estado,
         tipo_documento: req.body.tipo_documento

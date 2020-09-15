@@ -965,7 +965,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
       sumatot=sum5-(sum5*element.descuentoGeneral/100)+sumatot
       //sumatot=(element.metros2*element.valorunitario)+
       })
-    this.remisionProducto.total=parseFloat(sumatot.toFixed(2))
+      //alert(sumatot)
+     this.remisionProducto.total=parseFloat(sumatot.toFixed(2))
     var contVal=0
     var contVal2=0
     this.remisionProducto.fechaP= this.fecha1
@@ -1011,9 +1012,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
             element.idfactura= this.remisionProducto.num_FactPro
             element.proveedor=this.remisionProducto.nombre_proveedor
             
-            /* this.db.collection("/productosObsequio").add({ ...Object.assign({}, element)})
-            .then(res => { }, err => reject(err)); */
-            //alert("sssssssssssss entre")
+
             this.productosObsequioService.newProductoObsequio(element).subscribe( res => {},err => {alert("error")})
               this.transaccion = new transaccion()
               this.transaccion.fecha_mov=new Date().toLocaleString()
@@ -1037,15 +1036,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
               this.transaccion.factPro=this.Id_remision+""
               this.transaccion.proveedor=this.remisionProducto.nombre_proveedor
               this.transaccion.idTransaccion=this.number_transaccion++
-              //this.getIDTransacciones()
-    
-              /* this.db.collection("/transacciones")
-              .add({ ...this.transaccion })
-              .then(res => { }, err => reject(err));
-              this.db
-                .collection("/transacciones_ID")
-                .doc("matriz").set({ documento_n:this.number_transaccion })
-                .then(res => { }, err => reject(err)); */
+
 
 
                 this.transaccionesService.newTransaccion(this.transaccion).subscribe( res => {
@@ -1108,7 +1099,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         'Hay campos vacios',
         'error'
       )
-    }
+    } 
   }
 
 
@@ -1861,7 +1852,6 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     var m2Totales=0
     this.productosEntregados.forEach(element=>{
       element.metros2= ((element.nombreComercial.M2*element.cantidadEntregada)+((element.cantidadEntregadapiezas)*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
-
       element.metros2Devueltos= ((element.nombreComercial.M2*element.cantidadDevuelta)+(element.cantidadDevueltapiezas*element.nombreComercial.M2/element.nombreComercial.P_CAJA))
       element.metros2totales = element.metros2+element.metros2Devueltos
       

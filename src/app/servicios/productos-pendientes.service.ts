@@ -32,6 +32,10 @@ export class ProductosPendientesService {
     return this.http.put(this.URL + `/updateEstado/${productoPen._id}`, productoPen); 
   }
 
+  actualizarNota(productoPen,nota:string){
+    return this.http.put(this.URL + `/actualizarNota/${productoPen._id}/${nota}`, productoPen); 
+  }
+
   deleteProductoPendiente(productoPen){
     return this.http.delete(this.URL + `/delete/${productoPen._id}`, productoPen); 
   }

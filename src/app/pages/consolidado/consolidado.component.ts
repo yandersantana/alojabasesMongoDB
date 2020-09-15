@@ -412,6 +412,7 @@ export class ConsolidadoComponent implements OnInit {
       
       this.invetarioProd.ultimoPrecioCompra= element2.ultimoPrecioCompra
       this.invetarioProd.ultimaFechaCompra= element2.ultimaFechaCompra
+      this.invetarioProd.notas= element2.notas
       this.invetarioP.push(this.invetarioProd)
 
      console.log("el producto "+element2.PRODUCTO+" tiene "+contCajas +" cajas")
@@ -656,6 +657,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
     e.component.columnOption("ultimaFechaCompra", "visible", true);
+    e.component.columnOption("notas", "visible", true);
    
   };
  
@@ -667,6 +669,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);
     e.component.columnOption("ultimaFechaCompra", "visible", false);
+    e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
   }
 
@@ -677,6 +680,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
     e.component.columnOption("ultimaFechaCompra", "visible", true);
+    e.component.columnOption("notas", "visible", true);
    
   };
   onExported2 (e) {
@@ -685,6 +689,7 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);
     e.component.columnOption("ultimaFechaCompra", "visible", false);
+    e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
   }
 

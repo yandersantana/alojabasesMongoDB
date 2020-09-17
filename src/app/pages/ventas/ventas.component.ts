@@ -3010,6 +3010,7 @@ var tipoDoc:boolean=false
     }
 
   generarFactura(e) {
+    this.factura.cliente.cliente_nombre= this.mensaje
    if(this.factura.cliente!=undefined){
     if(this.factura.cliente.cliente_nombre!=undefined){
     this.buscarDatosSucursal()
@@ -3150,6 +3151,7 @@ var tipoDoc:boolean=false
     }
 
   generarCotizacion(e) {
+    this.factura.cliente.cliente_nombre= this.mensaje
     if(this.factura.cliente!=undefined){
       if(this.factura.cliente.cliente_nombre!=undefined){
    
@@ -3231,6 +3233,7 @@ var tipoDoc:boolean=false
 
 
   generarNotaDeVenta(e) {
+    this.factura.cliente.cliente_nombre= this.mensaje
     if(this.factura.cliente!=undefined){
       if(this.factura.cliente.cliente_nombre!=undefined){
     this.buscarDatosSucursal()

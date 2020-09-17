@@ -20,6 +20,8 @@ import { precios } from '../control-precios/controlPrecios';
 import { Observable } from 'rxjs';
 import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { user } from '../user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -147,10 +149,12 @@ export class CatalogoComponent implements OnInit {
   fileInfos: Observable<any>;
   precioVentaCombo:number=0
   comboProductos: comboProducto
+  correo:string
+  usuarioLogueado:user
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
-  constructor(public catalogoService: CatalogoService ,private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,public authenService:AuthenService, private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
@@ -166,6 +170,27 @@ export class CatalogoComponent implements OnInit {
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
     this.traerProductos()
+    this.cargarUsuarioLogueado()
+  }
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            if(this.usuarioLogueado[0].rol!="Administrador"){
+              var z = document.getElementById("admin1");
+              z.style.display = "none";
+            }
+          },
+          err => {
+          }
+        )
+    });
   }
 
 

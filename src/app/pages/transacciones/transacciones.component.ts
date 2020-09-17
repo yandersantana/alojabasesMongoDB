@@ -4,6 +4,8 @@ import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { user } from '../user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-transacciones',
@@ -13,19 +15,81 @@ import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 export class TransaccionesComponent implements OnInit {
 
  transacciones : transaccion[] = []
+ transaccionesGlobales : transaccion[] = []
  popupvisible:boolean=false
+ correo:string
+ usuarioLogueado:user
  @ViewChild('datag2') dataGrid2: DxDataGridComponent;
-  constructor(public transaccionesService: TransaccionesService) { }
+  constructor(public transaccionesService: TransaccionesService,public authenService:AuthenService) { }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado()
     this.traerTransacciones()
   }
 
   traerTransacciones(){
     this.transaccionesService.getTransaccion().subscribe(res => {
-      this.transacciones = res as transaccion[];
+      this.transaccionesGlobales = res as transaccion[];
+      this.separarTransacciones()
    })
   }
+
+  separarTransacciones(){
+    if(this.usuarioLogueado[0].rol!="Administrador"){
+      switch (this.usuarioLogueado[0].sucursal) {
+        case "matriz":
+          this.transaccionesGlobales.forEach(element=>{
+            if(element.sucursal == "matriz"){
+              this.transacciones.push(element)
+            }
+          })
+          break;
+        case "sucursal1":
+          this.transaccionesGlobales.forEach(element=>{
+            if(element.sucursal == "sucursal1"){
+              this.transacciones.push(element)
+            }
+          })
+          break;
+        case "sucursal2":
+          this.transaccionesGlobales.forEach(element=>{
+            if(element.sucursal == "sucursal2"){
+              this.transacciones.push(element)
+            }
+          })
+            break;
+        default:
+          break;
+      }
+    }else{
+      this.transacciones=this.transaccionesGlobales
+    }
+  }
+
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+            if( this.usuarioLogueado[0].rol == "Usuario"){
+             
+            }else{
+            
+              
+            }
+          },
+          err => {
+          }
+        )
+    });
+    
+  }
+
 
 
   mostrarpopup(){

@@ -57,53 +57,55 @@
         ></dxo-pager>
     </dx-data-grid>
 
-
-    <br>
-    <h4>Productos Pendientes de Eliminación</h4>
-    <dx-data-grid #datag2
-        id="gridContainer"
-        [dataSource]="productosPendientesParaElim"
-        [showBorders]="true"
-        (onExporting)="onExporting($event)"
-        (onExported)="onExported($event)">
-        <dxo-filter-row [visible]="true" ></dxo-filter-row>
-        <dxo-export [enabled]="true" fileName="Productos Pendientes" [allowExportSelectedData]="true"></dxo-export>
-        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column dataField="id_Pedido" caption="Entrega N" dataType="string" sortOrder="desc"></dxi-column>
-        <dxi-column dataField="fecha"  caption="Fecha" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="documento" caption="Documento #" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="tipo_documento" caption="Tipo Documento" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
-        <dxi-column dataField="celular" caption="Celular" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string"></dxi-column>
-        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
-        <dxi-column dataField="valor_unitario" caption="V.Unitario" dataType="number" [visible]="false" ></dxi-column>
-        <dxi-column dataField="cajas" caption="Cajas" dataType="number" [visible]="false" ></dxi-column>
-        <dxi-column dataField="piezas" caption="Piezas" dataType="number" [visible]="false" ></dxi-column>
-        <dxi-column dataField="m2" caption="m2" dataType="number" [visible]="false" ></dxi-column>
-        <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
-        <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
-        <dxi-column dataField="mensaje" caption="Motivo" dataType="string" [visible]="true"></dxi-column>
-        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
-            <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
-        </dxi-column>
-        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
-            <dxi-button text="Aprobar" [onClick]="getCourseFile8"></dxi-button>   
-        </dxi-column>
-        <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="10%" [visible]="true">
-            <dxi-button text="Rechazar" [onClick]="getCourseRechazar"></dxi-button>   
-        </dxi-column>
-        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
-            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
-        </dxi-column>
-        <dxo-paging [pageSize]="12"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
-    </dx-data-grid>
+    <div id="admin" style="display: block;">
+        <br>
+        <h4>Productos Pendientes de Eliminación</h4>
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="productosPendientesParaElim"
+            [showBorders]="true"
+            (onExporting)="onExporting($event)"
+            (onExported)="onExported($event)">
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-export [enabled]="true" fileName="Productos Pendientes" [allowExportSelectedData]="true"></dxo-export>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxi-column dataField="id_Pedido" caption="Entrega N" dataType="string" sortOrder="desc"></dxi-column>
+            <dxi-column dataField="fecha"  caption="Fecha" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="documento" caption="Documento #" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="tipo_documento" caption="Tipo Documento" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+            <dxi-column dataField="celular" caption="Celular" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string"></dxi-column>
+            <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+            <dxi-column dataField="valor_unitario" caption="V.Unitario" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="cajas" caption="Cajas" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="piezas" caption="Piezas" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="m2" caption="m2" dataType="number" [visible]="false" ></dxi-column>
+            <dxi-column dataField="total" caption="Total" dataType="string" [visible]="false" ></dxi-column>
+            <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
+            <dxi-column dataField="mensaje" caption="Motivo" dataType="string" [visible]="true"></dxi-column>
+            <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
+            <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+                <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+                <dxi-button text="Aprobar" [onClick]="getCourseFile8"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="10%" [visible]="true">
+                <dxi-button text="Rechazar" [onClick]="getCourseRechazar"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+                <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+            </dxi-column>
+            <dxo-paging [pageSize]="12"></dxo-paging>
+            <dxo-pager
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[8, 12, 20]"
+            ></dxo-pager>
+        </dx-data-grid>
+    </div>
+    
 
     <br>
     <h4>Productos Pendientes Eliminados</h4>
@@ -222,7 +224,7 @@
         ></dxo-pager>
     </dx-data-grid>
 
-
+    <div id="admin5" style="display: block;">
     <h4>Pendientes de eliminación</h4>
     <dx-data-grid #datag2
         id="gridContainer"
@@ -261,7 +263,7 @@
             [allowedPageSizes]="[8, 12, 20]"
         ></dxo-pager>
     </dx-data-grid>
-
+</div>
     <h4>Entregas eliminadas</h4>
     <dx-data-grid #datag2
         id="gridContainer"

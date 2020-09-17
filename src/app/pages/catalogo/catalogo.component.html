@@ -1,15 +1,18 @@
 <br>
-<div class="row remiPro titulos">
-    <div class="col-md-8"><div class="">
-        
-    </div></div>
-    <div class="col-md-4"> <dx-select-box [items]="menu1" 
-        [value]="menu1[0]" 
-        [readOnly]="false" 
-        [disabled]="false"
-        (onValueChanged)="opcionMenu($event)"
-        ></dx-select-box></div>
+<div id="admin1" style="display: block;">
+    <div class="row remiPro titulos">
+        <div class="col-md-8"><div class="">
+            
+        </div></div>
+        <div class="col-md-4"> <dx-select-box [items]="menu1" 
+            [value]="menu1[0]" 
+            [readOnly]="false" 
+            [disabled]="false"
+            (onValueChanged)="opcionMenu($event)"
+            ></dx-select-box></div>
+    </div>
 </div>
+
 <br>
 <div id="catalogo" style="display: block;">
     <dx-data-grid id="gridContainer"

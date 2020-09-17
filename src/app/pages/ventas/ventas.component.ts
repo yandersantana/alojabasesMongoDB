@@ -3010,6 +3010,8 @@ var tipoDoc:boolean=false
     }
 
   generarFactura(e) {
+   if(this.factura.cliente!=undefined){
+    if(this.factura.cliente.cliente_nombre!=undefined){
     this.buscarDatosSucursal()
     this.mostrarMensaje()
     var contVal=0
@@ -3118,7 +3120,21 @@ var tipoDoc:boolean=false
         'Error',
         'Error no hay productos en la lista',
         'error'
-      )} 
+      )}  
+
+    }else{
+      Swal.fire(
+        'Error',
+        'Error hay campos vacios, revise e intente nuevamente',
+        'error'
+      )
+    }}else{
+      Swal.fire(
+        'Error',
+        'Error hay campos vacios, revise e intente nuevamente',
+        'error'
+      )
+    }
     }
 
     contadorValidaciones(i:number){
@@ -3134,6 +3150,9 @@ var tipoDoc:boolean=false
     }
 
   generarCotizacion(e) {
+    if(this.factura.cliente!=undefined){
+      if(this.factura.cliente.cliente_nombre!=undefined){
+   
     this.buscarDatosSucursal()
     var contpro=0
     var bandera:boolean=true
@@ -3193,14 +3212,27 @@ var tipoDoc:boolean=false
         'Error',
         'Error no hay productos en la lista',
         'error'
-      )}   
+      )}  
+    }else{
+        Swal.fire(
+          'Error',
+          'Error hay campos vacios, revise e intente nuevamente',
+          'error'
+        )
+      } }else{
+        Swal.fire(
+          'Error',
+          'Error hay campos vacios, revise e intente nuevamente',
+          'error'
+        )
+      }  
     }
 
 
 
   generarNotaDeVenta(e) {
-    
-    //this.traerContadoresDocumentos()
+    if(this.factura.cliente!=undefined){
+      if(this.factura.cliente.cliente_nombre!=undefined){
     this.buscarDatosSucursal()
     this.mostrarMensaje()
     var contVal=0
@@ -3301,6 +3333,19 @@ var tipoDoc:boolean=false
           'Error no hay productos en la lista',
           'error'
         )}   
+      }else{
+        Swal.fire(
+          'Error',
+          'Error hay campos vacios, revise e intente nuevamente',
+          'error'
+        )
+      }  }else{
+        Swal.fire(
+          'Error',
+          'Error hay campos vacios, revise e intente nuevamente',
+          'error'
+        )
+      }
     }
 
 

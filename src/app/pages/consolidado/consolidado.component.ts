@@ -14,6 +14,8 @@ import Swal from 'sweetalert2';
 import { BodegaService } from 'src/app/servicios/bodega.service';
 import { bodega } from '../producto/producto';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { user } from '../user/user';
+import { AuthenService } from 'src/app/servicios/authen.service';
 @Component({
   selector: 'app-consolidado',
   templateUrl: './consolidado.component.html',
@@ -26,6 +28,7 @@ export class ConsolidadoComponent implements OnInit {
     "Inventario General",
     "Inventario Valorizado"
   ];
+
 
 
   popupVisible:boolean=false
@@ -52,10 +55,11 @@ export class ConsolidadoComponent implements OnInit {
   ubicacion3:string=""
   nota:string=""
   nameProducto: string=""
-  
+  correo:string
+  usuarioLogueado:user
   
 
-  constructor(public bodegasService:BodegaService, public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
+  constructor(public bodegasService:BodegaService,public authenService:AuthenService, public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
   
   }
 
@@ -64,6 +68,7 @@ export class ConsolidadoComponent implements OnInit {
    this.traerTransacciones()
    this.traerProductosPendientes()
    this.traerBodegas()
+   this.cargarUsuarioLogueado()
   }
 
   traerTransacciones(){
@@ -87,6 +92,35 @@ export class ConsolidadoComponent implements OnInit {
       this.bodegas = res as bodega[];
       this.separarBodegas()
    })
+  }
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') {
+        this.correo = localStorage.getItem("maily");
+      }
+      this.authenService.getUserLogueado(this.correo)
+        .subscribe(
+          res => {
+            this.usuarioLogueado = res as user;
+        
+            if( this.usuarioLogueado[0].rol == "Usuario"){
+              var z = document.getElementById("admin1");
+              z.style.display = "none";
+                 
+            }else{
+             
+              var z = document.getElementById("admin1");
+              z.style.display = "block";
+              
+            }
+
+          },
+          err => {
+          }
+        )
+    });
+    
   }
 
   separarBodegas(){

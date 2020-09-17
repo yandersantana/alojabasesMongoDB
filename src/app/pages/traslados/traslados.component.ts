@@ -47,6 +47,7 @@ export class TrasladosComponent implements OnInit {
     observaciones:string=""
     traslados:traslados
     trasladosG:traslados[]=[]
+    trasladosGlobales:traslados[]=[]
     trasladosEnviados:traslados[]=[]
     trasladosRecibidos:traslados[]=[]
     trasladosEliminados:traslados[]=[]
@@ -135,14 +136,16 @@ export class TrasladosComponent implements OnInit {
 
    
    this.traerParametrizaciones()
-   this.traerSucursales()
+  
    this.traerBodegas()
    this.traerProductos()
-   this.traerTraslados()
+   
    this.traerTransportistas()
    this.traerContadoresDocumentos()
    this.getIDDocumentos()
    this.traerTransacciones()
+   this.traerTraslados()
+   this.traerSucursales()
    //this.cargarUsuarioLogueado()
   }
 
@@ -156,13 +159,54 @@ export class TrasladosComponent implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            
+            if(this.usuarioLogueado[0].rol!="Administrador"){
+              var z = document.getElementById("admin1");
+              z.style.display = "none";
+            }
             this.validarRol()
+            this.separarRegistrosTraslados()
           },
           err => {
           }
         )
     });
+  }
+
+  separarRegistrosTraslados(){
+    if(this.usuarioLogueado[0].rol!="Administrador"){
+      switch (this.usuarioLogueado[0].sucursal) {
+        case "matriz":
+          this.trasladosGlobales.forEach(element=>{
+            if(element.sucursal_origen.nombre == "matriz"){
+              this.trasladosG.push(element)
+            }
+          })
+          this.asignarValores()
+          break;
+        case "sucursal1":
+          this.trasladosGlobales.forEach(element=>{
+            if(element.sucursal_origen.nombre == "sucursal1"){
+              this.trasladosG.push(element)
+            }
+          })
+          this.asignarValores()
+          break;
+        case "sucursal2":
+          this.trasladosGlobales.forEach(element=>{
+            if(element.sucursal_origen.nombre== "sucursal2"){
+              this.trasladosG.push(element)
+            }
+          })
+          this.asignarValores()
+            break;
+        default:
+          break;
+      }
+    }else{
+      this.trasladosG=this.trasladosGlobales
+    }
+    this.asignarValores()
+    
   }
 
   validarRol(){
@@ -237,8 +281,8 @@ export class TrasladosComponent implements OnInit {
 
   traerTraslados(){
     this.trasladosService.getTraslado().subscribe(res => {
-      this.trasladosG = res as traslados[];  
-      this.asignarValores()
+      this.trasladosGlobales = res as traslados[];  
+      //this.separarRegistrosTraslados()
    })
   }
 
@@ -607,6 +651,8 @@ export class TrasladosComponent implements OnInit {
     var x = document.getElementById("traslados");
     var y = document.getElementById("historial");
     var z = document.getElementById("existencias");
+    var z1 = document.getElementById("admin1");
+   
     switch (e.value) {
       case "Traslados":
         x.style.display = "block";
@@ -629,6 +675,7 @@ export class TrasladosComponent implements OnInit {
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";
+        z1.style.display = "none";
         break;
       case "Existencias Productos":
           x.style.display = "none";

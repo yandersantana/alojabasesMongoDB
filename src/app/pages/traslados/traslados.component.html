@@ -317,61 +317,65 @@
     <br>
     <br>
     <br>
-    <div><h4>Traslados Pendientes de Eliminación</h4></div>
-    <dx-data-grid 
-        id="gridContainer"
-        [dataSource]="trasladosGR"
-        [showBorders]="true">
-        <dxo-filter-row 
-        [visible]="true" ></dxo-filter-row>
-        <dxo-search-panel 
-        [visible]="true" 
-        [width]="240" 
-        placeholder="Buscar..."></dxo-search-panel>
-        <dxo-export [enabled]="true" fileName="TrasladosAnulados" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column
-            dataField="_id"
-            caption="Traslado N"
-            dataType="string"
-            [visible]="false" >
-        </dxi-column>
-        <dxi-column
-            dataField="idT"
-            caption="Traslado N"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            caption="Fecha"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal_origen.nombre"
-            caption="Sucursal Origen"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal_destino.nombre"
-            caption="Sucursal Destino"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="transportista.nombre"
-            caption="Transportista"
-            dataType="string"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="true">
-            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
-        </dxi-column>
-        <dxo-paging [pageSize]="12"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
-    </dx-data-grid>
+    
+    <div id="admin1" style="display: block;">
+        <div><h4>Traslados Pendientes de Eliminación</h4></div>
+        <dx-data-grid 
+            id="gridContainer"
+            [dataSource]="trasladosGR"
+            [showBorders]="true">
+            <dxo-filter-row 
+            [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="TrasladosAnulados" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column
+                dataField="_id"
+                caption="Traslado N"
+                dataType="string"
+                [visible]="false" >
+            </dxi-column>
+            <dxi-column
+                dataField="idT"
+                caption="Traslado N"
+                dataType="string">
+            </dxi-column>
+            <dxi-column
+                dataField="fecha"
+                caption="Fecha"
+                dataType="string">
+            </dxi-column>
+            <dxi-column
+                dataField="sucursal_origen.nombre"
+                caption="Sucursal Origen"
+                dataType="string"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="sucursal_destino.nombre"
+                caption="Sucursal Destino"
+                dataType="string"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="transportista.nombre"
+                caption="Transportista"
+                dataType="string"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="true">
+                <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+            </dxi-column>
+            <dxo-paging [pageSize]="12"></dxo-paging>
+            <dxo-pager
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[8, 12, 20]"
+            ></dxo-pager>
+        </dx-data-grid>
+    </div>
+    
 
 
     <br>

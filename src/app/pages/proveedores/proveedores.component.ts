@@ -1228,7 +1228,7 @@ anadirDetallePago = (e) => {
 
     //var totalsuma2=0
     let saldoFaltante=0
-    this.facturaProveedor.fecha= this.now2.toLocaleDateString()
+    this.facturaProveedor.fecha= this.now2
     this.facturaProveedor.fechaExpiracion= this.now3.toLocaleDateString()
     this.facturaProveedor.nSolicitud= this.datoNsolicitud
     this.facturaProveedor.nFactura= this.datoNFact

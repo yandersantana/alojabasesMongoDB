@@ -1535,6 +1535,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     this.facturaProveedor.forEach(element => {
       if(element.nFactura==e.value){
         this.ifFacturaP=element._id
+        alert(element.fecha)
         this.fecha1 = new Date(element.fecha)
         console.log(element.total)
        // alert("xsxs "+JSON.stringify(element))

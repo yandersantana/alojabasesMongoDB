@@ -6,7 +6,7 @@ const { Schema } = mongoose;
 const FacturaProveedorSchema = new Schema({
     id: { type: String, required: false},
     idF: { type: Number, required: false},
-    fecha: { type: String, required: false},
+    fecha: { type: Date, required: false},
     fechaExpiracion: { type: String, required: false},
     nFactura: { type: String, required: false},
     nSolicitud: { type: Number, required: false},

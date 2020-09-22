@@ -1512,15 +1512,15 @@ export class AudTablaComponent implements OnInit {
     this.invetarioP.forEach(element=>{
       element.cantidadCajas=Math.trunc( element.cantidadM2 / element.producto.M2);
       element.cantidadPiezas=parseInt(((element.cantidadM2 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas * element.producto.P_CAJA)).toFixed(0))
-      element.cantidadM2=parseInt(element.cantidadM2.toFixed(0))
+      element.cantidadM2=parseFloat(element.cantidadM2.toFixed(2))
 
       element.cantidadCajas2=Math.trunc( element.cantidadM2b2 / element.producto.M2);
       element.cantidadPiezas2=parseInt(((element.cantidadM2b2 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas2 * element.producto.P_CAJA)).toFixed(0));
-      element.cantidadM2b2=parseInt(element.cantidadM2b2.toFixed(0))
+      element.cantidadM2b2=parseFloat(element.cantidadM2b2.toFixed(2))
 
       element.cantidadCajas3=Math.trunc( element.cantidadM2b3 / element.producto.M2);
       element.cantidadPiezas3=parseInt(((element.cantidadM2b3 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas3 * element.producto.P_CAJA)).toFixed(0));
-      element.cantidadM2b3=parseInt(element.cantidadM2b3.toFixed(0))
+      element.cantidadM2b3=parseFloat(element.cantidadM2b3.toFixed(2))
     })
   }
 

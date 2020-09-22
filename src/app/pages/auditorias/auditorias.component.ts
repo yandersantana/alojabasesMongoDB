@@ -375,7 +375,6 @@ onHidden() {
   }
 
   buscarInformacion(){
-    console.log("ssss "+JSON.stringify(this.auditoria))
     this.invetarioP.forEach(element=>{
       if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
         switch (this.auditoria.sucursal.nombre) {
@@ -1428,6 +1427,7 @@ onHidden() {
  
        this.transacciones.forEach(element=>{
          if(element2.PRODUCTO==element.producto && element.sucursal=="matriz"){
+           
            switch (element.tipo_transaccion) {
              case "devolucion":
                contCajas=Number(element.cajas)+contCajas
@@ -1450,7 +1450,6 @@ onHidden() {
                contPiezas=Number(contPiezas)-Number(element.piezas)
               break;
               case "venta-fact":
-                console.log("enteteeeeee")
                contCajas=Number(contCajas)-Number(element.cajas)
                contPiezas=Number(contPiezas)-Number(element.piezas)
               break;
@@ -1526,8 +1525,6 @@ onHidden() {
              break;
              default:    
            } 
-           console.log("el "+element2.PRODUCTO + " tiene"+element.cajas)
-           console.log("el 22"+element2.PRODUCTO + " tiene"+contCajas2)  
          }else if(element2.PRODUCTO==element.producto && element.sucursal=="sucursal2"){
            switch (element.tipo_transaccion) {
              case "devolucion":
@@ -1594,7 +1591,7 @@ onHidden() {
        this.invetarioProd.cantidadPiezas3=contPiezas3
        this.invetarioP.push(this.invetarioProd)
  
-      console.log("el producto "+element2.PRODUCTO+" tiene "+contCajas +" cajas")
+     // console.log("el producto "+element2.PRODUCTO+" tiene "+contCajas2 +" cajas y "+contPiezas2)
        contCajas=0
        contPiezas=0
        contCajas2=0
@@ -1630,6 +1627,7 @@ onHidden() {
             element2.cantidadM2b3=element2.cantidadM2b3+element.suc3Pendiente
             
           }
+          
       })
     }
   }
@@ -1697,15 +1695,15 @@ onHidden() {
     this.invetarioP.forEach(element=>{
       element.cantidadCajas=Math.trunc( element.cantidadM2 / element.producto.M2);
       element.cantidadPiezas=parseInt(((element.cantidadM2 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas * element.producto.P_CAJA)).toFixed(0))
-      element.cantidadM2=parseInt(element.cantidadM2.toFixed(0))
+      element.cantidadM2=parseFloat(element.cantidadM2.toFixed(2))
 
       element.cantidadCajas2=Math.trunc( element.cantidadM2b2 / element.producto.M2);
       element.cantidadPiezas2=parseInt(((element.cantidadM2b2 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas2 * element.producto.P_CAJA)).toFixed(0));
-      element.cantidadM2b2=parseInt(element.cantidadM2b2.toFixed(0))
+      element.cantidadM2b2=parseFloat(element.cantidadM2b2.toFixed(2))
 
       element.cantidadCajas3=Math.trunc( element.cantidadM2b3 / element.producto.M2);
       element.cantidadPiezas3=parseInt(((element.cantidadM2b3 * element.producto.P_CAJA / element.producto.M2) - (element.cantidadCajas3 * element.producto.P_CAJA)).toFixed(0));
-      element.cantidadM2b3=parseInt(element.cantidadM2b3.toFixed(0))
+      element.cantidadM2b3=parseFloat(element.cantidadM2b3.toFixed(2))
     })
   }
 

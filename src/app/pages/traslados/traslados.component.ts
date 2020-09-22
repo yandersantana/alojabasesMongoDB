@@ -159,12 +159,12 @@ export class TrasladosComponent implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            if(this.usuarioLogueado[0].rol!="Administrador"){
+            if(this.usuarioLogueado[0].rol=="Usuario"){
               var z = document.getElementById("admin1");
               z.style.display = "none";
             }
             this.validarRol()
-            this.separarRegistrosTraslados()
+            //this.separarRegistrosTraslados()
           },
           err => {
           }
@@ -281,8 +281,8 @@ export class TrasladosComponent implements OnInit {
 
   traerTraslados(){
     this.trasladosService.getTraslado().subscribe(res => {
-      this.trasladosGlobales = res as traslados[];  
-      //this.separarRegistrosTraslados()
+      this.trasladosG = res as traslados[];  
+      this.asignarValores()
    })
   }
 
@@ -651,7 +651,7 @@ export class TrasladosComponent implements OnInit {
     var x = document.getElementById("traslados");
     var y = document.getElementById("historial");
     var z = document.getElementById("existencias");
-    var z1 = document.getElementById("admin1");
+    //var z1 = document.getElementById("admin1");
    
     switch (e.value) {
       case "Traslados":
@@ -675,7 +675,7 @@ export class TrasladosComponent implements OnInit {
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";
-        z1.style.display = "none";
+        //z1.style.display = "none";
         break;
       case "Existencias Productos":
           x.style.display = "none";

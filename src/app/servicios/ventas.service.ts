@@ -29,5 +29,7 @@ export class VentasService {
   deleteVenta(venta){
     return this.http.delete(this.URL + `/delete/${venta._id}`, venta); 
   }
+
+  
     
 }

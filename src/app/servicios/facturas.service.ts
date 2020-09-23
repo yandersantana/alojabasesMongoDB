@@ -37,13 +37,10 @@ export class FacturasService {
   }
 
   updateFacturasEstado2(facturas,estado:string){
-    console.log("llegue aquiii ")
-    console.log("element "+this.URL + `/updateEstadoOb/${facturas._id}/${estado}`)
     return this.http.put(this.URL + `/updateEstadoOb/${facturas._id}/${estado}`, facturas); 
   }
 
   updateFacturasObervaciones(idFact:string,observaciones:string){
-    console.log("sdsd sss "+idFact +"sds "+observaciones)
     return this.http.put(this.URL + `/update2/${idFact}/${observaciones}`, idFact); 
   }
 

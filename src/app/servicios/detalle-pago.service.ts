@@ -10,8 +10,8 @@ export class DetallePagoService {
 
   facturas: factura[];
  //private URL = 'http://localhost:3000/detallePago'; //localhost
- private URL = 'http://104.248.14.190:3000/detallePago';
- //private URL = 'http://104.131.82.174:3000/detallePago';
+ //private URL = 'http://104.248.14.190:3000/detallePago';
+ private URL = 'http://104.131.82.174:3000/detallePago';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newDetallePago(detallePago){

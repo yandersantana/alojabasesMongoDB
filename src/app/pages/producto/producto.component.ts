@@ -310,7 +310,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
       if(data != null)
         this.contadorFirebase = data
-      //this.asignarIDdocumentos2()
+      this.asignarIDdocumentos2()
     });;
   }
 

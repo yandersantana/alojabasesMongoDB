@@ -88,11 +88,18 @@ export class AuditoriasComponent implements OnInit {
   fecha_inicio= new Date()
 
   menu: string[] = [
-    
     "Nueva Auditoria",
     "Ver Auditorias",
     "Novedades registradas"
   ];
+
+  menuSupervisor: string[] = [
+    
+    "Ver Auditorias",
+    "Novedades registradas"
+  ];
+ 
+  menuGlobal:string[]
   ubicaciones:string[]
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -108,7 +115,7 @@ export class AuditoriasComponent implements OnInit {
     //alert("ssfecha "+this.newAuditoria.fecha_inicio)
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
-    
+    this.menuGlobal= this.menuSupervisor
   }
 
   ngOnInit() {
@@ -1102,6 +1109,7 @@ onHidden() {
 
   validarRol(){
     if(this.usuarioLogueado[0].rol == "Administrador"){
+      this.menuGlobal = this.menu
       //var z = document.getElementById("admin");
       //z.style.display = "block";
     }

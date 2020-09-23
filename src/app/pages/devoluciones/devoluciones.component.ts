@@ -299,94 +299,7 @@ productos22: DataSource;
     //this.id_devolucion=this.contadores[0].contDevoluciones_Ndocumento+1
   }
 
- /*  getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  } */
-
- /*  async getIDDevolciones() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/devoluciones_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.id_devolucion = contador.payload.data()['documento_n']+1;  
-    });;
-  } */
-
-  /* async getOrdenCompra() {
-    await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
-      new Promise<any>((resolve, reject) => {
-        ordenes.forEach((nt: any) => {
-          this.ordenesCompra.push(nt.payload.doc.data());
-        })
-      }) 
-    });;
-  } */
-
- /*  async getFacturas() {
-    await this.db.collection('facturas').snapshotChanges().subscribe((facturas) => {
-        facturas.forEach((nt: any) => {
-          this.facturas.push(nt.payload.doc.data());    
-        })
-    });;
-  } */
-
- /*  async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      productos.forEach((nt: any) => {
-        this.productos.push(nt.payload.doc.data());
-      })
-    });;
-  }
- */
- /*  async getDevoluciones() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('devoluciones').snapshotChanges().subscribe((devoluciones) => {
-      new Promise<any>((resolve, reject) => {
-        devoluciones.forEach((nt: any) => {
-          this.devoluciones.push(nt.payload.doc.data());
-        })
-      }).then(res => {}, err => alert(err));  
-     
-    });;
-  } */
-
- /*  async getnotasVenta() {
-    await this.db.collection('notas_venta').snapshotChanges().subscribe((notas) => {
-        notas.forEach((nt: any) => {
-          this.notas_venta.push(nt.payload.doc.data());    
-        })
-    });;
-  } */
-
- /*  async getProductosVendidos() {    
-    await this.db.collection('productosVendidos').snapshotChanges().subscribe((productosVendidos) => {   
-      productosVendidos.forEach((nt: any) => {
-        this.productosVendidos.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
- /*  async getProductosDevueltos() {    
-    await this.db.collection('productosDevueltos').snapshotChanges().subscribe((productos) => {   
-      productos.forEach((nt: any) => {
-        this.productosDevueltosBase.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
-  /* async getIDTransacciones() {
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  } */
-
-
+ 
   obtenerDocumento(e){
     var bandera=true
     this.devolucion.tipo_documento=e.value
@@ -397,6 +310,7 @@ productos22: DataSource;
           this.facturaTraida=element
           this.productosVendidos2=element.productosVendidos
           this.cliente=element.cliente.cliente_nombre
+          //alert(JSON.stringify(element.fecha2))
           this.fecha_transaccion=element.fecha2
           this.sucursal=element.sucursal
           bandera=false
@@ -404,7 +318,7 @@ productos22: DataSource;
         }
       })
       if(bandera){
-        alert("no encontre")
+       // alert("no encontre")
         this.cliente=""
         this.fecha_transaccion=""
         this.sucursal=""
@@ -415,16 +329,17 @@ productos22: DataSource;
         if(element.documento_n == this.idDocumento){
           this.facturaTraida=element
           this.cliente=element.cliente.cliente_nombre
+          //alert(JSON.stringify(element.fecha2))
           this.fecha_transaccion=element.fecha2
           this.sucursal=element.sucursal
           this.productosVendidos2=element.productosVendidos
-          alert(this.productosVendidos2)
+          //alert(this.productosVendidos2)
           bandera=false
           //this.obtenerDetalleProductosNot()
         }
       })
       if(bandera){
-        alert("no encontre")
+       //alert("no encontre")
         this.cliente=""
         this.fecha_transaccion=""
         this.sucursal=""
@@ -578,7 +493,7 @@ productos22: DataSource;
   guardarDevolucion(){
     this.devolucion.cliente=this.cliente
     this.devolucion.fecha=this.fecha
-    this.devolucion.fecha_transaccion=new Date(this.fecha_transaccion)
+    this.devolucion.fecha_transaccion=this.fecha_transaccion
     this.devolucion.observaciones=this.observaciones
     //this.devolucion.sucursal=this.sucursal
     this.devolucion.usuario=this.usuario
@@ -599,7 +514,6 @@ productos22: DataSource;
           this.contadoresService.updateContadoresDevoluciones(this.contadores[0]).subscribe( res => {},err => {})
         },err => {})
         if(this.devolucion.tipo_documento=="Factura"){
-          //this.db.collection('/facturas').doc(this.idDocumento+"").update({"observaciones" :text});
           this.facturaTraida.observaciones=text
           this.facturasService.updateFacturas(this.facturaTraida).subscribe( res => {this.confirmarDevolucion()},err => {alert("error")})
         }else if(this.devolucion.tipo_documento=="Nota de Venta"){
@@ -1097,7 +1011,7 @@ productos22: DataSource;
                         fontSize:9,
                         ul: [
                           ''+this.devolucioLeida.fecha.toLocaleString(),
-                          ''+this.devolucioLeida.fecha_transaccion.toLocaleString(),
+                          ''+this.devolucioLeida.fecha_transaccion,
                           ''+this.devolucioLeida.usuario,
                         ]
                       }

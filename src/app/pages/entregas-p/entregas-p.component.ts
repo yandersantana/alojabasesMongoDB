@@ -26,6 +26,7 @@ import { AuthenService } from 'src/app/servicios/authen.service';
 export class EntregasPComponent implements OnInit {
   productoLeido: productosPendientesEntrega
   productosPendientes: productosPendientesEntrega[]=[]
+  productosPendientesGlobales: productosPendientesEntrega[]=[]
   productosPendientesNoEN: productosPendientesEntrega[]=[]
   productosPendientesParaElim: productosPendientesEntrega[]=[]
   productosPendientesEliminados: productosPendientesEntrega[]=[]
@@ -115,9 +116,8 @@ export class EntregasPComponent implements OnInit {
 
   traerProductosPendientesEntrega(){
     this.productosPendientesService.getProductoPendiente().subscribe(res => {
-      this.productosPendientes = res as productosPendientesEntrega[];
-      //alert("entree")
-      this.separarEntregas()
+      this.productosPendientesGlobales = res as productosPendientesEntrega[];
+      this.separarRegistrosDevoluciones()
    })
   }
 
@@ -169,6 +169,43 @@ export class EntregasPComponent implements OnInit {
           }
         )
     });
+    
+  }
+
+
+
+  separarRegistrosDevoluciones(){
+    if(this.usuarioLogueado[0].rol=="Usuario"){
+      switch (this.usuarioLogueado[0].sucursal) {
+        case "matriz":
+          this.productosPendientesGlobales.forEach(element=>{
+            if(element.sucursal == "matriz"){
+              this.productosPendientes.push(element)
+            }
+          })
+          break;
+        case "sucursal1":
+          this.productosPendientesGlobales.forEach(element=>{
+            if(element.sucursal == "sucursal1"){
+              this.productosPendientes.push(element)
+            }
+          })
+          break;
+        case "sucursal2":
+          this.productosPendientesGlobales.forEach(element=>{
+            if(element.sucursal == "sucursal2"){
+              this.productosPendientes.push(element)
+            }
+          })
+            break;
+        default:
+          break;
+      }
+    }else{
+      this.productosPendientes=this.productosPendientesGlobales
+    }
+
+    this.separarEntregas()
     
   }
 

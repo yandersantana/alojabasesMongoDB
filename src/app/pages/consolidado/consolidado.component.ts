@@ -104,7 +104,7 @@ export class ConsolidadoComponent implements OnInit {
           res => {
             this.usuarioLogueado = res as user;
         
-            if( this.usuarioLogueado[0].rol == "Usuario"){
+            if( this.usuarioLogueado[0].rol != "Administrador"){
               var z = document.getElementById("admin1");
               z.style.display = "none";
                  

@@ -72,7 +72,7 @@ export class TrasladosComponent implements OnInit {
     transportista: transportista
     seleccion:boolean=true
     textpiezas1:boolean=false
-    varL:boolean=false
+    varL:boolean=true
     transacciones:transaccion[]=[]
     productosSucursal:productosSucursal[]=[]
     productosSucursal2:productosSucursal[]=[]
@@ -225,9 +225,10 @@ export class TrasladosComponent implements OnInit {
           this.bodegasorigen.push(element)
       }
     })
-    if(this.usuarioLogueado[0].rol == "Administrador"){
+    if(this.usuarioLogueado[0].rol == "Administrador" || this.usuarioLogueado[0].rol == "Supervisor"){
       var x = document.getElementById("admin");
       x.style.display = "block";
+      this.varL=false
     }
   }
 

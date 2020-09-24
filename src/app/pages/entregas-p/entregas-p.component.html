@@ -175,6 +175,7 @@
             <dxi-column dataField="total" caption="Total" dataType="number" [visible]="false" ></dxi-column>
             <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
             <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+            <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
             <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
                 <dxi-button icon="fa fa-eye" [onClick]="getCourseFile2"></dxi-button>   
             </dxi-column>
@@ -447,6 +448,10 @@
                                     <th>Total</th>
                                     <td>{{productoLeido.total}}</td>
                                 </tr>
+                                <tr>
+                                    <th>Notas</th>
+                                    <td><dx-text-box [(value)]="notasEntrega" [readOnly]="false" ></dx-text-box></td>
+                                </tr>
                                
                                
                               </table>
@@ -618,6 +623,10 @@
                                 <tr>
                                     <th>Total</th>
                                     <td>{{productoLeido.total}}</td>
+                                </tr>
+                                <tr>
+                                    <th>Notas</th>
+                                    <td><dx-text-box [(value)]="notasEntrega" [readOnly]="false" ></dx-text-box></td>
                                 </tr>
                                
                               </table>

@@ -33,7 +33,8 @@ router.put('/update/:id', async (req, res,next) => {
         m2: req.body.m2,
         fecha: req.body.fecha,
         identrega: req.body.identrega,
-        estado: req.body.estado
+        estado: req.body.estado,
+        notas: req.body.notas
     };
     await ProductosEntregados.findByIdAndUpdate(id, {$set: productosEntregados}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
@@ -54,7 +55,8 @@ router.post('/newProductoEntregado', async (req, res) => {
         m2: req.body.m2,
         fecha: req.body.fecha,
         identrega: req.body.identrega,
-        estado: req.body.estado
+        estado: req.body.estado,
+        notas: req.body.notas
     });
     await newProductosIngresados.save();
     res.json({status: 'Se ha creado un nuevo producto'});  

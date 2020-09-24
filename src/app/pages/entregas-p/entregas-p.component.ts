@@ -50,6 +50,7 @@ export class EntregasPComponent implements OnInit {
   piezasP2=0
   restam2=0
   notasProducto=""
+  notasEntrega=""
   number_transaccionEnt:number=0
   productoL:producto
   productos:producto[]=[]
@@ -93,13 +94,14 @@ export class EntregasPComponent implements OnInit {
    }
 
   ngOnInit() {
+    //this.cargarUsuarioLogueado()
     this.traerContadoresDocumentos()
     this.traerProductos()
     this.traerProductosEntregados()
     this.traerParametrizaciones()
     this.traerProductosPendientesEntrega()
     this.traerDocumentoGenerado()
-    this.cargarUsuarioLogueado()
+    
   }
 
   traerParametrizaciones(){
@@ -117,7 +119,7 @@ export class EntregasPComponent implements OnInit {
   traerProductosPendientesEntrega(){
     this.productosPendientesService.getProductoPendiente().subscribe(res => {
       this.productosPendientesGlobales = res as productosPendientesEntrega[];
-      this.separarRegistrosDevoluciones()
+      this.cargarUsuarioLogueado()
    })
   }
 
@@ -164,6 +166,7 @@ export class EntregasPComponent implements OnInit {
               z.style.display = "block";
               
             }
+            this.separarRegistrosDevoluciones()
           },
           err => {
           }
@@ -369,7 +372,7 @@ export class EntregasPComponent implements OnInit {
     this.entregaProducto.piezas=this.cantidadEntPiezas
     this.entregaProducto.m2=this.cantidadEntM2
 
-   
+   this.entregaProducto.notas= this.notasEntrega
     totalPiezasEntregar= (this.entregaProducto.productoPorEntregar.cajas* this.entregaProducto.productoPorEntregar.producto.P_CAJA) +this.entregaProducto.productoPorEntregar.piezas
     var contM2t=this.entregaProducto.productoPorEntregar.cantM2-this.entregaProducto.m2
     this.cajasP2=Math.trunc((contM2t+0.01) / this.entregaProducto.productoPorEntregar.producto.M2);
@@ -441,7 +444,7 @@ export class EntregasPComponent implements OnInit {
     this.entregaProducto.cajas=this.entregaProducto.productoPorEntregar.cajas
     this.entregaProducto.piezas=this.entregaProducto.productoPorEntregar.piezas
     this.entregaProducto.m2=this.entregaProducto.productoPorEntregar.cantM2
-  
+    this.entregaProducto.notas= this.notasEntrega
     this.productos.forEach(element=>{
       if(element.PRODUCTO == this.entregaProducto.productoPorEntregar.producto.PRODUCTO ){
        this.productoL= element
@@ -1234,6 +1237,7 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("cajasEntregadas", "visible", true);
     e.component.columnOption("piezasEntregadas", "visible", true);
     e.component.columnOption("m2Entregados", "visible", true);
+    e.component.columnOption("notas", "visible", true);
     //e.component.columnOption("total", "visible", true);
    
   };
@@ -1244,6 +1248,7 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("cajasEntregadas", "visible", false);
     e.component.columnOption("piezasEntregadas", "visible", false);
     e.component.columnOption("m2Entregados", "visible", false);
+    e.component.columnOption("notas", "visible", false);
   //  e.component.columnOption("total", "visible", false);
     e.component.endUpdate();
   }

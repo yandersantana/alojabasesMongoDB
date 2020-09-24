@@ -11,7 +11,8 @@ const ProductosEntregadosSchema = new Schema({
     m2: { type: Number, required: false},
     fecha: { type: String, required: false},
     identrega: { type: Number, required: false},
-    estado: { type: String, required: false}
+    estado: { type: String, required: false},
+    notas: { type: String, required: false}
 },{
     timestamps:true
 });

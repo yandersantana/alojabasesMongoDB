@@ -10,9 +10,11 @@ export class entregaProductos{
     fecha:string
     identrega:number
     estado:string
+    notas:string
     constructor(){
         this.fecha= new Date().toLocaleString()
         this.estado="ENTREGADO"
+        this.notas=""
     }
 }
 

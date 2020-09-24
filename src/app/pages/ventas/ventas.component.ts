@@ -981,16 +981,19 @@ this.traerProductosVendidos()
     var cant=0
     this.productosSolicitados=this.productosVendidos[i].disponible-this.productosVendidos[i].cantidad
     this.calcularTotalFactura()
-    if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
-      cant= this.productosVendidos[i].cantidad - this.productosVendidos[i].disponible
-      console.log("el restantes de cant es "+cant)
-      this.showModal(e,i)
-      this.calcularEquivalencia(e, i)
-      this.calcularTotalFactura()
+    if(this.productosVendidos[i].producto.CLASIFICA!="MANO DE OBRA"){
+      if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
+        cant= this.productosVendidos[i].cantidad - this.productosVendidos[i].disponible
+        console.log("el restantes de cant es "+cant)
+        this.showModal(e,i)
+        this.calcularEquivalencia(e, i)
+        this.calcularTotalFactura()
+        
+        this.productosVendidos[i].pedir= true
       
-      this.productosVendidos[i].pedir= true
+     }
+    }
     
-   }
    this.productosVendidos[i].entregar= true
   }
 

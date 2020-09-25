@@ -6,8 +6,8 @@ import { HttpClient } from '@angular/common/http';
 })
 export class UploadService {
 
-  //private URL = 'http://104.248.14.190:3000/upload';
-  private URL = 'http://104.131.82.174:3000/upload';
+  private URL = 'http://104.248.14.190:3000/upload';
+ // private URL = 'http://104.131.82.174:3000/upload';
   //private URL = 'http://localhost:3000/upload';
   constructor(private http: HttpClient) { }
 

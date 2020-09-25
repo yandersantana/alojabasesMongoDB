@@ -301,7 +301,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   }
 
   asignarIDdocumentos(){
-   // this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
+    this.number_transaccion=this.contadores[0].transacciones_Ndocumento+1
     this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
   }
 
@@ -310,7 +310,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
       if(data != null)
         this.contadorFirebase = data
-      this.asignarIDdocumentos2()
+      //this.asignarIDdocumentos2()
     });;
   }
 

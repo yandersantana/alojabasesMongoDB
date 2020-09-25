@@ -712,6 +712,7 @@ productos22: DataSource;
         this.transaccion.bodega="bodega2"
         this.transaccion.documento=this.devolucioLeida.id_devolucion+""
         this.transaccion.producto=element.producto.PRODUCTO
+        this.transaccion.costo_unitario= element.valorunitario
         this.transaccion.cajas=element.cantDevueltaCajas
         this.transaccion.piezas=element.cantDevueltaPiezas
         this.transaccion.observaciones=element.justificacion

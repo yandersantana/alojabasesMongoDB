@@ -310,7 +310,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
       if(data != null)
         this.contadorFirebase = data
-      //this.asignarIDdocumentos2()
+      this.asignarIDdocumentos2()
     });;
   }
 
@@ -321,120 +321,6 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     //this.Id_remision=this.contadores[0].contRemisiones_Ndocumento+1
   }
 
-  
-
-
- /*  getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  }
- */
- 
-  
-
-/*   getNumeroRemision(){
-    this.db.collection('/remisionProductos').doc('matriz').valueChanges().subscribe(data => {
-      //console.log(data)
-      if(data != null)
-        this.Id_remision = data['documento_n']+1
-        
-    })
-  } */
-
-  /* getbodegas(){
-    this.db.collection('/bodegas').valueChanges().subscribe((data:bodega[]) => {
-      if(data != null)
-        this.bodegas = data
-
-    })
-  } */
-
-  /* async getRemisiones(){
-    await this.db.collection('remisionProductos').snapshotChanges().subscribe((ordenes) => {
-      new Promise<any>((resolve, reject) => {
-        ordenes.forEach((nt: any) => {
-          this.remisiones.push(nt.payload.doc.data());
-        })
-      }) 
-      this.asignarValores()
-    });;
-  } */
- 
-
-  /* getCompras(){
-    this.db.collection('/ordenesDeCompra').valueChanges().subscribe((data:OrdenDeCompra[]) => {
-      if(data != null)
-        this.ordenesCompra = data
-
-    })
-  } */
-
-  /* getFacturasProveedor(){
-    this.db.collection('/facturasProveedor').valueChanges().subscribe((data:FacturaProveedor[]) => {
-      if(data != null)
-        this.facturaProveedor = data
-
-    })
-  } */
-
- /*  getProdcutosIngresados(){
-    this.db.collection('/productosIngresados').valueChanges().subscribe((data:ProductoDetalleEntrega[]) => {
-      if(data != null)
-        this.productosEntregadosBase = data
-
-    })
-  } */
-
-  /* async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      productos.forEach((nt: any) => {
-        this.productos.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
-  /* async getProductosObs() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productosObsequio').snapshotChanges().subscribe((productos2) => {
-      this.productos2 = []
-      productos2.forEach((nt: any) => {
-        this.productosObsequiosBase.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
- /*  async getIDTransacciones() {
-    
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  } */
-
-  /* getTransacciones(){
-    this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
-      this.transacciones = data
-  
-    })
-  } */
- 
-  /* async getProductosComprados() {
-    console.log("aqui entreee")
-    await this.db.collection('/productosComprados').snapshotChanges().subscribe((productoC) => {
-      
-      productoC.forEach((nt: any) => {
-        this.productosComprados.push(nt.payload.doc.data());
-        console.log("productoscomprados"+productoC.length)
-      })
-      console.log("productoscomprados"+productoC.length)
-      console.log("productoscomprados33"+this.productosComprados.length)
-    });;
-  } */
 
   getCourseFile = (e) => {  
     this.cargarDatosRemisión(e.row.data)  

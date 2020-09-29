@@ -347,7 +347,7 @@ contadores:contadoresDocumentos[]
     await this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
-      this.asignarIDdocumentos()
+      //this.asignarIDdocumentos()
    })
    //this.contadores= await this.contadoresService.getContadores().toPromise()
   }
@@ -361,7 +361,7 @@ contadores:contadoresDocumentos[]
           this.contadorFirebase = data
         } 
       })
-      //this.asignarIDdocumentos2()
+      this.asignarIDdocumentos2()
     }) 
   }
 
@@ -506,8 +506,8 @@ contadores:contadoresDocumentos[]
     this.newButtonEnabled = true
     this.contadoProductos=0
     this.productosVendidos.forEach(element=>{
-    this.contadoProductos++
-  })
+      this.contadoProductos++
+    })
     
     console.log("hay"+this.contadoProductos)
     if(this.contadoProductos>=5 && this.contadoProductos<=10){
@@ -687,19 +687,17 @@ setSelectedProducto(i:number){
   }
 
   obtenerDatosDeProductoParaUnDetalle(e, i:number) {
-   
+    this.newButtonEnabled = false
     var cont=0
     this.productosVendidos.forEach(element=>{
       if(element.producto.PRODUCTO == e.value){
         cont++
       }
     })
-    //alert("1111" + this.productosVendidos.length)
-    this.newButtonEnabled = false
-    //alert("esta en"+cont)
     if(cont==0){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
+          alert(JSON.stringify(element))
           switch (this.factura.sucursal) {
             case "matriz":
               //this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
@@ -756,6 +754,7 @@ setSelectedProducto(i:number){
 
 
   deleteProductoVendido(i){
+    this.newButtonEnabled = false
     if(this.productosVendidos.length > 1){
     this.productosVendidos.splice(i,1);
     this.calcularTotalFactura()
@@ -763,7 +762,7 @@ setSelectedProducto(i:number){
     else{
       alert("Las facturas deben tener al menos un producto")
     }
-        }
+  }
         calcularTransporte(){
           this.costoTr=true
           this.calcularTotalFactura();
@@ -808,8 +807,8 @@ setSelectedProducto(i:number){
           }).then((result) => {
             if (result.value) {
               this.limpiarArreglo()
-              this.asignarIDdocumentos()
-              //this.asignarIDdocumentos2()
+              //this.asignarIDdocumentos()
+              this.asignarIDdocumentos2()
               this.buscarDatosSucursal()
               this.productosVendidos.push(new venta())
             } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -818,8 +817,8 @@ setSelectedProducto(i:number){
            
           })
          }else{
-          this.asignarIDdocumentos()
-          //this.asignarIDdocumentos2()
+          //this.asignarIDdocumentos()
+          this.asignarIDdocumentos2()
           this.buscarDatosSucursal()
          }
           

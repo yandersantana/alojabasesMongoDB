@@ -697,7 +697,7 @@ setSelectedProducto(i:number){
     if(cont==0){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
-          alert(JSON.stringify(element))
+         
           switch (this.factura.sucursal) {
             case "matriz":
               //this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
@@ -769,6 +769,7 @@ setSelectedProducto(i:number){
         }
       
         setClienteData(e){
+         
           this.clientes.forEach(element => {
               if(element.cliente_nombre == e.component._changedValue){
               this.factura.cliente = element
@@ -777,6 +778,7 @@ setSelectedProducto(i:number){
               this.factura.cliente.celular = element.celular
               this.factura.tipo_venta= element.tventa
               this.factura.cliente.nombreContacto=element.nombreContacto
+              
             }
           }); 
           this.calcularTipoCliente(); 
@@ -1002,14 +1004,14 @@ this.traerProductosVendidos()
       this.productosVendidos[i].producto
     this.precios.forEach(element=>{
       if(element.aplicacion == this.productosVendidos[i].producto.APLICACION){
-        //alert("tambien")
+       
         if(this.productosVendidos[i].cantidad >0 && this.productosVendidos[i].cantidad <=element.cant1){
           this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent1 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-          //alert("precio es" +this.productosVendidos[i].precio_min)
+          
         }
         if(this.productosVendidos[i].cantidad >element.cant1 && this.productosVendidos[i].cantidad <=element.cant2){
           this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent2 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-          //alert("precio es 2" +this.productosVendidos[i].precio_min)
+         
         }
 
         if(this.productosVendidos[i].cantidad >element.cant2){
@@ -1020,7 +1022,6 @@ this.traerProductosVendidos()
     })
       break;
     case "Distribuidor":
-      //alert("entre2")
       this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
       break;
     case "Socio":
@@ -1249,8 +1250,7 @@ compararCantidad(nombre:string,i:number,o:number){
                 'success'
                 
               )
-            // For more information about handling dismissals please visit
-            // https://sweetalert2.github.io/#handling-dismissals
+
             } else if (result.dismiss === Swal.DismissReason.cancel) {
               Swal.fire(
                 'Cancelado!',
@@ -1497,8 +1497,6 @@ cambiarestado(e,i:number){
           'success'
           
         )
-      // For more information about handling dismissals please visit
-      // https://sweetalert2.github.io/#handling-dismissals
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -1561,20 +1559,12 @@ var tipoDoc:boolean=false
       pdfMake.createPdf(documentDefinition).download('Proforma '+this.factura.documento_n, function() {  });
       this.mostrarMensaje2()
   }
-    /* const documentDefinition = this.getDocumentDefinition();
-    this.pdf.add(documentDefinition);
-  this.pdf.add("Hello world")
-    try {
-      this.pdf.create().download();
-    } catch (err) {
-      alert(err);
-    } */}
+    }
 
 
     setearNFactura(){
       let nf=this.factura.documento_n
       this.variab= this.factura.documento_n
-      //alert("escogi el "+nf)
       let num=('' + nf).length
       console.log("el numero es"+num)
       switch (num) {
@@ -2824,7 +2814,6 @@ var tipoDoc:boolean=false
     
 
     buscarDatosSucursal(){
-      //alert("netre" +this.factura.sucursal)
       this.parametrizaciones.forEach(element=>{
         if(element.sucursal == this.factura.sucursal){
           this.parametrizacionSucu= element
@@ -2835,7 +2824,6 @@ var tipoDoc:boolean=false
     }
 
     crearCliente(){
-      console.log("mostrando lcint"+JSON.stringify(this.factura.cliente))
       if(this.factura.cliente._id) {
         this.clienteService.updateCliente(this.factura.cliente).subscribe(
           res => {
@@ -3013,6 +3001,7 @@ var tipoDoc:boolean=false
 
   generarFactura(e) {
     this.factura.cliente.cliente_nombre= this.mensaje
+   
    if(this.factura.cliente!=undefined){
     if(this.factura.cliente.cliente_nombre!=undefined){
     this.buscarDatosSucursal()
@@ -3030,17 +3019,12 @@ var tipoDoc:boolean=false
     this.factura.documento_n = this.numeroFactura2
     this.factura.dni_comprador= this.factura.cliente.ruc
     this.factura.cliente.cliente_nombre= this.mensaje
+    
     this.factura.sucursal= this.factura.sucursal
     this.guardarDatosCliente()
     this.setearNFactura()
     this.factura.dni_comprador= this.factura.cliente.ruc
     if(this.ventasForm.instance.validate().isValid){
-      let grabar = true
-      this.clientes.forEach(element => {
-        if(element.ruc == this.factura.cliente.ruc)
-        this.factura.cliente.cliente_nombre=element.cliente_nombre
-          grabar = false
-      });
 
       this.factura.cliente= this.factura.cliente
       if(this.factura.cliente.nombreContacto==""||this.factura.cliente.nombreContacto==undefined){
@@ -3175,12 +3159,6 @@ var tipoDoc:boolean=false
     this.guardarDatosCliente()
     this.factura.dni_comprador= this.factura.cliente.ruc
     if(this.ventasForm.instance.validate().isValid){
-      let grabar = true
-      this.clientes.forEach(element => {
-        if(element.ruc == this.factura.cliente.ruc)
-        this.factura.cliente.cliente_nombre=element.cliente_nombre
-          grabar = false
-      });
 
       this.factura.cliente= this.factura.cliente
       new Promise<any>((resolve, reject) => {
@@ -3257,12 +3235,7 @@ var tipoDoc:boolean=false
     this.guardarDatosCliente()
     this.factura.dni_comprador= this.factura.cliente.ruc
     if(this.ventasForm.instance.validate().isValid){
-      let grabar = true
-      this.clientes.forEach(element => {
-        if(element.ruc == this.factura.cliente.ruc)
-        this.factura.cliente.cliente_nombre=element.cliente_nombre
-          grabar = false
-      });
+
 
       this.factura.cliente= this.factura.cliente
       new Promise<any>((resolve, reject) => {

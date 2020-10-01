@@ -1546,10 +1546,8 @@ console.log("si entre verdadero" + this.solicitudNOrden)
         this.ordenleida2 = element
       }
     })
-    console.log("encontre ennnnn "+contre)
+
     if(contre-1 <= 0){
-      //alert("entre a pendiente")
-      //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PENDIENTE"})
       this.ordenesService.updateEstadoOrden2(this.ordenleida2,"PENDIENTE").subscribe( res => {Swal.close()
         Swal.fire({
           title: 'Remisión eliminada',
@@ -1560,9 +1558,7 @@ console.log("si entre verdadero" + this.solicitudNOrden)
           window.location.reload()
         })  }, err => {alert("error")})
     }else{
-      //alert("entre a parcial")
-      //this.db.collection('/ordenesDeCompra').doc(this.solicitudOrdenC+"").update({"estadoOrden" :"PARCIAL"})
-      this.ordenesService.updateEstadoOrden2(e,"PARCIAL").subscribe( res => {Swal.close()
+      this.ordenesService.updateEstadoOrden2(this.ordenleida2,"PARCIAL").subscribe( res => {Swal.close()
         Swal.fire({
           title: 'Remisión eliminada',
           text: 'Se ha eliminado con éxito',

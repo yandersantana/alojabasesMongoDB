@@ -1006,6 +1006,7 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("VIGENCIA", "visible", true);
     e.component.columnOption("FEC_PRODUCCION", "visible", true);
     e.component.columnOption("CANT_MINIMA", "visible", true);
+    e.component.columnOption("notas", "visible", true);
    
   };
   onExported (e) {
@@ -1022,6 +1023,7 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("porcentaje_ganancia", "visible", false);
     e.component.columnOption("FEC_PRODUCCION", "visible", false);
     e.component.columnOption("CANT_MINIMA", "visible", false);
+    e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
   }
 

@@ -71,8 +71,10 @@ export class TrasladosComponent implements OnInit {
     transaccion:transaccion
     transportista: transportista
     seleccion:boolean=true
+    bodegaExternaSeleccion:boolean=false
     textpiezas1:boolean=false
     varL:boolean=true
+    readSuc:boolean=false
     transacciones:transaccion[]=[]
     productosSucursal:productosSucursal[]=[]
     productosSucursal2:productosSucursal[]=[]
@@ -111,6 +113,7 @@ export class TrasladosComponent implements OnInit {
     expensesCollection3: AngularFirestoreCollection<transaccion>;
     contadorFirebase:contadoresDocumentos[]=[]
     productos22: DataSource;
+    bodegaExterna: Sucursal= new Sucursal()
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
      public bodegasService:BodegaService,public transaccionesService:TransaccionesService, public sucursalesService:SucursalesService,) { 
     this.traslados= new traslados()
@@ -438,6 +441,24 @@ export class TrasladosComponent implements OnInit {
       }else{
         this.varL=true
       }
+  }
+
+  activarBodegaExterna(e){
+    this.bodegaExterna.nombre= "Bodega Externa"
+    this.bodegaExterna.direccion= "S/D"
+    this.bodegaExterna.celular= "S/D"
+    this.bodegaExterna.nombreComercial= "S/D"
+    this.bodegaExterna.contacto= "S/D"
+    this.bodegaExterna.sucursalTipo= "S/D"
+    if(this.bodegaExternaSeleccion){
+      this.readSuc=true
+      this.traslados.sucursal_destino = this.bodegaExterna
+      this.traslados.bodega_destino= "Bodega Externa"
+      this.bodegasdestino= null
+      this.locales2  = null 
+    }else{
+      this.readSuc=false
+    }
   }
 
   llenarComboProductos2(){
@@ -904,9 +925,10 @@ export class TrasladosComponent implements OnInit {
 
 
   guardarTraslado(){
-    //guardarTranportista
-    //alert("dsds"+this.identificacion)
-    //this.transportista= new transportista()
+    if(this.bodegaExternaSeleccion){
+      this.traslados.sucursal_destino = this.bodegaExterna
+      this.traslados.bodega_destino = "BodegaExterna"
+    }
     this.transportista.identificacion=this.identificacion
     this.transportista.nombre=this.nombre_transportista
     this.transportista.celular=this.celular

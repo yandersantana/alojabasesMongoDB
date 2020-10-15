@@ -19,9 +19,11 @@ export class traslados{
     estado:string
     usuario:string
     detalleTraslados:detalleTraslados[]=[]
+    bodegaExterna:boolean
     
     constructor(){
         this.estado="ENVIADO"
+        this.bodegaExterna=false
        // this.sucursal_origen= new sucursal
     }
 

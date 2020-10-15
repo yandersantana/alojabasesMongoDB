@@ -87,13 +87,13 @@
             </div>
             <div class="row">
                 <div class="col-md-6"><p>Sucursal Destino</p> </div>
-                <div class="col-md-6"><dx-select-box #selectId [items]="locales2" [value]="locales2" [readOnly]="false" [disabled]="false"
+                <div class="col-md-6"><dx-select-box #selectId [items]="locales2" [value]="locales2" [readOnly]="readSuc" [disabled]="false"
                     [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosSucursalDestino($event)">
                 </dx-select-box></div>
             </div>
             <div class="row">
                 <div class="col-md-6" style="padding-left: 4rem;"><p>Bodega destino</p> </div>
-                <div class="col-md-6"><dx-select-box #selectId [items]="bodegasdestino" [value]="bodegasdestino" [readOnly]="false" [disabled]="false"
+                <div class="col-md-6"><dx-select-box #selectId [items]="bodegasdestino" [value]="bodegasdestino" [readOnly]="readSuc" [disabled]="false"
                     [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre"  (onValueChanged)="obtenerDatosBodegaDestino($event)">
                 </dx-select-box></div>
             </div>
@@ -113,12 +113,18 @@
                 </div>
                 <div class="col-md-6">
                     <div class="row">
-                        <div class="col-md-3"><p>Observaciones</p> </div>
-                        <div class="col-md-9"><dx-text-box [(value)]="observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                        <div class="col-md-8"><p>Envio de mercaderia a bodega externa</p> </div>
+                        <div class="col-md-4" style="margin-top: 2px;"><dx-check-box  [(value)]="bodegaExternaSeleccion" (onValueChanged)="activarBodegaExterna($event)"></dx-check-box></div>
                     </div>
                 </div>
             </div>
             
+        </div>
+        <div class="col-md-12">
+                <div class="row">
+                    <div class="col-md-3"><p>Observaciones</p> </div>
+                    <div class="col-md-9"><dx-text-box [(value)]="observaciones" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                </div>
         </div>
         
     </div>
@@ -367,6 +373,9 @@
             </dxi-column>
             <dxi-column type="buttons"    dataField="bt2"  caption="Eliminar" width="15%" [visible]="true">
                 <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
+                <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
             </dxi-column>
             <dxo-paging [pageSize]="12"></dxo-paging>
             <dxo-pager

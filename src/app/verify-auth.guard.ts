@@ -24,7 +24,7 @@ export class VerifyAuthGuard implements CanActivate {
         new Promise<any>((resolve, reject) => {
           ordenes.forEach((nt) => {
             this.role = nt.rol
-            alert("sx "+this.role)
+            //alert("sx "+this.role)
             if (route.data.roles && route.data.roles.indexOf(this.role) === -1) {
               // role not authorised so redirect to home page
               //this.router.navigate(['/dashboard']);

@@ -147,6 +147,7 @@ export class ConsultasComponent implements OnInit {
 
   cargarProductoTabla(){
     this.infoproducto.producto = this.productoLeido.PRODUCTO
+    this.infoproducto.precioCosto = this.productoLeido.precio
     this.infoproducto.productoLeido = this.productoLeido
     this.infoproducto.piezas = this.productoLeido.P_CAJA
     this.infoproducto.metros = this.productoLeido.M2
@@ -192,7 +193,7 @@ export class ConsultasComponent implements OnInit {
         }
       }
     })
-     
+    
   //precio distribuidor
   this.infoproducto.precioDist=parseFloat((this.infoproducto.productoLeido.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.infoproducto.productoLeido.precio).toFixed(2))
   //precio socio

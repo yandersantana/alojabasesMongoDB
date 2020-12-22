@@ -13,6 +13,7 @@ export class infoprod{
   precioSocio:number
   precioDist:number
   precioCliente:number
+  precioCosto:number
   notas:string
   constructor(){
      this.cantidad=0

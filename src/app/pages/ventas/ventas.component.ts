@@ -1625,7 +1625,7 @@ var tipoDoc:boolean=false
               style: 'tableExample',
               relativePosition: {
 								x: 20,
-								y: 70,
+								y: 65,
 							},
                 table: {
                   type: 'none',
@@ -1707,7 +1707,7 @@ var tipoDoc:boolean=false
             style: 'tableExample',
             relativePosition: {
               x: 20,
-              y: 260,
+              y: 255,
             },
             fontSize:8,
             table: {
@@ -1741,7 +1741,7 @@ var tipoDoc:boolean=false
             style: 'tableExampleResultados',
             relativePosition: {
               x: 420,
-              y: 243,
+              y: 241,
             },
             fontSize:8,
             table: {
@@ -1870,7 +1870,7 @@ var tipoDoc:boolean=false
               style: 'tableExampleResultados',
               relativePosition: {
                 x: 420,
-                y: 593,
+                y: 591,
               },
               fontSize:8,
               table: {

@@ -1522,7 +1522,10 @@ cambiarestado(e,i:number){
   crearPDF(){
     
 var tipoDoc:boolean=false
-
+this.factura.cliente.telefono
+if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==null ){
+  this.factura.cliente.telefono="xxxxxxxxxx"
+}
   if(this.tDocumento == "Factura"){
     
     this.textoTipoDocumento2= "ed.producto.PRODUCTO"
@@ -1707,7 +1710,7 @@ var tipoDoc:boolean=false
             style: 'tableExample',
             relativePosition: {
               x: 20,
-              y: 255,
+              y: 265,
             },
             fontSize:8,
             table: {
@@ -1835,7 +1838,7 @@ var tipoDoc:boolean=false
               style: 'tableExample',
               relativePosition: {
                 x: 20,
-                y: 610,
+                y: 620,
               },
               fontSize:8,
               table: {

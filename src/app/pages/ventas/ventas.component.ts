@@ -68,7 +68,7 @@ export class VentasComponent implements OnInit {
   invetarioProd:inventario
   productoPendienteE: productosPendientesEntrega
   productoPendienteEntregas: productosPendientesEntrega[]=[]
-
+  telefonoCliente="";
   nombre:string;
   factura : factura;
   cotizacion: cotizacion;
@@ -1520,12 +1520,10 @@ cambiarestado(e,i:number){
 
 
   crearPDF(){
-    
-var tipoDoc:boolean=false
-this.factura.cliente.telefono
-if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==null ){
-  this.factura.cliente.telefono="xxxxxxxxxx"
-}
+  var tipoDoc:boolean=false
+  if(this.factura.cliente.celular==undefined || this.factura.cliente.celular==null ){
+    this.factura.cliente.celular="xxxxxxxxxx"
+  }
   if(this.tDocumento == "Factura"){
     
     this.textoTipoDocumento2= "ed.producto.PRODUCTO"
@@ -1645,7 +1643,7 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
                             ul: [
                               'Cliente    : '+this.factura.cliente.cliente_nombre,
                               'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.telefono,  
+                              'Teléfono   : '+this.factura.cliente.celular,  
                             ]
                           }
                         ]
@@ -1762,6 +1760,7 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
 
 
 
+
             //---------------- COPIA 2 DE FACTURA----------------
             {
               columns: [ 
@@ -1788,7 +1787,7 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
                             ul: [
                               'Cliente    : '+this.factura.cliente.cliente_nombre,
                               'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.telefono,  
+                              'Teléfono   : '+this.factura.cliente.celular,  
                             ]
                           }
                         ]
@@ -2651,12 +2650,17 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
         },
         table: {
           headerRows: 1,
-          widths: ["8%","6%","55%","10%","16%"],
+          widths: ["7%","7%","6%","50%","10%","15%"],
           alignment:'center',
           body: [
             
             [{
               text: 'CANT',
+              style: 'tableHeader2',
+              alignment: 'center'
+            },
+            {
+              text: 'C/Pcs',
               style: 'tableHeader2',
               alignment: 'center'
             },
@@ -2683,7 +2687,7 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
             ],
             
             ...productos2.map(ed =>{
-              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},{text:ed.producto.PRODUCTO,fontSize:8}, {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
+              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },{text:ed.equivalencia, alignment:"center",fontSize:8},{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},{text:ed.producto.PRODUCTO,fontSize:8}, {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
               
             }),
             /* [
@@ -3110,6 +3114,7 @@ if(this.factura.cliente.telefono==undefined || this.factura.cliente.telefono==nu
     }
 
   generarFactura(e) {
+    this.telefonoCliente= this.factura.cliente.celular
     this.factura.cliente.cliente_nombre= this.mensaje
    
    if(this.factura.cliente!=undefined){

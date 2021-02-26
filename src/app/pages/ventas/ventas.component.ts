@@ -2264,7 +2264,7 @@ cambiarestado(e,i:number){
       this.calcularValoresFactura()
       sessionStorage.setItem('resume', JSON.stringify("jj"));
       let tipoDocumento="Factura";
-      return {
+      /* return {
         pageSize: 'A4',
         content: [
           {
@@ -2290,9 +2290,6 @@ cambiarestado(e,i:number){
             columns: [
               
               [
-              /* {
-                text: "Fecha de impresión: "+this.factura.fecha, fontSize:10
-              }, */
               {
                 text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:9
               },
@@ -2489,6 +2486,377 @@ cambiarestado(e,i:number){
             },
             tableExample4: {
               margin: [10, 5, 0, 15]
+            },
+            name: {
+              fontSize: 16,
+              bold: true
+            },
+            jobTitle: {
+              fontSize: 14,
+              bold: true,
+              italics: true
+            },
+            textFot: {   
+              alignment: 'center',
+              italics: true,
+              color: "#bebebe",
+              fontSize:18,
+            },
+            tableHeader: {
+              bold: true,
+            },
+            tableHeader2: {
+              bold: true,
+              fontSize:10,
+            },
+            
+            fondoFooter: {
+              fontSize: 8,
+              alignment: "center"
+            },
+            totales: {
+              margin: [0, 0, 15, 0],
+              alignment: "right",
+            },
+            totales2: {
+              margin: [0, 0, 5, 0],
+              alignment: "right",
+            },
+            detalleTotales: {
+              margin: [15, 0, 0, 0]
+            }
+          }
+      }; */
+
+
+      return {
+        pageSize: 'A4',
+        content: [
+          {
+            columns: [ 
+              [
+              {
+              //Desde aqui comienza los datos del cliente
+              style: 'tableExample',
+              relativePosition: {
+								x: 20,
+								y: 65,
+							},
+                table: {
+                  type: 'none',
+                  widths: [255,105,110],
+                  body: [
+                    [
+                      {
+                        type: 'none',
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Cliente    : '+this.factura.cliente.cliente_nombre,
+                              'Dirección  : '+this.factura.cliente.direccion,  
+                              'Teléfono   : '+this.factura.cliente.celular,  
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'RUC      : '+this.factura.cliente.ruc,
+                              'Sucursal : '+this.factura.sucursal, 
+                              'Vendedor : '+this.factura.username, 
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
+                              'Código  :  '+this.numeroFactura,
+                            ]
+                          }
+                        ]
+                      },
+                    ]
+                  ]
+              },
+              },
+              
+              
+              /*{ 
+              fontSize:8,
+              relativePosition: {
+								x: 370,
+								y: 58,
+							},
+                type: 'none',
+                ol: [
+                  'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
+                  'Código  :  '+this.numeroFactura,
+
+                ]
+              }, */
+              ],
+              [
+                
+              ]
+            ]
+          },
+         
+          
+          this.getProductosVendidos(this.productosVendidos),
+          {
+            //Desde aqui comienza los datos del cliente
+            style: 'tableExample',
+            relativePosition: {
+              x: 20,
+              y: 265,
+            },
+            fontSize:8,
+            table: {
+              type: 'none',
+              widths: [330],
+              heights:22,
+              body: [
+                [
+                  {
+                    stack: [
+                      {
+                        type: 'none',
+                        bold: true,
+                        fontSize:6,
+                        ul: [
+                          "Nota: Después de salir la mercadería no se aceptan devoluciones",
+                          "Observaciones :  "+this.factura.observaciones,  
+                        ]
+                      }
+                    ]
+                  },
+                 
+                 
+                ]
+              ],
+            },
+            layout: 'noBorders'
+            },
+          {
+            //Desde aqui comienza los datos del cliente
+            style: 'tableExampleResultados',
+            relativePosition: {
+              x: 420,
+              y: 241,
+            },
+            fontSize:8,
+            table: {
+              widths: [100],
+              body: [
+                [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                [ {text:this.sIva0.toFixed(2), style:"totales" } ],
+                [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+              ]
+            },
+            layout: 'noBorders'
+            },
+
+
+
+
+            //---------------- COPIA 2 DE FACTURA----------------
+            {
+              columns: [ 
+                [
+                {
+                //Desde aqui comienza los datos del cliente
+                style: 'tableExample',
+                relativePosition: {
+                  x: 20,
+                  y: 420,
+                },
+                table: {
+                  type: 'none',
+                  widths: [255,105,110],
+                  body: [
+                    [
+                      {
+                        type: 'none',
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Cliente    : '+this.factura.cliente.cliente_nombre,
+                              'Dirección  : '+this.factura.cliente.direccion,  
+                              'Teléfono   : '+this.factura.cliente.celular,  
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'RUC      : '+this.factura.cliente.ruc,
+                              'Sucursal : '+this.factura.sucursal, 
+                              'Vendedor : '+this.factura.username, 
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
+                              'Código  :  '+this.numeroFactura,
+                            ]
+                          }
+                        ]
+                      },
+                    ]
+                  ]
+              },
+                }, 
+                ],
+                [
+                  
+                ]
+              ]
+            },
+           
+            
+            this.getProductosVendidoscopia(this.productosVendidos),
+            {
+              //Desde aqui comienza los datos del cliente
+              style: 'tableExample',
+              relativePosition: {
+                x: 20,
+                y: 620,
+              },
+              fontSize:8,
+              table: {
+                type: 'none',
+                widths: [330],
+                heights:22,
+                body: [
+                  [
+                    {
+                      stack: [
+                        {
+                          type: 'none',
+                          bold: true,
+                          fontSize:6,
+                          ul: [
+                            "Nota: Después de salir la mercadería no se aceptan devoluciones",
+                            "Observaciones :  "+this.factura.observaciones,  
+                          ]
+                        }
+                      ]
+                    },
+                   
+                   
+                  ]
+                ],
+              },
+              layout: 'noBorders'
+              
+              },
+            {
+              //Desde aqui comienza los datos del cliente
+              style: 'tableExampleResultados',
+              relativePosition: {
+                x: 420,
+                y: 591,
+              },
+              fontSize:8,
+              table: {
+                widths: [100],
+                body: [
+                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
+                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+                ]
+              },
+              layout: 'noBorders'
+              },
+          
+        ],
+        footer: function (currentPage, pageCount) {
+          return {
+            table: {
+              body: [
+                
+                [{text: ''}],
+              ]
+            },
+            layout: 'noBorders'
+          };
+        }
+        , pageBreakBefore: function(currentNode, followingNodesOnPage, nodesOnNextPage, previousNodesOnPage) {
+          return currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0;
+       },
+        
+        images: {
+          mySuperImage: 'data:image/jpeg;base64,...content...'
+        },
+        info: {
+          title: "Factura" + '_RESUME',
+          author: "this.resume.name",
+          subject: 'RESUME',
+          keywords: 'RESUME, ONLINE RESUME',
+        },
+          styles: {
+            header: {
+              fontSize: 18,
+              bold: true,
+              margin: [0, 20, 0, 10],
+              decoration: 'underline'
+            },
+            tableExample: {
+              margin: [0, 5, 0, 15]
+            },
+            tableExampleResultados: {
+              margin: [0, 5, 0, 15],
+              alignment: "right"
+            },
+            bordeTabla:{
+              border:1
+            },
+            tableExample2: {
+              margin: [-13, 5, 10, 15]
+            },
+            tableExample3: {
+              margin: [-13, -10, 10, 15]
+            },
+            tableExample4: {
+              margin: [10, -5, 0, 15]
+            },
+            texto6: {
+              fontSize: 14,
+              bold: true,
+              alignment: "center"
             },
             name: {
               fontSize: 16,

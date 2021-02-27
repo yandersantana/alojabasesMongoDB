@@ -687,6 +687,7 @@ setSelectedProducto(i:number){
   }
 
   obtenerDatosDeProductoParaUnDetalle(e, i:number) {
+    console.log("netreeeeee")
     this.newButtonEnabled = false
     var cont=0
     this.productosVendidos.forEach(element=>{
@@ -1098,13 +1099,12 @@ buscarCotizacion(){
   var bandera:boolean=false
   this.proformas.forEach(element=>{
     if(element.documento_n == this.Ncotizacion ){
+      console.log("ka fecha es ",element)
       this.contadorBusqueda++
-      var dia1 = new Date(element.fecha2)
-      var dia2 = new Date(this.now)
-      console.log("fecha1 "+dia1);
-      console.log("fecha2 "+dia2);
+      var dia1 = new Date(element.fecha)
+      var dia2 = new Date();
 
-      var diferencia= this.diferenciaEntreDiasEnDias(dia2, dia1);
+      var diferencia= this.diferenciaEntreDiasEnDias(dia1,dia2);
       if(diferencia <=8){
         bandera=true
 
@@ -1165,22 +1165,28 @@ buscarCotizacion(){
 }
 
 buscarCantidadesPRODUCTOS(){
-  var contP=0
+  var contP=1
   this.productosVendidos.forEach(element=>{
     this.productos.forEach(element2=>{
       if(element.producto.PRODUCTO == element2.PRODUCTO){
+        contP++
+        
         switch (this.factura.sucursal) {
           case "matriz":
             element.disponible=element2.sucursal1
-            //this.compararCantidad(element.producto.PRODUCTO, element.disponible,contP)
-            console.log("ennntrree")
+            element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
+            
             break;
           case "sucursal1":
             element.disponible=element2.sucursal2
+            element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
+            //this.carcularTotalProducto(null,contP);
             break;
           case "sucursal2":
             element.disponible=element2.sucursal3
-              break;
+            element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
+            //this.carcularTotalProducto(null,contP);
+            break;
           default:
         }
       }
@@ -1227,6 +1233,12 @@ compararCantidad2(){
       })
     }
   })
+  var contPr=0
+  this.productosVendidos.forEach(element=>{
+    this.carcularTotalProducto(null,contPr);
+  })
+
+  
 }
 
 compararCantidad(nombre:string,i:number,o:number){
@@ -1671,6 +1683,7 @@ cambiarestado(e,i:number){
                             ul: [
                               'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
                               'Código  :  '+this.numeroFactura,
+                              'RUC/Suc  :  '+this.RucSucursal,
                             ]
                           }
                         ]
@@ -1815,6 +1828,7 @@ cambiarestado(e,i:number){
                             ul: [
                               'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
                               'Código  :  '+this.numeroFactura,
+                              'RUC/Suc  :  '+this.RucSucursal,
                             ]
                           }
                         ]
@@ -2585,6 +2599,7 @@ cambiarestado(e,i:number){
                             ul: [
                               'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
                               'Código  :  '+this.numeroFactura,
+                              'RUC/Suc  :  '+this.RucSucursal,
                             ]
                           }
                         ]
@@ -2729,6 +2744,7 @@ cambiarestado(e,i:number){
                             ul: [
                               'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
                               'Código  :  '+this.numeroFactura,
+                              'RUC/Suc  :  '+this.RucSucursal,
                             ]
                           }
                         ]

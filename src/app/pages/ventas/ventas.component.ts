@@ -421,10 +421,12 @@ contadores:contadoresDocumentos[]
         } 
         break;
       case "Nota de Venta":
+        this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
         this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
         break;
       case "Cotización":
         this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
+        this.factura.documento_n = this.contadorFirebase[0].proformas_Ndocumento+1 
         break;
       default:
         break;
@@ -509,7 +511,15 @@ contadores:contadoresDocumentos[]
       this.contadoProductos++
     })
     
-    console.log("hay"+this.contadoProductos)
+    if(this.contadoProductos<=11){
+      this.productosVendidos.push(new venta())
+    }else{
+      Swal.fire(
+        'Alerta',
+        'Ya no se pueden ingresar mas items',
+        'warning'
+      )
+    }
     if(this.contadoProductos>=5 && this.contadoProductos<=10){
       this.dataContainer.cssClass="altura1"
     }else if(this.contadoProductos>=11 && this.contadoProductos<=15){
@@ -522,8 +532,6 @@ contadores:contadoresDocumentos[]
       this.dataContainer.cssClass="altura5"
     }
 
-    this.productosVendidos.push(new venta())
-    
     
   }
 
@@ -1124,8 +1132,15 @@ buscarCotizacion(){
       this.factura.coste_transporte=element.coste_transporte
       this.factura.observaciones=element.observaciones
       this.factura.cotizacion=element.documento_n
-      this.productosVendidos= element.productosVendidos
+      this.productosVendidos= element.productosVendidos  
       this.nCotizacionFact ="Referecia Cotización: #"+element.documento_n
+      if(this.productosVendidos.length>=5 && this.productosVendidos.length<=10){
+        this.dataContainer.cssClass="altura1"
+      }else if(this.productosVendidos.length>=11 && this.productosVendidos.length<=15){
+        this.dataContainer.cssClass="altura2"
+      }else if(this.productosVendidos.length>=16 && this.productosVendidos.length<=20){
+        this.dataContainer.cssClass="altura3"
+      }
     }else{
       Swal.fire(
         'Alerta',
@@ -3473,7 +3488,8 @@ cambiarestado(e,i:number){
       this.contadores[0].proformas_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDProformas(this.contadores[0]).subscribe(
         res => {
-          console.log(res + "entre por si");
+          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ proformas_Ndocumento:this.factura.documento_n })
+          .then(res => { }, err => (err));
         },
         err => {
           Swal.fire({

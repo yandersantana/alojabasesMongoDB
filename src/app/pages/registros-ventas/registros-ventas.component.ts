@@ -379,17 +379,19 @@ export class RegistrosVentasComponent implements OnInit {
 
   //cargar Cotizacion
   cargarCotización(e){
+    this.limpiarArregloPFact()
     this.cotizaciones.forEach(element=>{
       if(e.documento_n == element.documento_n){
        this.factura= element
+       this.productosVendidos2=element.productosVendidos
       }
     })
-    this.limpiarArregloPFact()
-    this.productosVendidos.forEach(element=>{
+    
+   /* this.productosVendidos.forEach(element=>{
       if(element.factura_id== e.documento_n && element.tipoDocumentoVenta=="Cotización"){
        this.productosVendidos2.push(element)
       }
-    })
+    })*/
     this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.factura.sucursal){
         this.parametrizacionSucu= element

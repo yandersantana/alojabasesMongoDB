@@ -1148,7 +1148,7 @@ buscarCotizacion(){
       }
     }) */
     this.buscarCantidadesPRODUCTOS()
-    this.deleteProductoVendido(0)
+    //this.deleteProductoVendido(0)
     this.newButtonEnabled = false
     this.costoTr=true
   }
@@ -1165,12 +1165,10 @@ buscarCotizacion(){
 }
 
 buscarCantidadesPRODUCTOS(){
-  var contP=1
+  var contP=0
   this.productosVendidos.forEach(element=>{
     this.productos.forEach(element2=>{
       if(element.producto.PRODUCTO == element2.PRODUCTO){
-        contP++
-        
         switch (this.factura.sucursal) {
           case "matriz":
             element.disponible=element2.sucursal1
@@ -1201,10 +1199,11 @@ buscarCantidadesPRODUCTOS(){
   })  */
 }
 
-compararCantidad2(){
+async compararCantidad2(){
   var cont=0
-  this.productosVendidos.forEach(element=>{
+  await this.productosVendidos.forEach(element=>{
     cont++
+    
     if(element.disponible<element.cantidad){
       Swal.fire({
         title: 'Cantidad no disponible',
@@ -1232,11 +1231,13 @@ compararCantidad2(){
         }
       })
     }
+    this.carcularTotalProducto(null,cont);
   })
-  var contPr=0
-  this.productosVendidos.forEach(element=>{
+  //var contPr=1
+  /*this.productosVendidos.forEach(element=>{
+    contPr++
     this.carcularTotalProducto(null,contPr);
-  })
+  })*/
 
   
 }
@@ -3396,6 +3397,7 @@ cambiarestado(e,i:number){
       this.factura.fecha= this.now
       //this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
+      this.factura.productosVendidos=this.productosVendidos
       this.proformasService.newProforma(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");

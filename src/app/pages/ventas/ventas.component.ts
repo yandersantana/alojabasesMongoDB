@@ -1187,16 +1187,25 @@ buscarCantidadesPRODUCTOS(){
         switch (this.factura.sucursal) {
           case "matriz":
             element.disponible=element2.sucursal1
+            if(element.disponible<0){
+              element.disponible=0
+            }
             element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
             
             break;
           case "sucursal1":
             element.disponible=element2.sucursal2
+            if(element.disponible<0){
+              element.disponible=0
+            }
             element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
             //this.carcularTotalProducto(null,contP);
             break;
           case "sucursal2":
             element.disponible=element2.sucursal3
+            if(element.disponible<0){
+              element.disponible=0
+            }
             element.precio_min =parseFloat((element2.precio * element2.porcentaje_ganancia / 100 + element2.precio).toFixed(2))
             //this.carcularTotalProducto(null,contP);
             break;

@@ -223,6 +223,7 @@ export class EntregasPComponent implements OnInit {
       }else if(element.estado == "ELIMINADA"){
         this.productosPendientesEliminados.push(element)
       }else{
+        console.log("siiiii ess  ",element)
         this.productosPendientesEntregados.push(element)
       }
     })
@@ -1234,9 +1235,9 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("tipo_documento", "visible", true);
     e.component.columnOption("celular", "visible", true);
     e.component.columnOption("valor_unitario", "visible", true);
-    e.component.columnOption("cajasEntregadas", "visible", true);
-    e.component.columnOption("piezasEntregadas", "visible", true);
-    e.component.columnOption("m2Entregados", "visible", true);
+    e.component.columnOption("cajasPen", "visible", true);
+    e.component.columnOption("piezasPen", "visible", true);
+    e.component.columnOption("cantM2Pen", "visible", true);
     e.component.columnOption("notas", "visible", true);
     //e.component.columnOption("total", "visible", true);
    
@@ -1245,9 +1246,9 @@ export class EntregasPComponent implements OnInit {
     e.component.columnOption("tipo_documento", "visible", false);
     e.component.columnOption("celular", "visible", false);
     e.component.columnOption("valor_unitario", "visible", false);
-    e.component.columnOption("cajasEntregadas", "visible", false);
-    e.component.columnOption("piezasEntregadas", "visible", false);
-    e.component.columnOption("m2Entregados", "visible", false);
+    e.component.columnOption("cajasPen", "visible", false);
+    e.component.columnOption("piezasPen", "visible", false);
+    e.component.columnOption("cantM2Pen", "visible", false);
     e.component.columnOption("notas", "visible", false);
   //  e.component.columnOption("total", "visible", false);
     e.component.endUpdate();

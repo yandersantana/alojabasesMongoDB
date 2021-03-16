@@ -847,6 +847,11 @@ setSelectedProducto(i:number){
             })
           }
         }
+
+        eliminarData(e){
+          this.factura.cliente = null
+          this.mensaje=null
+        }
       
         buscarCliente(e){
           console.log("entre por aqui");

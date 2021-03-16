@@ -132,9 +132,9 @@
            
         </dxi-item>
     </dxi-item>
-    <dxi-item itemType="group" [colCount]="3" [colSpan]="1">
+    <dxi-item itemType="group" [colCount]="5" [colSpan]="1">
       
-        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}" [colSpan]="2"  >
+        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}" [colSpan]="4" >
             <dxi-validation-rule
             type= "pattern"
             pattern= '^[0-9]{10,15}$'
@@ -142,7 +142,7 @@
         </dxi-validation-rule>
             <dxo-label [visible]="false" ></dxo-label>
         </dxi-item>
-        <dxi-item dataField="">
+        <dxi-item dataField="" [colSpan]="1" >
             <dx-button
                         type="normal"
                         [width]="100"
@@ -150,6 +150,15 @@
                         (onClick)="buscarCliente($event)">
                     </dx-button>
         </dxi-item>
+
+       <!--  <dxi-item dataField="" [colSpan]="1" >
+            <dx-button
+                        type="normal"
+                        [width]="20"
+                        icon="fa fa-user"
+                        (onClick)="buscarCliente($event)">
+                    </dx-button>
+        </dxi-item> -->
     
     </dxi-item>
    
@@ -158,10 +167,23 @@
         <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
         <dxo-label [visible]="false"></dxo-label>
     </dxi-item>
-    <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}">
-        <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-        <dxo-label [visible]="false"></dxo-label>
+   
+    <dxi-item itemType="group" [colCount]="3" [colSpan]="1">
+        <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}" [colSpan]="2">
+            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item>
+        <dxi-item dataField="">
+            <dx-button
+                        type="normal"
+                        [width]="30"
+                        icon="fa fa-trash"
+                        (onClick)="eliminarData($event)">
+                    </dx-button>
+        </dxi-item>
     </dxi-item>
+
+    
 
 
     <dxi-item itemType="empty" [colSpan]="3"></dxi-item>

@@ -17,6 +17,7 @@ export class TransaccionesComponent implements OnInit {
  transacciones : transaccion[] = []
  transaccionesGlobales : transaccion[] = []
  popupvisible:boolean=false
+ mostrarLoading:boolean=true
  correo:string
  usuarioLogueado:user
  @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -31,10 +32,16 @@ export class TransaccionesComponent implements OnInit {
     this.transaccionesService.getTransaccion().subscribe(res => {
       this.transaccionesGlobales = res as transaccion[];
       this.separarTransacciones()
-   })
+      
+   },() => {
+    console.log("Complete function triggered.")
+    }
+   
+   )
   }
 
   separarTransacciones(){
+    console.log("entreee aqui ")
     if(this.usuarioLogueado[0].rol!="Administrador"){
       switch (this.usuarioLogueado[0].sucursal) {
         case "matriz":
@@ -43,6 +50,7 @@ export class TransaccionesComponent implements OnInit {
               this.transacciones.push(element)
             }
           })
+          this.terminarLoading()
           break;
         case "sucursal1":
           this.transaccionesGlobales.forEach(element=>{
@@ -50,6 +58,7 @@ export class TransaccionesComponent implements OnInit {
               this.transacciones.push(element)
             }
           })
+          this.terminarLoading()
           break;
         case "sucursal2":
           this.transaccionesGlobales.forEach(element=>{
@@ -57,13 +66,20 @@ export class TransaccionesComponent implements OnInit {
               this.transacciones.push(element)
             }
           })
+          this.terminarLoading()
             break;
         default:
           break;
       }
     }else{
       this.transacciones=this.transaccionesGlobales
+      this.terminarLoading()
     }
+    //this.mostrarLoading=false
+  }
+
+  terminarLoading(){
+    this.mostrarLoading=false
   }
 
 

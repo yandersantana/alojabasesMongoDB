@@ -1,0 +1,17 @@
+<div >
+    <dx-popup
+        [width]="450"
+        [height]="250"
+        [showTitle]="false"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="false"
+        [(visible)]="popupVisible">
+        <div *dxTemplate="let data of 'content'" class="content">
+            <br><br><br>
+            <dx-load-indicator id="large-indicator" height="60" width="60"></dx-load-indicator>
+            <h4>Cargando la Información</h4>
+            <!-- <h2>Espere un momento</h2> -->
+        </div>
+    </dx-popup>
+</div>
+

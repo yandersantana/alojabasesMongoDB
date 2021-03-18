@@ -49,6 +49,7 @@ import { Auditoria2Component } from './pages/auditorias/auditoria2/auditoria2.co
 import { AudTablaComponent } from './pages/auditorias/aud-tabla/aud-tabla.component';
 import { ConsultasGrupoComponent } from './pages/consultas-grupo/consultas-grupo.component';
 import { IndicadoresComponent } from './pages/indicadores/indicadores.component';
+import { LoadingComponent } from './pages/loading/loading.component';
 
 
 
@@ -86,7 +87,8 @@ import { IndicadoresComponent } from './pages/indicadores/indicadores.component'
     Auditoria2Component,
     AudTablaComponent,
     ConsultasGrupoComponent,
-    IndicadoresComponent
+    IndicadoresComponent,
+    LoadingComponent
   ],
   imports: [
     BrowserModule,

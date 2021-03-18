@@ -55,6 +55,8 @@ devolucioLeida:devolucion
 productos:producto[]=[]
 facturaTraida:factura
 usuarioLogueado:user
+mostrarLoading:boolean=true;
+mostrarLoadingFactura:boolean=true;
 notas_venta: factura[]=[]
 menuDocumento: string[] = [
   "Factura",
@@ -213,12 +215,16 @@ productos22: DataSource;
   traerFacturas(){
     this.facturasService.getFacturas().subscribe(res => {
       this.facturas = res as factura[];
+      this.mostrarLoadingFactura=false
+      console.log("traje facturas")
    })
   }
 
   traerNotasVenta(){
     this.notasVentaService.getNotasVentas().subscribe(res => {
       this.notas_venta = res as factura[];
+      this.mostrarLoading=false
+      console.log("traje notas ventas")
    })
   }
 

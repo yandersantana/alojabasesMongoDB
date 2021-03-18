@@ -7,7 +7,6 @@ router.get('/getDevoluciones', async (req, res) => {
     res.send(devoluciones)      
 })
 
-
 router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;

@@ -30,7 +30,7 @@ export class ConsolidadoComponent implements OnInit {
   ];
 
 
-
+  mostrarLoading:boolean = true
   popupVisible:boolean=false
   popupVisibleNotas:boolean=false
   productos:producto[]=[]
@@ -660,6 +660,7 @@ export class ConsolidadoComponent implements OnInit {
         element.totalb3=0
       }
     })
+    this.mostrarLoading=false
    // this.actualizarInventario()
    }
 

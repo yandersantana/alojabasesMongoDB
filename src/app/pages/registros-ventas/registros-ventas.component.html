@@ -14,11 +14,11 @@
             [width]="240" 
             placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Facturas_ingresadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
         <dxi-column
             dataField="documento_n"
             caption="Factura #"
-            dataType="string"
-            sortOrder="desc">
+            dataType="string">
         </dxi-column>
         <dxi-column
             dataField="fecha"
@@ -156,11 +156,11 @@
             [visible]="true" 
             [width]="240" 
             placeholder="Buscar..."></dxo-search-panel>
+            <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
         <dxi-column
             dataField="documento_n"
             caption="Factura #"
-            dataType="string"
-            sortOrder="desc">
+            dataType="string">
         </dxi-column>
         <dxi-column
             dataField="fecha"
@@ -294,11 +294,11 @@
             [width]="240" 
             placeholder="Buscar..."></dxo-search-panel>
             <dxo-export [enabled]="true" fileName="Cotizaciones_ingresadas" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
             <dxi-column
             dataField="documento_n"
             caption="ID #"
-            dataType="string"
-            sortOrder="desc">
+            dataType="string">
         </dxi-column>
         <dxi-column
             dataField="fecha"

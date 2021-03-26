@@ -15,7 +15,7 @@
 <div  class="remiPro">
 
     <div id="ordenes" style="display: block;">
-        <p>Esto de aqui verá el usuario</p>
+        <!-- <p>Esto de aqui verá el usuario</p> -->
         <div style="text-align: center;"><h4>Ordenes de Compras </h4></div>
     
         <dx-data-grid id="gridContainer"
@@ -220,6 +220,201 @@
       
         
     </div>
+
+
+    <div id="ordenesDirectas" style="display: none;">
+        <!-- <p>Esto de aqui verá el usuario</p> -->
+        <div style="text-align: center;"><h4>Ordenes de Compras Directas</h4></div>
+    
+        <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectasPendientes"
+        [showBorders]="true"
+        [remoteOperations]="true">
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="_id"
+            caption="N° Orden"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc"
+           >
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+       
+        <dxi-column
+            dataField="total"
+            dataType="number">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>
+          
+               
+        </dxi-column>
+        <dxi-column type="buttons" caption="Opciones" id="botones">
+            <dxi-button text="Anular" [onClick]="anularOrden"></dxi-button>
+        </dxi-column>
+        
+        <dxo-grouping #expand [autoExpandAll]="true">
+        </dxo-grouping>
+        
+        
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+    
+   
+    <div style="text-align: center;"><h4>Ordenes de Compras Directas Pendientes de Anulación</h4></div>
+    
+        <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectasPendientesAnulacion"
+        [showBorders]="true"
+        [remoteOperations]="true">
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="_id"
+            caption="N° Orden"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            dataType="number">
+        </dxi-column>
+        <dxi-column
+            dataField="tipo"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="msjGeneral"
+            caption="Motivo de Anulación"
+            [width]="30+'%'"
+            dataType="string">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>
+          
+               
+        </dxi-column>
+        <dxi-column type="buttons" caption="Opciones" id="botones">
+           <!--  <dxi-button text="Aprobar" [onClick]="aceptarOrden"></dxi-button> -->
+            <dxi-button text="Anular" [onClick]="anularOrdenDirecta"></dxi-button>
+            <!-- <dxi-button text="Rechazar" [onClick]="rechazarOrden"></dxi-button> -->
+            
+        </dxi-column>
+        
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+    
+
+    <div style="text-align: center;"><h4>Ordenes de Compras Directas Anuladas</h4></div>
+    
+        <dx-data-grid id="gridContainer"
+        [dataSource]="ordenesCompraDirectasAnuladas"
+        [showBorders]="true"
+        [remoteOperations]="true">
+        <dxo-search-panel 
+            [visible]="true" 
+            [width]="240" 
+            placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="_id"
+            caption="N° Orden"
+            dataType="string"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="documento"
+            caption="Orden #"
+            dataType="string"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="sucursal.nombre"
+            caption="Sucursal"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="proveedor.nombre_proveedor"
+            caption="Proveedor"
+            dataType="string">
+        </dxi-column>
+        <dxi-column
+            dataField="total"
+            dataType="number">
+        </dxi-column>
+        <dxi-column
+            dataField="msjGeneral"
+            caption="Motivo de Anulación"
+            [width]="30+'%'"
+            dataType="string">
+        </dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
+            
+            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>
+          
+               
+        </dxi-column>
+       
+        
+        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>  
+    </div>
+
+
+
+
+
+    
 
     <div id="facturas" style="display: none;">
         <div>

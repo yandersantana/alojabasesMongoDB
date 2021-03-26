@@ -1,20 +1,7 @@
 
-<!-- <div class="row alin2 titulos">
-    <div class="col-md-8"><div class="">
-    
-    </div></div>
-    <div class="col-md-4"> <dx-select-box [items]="menu1" 
-        [value]="menu1[0]" 
-        [readOnly]="false" 
-        [disabled]="false"
-        (onValueChanged)="opcionMenu($event)"
-        ></dx-select-box></div>
-</div> -->
-<!-- <div class=" tdco2">
-    
-           
-</div> 
- -->
+ <div *ngIf="mostrarLoading">
+    <app-loading></app-loading>
+</div>
 <div id="ordnormal" style="display: block;">
     <br><br>
     <div >

@@ -43,6 +43,10 @@ export class AnulacionesComponent implements OnInit {
   ordenesCompraPendientesAnulacion:OrdenDeCompra[]=[]
   ordenesCompraAnuladas:OrdenDeCompra[]=[]
 
+  ordenesCompraDirectasPendientes:OrdenDeCompra[]=[]
+  ordenesCompraDirectasPendientesAnulacion:OrdenDeCompra[]=[]
+  ordenesCompraDirectasAnuladas:OrdenDeCompra[]=[]
+
   ordenDeCompra2 : OrdenDeCompra;
   ordenDeCompra3 : OrdenDeCompra;
   facturaProveedor: FacturaProveedor;
@@ -59,6 +63,7 @@ export class AnulacionesComponent implements OnInit {
   parametrizacionSucu:parametrizacionsuc
   menu1: string[] = [
     "Ordenes de Compra",
+    "Ordenes de Compra Directas",
     "Facturas",
     "Notas de Venta"
   ];
@@ -316,19 +321,27 @@ subtotal:number=0
 
   obtenerOrdenesPendientes(){
     this.ordenesCompra.forEach(element=>{
-      if(element.estadoOrden=="PENDIENTE"){
+      if(element.estadoOrden=="PENDIENTE" && element.tipo!="Entregado"){
         this.ordenesCompraPendientes.push(element)
-      }else if(element.estadoOrden=="Pendiente-Anulacion"){
+      }else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo!="Entregado"){
         this.ordenesCompraPendientesAnulacion.push(element)
-      }else if(element.estadoOrden=="ANULADO"){
+      }else if(element.estadoOrden=="ANULADO" && element.tipo!="Entregado"){
         this.ordenesCompraAnuladas.push(element)
+      }
+
+      if(element.tipo=="Entregado" && element.estadoOrden=="COMPLETO"){
+        this.ordenesCompraDirectasPendientes.push(element)
+      }else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo=="Entregado"){
+        this.ordenesCompraDirectasPendientesAnulacion.push(element)
+      }else if(element.estadoOrden=="ANULADO" && element.tipo=="Entregado"){
+        this.ordenesCompraDirectasAnuladas.push(element)
       }
     })
   }
 
   eliminarTransacciones5(e){
     this.transacciones.forEach(element=>{
-      if(element.documento== e.documento){
+      if(element.documento== e.documento && element.orden_compra == e.n_orden ){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
       }
     })
@@ -337,7 +350,7 @@ subtotal:number=0
     }
  
     actualizarProductos3(e){
-      this.eliminarTransacciones5(e)
+     this.eliminarTransacciones5(e)
      var cont=0
      var contVal=0
   
@@ -449,6 +462,11 @@ subtotal:number=0
   anularOrden2 = (e) => {  
     this.actualizarOrdenRec2(e.row.data) 
   }
+
+  anularOrdenDirecta = (e) => {  
+    this.actualizarOrdenDirecta(e.row.data) 
+  }
+
   anularFactura= (e) => {  
     this.actualizarFact(e.row.data) 
   }
@@ -2134,10 +2152,46 @@ subtotal:number=0
     })
   }
 
+
+  actualizarOrdenDirecta(e){
+    Swal.fire({
+      title: 'Anular Orden',
+      text: "Se anulará la orden directa #"+e.n_orden,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        if(e.tipo == "Entregado"){
+          this.compararCantidades(e)
+        }else{
+            this.ordenesService.updateEstadosOrdenes(e._id,"Aprobado","ANULADO").subscribe( res => {Swal.fire({
+              title: 'Correcto',
+              text: 'Se anuló con éxito',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              window.location.reload()
+            })}, err => {alert("error")}) 
+        }
+     
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+
+
   compararCantidades(e:any){
     var cont=0
      var contVal=0
-      this.productosComprados2.forEach(element=>{
+      /*this.productosComprados2.forEach(element=>{
         cont++
       })
       if(cont>=0){
@@ -2150,9 +2204,9 @@ subtotal:number=0
         if(element.solicitud_n == orden_n){
           this.productosComprados2.push(element)
         }
-      })
+      })*/
 
-      this.ordenesCompraPendientesAnulacion.forEach(element=>{
+      this.ordenesCompraDirectasPendientesAnulacion.forEach(element=>{
         if(e.documento== element.documento){
           this.productosComprados2=element.productosComprados
         }
@@ -2300,9 +2354,18 @@ subtotal:number=0
     var x = document.getElementById("ordenes");
     var y = document.getElementById("facturas");
     var z = document.getElementById("notas");
+    var z1 = document.getElementById("ordenesDirectas");
     switch (e.value) {
       case "Ordenes de Compra":
         x.style.display = "block";
+        y.style.display="none";
+        z.style.display="none";
+        z1.style.display="none";
+       break;
+
+       case "Ordenes de Compra Directas":
+        z1.style.display = "block";
+        x.style.display = "none";
         y.style.display="none";
         z.style.display="none";
        break;
@@ -2311,12 +2374,14 @@ subtotal:number=0
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";
+        z1.style.display="none";
         break;
 
       case "Notas de Venta":
           x.style.display = "none";
           y.style.display="none";
           z.style.display="block";
+          z1.style.display="none";
           break;
       default:    
     }       
@@ -2352,20 +2417,12 @@ subtotal:number=0
       }     
     })
 
-   /*  this.productosComprados.forEach(element=>{
-      if(element.solicitud_n == orden_n){
-        this.productosComprados2.push(element)
-      }
-    }) */
 
     this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.ordenDeCompra2.sucursal.nombre){
         this.parametrizacionSucu= element
       }
     })
-
-    console.log("voy a mostrar elementos de la factura detalles "+this.ordenDeCompra2.TotalIva +" total "+ this.ordenDeCompra2.documento )
-    console.log("estoy mostrando elementos productos" +this.productosComprados2.length)
     this.cargarValoresFactura()
     this.crearPDF()
 

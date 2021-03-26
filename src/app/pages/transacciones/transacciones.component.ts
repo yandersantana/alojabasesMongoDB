@@ -117,7 +117,7 @@ export class TransaccionesComponent implements OnInit {
 
   onExporting (e) {
     e.component.beginUpdate();
-    e.component.columnOption("fecha_transaccion", "visible", true);
+    e.component.columnOption("fecha_mov", "visible", true);
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("valor", "visible", true);
     e.component.columnOption("rucSucursal", "visible", true);
@@ -132,7 +132,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("movimiento", "visible", true);
   };
   onExported (e) {
-    e.component.columnOption("fecha_transaccion", "visible", false);
+    e.component.columnOption("fecha_mov", "visible", false);
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("valor", "visible", false);
     e.component.columnOption("usu_autorizado", "visible", false);

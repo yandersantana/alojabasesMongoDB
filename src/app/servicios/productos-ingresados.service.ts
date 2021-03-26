@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 export class ProductosIngresadosService {
 
  //private URL = 'http://localhost:3000/productosIngresados'; //localhost
- //private URL = 'http://104.248.14.190:3000/productosIngresados';
- private URL = 'http://104.131.82.174:3000/productosIngresados';
+ private URL = 'http://104.248.14.190:3000/productosIngresados';
+ //private URL = 'http://104.131.82.174:3000/productosIngresados';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newProductoIngresado(productoIng){

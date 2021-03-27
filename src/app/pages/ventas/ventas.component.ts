@@ -930,6 +930,8 @@ setSelectedProducto(i:number){
     this.calcularTotalFactura()
   }
 
+  
+
   diferenciaEntreDiasEnDias(a, b)
     {
       var fFecha1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());

@@ -2,13 +2,28 @@
     <div *ngIf="mostrarLoading">
         <app-loading></app-loading>
     </div>
-    
+   
+        <div class="row remiPro titulos">
+         <div class="col-md-8"><div class="">
+             
+         </div></div>
+         <div class="col-md-4"> <dx-select-box [items]="menu1" 
+             [value]="menu1[0]" 
+             [readOnly]="false" 
+             [disabled]="false"
+             (onValueChanged)="opcionMenu($event)"
+             ></dx-select-box></div>
+        </div>
+        
+  <br>
     <div class="mover">
         <button class="btn btn-primary colbot" (click)="mostrarpopup()" >
             <i class="fa fa-question"></i>
         </button>
     </div>
-    <dx-data-grid #data2
+
+   
+        <dx-data-grid #data2
         id="gridContainer"
         [dataSource]="transacciones"
         [showBorders]="true"
@@ -51,6 +66,11 @@
         <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
     </dx-data-grid>
+    
+
+
+    
+    
 
 
 

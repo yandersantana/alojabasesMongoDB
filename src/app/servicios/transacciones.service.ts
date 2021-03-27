@@ -20,6 +20,11 @@ export class TransaccionesService {
     return this.http.get(this.URL+'/getTransacciones');
   }
 
+  getTransaccionesPorRango(objFecha){ 
+    console.log(objFecha)
+    return this.http.post(this.URL+'/getTransaccionesPorRango',objFecha);
+  }
+
   updateTransaccion(transaccion){
     return this.http.put(this.URL + `/update/${transaccion._id}`, transaccion); 
   }

@@ -1,5 +1,5 @@
 import { Component, OnInit,ViewChild } from '@angular/core';
-import { transaccion } from './transacciones';
+import { objDate, transaccion } from './transacciones';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { DxDataGridComponent } from 'devextreme-angular';
@@ -15,33 +15,83 @@ import { AuthenService } from 'src/app/servicios/authen.service';
 export class TransaccionesComponent implements OnInit {
 
  transacciones : transaccion[] = []
+ transaccionesGenerales : transaccion[] = []
  transaccionesGlobales : transaccion[] = []
  popupvisible:boolean=false
  mostrarLoading:boolean=true
  correo:string
  usuarioLogueado:user
+ obj:objDate
+ menu1: string[] = [
+  "Transacciones Mensuales",
+  "Transacciones Globales"
+];
  @ViewChild('datag2') dataGrid2: DxDataGridComponent;
   constructor(public transaccionesService: TransaccionesService,public authenService:AuthenService) { }
 
   ngOnInit() {
     this.cargarUsuarioLogueado()
-    this.traerTransacciones()
+    this.traerTransaccionesPorRango()
   }
 
-  traerTransacciones(){
+  traerTransaccionesPorRango(){
+    this.transaccionesGlobales=[]
+    this.mostrarLoading=true;
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHoy;
+    this.obj.fechaAnterior = fechaAnterior;
+    this.transaccionesService.getTransaccionesPorRango(this.obj).subscribe(res => {
+      this.transaccionesGlobales = res as transaccion[];
+      this.separarTransacciones()
+      },() => {
+      }
+    )
+  }
+
+
+
+   traerTransacciones(){
+    this.transaccionesGlobales=[]
+    this.mostrarLoading=true;
     this.transaccionesService.getTransaccion().subscribe(res => {
       this.transaccionesGlobales = res as transaccion[];
       this.separarTransacciones()
-      
-   },() => {
-    console.log("Complete function triggered.")
-    }
-   
+      },() => {
+      }
    )
   }
 
+  opcionMenu(e){
+    //var x = document.getElementById("menu1");
+    //var y = document.getElementById("menu2");
+
+    switch (e.value) {
+      case "Transacciones Mensuales":
+        //x.style.display = "block";
+        //y.style.display="none";
+        this.traerTransaccionesPorRango();
+        
+      
+       break;
+  
+      case "Transacciones Globales":
+        this.traerTransacciones();
+        //x.style.display = "none";
+        //y.style.display="block";
+        
+        break;
+     
+     
+      default:    
+    }     
+    }
+  
+
   separarTransacciones(){
-    console.log("entreee aqui ")
     if(this.usuarioLogueado[0].rol!="Administrador"){
       switch (this.usuarioLogueado[0].sucursal) {
         case "matriz":
@@ -104,6 +154,14 @@ export class TransaccionesComponent implements OnInit {
         )
     });
     
+  }
+
+  restarDias(){
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 15);
+    console.log("la fecha es",fechaHoy,fechaAnterior)
   }
 
 

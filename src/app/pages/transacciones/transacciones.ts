@@ -35,3 +35,11 @@ export class transaccion{
         this.valor=0
     }
 }
+
+export class objDate{
+    fechaActual:Date
+    fechaAnterior:Date
+    constructor(){
+        
+    }
+}

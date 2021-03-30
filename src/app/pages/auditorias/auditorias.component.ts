@@ -110,9 +110,6 @@ export class AuditoriasComponent implements OnInit {
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
     this.newAuditoria.fecha_inicio = new Date().toLocaleString()
-    //alert("1 "+new Date().toLocaleDateString())
-    //alert("2 "+new Date().toLocaleString())
-    //alert("ssfecha "+this.newAuditoria.fecha_inicio)
     this.editAuditoria= new auditoriasProductos()
     this.newAuditoria.contrasena=""
     this.menuGlobal= this.menuSupervisor
@@ -213,7 +210,6 @@ onHidden() {
     this.productoService.getProductosActivos().subscribe(res => {
       this.productos = res as producto[];
       this.cargarDatos()
-      //alert("jhjhj "+ this.productos.length)
    })
   }
 
@@ -268,7 +264,6 @@ onHidden() {
   } */
 
   async compararProducto(){
-    //alert("si")
     if(this.auditoriaProductosleida.length == 0){
       this.buscarInformacion()
     }else{
@@ -470,7 +465,6 @@ onHidden() {
         this.auditoriaProductosleida.splice(0)    
       })
     }
-    //alert(this.auditoriaProductosBase.length)
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idPrincipal == id){
          this.auditoriaProductosleida.push(element)
@@ -521,7 +515,6 @@ onHidden() {
     }
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idPrincipal == e.idAuditoria ){
-        //alert("elll "+element.valoracion)
         if(element.valoracion!="Ok"){
           this.auditoriaProductosleida2.push(element)
         }
@@ -660,8 +653,6 @@ onHidden() {
   }
 
   eliminarTransaccion(e){
-    alert("ddd "+e.idPrincipal)
-    alert("ddd "+e.producto.PRODUCTO)
     this.transacciones.forEach(element=>{
       if(element.documento == e.idPrincipal &&  element.producto == e.producto.PRODUCTO){
         if(element.tipo_transaccion=="ajuste-faltante" || element.tipo_transaccion=="ajuste-sobrante"){
@@ -875,7 +866,7 @@ onHidden() {
   revisarDuplicados(){
     var matriz = {};
     var matriz2 = {};
-
+    
     
     this.auditoriaProductosleida.forEach(element=> { 
       var nombreproducto = element.nombreproducto
@@ -938,6 +929,7 @@ onHidden() {
   realizarActualizaciones(){
     this.mostrarMensaje()
     var contVal=0
+
     this.auditoriaProductosleida.forEach(element=>{
       if(element.condicion != "OK"){
           this.transaccion = new transaccion()
@@ -982,6 +974,7 @@ onHidden() {
             default:
               break;
           }
+
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
@@ -1154,7 +1147,6 @@ onHidden() {
         
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
       }else{
-        //alert("entre2")
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
       }
       
@@ -1260,7 +1252,6 @@ onHidden() {
   }
 
   actualizarUbicacionEdit(){
-    //alert("entre")
      var cont=0
         switch (this.editAuditoria.sucursal.nombre) {
           case "matriz":
@@ -1421,8 +1412,6 @@ onHidden() {
   //desde aqui comienza seccion de consolidado
 
   cargarDatos(){
-    // alert("entre con "+this.transacciones.length)
-     console.log("entre")
      var contCajas=0
      var contCajas2=0
      var contCajas3=0

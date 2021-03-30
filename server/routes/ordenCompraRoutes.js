@@ -7,6 +7,18 @@ router.get('/getOrdenesCompra', async (req, res) => {
     res.send(ordenes)      
 })
 
+router.post('/getOrdenesCompraMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const ordenes = await OrdenCompra.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(ordenes)      
+})
+
 router.get('/getOrdenesCompraID/:id', async (req, res) => {
     const { id } = req.params;
 	const orden = await OrdenCompra.findById(id);

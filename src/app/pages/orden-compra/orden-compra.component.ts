@@ -13,7 +13,7 @@ import Swal from 'sweetalert2';
 import { DxSelectBoxModule, DxListModule ,DxListComponent} from 'devextreme-angular';
 import { DatePipe } from '@angular/common';
 
-import { transaccion } from '../transacciones/transacciones';
+import { objDate, transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { ProductosCompradosService } from 'src/app/servicios/productos-comprados.service';
@@ -105,7 +105,7 @@ fecha_pago: Date= new Date()
 valor:number=0
 beneficiario: string
 
-
+obj:objDate
 employees: ProductoDetalleCompra;
 proveedores:Proveedor[] = []
 parametrizaciones:parametrizacionsuc[]=[]
@@ -129,8 +129,8 @@ textoArea:string
 newButtonEnabled2:boolean = true
 NordenFact:number=0
 menu1: string[] = [
-  "Ordenes de Compra",
-  "Ordenes de Compras Directas"
+  "Consulta Mensual",
+  "Consulta Global"
 ];
 numOrden:number=0
 selectionChangedBySelectbox: boolean;
@@ -153,30 +153,18 @@ contadorFirebase:contadoresDocumentos[]=[]
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
     this.usuariologueado=sessionStorage.getItem('user')
-
+    this.obj = new objDate()
    }
 
   ngOnInit() {
-    //this.getOrdenCompra()
-    //this.getProductosComprados()
-    //this.getProductos()
-    //this.getIDTransacciones()
-    //this.getTransacciones()
-    //this.getParametrizaciones()
-  
-    /* this.db.collection('/ordenCompraAprobadasGlobal').doc('matriz').valueChanges().subscribe(data => {
-      console.log(data)
-      if(data != null)
-        this.nordenCompra = data['n_documento']+1
-
-    }) */
+    this.setearFechaMensual()
     this.cargarUsuarioLogueado()
     this.traerContadoresDocumentos()
     this.traerParametrizaciones()
     this.traerProductos()
     this.traerProductosComprados()
-    this.traerOrdenesCompra()
-    this.getIDDocumentos()
+    this.traerOrdenesCompraMensuales()
+    //this.getIDDocumentos()
   }
 
   cargarUsuarioLogueado() {
@@ -188,8 +176,8 @@ contadorFirebase:contadoresDocumentos[]=[]
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            console.log("fff "+JSON.stringify(this.usuarioLogueado))
-            console.log("fff "+this.usuarioLogueado[0].rol)
+            //console.log("fff "+JSON.stringify(this.usuarioLogueado))
+            //console.log("fff "+this.usuarioLogueado[0].rol)
             if( this.usuarioLogueado[0].rol == "Administrador"){
 /*               var z = document.getElementById("opadmin");
                   z.style.display = "block"; */
@@ -221,11 +209,42 @@ contadorFirebase:contadoresDocumentos[]=[]
   }
 
   traerOrdenesCompra(){
+    this.ordenesCompra=[]
+    this.ordenesCompraPendientes=[]
+    this.ordenesCompraRechazadas=[]
+    this.ordenesCompraAprobadas=[]
+    this.ordenesCompraDirectas=[]
+    this.mostrarLoading=true;
     this.ordenesService.getOrden().subscribe(res => {
       this.ordenesCompra = res as OrdenDeCompra[];
       this.obtenerOrdenes()
    })
   }
+
+  traerOrdenesCompraMensuales(){
+    this.ordenesCompra=[]
+    this.ordenesCompraPendientes=[]
+    this.ordenesCompraRechazadas=[]
+    this.ordenesCompraAprobadas=[]
+    this.ordenesCompraDirectas=[]
+    this.mostrarLoading=true;
+    this.ordenesService.getOrdenesMensuales(this.obj).subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+      this.obtenerOrdenes()
+   })
+  }
+
+  setearFechaMensual(){
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHoy;
+    this.obj.fechaAnterior = fechaAnterior;
+  }
+
+  
 
   traerProductosComprados(){
     this.productosCompradosService.getProductoComprados().subscribe(res => {
@@ -269,118 +288,6 @@ contadorFirebase:contadoresDocumentos[]=[]
     this.number_transaccion =this.contadorFirebase[0].transacciones_Ndocumento+1
     //this.nordenCompra =this.contadores[0].ordenesCompraAprobadas_Ndocumento+1
   }
-
-
-
-  /* async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      productos.forEach((nt: any) => {
-        this.productos.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
-  /* async getIDTransacciones() {
-    
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  } */
-
-
- /*  getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  } */
-
-  /* getProveedores(){
-    this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
-      if(data != null)
-        this.proveedores = data
-    })
-  } */
-
-  /* getDetalleFacturas(){
-    this.db.collection('/pagosFacturasProveedor').valueChanges().subscribe((data:DetallePagoProveedor[]) => {
-      if(data != null)
-        this.detallePago2 = data
-
-    })
-  } */
-
-  /* getTransacciones(){
-    this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
-      this.transacciones = data
-  
-    })
-  } */
-
-
- /*  async getfacturasProveedor() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/contadorFactProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.facturaNp = contador.payload.data()['n_documento']+1;  
-      console.log("conttttt"+ this.facturaNp)  
-    });;
-  }
-
-  async getPagosProveedor() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/pagoProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.facturaNp2 = contador.payload.data()['n_documento']+1;  
-      console.log("conttttt"+ this.facturaNp)  
-    });;
-  } */
-
- /*  async getOrdenCompra() {
-    
-    await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
-      new Promise<any>((resolve, reject) => {
-        ordenes.forEach((nt: any) => {
-          this.ordenesCompra.push(nt.payload.doc.data());
-         
-        })
-        //alert(this.ordenesCompra.length)
-      }) 
-      this.obtenerOrdenes()
-      console.log("kjkj"+ordenes.length)
-    });;
-  }
- */
-  /* async getProductosComprados() {
-    
-    await this.db.collection('productosComprados').snapshotChanges().subscribe((productoC) => {
-      
-      productoC.forEach((nt: any) => {
-        this.productosComprados.push(nt.payload.doc.data());
-       
-      })
-      console.log("kjkj"+productoC.length)
-    });;
-
-  } */
-
-
- /*  async getFacturasProveedor() {
-    
-    await this.db.collection('facturasProveedor').snapshotChanges().subscribe((productoC) => {
-      
-      productoC.forEach((nt: any) => {
-        this.facturaProveedor2.push(nt.payload.doc.data());
-       
-      })
-     
-    });;
-
-  } */
 
   limpiarArreglo(){
     var cont=0
@@ -1255,20 +1162,13 @@ anadirDetallePago = (e) => {
   }
 
   opcionMenu(e){
-    var x = document.getElementById("ordnormal");
-    var y = document.getElementById("orddirecta");
-    
-
     switch (e.value) {
-      case  "Ordenes de Compra":
-        x.style.display = "block";
-        y.style.display="none";
-       
+      case  "Consulta Mensual":
+        this.traerOrdenesCompraMensuales();
+      
        break;
-      case "Ordenes de Compras Directas":
-        x.style.display = "none";
-        y.style.display="block";
-       
+      case "Consulta Global":
+        this.traerOrdenesCompra();
         break;
       default:    
     }     

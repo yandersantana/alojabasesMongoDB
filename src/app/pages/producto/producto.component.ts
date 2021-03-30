@@ -9,7 +9,7 @@ import {  ProductoDetalleEntrega ,ProductoDetalleCompra ,RemisionProductos,Contr
 import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
 import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { transaccion } from '../transacciones/transacciones';
+import { objDate, transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
@@ -120,8 +120,10 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   numeroFactura:string
   menu1: string[] = [
     "Remisión de Productos",
-    "Historial de Remisiones"
+    "Remisiones Mensuales",
+    "Remisiones Globales"
   ];
+  mostrarLoading:boolean=false;
   solicitudNOrden=0
   contadorTabla:number=0
   datoNsolicitud:number=0
@@ -145,6 +147,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
    contadores:contadoresDocumentos[]=[]
    contadorFirebase:contadoresDocumentos[]=[]
    correo:string=""
+   obj:objDate
   @ViewChild('selectId') selectBox: DxSelectBoxComponent;
   @ViewChild(DxDataGridComponent, { static: false }) dataGrid: DxDataGridComponent;
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
@@ -161,32 +164,12 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.remisionProducto = new RemisionProductos()
     //this.productosObsequios.push(new productosObsequio())
     this.showFilterRow=true
-   /*  this.expensesCollection = this.db.collection('/productosIngresados');
-    this.expensesCollection2 = this.db.collection('/productosComprados');
-    this.expensesCollection3 = this.db.collection('/transacciones'); */
-    /* this.items = db.collection('/productos').valueChanges() */
+    this.obj = new objDate()
     console.log(this.items)
   }
 
   ngOnInit() {
-    //this.getProductosComprados()
-    //this.getCompras()
-  //  this.getNumeroRemision()
-   // this.getProdcutosIngresados()
-   // this.getProductos()
-    //this.getFacturasProveedor()
-    //this.getRemisiones()
-   // this.getIDTransacciones()
-    //this.getbodegas()
-   // this.getProductosObs()
-    //this.getTransacciones()
-    //this.getParametrizaciones()
-    /* this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
-      this.locales = []
-      locales.forEach((nt: any) => {
-        this.locales.push(nt.payload.doc.data());
-      })
-    });; */
+    this.setearFechaMensual()
     this.traerProductosObsequio()
     this.traerProductos()
     this.traerOrdenesCompra()
@@ -196,7 +179,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
     this.traerContadoresDocumentos()
     this.traerfacturasProveedor()
     this.traerBodegas()
-    this.traerRemisiones()
+    //this.traerRemisionesMensuales()
     this.traerProductosIngresados()
     this.getIDDocumentos()
     this.cargarUsuarioLogueado()
@@ -286,12 +269,38 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
   }
 
   traerRemisiones(){
+    this.remisiones=[]
+    this.remisionesRechazadas=[]
+    this.remisionesAprobadas=[]
+    this.remisionesEliminadas=[]
+    this.mostrarLoading=true;
     this.remisionesService.getRemisiones().subscribe(res => {
       this.remisiones = res as RemisionProductos[];
       this.asignarValores()
    })
   }
 
+  traerRemisionesMensuales(){
+    this.remisiones=[]
+    this.remisionesRechazadas=[]
+    this.remisionesAprobadas=[]
+    this.remisionesEliminadas=[]
+    this.mostrarLoading=true;
+    this.remisionesService.getRemisionesMensuales(this.obj).subscribe(res => {
+      this.remisiones = res as RemisionProductos[];
+      this.asignarValores()
+   })
+  }
+
+  setearFechaMensual(){
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHoy;
+    this.obj.fechaAnterior = fechaAnterior;
+  }
 
   traerContadoresDocumentos(){
   this.contadoresService.getContadores().subscribe(res => {
@@ -684,7 +693,7 @@ imagenLogotipo='data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAGiYAAAk8CAYAAADTsR
       }
     })
 
-    
+    this.mostrarLoading=false;
   }
 
   clearFilter() {
@@ -1945,27 +1954,23 @@ console.log("si entre verdadero" + this.solicitudNOrden)
     opcionMenu(e){
       var x = document.getElementById("historial");
       var y = document.getElementById("busqueda");
-      if(e.value=="Remisión de Productos"){
-        if (x.style.display === "none") {
-          x.style.display = "block";
-          y.style.display="none"
-        } else {
+      switch (e.value) {
+        case "Remisión de Productos":
           x.style.display = "none";
           y.style.display="block"
-        }
-  
-      }else if(e.value=="Historial de Remisiones"){
-        if (x.style.display === "none") {
+         break;
+        case "Remisiones Mensuales":
+          this.traerRemisionesMensuales();
           x.style.display = "block";
           y.style.display="none"
-        } else {
-          x.style.display = "none";
-          y.style.display="block"
-        }
-  
-      }
-  
-          
+          break;
+        case "Remisiones Globales":
+          this.traerRemisiones();
+          x.style.display = "block";
+          y.style.display="none"
+          break;  
+        default:    
+      }     
       }
 
     setearNFactura(){

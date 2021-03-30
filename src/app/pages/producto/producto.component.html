@@ -1,72 +1,7 @@
-<!--<div class="container">
-    <h2>Generar Producto</h2>
-    <dx-form id="form" #productoForm [readOnly]="false" [colCount]="3" [width]="800">
+<div *ngIf="mostrarLoading">
+    <app-loading></app-loading>
+</div>
 
-        <dxi-item dataField="nombre" [editorOptions]="{ placeholder: 'nombre'}">
-            <dxo-label [visible]="false"></dxo-label>
-            <dxi-validation-rule type="required" message="El nombre debe de colocarse"></dxi-validation-rule>
-        </dxi-item>
-        <dxi-item dataField="clasificacion" editorType="dxSelectBox" [editorOptions]="{ placeholder: 'clasificacion', dataSource: clasificaciones}">
-            <dxo-label [visible]="false"></dxo-label>
-
-        </dxi-item>
-        <dxi-item dataField="referencia" [editorOptions]="{ placeholder: 'referencia'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="unidad" editorType="dxSelectBox"[editorOptions]="{ placeholder: 'unidad',dataSource: uniMedida}">
-            <dxo-label [visible]="false"></dxo-label>
-
-        </dxi-item>
-        <dxi-item dataField="dimension" [editorOptions]="{ placeholder: 'dimension'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="nombre_comercial" [editorOptions]="{ placeholder: 'nombre_comercial'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="p_caja" editorType="dxNumberBox" [editorOptions]="{ placeholder: 'p_caja'}">
-            <dxi-validation-rule type="range" [min]="1" message="El valor minimo debe ser 1"></dxi-validation-rule>
-        </dxi-item>
-        <dxi-item dataField="m_caja" editorType="dxNumberBox" [editorOptions]="{ placeholder: 'm_caja'}">
-            <dxi-validation-rule type="range" [min]="0.001" message="El valor minimo debe ser 0.01">
-            </dxi-validation-rule>
-        </dxi-item>
-
-        <dxi-item dataField="calidad" editorType="dxNumberBox" [editorOptions]="{ placeholder: 'calidad'}">
-        </dxi-item>
-        <dxi-item dataField="casa" [editorOptions]="{ placeholder: 'casa'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="cod_bar" [editorOptions]="{ placeholder: 'cod_bar'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="image" [editorOptions]="{ placeholder: 'image'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="homologacion" [editorOptions]="{ placeholder: 'homologacion'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="estado" editorType="dxSelectBox" [editorOptions]="{ placeholder: 'estado',dataSource: estadoAct}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="marca" [editorOptions]="{ placeholder: 'marca'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="usuario" [editorOptions]="{ placeholder: 'usuario'}">
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-
-    </dx-form>
-
-    <dx-button [text]="'INGRESAR'" [type]="success" (onClick)="click($event)">
-    </dx-button>
-
-    <ul>
-        <li *ngFor="let item of items | async">
-            <pre>{{ item | json }}</pre>
-        </li>
-    </ul>
-
-</div>-->
 
 <div class="row alin2 titulos">
     <div class="col-md-8"><div class="">
@@ -488,7 +423,7 @@
         <dxi-column
             dataField="fechaP"
             caption="Fecha"
-            dataType="string">
+            dataType="date">
         </dxi-column>
         <dxi-column
             dataField="num_orden"
@@ -561,7 +496,7 @@
         <dxi-column
             dataField="fechaP"
             caption="Fecha"
-            dataType="string">
+            dataType="date">
         </dxi-column>
         <dxi-column
             dataField="num_orden"
@@ -643,7 +578,7 @@
         <dxi-column
             dataField="fechaP"
             caption="Fecha"
-            dataType="string">
+            dataType="date">
         </dxi-column>
         <dxi-column
             dataField="num_orden"

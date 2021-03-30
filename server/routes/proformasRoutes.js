@@ -7,6 +7,18 @@ router.get('/getProformas', async (req, res) => {
     res.send(proformas)      
 })
 
+router.post('/getProformasMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const transacciones = await Proformas.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(transacciones)      
+})
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;

@@ -8,8 +8,8 @@ import { Router } from '@angular/router';
 export class OrdenesCompraService {
 
   //private URL = 'http://localhost:3000/ordenesCompra'; //localhost
-  private URL = 'http://104.248.14.190:3000/ordenesCompra';
-  //private URL = 'http://104.131.82.174:3000/ordenesCompra';
+  //private URL = 'http://104.248.14.190:3000/ordenesCompra';
+  private URL = 'http://104.131.82.174:3000/ordenesCompra';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newOrden(venta){
@@ -18,6 +18,10 @@ export class OrdenesCompraService {
 
   getOrden(){ 
     return this.http.get(this.URL+'/getOrdenesCompra');
+  }
+
+  getOrdenesMensuales(objFecha){ 
+    return this.http.post(this.URL+'/getOrdenesCompraMensuales',objFecha);
   }
 
   getOrdenbyID(id:string){ 

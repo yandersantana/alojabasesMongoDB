@@ -9,8 +9,8 @@ import { Router } from '@angular/router';
 export class RemisionesService {
 
  //private URL = 'http://localhost:3000/remisiones'; //localhost
- private URL = 'http://104.248.14.190:3000/remisiones';
- //private URL = 'http://104.131.82.174:3000/remisiones';
+ //private URL = 'http://104.248.14.190:3000/remisiones';
+ private URL = 'http://104.131.82.174:3000/remisiones';
   constructor(public http: HttpClient, public router: Router ) { }
 
   newRemision(remisiones){
@@ -19,6 +19,10 @@ export class RemisionesService {
 
   getRemisiones(){ 
     return this.http.get(this.URL+'/getRemisiones');
+  }
+
+  getRemisionesMensuales(objFecha){ 
+    return this.http.post(this.URL+'/getRemisionesMensuales',objFecha);
   }
 
   updateRemisiones(remisiones){

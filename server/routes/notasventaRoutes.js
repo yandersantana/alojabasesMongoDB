@@ -7,6 +7,18 @@ router.get('/getNotasVenta', async (req, res) => {
     res.send(notasVenta)      
 })
 
+router.post('/getNotasVentaMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const transacciones = await NotasVenta.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(transacciones)      
+})
+
 router.put('/updateObservaciones/:id/:observaciones', async (req, res,next) => {
     const { id } = req.params;
     const { observaciones } = req.params;

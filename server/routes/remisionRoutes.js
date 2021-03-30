@@ -7,6 +7,18 @@ router.get('/getRemisiones', async (req, res) => {
     res.send(remisiones)      
 })
 
+router.post('/getRemisionesMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const remisiones = await Remision.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(remisiones)      
+})
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const remision = {

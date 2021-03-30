@@ -3,33 +3,14 @@ const router = Router();
 const Transacciones = require('../models/transacciones')
 
 router.post('/getTransaccionesPorRango', async (req, res,next) => {
-    /*var start = new Date("2021-03-11T00:25:22.745+00:00");
-    var end = new Date("2021-03-27T00:25:22.745+00:00");
-    console.log("date1",start)
-    console.log("date2",end)*/
-
-    /*var start = new Date();
-    start.setHours(0,0,0,0);
-
-    var end = new Date();
-    end.setHours(23,59,59,999);
-    console.log("date1",start)
-    console.log("date2",end)*/
-//var start = new Date("2021-03-13T00:50:45.788Z");
-    //var end = new Date("2021-03-28T00:50:45.788Z")
-    console.log("llegue aqui",req)
     var start = req.body.fechaAnterior;
     var end = req.body.fechaActual;
-    console.log("date1",start)
-    console.log("date2",end)
     const transacciones = await Transacciones.find({
         createdAt: {
             $gte: start,
             $lt: end
         }
     })
-    console.log("transacciones",transacciones)
-
     res.json(transacciones)      
 })
 

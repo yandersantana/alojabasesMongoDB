@@ -8,6 +8,19 @@ router.get('/getFacturas', async (req, res) => {
 })
 
 
+router.post('/getFacturasMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const transacciones = await Factura.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(transacciones)      
+})
+
+
 router.put('/update2/:id/:observaciones', async (req, res,next) => {
     console.log("siiiiiiiiiiii")
     const { id } = req.params;

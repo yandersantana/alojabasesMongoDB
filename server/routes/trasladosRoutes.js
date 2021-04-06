@@ -7,6 +7,18 @@ router.get('/getTraslados', async (req, res) => {
     res.send(traslados)      
 })
 
+router.post('/getTrasladosMensuales', async (req, res,next) => {
+    var start = req.body.fechaAnterior;
+    var end = req.body.fechaActual;
+    const traslados = await Traslados.find({
+        createdAt: {
+            $gte: start,
+            $lt: end
+        }
+    })
+    res.json(traslados)      
+})
+
 
 router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { id } = req.params;

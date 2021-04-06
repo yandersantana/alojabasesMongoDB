@@ -14,6 +14,11 @@ router.post('/getTransaccionesPorRango', async (req, res,next) => {
     res.json(transacciones)      
 })
 
+router.post('/getTransaccionesPorProducto', async (req, res,next) => {
+    const transacciones = await Transacciones.find({producto:  req.body.nombre })
+    res.json(transacciones)      
+})
+
 
 router.get('/getTransacciones', async (req, res) => {
     const transacciones = await Transacciones.find();

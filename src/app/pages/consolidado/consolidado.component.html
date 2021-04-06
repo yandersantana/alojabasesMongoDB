@@ -19,7 +19,189 @@
 </div>
 
 
-<div id="user" class="remiPro" style="display: block;">
+<div id="busquedaProducto" class="remiPro" style="display: block;">
+    <div class="row">
+        <div class="col-md-12 card carIn">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="row"  style="margin-top: 0.7rem">
+                        <div class="col-md-12" style="text-align: center;"><h5>Seleccione un Producto</h5></div>
+                        <div class="col-md-4" style="padding-top: 0.7em;">PRODUCTO</div>
+                        <div class="col-md-8">
+                            <dx-select-box
+                            [dataSource]="productos22"
+                            displayExpr="PRODUCTO"
+                            [searchEnabled]="true"
+                            valueExpr="PRODUCTO"
+                            [(value)]="nombreProducto"
+                            hint={{nombreProducto}}
+                            itemTemplate="item">
+                            <div *dxTemplate="let data of 'item'">
+                                <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}
+                                   </div>
+                            </div>
+                        </dx-select-box>
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"><button class="btn btn-block btn-success " (click)="traerTransaccionesPorProducto()">Buscar</button></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+    </div>
+
+    <div class="grilla">
+        <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="invetarioP"
+        [showBorders]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxi-column
+            dataField="producto.PRODUCTO"
+            caption="Producto"
+            dataType="string"
+            sortOrder="asc"
+            width="30%" >
+        </dxi-column>
+        <dxi-column
+            dataField="producto.precio"
+            caption="Valor Unitario"
+            dataType="currency"
+            [visible]="false" >
+        </dxi-column>
+        <dxi-column
+            dataField="producto.CLASIFICA"
+            caption="Grupo"
+            dataType="string"
+            sortOrder="asc"
+            width="15%"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column caption="Matriz"  dataField="sucursal1">
+            <dxi-column
+                dataField="cantidadCajas"
+                caption="Cajas"
+                dataType="number"
+                class="d2">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadM2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb1"
+                caption="Total"
+                format="currency"
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 1">
+            <dxi-column
+                dataField="cantidadCajas2"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas2"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb2"
+                caption="Total"
+                valueFormat="currency"
+               
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 2">
+            <dxi-column
+                dataField="cantidadCajas3"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas3"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b3"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb3"
+                caption="Total"
+                valueFormat="currency"
+                
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+         <dxi-column
+            dataField="ultimoPrecioCompra"
+            caption="Ult.Pre.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaCompra"
+            caption="Ult.Fech.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Ubic." width="7%">
+            <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
+        </dxi-column>
+
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+        </dxi-column>
+        <dxi-column dataField="bodega" caption="Bodegas" dataType="string" [visible]="false"></dxi-column>
+        <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+    </dx-data-grid>
+    </div>
+
+    <div class="row" style="margin-top: 1rem;">
+        <div class="col-md-4"></div>
+        <div class="col-md-4"><button class="btn btn-block btn-success " [disabled]="invetarioP.length == 0"  (click)="mensajeActualizar()">Actualizar Productos</button></div>
+        <div class="col-md-4"></div>
+    </div>
+    
+</div>
+
+
+
+<div id="user" class="remiPro" style="display: none;">
     <dx-data-grid #datag2
         id="gridContainer"
         [dataSource]="invetarioP"

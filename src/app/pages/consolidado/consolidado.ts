@@ -36,3 +36,18 @@ export class invFaltanteSucursal{
 
     }
 }
+
+export class productoTransaccion{
+    nombre:string
+    constructor(){
+    }
+}
+
+export class productoActualizable{
+    producto:producto
+    suc1:number
+    suc2:number
+    suc3:number
+    constructor(){
+    }
+}

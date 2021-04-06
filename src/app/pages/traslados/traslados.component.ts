@@ -5,7 +5,7 @@ import { detalleTraslados, traslados, transportista, productosSucursal } from '.
 import { Sucursal } from '../compras/compra';
 import { bodega } from '../producto/producto';
 import { producto, sucursal, contadoresDocumentos } from '../ventas/venta';
-import { transaccion } from '../transacciones/transacciones';
+import { objDate, transaccion } from '../transacciones/transacciones';
 import { element } from 'protractor';
 import { JsonPipe } from '@angular/common';
 import Swal from 'sweetalert2';
@@ -101,7 +101,8 @@ export class TrasladosComponent implements OnInit {
 
     menu1: string[] = [
       "Traslados",
-      "Historial Traslados"
+      "Traslados Mensuales",
+      "Traslados Globales"
      
     ];
     correo:string=""
@@ -114,6 +115,8 @@ export class TrasladosComponent implements OnInit {
     contadorFirebase:contadoresDocumentos[]=[]
     productos22: DataSource;
     bodegaExterna: Sucursal= new Sucursal()
+    obj: objDate
+    mostrarLoading:boolean=false
   constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService, public authenService:AuthenService, public trasladosService:TrasladosService, public transportistasService:TransportistaService, public contadoresService:ContadoresDocumentosService, public productoService:ProductoService,
      public bodegasService:BodegaService,public transaccionesService:TransaccionesService, public sucursalesService:SucursalesService,) { 
     this.traslados= new traslados()
@@ -121,35 +124,21 @@ export class TrasladosComponent implements OnInit {
       this.detalleTraslado= new detalleTraslados()
       this.detalleTraslados.push(new detalleTraslados())
       this.now = new Date()
-      //this.traslados.fecha = this.now
+      this.obj = new objDate()
     
   }
 
   ngOnInit() {
-    //this.getLocales()
-    //this.getbodegas()
-    //this.getProductos()
-    //this.getProductos2()
-    //this.getTrasladoId()
-   // this.getIDTransacciones()
-    //this.getTransportista()
-   // this.getProductosSucursal()
-   // this.getTransacciones()
-   // this.getParametrizaciones()
-
-   
+  this.setearFechaMensual()
    this.traerParametrizaciones()
-  
    this.traerBodegas()
    this.traerProductos()
-   
    this.traerTransportistas()
    this.traerContadoresDocumentos()
    this.getIDDocumentos()
    this.traerTransacciones()
-   this.traerTraslados()
+   //this.traerTrasladosMensuales()
    this.traerSucursales()
-   //this.cargarUsuarioLogueado()
   }
 
 
@@ -284,7 +273,26 @@ export class TrasladosComponent implements OnInit {
   }
 
   traerTraslados(){
+    this.trasladosG=[]
+    this.trasladosGR=[]
+    this.trasladosEnviados=[]
+    this.trasladosEliminados=[]
+    this.trasladosRecibidos=[]
+    this.mostrarLoading=true
     this.trasladosService.getTraslado().subscribe(res => {
+      this.trasladosG = res as traslados[];  
+      this.asignarValores()
+   })
+  }
+
+  traerTrasladosMensuales(){
+    this.trasladosG=[]
+    this.trasladosGR=[]
+    this.trasladosEnviados=[]
+    this.trasladosEliminados=[]
+    this.trasladosRecibidos=[]
+    this.mostrarLoading=true
+    this.trasladosService.getTrasladosMensuales(this.obj).subscribe(res => {
       this.trasladosG = res as traslados[];  
       this.asignarValores()
    })
@@ -299,6 +307,16 @@ export class TrasladosComponent implements OnInit {
   
   asignarIDdocumentos(){
     this.id2=this.contadores[0].contTraslados_Ndocumento+1
+  }
+
+  setearFechaMensual(){
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHoy;
+    this.obj.fechaAnterior = fechaAnterior;
   }
 
   async getIDDocumentos() {
@@ -373,7 +391,6 @@ export class TrasladosComponent implements OnInit {
 
   asignarValores(){
     this.trasladosG.forEach(element=>{
-      console.log(JSON.stringify(element))
       if(element.estado=="Rechazado"){
         this.trasladosGR.push(element)
       }else if(element.estado=="ENVIADO"){
@@ -384,6 +401,7 @@ export class TrasladosComponent implements OnInit {
         this.trasladosEliminados.push(element)
       }
     })
+    this.mostrarLoading=false
   }
 
   /* getProductosTrasladados(){
@@ -691,13 +709,17 @@ export class TrasladosComponent implements OnInit {
         }
         this.detalleTraslados.push(new detalleTraslados())
        break;
-      case "Historial Traslados":
-       // this.getTraslados()
-       // this.getProductosTrasladados()
+      case "Traslados Mensuales":
+        this.traerTrasladosMensuales();
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";
-        //z1.style.display = "none";
+        break;
+      case "Traslados Globales":
+        this.traerTraslados();
+        x.style.display = "none";
+        y.style.display="block";
+        z.style.display="none";
         break;
       case "Existencias Productos":
           x.style.display = "none";
@@ -796,7 +818,7 @@ export class TrasladosComponent implements OnInit {
 
   eliminarTransacciones(e){
     this.transacciones.forEach(element=>{
-      if(element.documento== e.idT){
+      if(element.documento== e.idT && (element.tipo_transaccion == "traslado1" || element.tipo_transaccion == "traslado2")){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
       /*  this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
        this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
@@ -1259,20 +1281,18 @@ export class TrasladosComponent implements OnInit {
               sumProd=element.sucursal1-element2.cantidadm2
               element.sucursal1=sumProd
               this.productoService.updateProductoSucursal1(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
-            //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
               break;
             case "sucursal1":
               sumProd=element.sucursal2-element2.cantidadm2
               element.sucursal2=sumProd
               this.productoService.updateProductoSucursal2(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
-               //this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
               break;
             case "sucursal2":
               sumProd=element.sucursal3-element2.cantidadm2
               element.sucursal3=sumProd
               this.productoService.updateProductoSucursal3(element).subscribe( res => {contex++ ,this.contadorValidaciones2(contex)}, err => {alert("error")})
-              //this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd}) .then(res => {contex++ ,this.contadorValidaciones2(contex) }, err => reject(err));
             default:
+              contex++ ,this.contadorValidaciones2(contex)
           }
         }
       })
@@ -1282,9 +1302,7 @@ export class TrasladosComponent implements OnInit {
 }
 
 contadorValidaciones2(i:number){
-
   if(this.detalleTraslados.length==i){
-      console.log("recien termine")
       Swal.close()
       Swal.fire({
         title: 'Traslado eliminado',

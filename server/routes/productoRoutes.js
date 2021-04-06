@@ -158,6 +158,18 @@ router.put('/updateProductosSucursales/:id/:suc1/:suc2/:suc3', async (req, res,n
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.post('/updateProductosSucursalesNuevo', async (req, res,next) => {
+    console.log(req.body)
+    var id = req.body.producto._id;
+    var precioNuevo = req.body.producto.precio;
+    var suc1 = req.body.suc1;
+    var  suc2 = req.body.suc2;
+    var  suc3 = req.body.suc3;
+    console.log("sd "+id + " suc1 "+suc1+ " suc2 "+suc2+ " suc3 "+suc3)
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:suc1,sucursal2:suc2,sucursal3:suc3,precio:precioNuevo}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 
 router.put('/updateProductoSuc1/:id', async (req, res,next) => {
     const { id } = req.params;

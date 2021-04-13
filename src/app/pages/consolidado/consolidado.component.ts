@@ -88,11 +88,28 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   traerTransaccionesPorProducto(){
+    var existe = false;
     this.proTransaccion.nombre=this.nombreProducto
-    this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion).subscribe(res => {
-        this.transacciones = res as transaccion[];
-        this.cargarDatosProductoUnitario()
+    this.invetarioP.forEach(element2=>{
+      if(this.proTransaccion.nombre == element2.producto.PRODUCTO){
+        existe = true;
+      }
     })
+    if(!existe){
+        this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion).subscribe(res => {
+          this.transacciones = res as transaccion[];
+          this.cargarDatosProductoUnitario()
+      })
+    }else{
+      Swal.fire(
+        'Error!',
+        'El producto ya se encuentra en la lista',
+        'error'
+      )
+    }
+
+    //this.proTransaccion.nombre=this.nombreProducto
+
   }
 
   traerProductos(){
@@ -765,7 +782,7 @@ export class ConsolidadoComponent implements OnInit {
       this.prodActualizable.suc2=m2s2
       this.prodActualizable.suc3=m2s3
       console.log( this.prodActualizable)
-      await this.productoService.updateProductosSucursalesNuevo(this.prodActualizable).subscribe( res => {contVal++,this.contadorValidaciones2(contVal),console.log("lo hice")}, err => {console.log("error aqui",element.producto,m2s1,m2s2,m2s3)});
+      await this.productoService.updateProductosSucursalesNuevo(this.prodActualizable).subscribe( res => {contVal++,this.contadorValidaciones2(contVal),console.log("lo hice")}, err => {contVal++,this.contadorValidaciones2(contVal),console.log("error aqui",element.producto,m2s1,m2s2,m2s3)});
       //await this.productoService.updateProductosSucursales(element.producto,m2s1,m2s2,m2s3).subscribe( res => {contVal++,this.contadorValidaciones2(contVal),console.log("lo hice")}, err => {console.log("error aqui",element.producto,m2s1,m2s2,m2s3)});
      // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
     })

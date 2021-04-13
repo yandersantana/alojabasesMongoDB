@@ -199,7 +199,7 @@ export const navigationAdmin = [
         path: '/OrdenCompra',
        
       }, {
-        text: 'Fact Proveedor',
+        text: 'Proveedor de Hechos',
         path: '/proveedores',
        
       }, {

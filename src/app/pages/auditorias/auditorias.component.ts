@@ -75,6 +75,7 @@ export class AuditoriasComponent implements OnInit {
   numCoinc:coincidencias
   arreglocoincidencias:coincidencias[]=[]
   arreglocoincidencias2:coincidencias[]=[]
+  mostrarLoading:boolean=false;
   menuValoracion: string[] = [
     "Ok",
     "Roto",
@@ -263,11 +264,12 @@ onHidden() {
     }
   } */
 
-  async compararProducto(){
+   compararProducto(){
+    var coincidencia = false;
     if(this.auditoriaProductosleida.length == 0){
       this.buscarInformacion()
     }else{
-     await  this.auditoriaProductosleida.forEach(element=>{
+       this.auditoriaProductosleida.forEach(element=>{
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
           Swal.fire({
             title: 'Atención..!',
@@ -278,10 +280,12 @@ onHidden() {
             cancelButtonText: 'No'
           }).then((result) => {
             if (result.value) {
+                coincidencia = true
                 this.editAuditoria = element
                 this.editAuditoria.idAud = element.idAud
                 this.productoEntregado= element.nombreproducto
                 this.nombreSucursal= element.sucursal.nombre
+                this.buscarInformacionEdit()
                 var x = document.getElementById("editAud");
                   var y = document.getElementById("newAud");
                   var z = document.getElementById("tabla3");
@@ -301,10 +305,16 @@ onHidden() {
           })
           
         }else{
-          this.btnRe=false
-          this.buscarInformacion()
+          //this.auditoria.sucursal = element.sucursal
+          //this.btnRe=false
+          //this.buscarInformacion()
         }
       })
+
+      if(!coincidencia){
+        this.btnRe=false
+        this.buscarInformacion()
+      }
     }
     
   }
@@ -379,6 +389,7 @@ onHidden() {
   buscarInformacion(){
     this.invetarioP.forEach(element=>{
       if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
+        console.log("suc",this.auditoria)
         switch (this.auditoria.sucursal.nombre) {
           case "matriz":
             this.auditoria.cajas_sistema= element.cantidadCajas
@@ -409,25 +420,25 @@ onHidden() {
 
   buscarInformacionEdit(){
     this.invetarioP.forEach(element=>{
-      if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
-        switch (this.auditoria.sucursal.nombre) {
+      if(element.producto.PRODUCTO == this.editAuditoria.producto.PRODUCTO){
+        switch (this.editAuditoria.sucursal.nombre) {
           case "matriz":
-            this.auditoria.cajas_sistema= element.cantidadCajas
-            this.auditoria.piezas_sistema= element.cantidadPiezas
+            this.editAuditoria.cajas_sistema= element.cantidadCajas
+            this.editAuditoria.piezas_sistema= element.cantidadPiezas
             
-            this.calcularTotalM2Base()
+            this.calcularTotalM2BaseEdit()
             break;
           case "sucursal1":
-            this.auditoria.cajas_sistema= element.cantidadCajas2
-            this.auditoria.piezas_sistema= element.cantidadPiezas2
+            this.editAuditoria.cajas_sistema= element.cantidadCajas2
+            this.editAuditoria.piezas_sistema= element.cantidadPiezas2
             
-            this.calcularTotalM2Base()
+            this.calcularTotalM2BaseEdit()
             break;
           case "sucursal2":
-            this.auditoria.cajas_sistema= element.cantidadCajas3
-            this.auditoria.piezas_sistema= element.cantidadPiezas3
+            this.editAuditoria.cajas_sistema= element.cantidadCajas3
+            this.editAuditoria.piezas_sistema= element.cantidadPiezas3
             
-            this.calcularTotalM2Base()
+            this.calcularTotalM2BaseEdit()
             break;
           default:
             break;
@@ -456,6 +467,13 @@ onHidden() {
   }
 
    verLista(id:number){
+    this.mostrarLoading = true;
+    var x = document.getElementById("tablaAuditoria");
+    var y = document.getElementById("newAudGlobal");
+    var z = document.getElementById("tabla3");
+      x.style.display = "block";
+      y.style.display = "none";
+      z.style.display = "none";
     var cont=0
     this.auditoriaProductosleida.forEach(element=>{
       cont++
@@ -470,14 +488,10 @@ onHidden() {
          this.auditoriaProductosleida.push(element)
       }
     })
-    
+    this.mostrarLoading = false;
     //this.loadIndicatorVisible=false
-    var x = document.getElementById("tablaAuditoria");
-    var y = document.getElementById("newAudGlobal");
-    var z = document.getElementById("tabla3");
-      x.style.display = "block";
-      y.style.display = "none";
-      z.style.display = "none";
+    
+     
   }
 
   verLista2(e){
@@ -768,7 +782,7 @@ onHidden() {
 
   guardarAuditoriaProducto(){
   this.auditoria.fecha= new Date().toLocaleString()
-   if( this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null ){
+   if( this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null && this.auditoria.m2diferencia!=null ){
     this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {
@@ -781,7 +795,7 @@ onHidden() {
    }else{
      Swal.fire({
        title: 'Error al guardar',
-       text: 'Hay campos vacios',
+       text: 'Vuelva a intentarlo',
        icon: 'error'
      })
    }
@@ -1108,6 +1122,11 @@ onHidden() {
     }
   }
 
+  calcularTotalM2BaseEdit(){
+    this.editAuditoria.m2base=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_sistema)+((this.editAuditoria.piezas_sistema*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
+    console.log("editAuditoria "+this.editAuditoria.m2base)
+  }
+
   calcularTotalM2Base(){
     this.auditoria.m2base=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_sistema)+((this.auditoria.piezas_sistema*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
     console.log("fff "+this.auditoria.m2base)
@@ -1140,6 +1159,8 @@ onHidden() {
   calculardiferencia(){
     var impactoNeto=0
     impactoNeto=this.auditoria.m2fisico-this.auditoria.m2base
+    console.log("this.auditoria.m2fisico",this.auditoria.m2fisico)
+    console.log("this.auditoria.m2base",this.auditoria.m2base)
     if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
@@ -1171,8 +1192,11 @@ onHidden() {
   }
 
   calculardiferencia2(){
+    //this.editAuditoria.m2base = this.auditoria.m2base
     var impactoNeto=0
     impactoNeto=this.editAuditoria.m2fisico-this.editAuditoria.m2base
+    console.log("this.editAuditoria.m2fisico",this.editAuditoria.m2fisico)
+    console.log("this.editAuditoria.m2base",this.editAuditoria.m2base)
     if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
@@ -1420,7 +1444,7 @@ onHidden() {
      var contPiezas3=0
      for (let index = 0; index < this.productos.length; index++) {
        const element2 = this.productos[index];
-       console.log( this.productos[index].PRODUCTO)
+       //console.log( this.productos[index].PRODUCTO)
  
        this.transacciones.forEach(element=>{
          if(element2.PRODUCTO==element.producto && element.sucursal=="matriz"){

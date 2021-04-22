@@ -105,7 +105,7 @@ router.put('/updateProductoSuc1Dir/:id/:cantidad/:precio', async (req, res,next)
     const { cantidad } = req.params;
     const { precio } = req.params;
     console.log(cantidad+ "ddd "+ precio)
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio:req.body.precio ,precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio:req.body.ultimoPrecioCompra , precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -113,7 +113,7 @@ router.put('/updateProductoSuc2Dir/:id/:cantidad/:precio', async (req, res,next)
     const { id } = req.params;
     const { precio } = req.params;
     const { cantidad } = req.params;
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal2:cantidad,  precio:req.body.precio,precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal2:cantidad,  precio:req.body.ultimoPrecioCompra, precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -121,7 +121,7 @@ router.put('/updateProductoSuc3Dir/:id/:cantidad/:precio', async (req, res,next)
     const { id } = req.params;
     const { precio } = req.params;
     const { cantidad } = req.params;
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal3:cantidad,  precio:req.body.precio,precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal3:cantidad,  precio:req.body.ultimoPrecioCompra, precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

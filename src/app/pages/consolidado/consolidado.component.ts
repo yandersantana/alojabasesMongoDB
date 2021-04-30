@@ -87,6 +87,8 @@ export class ConsolidadoComponent implements OnInit {
     this.transacciones = [];
     this.invetarioP = [];
     this.invetarioFaltante = [];
+    this.productosPendientes = [];
+    this.productosPendientesNoEN = [];
     this.mostrarLoading = true;
     this.transaccionesService.getTransaccion().subscribe((res) => {
       this.transacciones = res as transaccion[];
@@ -502,6 +504,7 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
+      this.invetarioProd.execute = false;
       if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto) {
         this.invetarioP.push(this.invetarioProd);
       }
@@ -726,10 +729,15 @@ export class ConsolidadoComponent implements OnInit {
     for (let index = 0; index < this.productos.length; index++) {
       const element = this.productos[index];
       this.invetarioP.forEach((element2) => {
-        if (element.PRODUCTO == element2.producto.PRODUCTO) {
-          element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-          element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
-          element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
+        if (!element2.execute) {
+          if (element.PRODUCTO == element2.producto.PRODUCTO) {
+            element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
+            element2.cantidadM2b2 =
+              element2.cantidadM2b2 + element.suc2Pendiente;
+            element2.cantidadM2b3 =
+              element2.cantidadM2b3 + element.suc3Pendiente;
+            element2.execute = true;
+          }
         }
       });
     }
@@ -958,6 +966,7 @@ export class ConsolidadoComponent implements OnInit {
       }
     });
     this.mostrarLoading = false;
+    console.log(this.invetarioP);
     // this.actualizarInventario()
   }
 

@@ -35,6 +35,8 @@ export class invFaltanteSucursal {
 
 export class productoTransaccion {
   nombre: string;
+  fechaActual: Date;
+  fechaAnterior: Date;
   constructor() {}
 }
 

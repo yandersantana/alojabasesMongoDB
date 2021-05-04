@@ -1,60 +1,79 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { factura } from '../pages/ventas/venta';
+import { Injectable } from "@angular/core";
+import { HttpClient } from "@angular/common/http";
+import { Router } from "@angular/router";
+import { factura } from "../pages/ventas/venta";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class NotasVentasService {
-
   facturas: factura[];
- //private URL = 'http://localhost:3000/notasVenta'; //localhost
- //private URL = 'http://104.248.14.190:3000/notasVenta';
- private URL = 'http://104.131.82.174:3000/notasVenta';
-  constructor(public http: HttpClient, public router: Router ) { }
+  //private URL = "http://localhost:3000/notasVenta"; //localhost
+  //private URL = 'http://104.248.14.190:3000/notasVenta';
+  private URL = "http://104.131.82.174:3000/notasVenta";
+  constructor(public http: HttpClient, public router: Router) {}
 
-  newNotaVenta(notasVenta){
-    return this.http.post<any>(this.URL +'/newNotaVenta', notasVenta);
+  newNotaVenta(notasVenta) {
+    return this.http.post<any>(this.URL + "/newNotaVenta", notasVenta);
   }
 
-  getNotasVentas(){ 
-    return this.http.get(this.URL+'/getNotasVenta');
+  getNotasVentas() {
+    return this.http.get(this.URL + "/getNotasVenta");
   }
 
-  getNotasVentasMensuales(objFecha){ 
-    return this.http.post(this.URL+'/getNotasVentaMensuales',objFecha);
+  getNotasVentasMensuales(objFecha) {
+    return this.http.post(this.URL + "/getNotasVentaMensuales", objFecha);
   }
 
-  updateNotasVenta(notasVenta){
-    return this.http.put(this.URL + `/update/${notasVenta._id}`, notasVenta); 
+  getNotasVemtaDocumento(documento) {
+    return this.http.post(
+      this.URL + `/getNotasVentaPorDocumento/${documento}`,
+      documento
+    );
   }
 
-  updateNotasVentaObervaciones(notasventa,observaciones:string){
-    return this.http.put(this.URL + `/updateObservaciones/${notasventa._id}/${observaciones}`, notasventa); 
+  updateNotasVenta(notasVenta) {
+    return this.http.put(this.URL + `/update/${notasVenta._id}`, notasVenta);
   }
 
-  updateNotasVentaEstado(notasventa,estado:string){
-    return this.http.put(this.URL + `/updateEstado/${notasventa._id}/${estado}`, notasventa); 
+  updateNotasVentaObervaciones(notasventa, observaciones: string) {
+    return this.http.put(
+      this.URL + `/updateObservaciones/${notasventa._id}/${observaciones}`,
+      notasventa
+    );
   }
 
-  updateNotasVentaEstadoAnulación(notasventa,estado:string,mensaje:string){
-    return this.http.put(this.URL + `/updateEstadoAnulacion/${notasventa._id}/${estado}/${mensaje}`, notasventa); 
+  updateNotasVentaEstado(notasventa, estado: string) {
+    return this.http.put(
+      this.URL + `/updateEstado/${notasventa._id}/${estado}`,
+      notasventa
+    );
   }
 
-  updateNotasVentaEstado2(notasventa,estado:string){
-    console.log("sdsdsd "+`/updateEstadoObs/${notasventa._id}/${estado}`)
-    return this.http.put(this.URL + `/updateEstadoObs/${notasventa._id}/${estado}`, notasventa); 
+  updateNotasVentaEstadoAnulación(notasventa, estado: string, mensaje: string) {
+    return this.http.put(
+      this.URL +
+        `/updateEstadoAnulacion/${notasventa._id}/${estado}/${mensaje}`,
+      notasventa
+    );
   }
 
-  actualizarNota(notasventa,nota:string){
-    return this.http.put(this.URL + `/actualizarNota/${notasventa._id}/${nota}`, notasventa); 
+  updateNotasVentaEstado2(notasventa, estado: string) {
+    console.log("sdsdsd " + `/updateEstadoObs/${notasventa._id}/${estado}`);
+    return this.http.put(
+      this.URL + `/updateEstadoObs/${notasventa._id}/${estado}`,
+      notasventa
+    );
   }
 
-
-  deleteNotasVenta(notasVenta){
-    return this.http.delete(this.URL + `/delete/${notasVenta._id}`, notasVenta); 
+  actualizarNota(notasventa, nota: string) {
+    return this.http.put(
+      this.URL + `/actualizarNota/${notasventa._id}/${nota}`,
+      notasventa
+    );
   }
 
-  
+  deleteNotasVenta(notasVenta) {
+    return this.http.delete(this.URL + `/delete/${notasVenta._id}`, notasVenta);
+  }
 }

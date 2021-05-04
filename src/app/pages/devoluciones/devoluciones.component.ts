@@ -62,8 +62,8 @@ export class DevolucionesComponent implements OnInit {
   productos: producto[] = [];
   facturaTraida: factura;
   usuarioLogueado: user;
-  mostrarLoading: boolean = true;
-  mostrarLoadingFactura: boolean = true;
+  mostrarLoading: boolean = false;
+  mostrarLoadingFactura: boolean = false;
   notas_venta: factura[] = [];
   menuDocumento: string[] = ["Factura", "Nota de Venta"];
 
@@ -139,8 +139,8 @@ export class DevolucionesComponent implements OnInit {
     this.getParametrizaciones() */
 
     this.traerDevoluciones();
-    this.traerFacturas();
-    this.traerNotasVenta();
+    //this.traerFacturas();
+    //this.traerNotasVenta();
     this.traerContadoresDocumentos();
     this.traerProductos();
     this.traerOrdenesCompra();
@@ -331,11 +331,24 @@ export class DevolucionesComponent implements OnInit {
   }
 
   obtenerDocumento(e) {
+    this.mostrarLoading = true;
     var bandera = true;
     this.devolucion.tipo_documento = e.value;
+    var arrayFacturas = [];
     if (e.value == "Factura") {
       this.limpiarArreglo();
-      this.facturas.forEach((element) => {
+      this.facturasService
+        .getFacturasDocumento(this.idDocumento)
+        .subscribe((res) => {
+          arrayFacturas = res as factura[];
+          this.facturaTraida = arrayFacturas[0];
+          this.productosVendidos2 = arrayFacturas[0].productosVendidos;
+          this.cliente = arrayFacturas[0].cliente.cliente_nombre;
+          this.fecha_transaccion = arrayFacturas[0].fecha2;
+          this.sucursal = arrayFacturas[0].sucursal;
+          bandera = false;
+        });
+      /* this.facturas.forEach((element) => {
         if (element.documento_n == this.idDocumento) {
           this.facturaTraida = element;
           this.productosVendidos2 = element.productosVendidos;
@@ -346,16 +359,26 @@ export class DevolucionesComponent implements OnInit {
           bandera = false;
           // this.obtenerDetalleProductosFact()
         }
-      });
+      }); */
       if (bandera) {
-        // alert("no encontre")
         this.cliente = "";
         this.fecha_transaccion = "";
         this.sucursal = "";
       }
     } else if (e.value == "Nota de Venta") {
       this.limpiarArreglo();
-      this.notas_venta.forEach((element) => {
+      this.notasVentaService
+        .getNotasVemtaDocumento(this.idDocumento)
+        .subscribe((res) => {
+          arrayFacturas = res as factura[];
+          this.facturaTraida = arrayFacturas[0];
+          this.productosVendidos2 = arrayFacturas[0].productosVendidos;
+          this.cliente = arrayFacturas[0].cliente.cliente_nombre;
+          this.fecha_transaccion = arrayFacturas[0].fecha2;
+          this.sucursal = arrayFacturas[0].sucursal;
+          bandera = false;
+        });
+      /* this.notas_venta.forEach((element) => {
         if (element.documento_n == this.idDocumento) {
           this.facturaTraida = element;
           this.cliente = element.cliente.cliente_nombre;
@@ -367,7 +390,8 @@ export class DevolucionesComponent implements OnInit {
           bandera = false;
           //this.obtenerDetalleProductosNot()
         }
-      });
+      }); */
+
       if (bandera) {
         //alert("no encontre")
         this.cliente = "";
@@ -375,6 +399,7 @@ export class DevolucionesComponent implements OnInit {
         this.sucursal = "";
       }
     }
+    this.mostrarLoading = false;
   }
 
   obtenerDetalleProductosFact() {

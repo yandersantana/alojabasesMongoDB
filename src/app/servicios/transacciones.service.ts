@@ -6,7 +6,7 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class TransaccionesService {
-  //private URL = 'http://localhost:3000/transaccion'; //localhost
+  //private URL = "http://localhost:3000/transaccion"; //localhost
   private URL = "http://104.131.82.174:3000/transaccion";
   //private URL = "http://104.248.14.190:3000/transaccion";
   constructor(public http: HttpClient, public router: Router) {}
@@ -25,6 +25,13 @@ export class TransaccionesService {
 
   getTransaccionesPorProducto(producto) {
     return this.http.post(this.URL + "/getTransaccionesPorProducto", producto);
+  }
+
+  getTransaccionesPorProductoYFecha(producto) {
+    return this.http.post(
+      this.URL + "/getTransaccionesPorProductoYFecha",
+      producto
+    );
   }
 
   updateTransaccion(transaccion) {

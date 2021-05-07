@@ -2,7 +2,11 @@ import { Component, OnInit } from "@angular/core";
 import { AngularFirestore } from "angularfire2/firestore";
 import { AngularFireAuth } from "angularfire2/auth";
 import { AlertsService } from "angular-alert-module";
-import { devolucion, productosDevueltos } from "./devoluciones";
+import {
+  devolucion,
+  productosDevueltos,
+  tipoDocEliminacion,
+} from "./devoluciones";
 import pdfMake from "pdfmake/build/pdfmake";
 import {
   venta,
@@ -34,6 +38,7 @@ import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
 import { ProductosPendientesService } from "src/app/servicios/productos-pendientes.service";
+import { timeStamp } from "console";
 
 @Component({
   selector: "app-devoluciones",
@@ -58,6 +63,7 @@ export class DevolucionesComponent implements OnInit {
   devolucionesPendientes: devolucion[] = [];
   devolucionesAprobadas: devolucion[] = [];
   devolucionesRechazadas: devolucion[] = [];
+  devolucionesAnuladas: devolucion[] = [];
   devolucioLeida: devolucion;
   productos: producto[] = [];
   facturaTraida: factura;
@@ -378,19 +384,6 @@ export class DevolucionesComponent implements OnInit {
           this.sucursal = arrayFacturas[0].sucursal;
           bandera = false;
         });
-      /* this.notas_venta.forEach((element) => {
-        if (element.documento_n == this.idDocumento) {
-          this.facturaTraida = element;
-          this.cliente = element.cliente.cliente_nombre;
-          //alert(JSON.stringify(element.fecha2))
-          this.fecha_transaccion = element.fecha2;
-          this.sucursal = element.sucursal;
-          this.productosVendidos2 = element.productosVendidos;
-          //alert(this.productosVendidos2)
-          bandera = false;
-          //this.obtenerDetalleProductosNot()
-        }
-      }); */
 
       if (bandera) {
         //alert("no encontre")
@@ -423,6 +416,8 @@ export class DevolucionesComponent implements OnInit {
         this.devolucionesAprobadas.push(element);
       } else if (element.estado == "Rechazado") {
         this.devolucionesRechazadas.push(element);
+      } else if (element.estado == "Anulada") {
+        this.devolucionesAnuladas.push(element);
       }
     });
   }
@@ -690,6 +685,10 @@ export class DevolucionesComponent implements OnInit {
     this.rechazarDevolucion(e.row.data);
   };
 
+  aprobarAnulacion = (e) => {
+    this.anularDevolucion(e.row.data);
+  };
+
   rechazarDevolucion(e: any) {
     Swal.fire({
       title: "Rechazar Devolución",
@@ -720,6 +719,43 @@ export class DevolucionesComponent implements OnInit {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
       }
     });
+  }
+
+  anularDevolucion(e: any) {
+    Swal.fire({
+      title: "Anular Devolución",
+      text: "Desea anular la devolución #" + e.id_devolucion,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje();
+        new Promise<any>((resolve, reject) => {
+          this.devolucionesService.updateEstado(e, "Anulada").subscribe(
+            (res) => {
+              this.buscarProductos(e);
+            },
+            (err) => {}
+          );
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
+      }
+    });
+  }
+
+  buscarProductos(e: any) {
+    var contVal = 0;
+    this.devoluciones.forEach((element) => {
+      if (element.id_devolucion == e.id_devolucion) {
+        this.devolucioLeida = element;
+        this.productosDevueltosCarga = element.productosDevueltos;
+      }
+    });
+    console.log("pro", this.productosDevueltosCarga);
+    this.actualizarProductosAnulacion(e.id_devolucion);
   }
 
   aceptarDevolucion(e: any) {
@@ -884,6 +920,22 @@ export class DevolucionesComponent implements OnInit {
     }
   }
 
+  eliminarTransacciones(num: number) {
+    var newTipoDocEliminacion = new tipoDocEliminacion();
+    newTipoDocEliminacion.nroDocumento = num.toString();
+    newTipoDocEliminacion.tipoDocumento = "devolucion";
+    this.transaccionesService
+      .deleteTransaccionPorDevoluciones(newTipoDocEliminacion)
+      .subscribe(
+        (res) => {
+          console.log(res + "termine1");
+        },
+        (err) => {
+          alert("error");
+        }
+      );
+  }
+
   contadorValidaciones2(i: number) {
     if (this.productosDevueltosCarga.length == i) {
       console.log("recien termine");
@@ -891,6 +943,23 @@ export class DevolucionesComponent implements OnInit {
       Swal.fire({
         title: "Devolucion Aprobada",
         text: "Se ha guardado con éxito",
+        icon: "success",
+        confirmButtonText: "Ok",
+      }).then((result) => {
+        window.location.reload();
+      });
+    } else {
+      console.log("no he entrado actualizar" + i);
+    }
+  }
+
+  contadorValidacionesAnulacion(i: number) {
+    if (this.productosDevueltosCarga.length == i) {
+      console.log("recien termine");
+      Swal.close();
+      Swal.fire({
+        title: "Devolucion Anulada",
+        text: "Se ha realizado con éxito",
         icon: "success",
         confirmButtonText: "Ok",
       }).then((result) => {
@@ -1473,6 +1542,87 @@ export class DevolucionesComponent implements OnInit {
             default:
 
             //his.db.collection('/productos').doc(element.producto.PRODUCTO).update({"cantidad" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+          }
+        }
+      });
+    });
+  }
+
+  actualizarProductosAnulacion(num) {
+    this.eliminarTransacciones(num);
+    var sumaProductos = 0;
+    var num1: number = 0;
+    var num2: number = 0;
+    var num3: number = 0;
+    var cont2ing = 0;
+    var contIng: number = 0;
+    var entre: boolean = true;
+    new Promise<any>((resolve, reject) => {
+      this.productosDevueltosCarga.forEach((element) => {
+        this.productos.forEach((elemento1) => {
+          if (elemento1.PRODUCTO == element.producto.PRODUCTO) {
+            switch (this.devolucioLeida.sucursal.nombre) {
+              case "matriz":
+                num1 = parseInt(element.cantDevueltam2.toFixed(0));
+                num2 = elemento1.sucursal1;
+                sumaProductos = Number(num2) - Number(num1);
+                break;
+              case "sucursal1":
+                num1 = parseInt(element.cantDevueltam2.toFixed(0));
+                num2 = elemento1.sucursal2;
+                sumaProductos = Number(num2) - Number(num1);
+                break;
+              case "sucursal2":
+                num1 = parseInt(element.cantDevueltam2.toFixed(0));
+                num2 = elemento1.sucursal3;
+                sumaProductos = Number(num2) - Number(num1);
+                break;
+              default:
+            }
+          }
+        });
+        if (entre) {
+          switch (this.devolucioLeida.sucursal.nombre) {
+            case "matriz":
+              element.producto.sucursal1 = sumaProductos;
+              this.productoService
+                .updateProductoSucursal1(element.producto)
+                .subscribe(
+                  (res) => {
+                    cont2ing++, this.contadorValidacionesAnulacion(cont2ing);
+                  },
+                  (err) => {
+                    alert("error");
+                  }
+                );
+              break;
+            case "sucursal1":
+              element.producto.sucursal2 = sumaProductos;
+              this.productoService
+                .updateProductoSucursal2(element.producto)
+                .subscribe(
+                  (res) => {
+                    cont2ing++, this.contadorValidacionesAnulacion(cont2ing);
+                  },
+                  (err) => {
+                    alert("error");
+                  }
+                );
+              break;
+            case "sucursal2":
+              element.producto.sucursal3 = sumaProductos;
+              this.productoService
+                .updateProductoSucursal3(element.producto)
+                .subscribe(
+                  (res) => {
+                    cont2ing++, this.contadorValidacionesAnulacion(cont2ing);
+                  },
+                  (err) => {
+                    alert("error");
+                  }
+                );
+              break;
+            default:
           }
         }
       });

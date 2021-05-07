@@ -473,15 +473,16 @@
       [visible]="true"
     >
     </dxi-column>
-    <dxi-column type="buttons" dataField="bt1" caption="Ver" width="15%">
+
+    <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
       <dxi-button
         icon="fa fa-arrow-down"
         [onClick]="getCourseFile"
       ></dxi-button>
     </dxi-column>
-    <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="15%">
-            <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
-        </dxi-column> -->
+    <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
+      <dxi-button text="Anular" [onClick]="aprobarAnulacion"></dxi-button>
+    </dxi-column>
 
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager
@@ -496,6 +497,72 @@
     #datag2
     id="gridContainer"
     [dataSource]="devolucionesRechazadas"
+    [showBorders]="true"
+  >
+    <dxo-filter-row [visible]="true"></dxo-filter-row>
+
+    <dxo-search-panel
+      [visible]="true"
+      [width]="240"
+      placeholder="Buscar..."
+    ></dxo-search-panel>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <dxo-export
+      [enabled]="true"
+      fileName="Devoluciones"
+      [allowExportSelectedData]="true"
+    ></dxo-export>
+    <dxi-column
+      dataField="_id"
+      caption="Devolucion N"
+      dataType="string"
+      [visible]="false"
+    >
+    </dxi-column>
+    <dxi-column
+      dataField="id_devolucion"
+      caption="Devolucion N"
+      dataType="string"
+      sortOrder="desc"
+    >
+    </dxi-column>
+    <dxi-column dataField="fecha" caption="Fecha" dataType="string">
+    </dxi-column>
+    <dxi-column
+      dataField="num_documento"
+      caption="Documento #"
+      dataType="string"
+    >
+    </dxi-column>
+    <dxi-column dataField="cliente" caption="Cliente" dataType="string">
+    </dxi-column>
+    <dxi-column
+      dataField="totalDevolucion"
+      caption="Total"
+      dataType="number"
+      [visible]="true"
+    >
+    </dxi-column>
+    <dxi-column type="buttons" dataField="bt1" caption="Ver" width="15%">
+      <dxi-button
+        icon="fa fa-arrow-down"
+        [onClick]="getCourseFile"
+      ></dxi-button>
+    </dxi-column>
+
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+  </dx-data-grid>
+
+  <br />
+  <h4>Devoluciones Anuladas</h4>
+  <dx-data-grid
+    #datag2
+    id="gridContainer"
+    [dataSource]="devolucionesAnuladas"
     [showBorders]="true"
   >
     <dxo-filter-row [visible]="true"></dxo-filter-row>

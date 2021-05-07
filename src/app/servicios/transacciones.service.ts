@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 })
 export class TransaccionesService {
   //private URL = "http://localhost:3000/transaccion"; //localhost
-  private URL = "http://104.131.82.174:3000/transaccion";
-  //private URL = "http://104.248.14.190:3000/transaccion";
+  //private URL = "http://104.131.82.174:3000/transaccion";
+  private URL = "http://104.248.14.190:3000/transaccion";
   constructor(public http: HttpClient, public router: Router) {}
 
   newTransaccion(transaccion) {
@@ -43,5 +43,10 @@ export class TransaccionesService {
       this.URL + `/delete/${transaccion._id}`,
       transaccion
     );
+  }
+
+  deleteTransaccionPorDevoluciones(transaccion) {
+    console.log(transaccion);
+    return this.http.post(this.URL + `/deletePorDocumento`, transaccion);
   }
 }

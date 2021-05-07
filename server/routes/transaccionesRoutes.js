@@ -75,7 +75,19 @@ router.put("/update/:id", async (req, res, next) => {
 
 router.delete("/delete/:id", async (req, res, next) => {
   await Transacciones.findByIdAndRemove(req.params.id);
-  res.json({ status: "Sucursal Eliminada" });
+  res.json({ status: "Transaccion Eliminada" });
+});
+
+router.post("/deletePorDocumento", async (req, res, next) => {
+  var tipoDoc = req.body.tipoDocumento;
+  var nroDocumento = req.body.nroDocumento;
+  console.log("tip", tipoDoc);
+  console.log("nro", nroDocumento);
+  await Transacciones.deleteMany({
+    documento: nroDocumento,
+    tipo_transaccion: tipoDoc,
+  });
+  res.json({ status: "Transaccion Eliminada" });
 });
 
 router.post("/newTransaccion", async (req, res) => {

@@ -6,6 +6,19 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
   const transacciones = await Transacciones.find({
+    fecha_transaccion: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(transacciones);
+});
+
+
+router.post("/getTransaccionesPorRango2", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const transacciones = await Transacciones.find({
     createdAt: {
       $gte: start,
       $lt: end,
@@ -13,6 +26,7 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   });
   res.json(transacciones);
 });
+
 
 router.post("/getTransaccionesPorProducto", async (req, res, next) => {
   const transacciones = await Transacciones.find({ producto: req.body.nombre });

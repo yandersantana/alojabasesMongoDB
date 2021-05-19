@@ -54,6 +54,7 @@ app.use('/upload', require('./routes/uploadRoutes'));
 app.use('/precios', require('./routes/preciosRoutes'));
 app.use('/auditorias', require('./routes/auditoriaRoutes'));
 app.use('/auditoriasProductos', require('./routes/auditoriaProductoRoutes'));
+app.use('/ingresosDiarios', require('./routes/ingresosRoutes'));
 
 
 app.use('/preciosEspeciales', require('./routes/precioEspecialRoutes'));

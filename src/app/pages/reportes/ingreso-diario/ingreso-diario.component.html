@@ -1,0 +1,117 @@
+<div *ngIf="mostrarLoading">
+  <app-loading></app-loading>
+</div>
+
+
+<br>
+<div class="card mb-3">
+    <div class="card-header">
+        <i class="fa fa-lg fa-user  text-danger"></i> Ingreso Diario de Caja
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-2">
+                <div class="row botones">
+
+                    <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                            <!-- <i class="fa fa-list fa-2x"></i> --> Ver Lista
+                        </button></div>
+
+                    <div class="col-md-12"> <button title="Agregar Cliente" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                           <!--  <i class="fa fa-user-plus fa-2x"></i> -->Ingresar registro
+                        </button></div>
+                </div>
+            </div>
+
+            <div class="col-md-10 card carIn">
+                <div *ngIf="viewTabla" style="text-align: center;">
+                    <br>
+                    <h4>Ingresos Diarios</h4>
+                    <dx-data-grid id="gridContainer" [dataSource]="ingresosDiarios"
+                     [showBorders]="true">
+                        <!-- <dxo-filter-row [visible]="true" ></dxo-filter-row> -->
+                        <dxo-export [enabled]="true" fileName="clientes" [allowExportSelectedData]="true"></dxo-export>
+                        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                        <dxi-column dataField="_id" caption="ID" [visible]="false"></dxi-column>
+                        <dxi-column dataField="fecha" caption="Fecha" dataType="date" [visible]="true"></dxi-column>
+                        <dxi-column dataField="sucursal" caption="Sucursal"></dxi-column>
+                        <dxi-column dataField="valor" caption="Valor"></dxi-column>
+                        <dxi-column type="buttons" dataField="bt1" caption="Acciones" width="30%">
+                            <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdate"></dxi-button>
+                            <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deleteIngreso"></dxi-button>
+                        </dxi-column>
+                        <dxo-paging [pageSize]="5"></dxo-paging>
+                        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                        </dxo-pager>
+
+                    </dx-data-grid>
+                    <br><br>
+                </div>
+
+
+
+                <div *ngIf="viewForm">
+                    <div style="text-align: center;" class="newr">
+                        <h4>Nuevo Ingreso Caja</h4>
+                        <div>
+                            <form #f="ngForm" (ngSubmit)="register(f)">
+
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Fecha</div>
+                                            <div class="col-md-8">
+                                                <dx-date-box
+                                                    [(value)]="nowdesde"
+                                                    type="date">
+                                                </dx-date-box></div>
+                                        </div>
+
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Sucursal</div>
+                                            <div class="col-md-8">  <dx-select-box [items]="sucursales" [(value)]="nombreSucursal" [readOnly]="false"
+                                                [disabled]="false" ></dx-select-box></div>
+                                        </div>
+
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Valor</div>
+                                            <div class="col-md-8"><dx-number-box [(value)]="valorIngreso" [readOnly]="false"></dx-number-box></div>
+                                        </div>
+                                        
+                                        
+                                   
+                                         <div class="col-md-12">
+                                             <div class="row">
+                                                 <div class="col-md-3"></div>
+                                                 <div class="col-md-6" *ngIf="registro">
+                                                    <button class="btn btn-block btn-success espacio"  >Registrar Ingreso</button>
+                                                    
+                                                 </div>
+                                                 <div class="col-md-6" *ngIf="actualizar">
+                                                    <button class="btn btn-block btn-success espacio"  >Actualizar Ingreso</button>
+                                                    
+                                                 </div>
+                                                 <div class="col-md-3"></div>
+                                             </div>
+                                         </div>
+                                        
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+
+
+                            </form>
+                        </div>
+                    </div>
+
+                </div>
+              
+            </div>
+        </div>
+
+
+
+    </div>
+</div>
+

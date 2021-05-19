@@ -1,0 +1,325 @@
+<div *ngIf="mostrarLoading">
+  <app-loading></app-loading>
+</div>
+
+
+<div class="row">
+        <div class="col-md-12 card carIn">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="row"  style="margin-top: 0.7rem">
+                        <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5>Seleccione el Rango de Fechas</h5></div>
+                        <br><br><br>
+                        <div class="col-md-6"> 
+                          <div class="row">
+                            <div class="col-md-3">Desde</div>
+                            <div class="col-md-9">
+                              <dx-date-box
+                                [(value)]="nowdesde"
+                                type="date">
+                              </dx-date-box>
+                            </div>
+                          </div>        
+                        </div>
+
+                        <div class="col-md-6"> 
+                          <div class="row">
+                            <div class="col-md-3">Hasta</div>
+                            <div class="col-md-9">
+                              <dx-date-box
+                                 [(value)]="nowhasta"
+                                type="date">
+                              </dx-date-box>
+                            </div>
+                          </div>        
+                        </div>
+                        
+                    </div>
+                    <br>
+                    <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"><button class="btn btn-block btn-success "  (click)="traerTransaccionesPorRango()">Buscar</button></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+    </div>
+
+<div  class="marginTabla" >
+  <dx-data-grid
+    #datag2
+    id="gridContainer"
+    [dataSource]="reporteDetallado"
+    [showBorders]="true"
+    [columnWidth]="125">
+    <dxo-search-panel
+      [visible]="true"
+      [width]="240"
+      placeholder="Buscar..."
+    ></dxo-search-panel>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <dxo-export
+      [enabled]="true"
+      fileName="Reporte-Detallado"
+      [allowExportSelectedData]="true"
+    ></dxo-export>
+    <dxi-column
+      dataField="fecha"
+      caption="FECHA"
+      dataType="date"
+      sortOrder="asc"
+      [width]="130"
+    >
+    </dxi-column>
+
+    <dxi-column caption="Ventas Diarias" dataField="sucursal1">
+      <dxi-column
+        dataField="VDiariaMatriz"
+        caption="MATRIZ"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="DevDiariaMatriz"
+        caption="DEV.MATRIZ"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="VDiariaSucursal1"
+        caption="SUCURSAL 1"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="DevDiariaSucursal1"
+        caption="DEV.SUC1"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="VDiariaTotal"
+        caption="TOTAL"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+    <dxi-column caption="Matriz">
+      <dxi-column
+        dataField="MatUBruta"
+        caption="UBRUTA"
+        alignment="right"
+        dataType="currency">
+         <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="MatPorcentaje"
+        caption="%"
+        alignment="right"
+        dataType="percent">
+         <dxo-format
+            type="percent"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+   <dxi-column caption="Sucursal 1">
+      <dxi-column
+        dataField="Suc1UBruta"
+        caption="UBRUTA"
+        alignment="right"
+        dataType="currency">
+         <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="Suc1Porcentaje"
+        caption="%"
+        alignment="right"
+        dataType="percent">
+        <dxo-format
+            type="percent"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+    <dxi-column caption="Validación">
+      <dxi-column
+        dataField="validacionMatriz"
+        caption="MATRIZ"
+         alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="validacionSucursal1"
+        caption="SUCURSAL1"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+    <dxi-sort-by-group-summary-info
+      summaryItem="count"
+    ></dxi-sort-by-group-summary-info>
+
+
+    <dxo-summary>
+                <dxi-total-item
+                    column="VDiariaMatriz"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="DevDiariaMatriz"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="VDiariaSucursal1"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="DevDiariaSucursal1"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="VDiariaTotal"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+                <dxi-total-item
+                    column="MatUBruta"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="Suc1UBruta"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="validacionMatriz"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="validacionSucursal1"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+                
+   
+            </dxo-summary>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+    <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+  </dx-data-grid>
+</div>

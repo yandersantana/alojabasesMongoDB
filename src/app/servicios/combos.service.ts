@@ -7,8 +7,8 @@ import { cliente } from "../pages/ventas/venta";
   providedIn: "root",
 })
 export class CombosService {
-  private URL = "http://104.248.14.190:3000/combos";
-  //private URL = "http://104.131.82.174:3000/combos";
+  //private URL = "http://104.248.14.190:3000/combos";
+  private URL = "http://104.131.82.174:3000/combos";
   //private URL = 'http://localhost:3000/combos'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}

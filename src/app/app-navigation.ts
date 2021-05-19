@@ -385,6 +385,18 @@ export const navigationAdmin = [
         text: "Indicadores",
         path: "menu-indicadores",
       },
+      {
+        text: "Reporte Detallado",
+        path: "reporte-detallado",
+      },
+      {
+        text: "Reporte Global",
+        path: "reporte-global",
+      },
+       {
+        text: "Ingreso Diario",
+        path: "ingreso-diario",
+      },
     ],
   },
   {
@@ -614,6 +626,10 @@ export const navigationSupervisor = [
     items: [
       {
         text: "Indicadores",
+        path: "menu-indicadores",
+      },
+      {
+        text: "Reporte Detallado",
         path: "menu-indicadores",
       },
     ],

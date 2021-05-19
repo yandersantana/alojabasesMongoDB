@@ -475,17 +475,17 @@ export class ProductoComponent implements OnInit {
           suma = element.metros2;
           switch (e.sucursal) {
             case "matriz":
-              if (suma > element2.sucursal1) {
+              if (suma >= element2.sucursal1) {
                 contIn++;
               }
               break;
             case "sucursal1":
-              if (suma > element2.sucursal2) {
+              if (suma >= element2.sucursal2) {
                 contIn++;
               }
               break;
             case "sucursal2":
-              if (suma > element2.sucursal3) {
+              if (suma >= element2.sucursal3) {
                 contIn++;
               }
               break;

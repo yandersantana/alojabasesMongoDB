@@ -1,0 +1,450 @@
+<div *ngIf="mostrarLoading">
+  <app-loading></app-loading>
+</div>
+
+
+<div class="row">
+        <div class="col-md-12 card carIn">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="row"  style="margin-top: 0.7rem">
+                        <div class="col-md-4"><h6>Seleccione el Año</h6></div>
+                        <div class="col-md-4">
+                          <dx-select-box [items]="years" 
+                            [value]="years[0]" 
+                            [readOnly]="false" 
+                            [disabled]="false"
+                            (onValueChanged)="anioSeleccionado($event)"
+                            ></dx-select-box>
+                         </div>
+                    <div class="col-md-4"><button class="btn btn-block btn-success "  (click)="traerTransaccionesPorRango()">Buscar</button></div>
+                       
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+    </div>
+
+
+
+<dx-scroll-view
+    [height]="600"
+    direction="both">  
+
+
+
+<div style="width: 2500px;">
+<div  class="marginTabla" style="text-align: center;width: 700px;float: left;" >
+  <h2>VENTAS</h2>
+  <dx-data-grid
+    #datag2
+    id="gridContainer"
+    [dataSource]="reporteGlobal"
+    [showBorders]="true"
+    [columnWidth]="130">
+    <dxo-search-panel
+      [visible]="true"
+      [width]="240"
+      placeholder="Buscar..."
+    ></dxo-search-panel>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <dxo-export
+      [enabled]="true"
+      fileName="Reporte-Detallado"
+      [allowExportSelectedData]="true"
+    ></dxo-export>
+
+    <dxi-column caption="VENTAS POR MES" dataField="sucursal1">
+      <dxi-column
+        dataField="numMes"
+        caption="Mes"
+        [visible]="false"
+        sortOrder="asc"
+        [width]="130">
+      </dxi-column>
+       <dxi-column
+        dataField="mes"
+        caption="MES"
+        [width]="130">
+      </dxi-column>
+      <dxi-column
+        dataField="VMesMatriz"
+        caption="MATRIZ"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="VMesSucursal1"
+        caption="SUCURSAL1"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="VMesTotal"
+        caption="SUMA TOTAL"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="PorcentajeMes"
+        caption="%"
+        alignment="right"
+        dataType="percent">
+        <dxo-format
+            type="percent"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+    <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+
+
+    <dxo-summary>
+                <dxi-total-item
+                    column="VMesMatriz"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="VMesSucursal1"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="VMesTotal"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="DevDiariaSucursal1"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="VDiariaTotal"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="PorcentajeMes"
+                    dataType="number"
+                    displayFormat="{0}"
+                    summaryType="avg"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+            </dxo-summary>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager
+      [showPageSizeSelector]="true"
+      [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+    <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+  </dx-data-grid>
+</div>
+
+
+
+
+
+<div  class="marginTabla" style="text-align: center;width: 600px;float: left;" >
+  <h2>COMPRAS</h2>
+  <dx-data-grid
+    #datag2
+    id="gridContainer"
+    [dataSource]="reporteGlobalCompras"
+    [showBorders]="true"
+    [columnWidth]="130">
+    <dxo-search-panel
+      [visible]="true"
+      [width]="240"
+      placeholder="Buscar..."></dxo-search-panel>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <dxo-export
+      [enabled]="true"
+      fileName="Reporte-Compras"
+      [allowExportSelectedData]="true"></dxo-export>
+    <dxi-column caption="COMPRAS POR MES" dataField="sucursal1">
+      <dxi-column
+        dataField="numMes"
+        caption="Mes"
+        [visible]="false"
+        sortOrder="asc"
+        [width]="130">
+      </dxi-column>
+       <dxi-column
+        dataField="mes"
+        caption="MES"
+        [width]="130">
+      </dxi-column>
+      <dxi-column
+        dataField="ComprasMesDirectas"
+        caption="DIRECTAS"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="ComprasMesIndirectas"
+        caption="INDIRECTAS"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="comprasMesTotal"
+        caption="SUMA TOTAL"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+     
+    </dxi-column>
+
+    <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+
+
+    <dxo-summary>
+                <dxi-total-item
+                    column="ComprasMesDirectas"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="ComprasMesIndirectas"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="comprasMesTotal"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+            </dxo-summary>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
+    <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+  </dx-data-grid>
+</div>
+
+
+
+
+<div  class="marginTabla" style="text-align: center;width: 600px;float: left;" >
+  <h2>VENTAS / COMPRAS</h2>
+  <dx-data-grid
+    #datag2
+    id="gridContainer"
+    [dataSource]="reporteGlobalIndicadores"
+    [showBorders]="true"
+    [columnWidth]="130">
+    <dxo-search-panel
+      [visible]="true"
+      [width]="240"
+      placeholder="Buscar..."></dxo-search-panel>
+    <i class="fa fa-exclamation-triangle" aria-hidden="true"></i>
+    <dxo-export
+      [enabled]="true"
+      fileName="Ventas-vs-Compras"
+      [allowExportSelectedData]="true"></dxo-export>
+    <dxi-column caption="VENTAS VS COMPRAS" dataField="sucursal1">
+      <dxi-column
+        dataField="numMes"
+        caption="Mes"
+        [visible]="false"
+        sortOrder="asc"
+        [width]="130">
+      </dxi-column>
+       <dxi-column
+        dataField="mes"
+        caption="MES"
+        [width]="130">
+      </dxi-column>
+      <dxi-column
+        dataField="ventasTotales"
+        caption="VENTAS"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="comprasTotales"
+        caption="COMPRAS"
+        alignment="right"
+        dataType="currency">
+        <dxo-format
+            type="currency"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+      <dxi-column
+        dataField="indDiferencia"
+        caption="IND"
+        alignment="right"
+        dataType="percent">
+        <dxo-format
+            type="percent"
+            [precision]="2">
+        </dxo-format>
+      </dxi-column>
+    </dxi-column>
+
+    <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+
+
+    <dxo-summary>
+              
+
+                <dxi-total-item
+                    column="ventasTotales"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="comprasTotales"
+                    dataType="number"
+                    displayFormat="$ {0}"
+                    summaryType="sum"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="DevDiariaSucursal1"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                  <dxo-format
+                      type="number"
+                      [precision]="2">
+                  </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
+                    column="indDiferencia"
+                    dataType="number"
+                    displayFormat="{0}"
+                    summaryType="avg"
+                    alignment="right">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+
+            </dxo-summary>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
+    <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+  </dx-data-grid>
+</div>
+</div>
+
+</dx-scroll-view>
+
+

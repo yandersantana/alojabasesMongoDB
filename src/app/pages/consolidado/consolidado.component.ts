@@ -711,7 +711,7 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
-      console.log(this.invetarioProd);
+      //console.log(this.invetarioProd);
       this.invetarioP.push(this.invetarioProd);
 
       contCajas = 0;
@@ -750,6 +750,7 @@ export class ConsolidadoComponent implements OnInit {
       title: "Actualizando !",
       html: "Procesando",
       timerProgressBar: true,
+      allowOutsideClick: false,
       onBeforeOpen: () => {
         Swal.showLoading();
         timerInterval = setInterval(() => {
@@ -772,6 +773,7 @@ export class ConsolidadoComponent implements OnInit {
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Si",
+      allowOutsideClick: false,
       cancelButtonText: "No",
     }).then((result) => {
       if (result.value) {
@@ -795,16 +797,21 @@ export class ConsolidadoComponent implements OnInit {
       element.producto.sucursal1 = m2s1;
       element.producto.sucursal2 = m2s2;
       element.producto.sucursal3 = m2s3;
-      if (element.producto.ultimoPrecioCompra != undefined) {
+      
+      if (element.producto.ultimoPrecioCompra != undefined || element.producto.ultimoPrecioCompra != null) {
         element.producto.precio = element.producto.ultimoPrecioCompra;
+      }else{
+       element.producto.precio = element.producto.precio;
       }
       this.prodActualizable = new productoActualizable();
       this.prodActualizable.producto = element.producto;
       this.prodActualizable.suc1 = m2s1;
       this.prodActualizable.suc2 = m2s2;
       this.prodActualizable.suc3 = m2s3;
-      console.log(this.prodActualizable);
-      await this.productoService
+      //if(this.prodActualizable.producto.PRODUCTO == "Porcelanato - Denali Marfil  - 60x60")
+      //alert(JSON.stringify(this.prodActualizable))
+        
+      this.productoService
         .updateProductosSucursalesNuevo(this.prodActualizable)
         .subscribe(
           (res) => {
@@ -813,9 +820,10 @@ export class ConsolidadoComponent implements OnInit {
               console.log("lo hice");
           },
           (err) => {
+
             contVal++,
               this.contadorValidaciones2(contVal),
-              console.log("error aqui", element.producto, m2s1, m2s2, m2s3);
+              console.log("error aqui", this.prodActualizable);
           }
         );
       //await this.productoService.updateProductosSucursales(element.producto,m2s1,m2s2,m2s3).subscribe( res => {contVal++,this.contadorValidaciones2(contVal),console.log("lo hice")}, err => {console.log("error aqui",element.producto,m2s1,m2s2,m2s3)});
@@ -836,7 +844,7 @@ export class ConsolidadoComponent implements OnInit {
         window.location.reload();
       });
     } else {
-      console.log("no he entrado " + i);
+      //console.log("no he entrado " + i);
     }
   }
 

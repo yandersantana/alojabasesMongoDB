@@ -96,6 +96,11 @@ export class ReporteGlobalComponent implements OnInit {
     );
   }
 
+  onCustomizeColumns(columns){  
+        for(var i = 0; i < columns.length; i++)  
+            columns[i].alignment = 'center';  
+    }  
+
   separarTransacciones() {
     console.log("global", this.transaccionesGlobales.length);
     var start = this.nowdesde;
@@ -229,6 +234,16 @@ export class ReporteGlobalComponent implements OnInit {
     this.separarTransaccionesPorMes()
   }
 
+  customizeValue(data: any) { 
+    var valor= "$"+data.value.toFixed(2) 
+      return valor;  
+  }
+
+  customizeValuePercent(data: any) { 
+    var valor= data.value.toFixed(2)  +"%"
+      return valor;  
+  }
+
   separarTransaccionesPorMes(){
     var loop = 0;
     var sumaMesMatriz: number = 0;
@@ -248,10 +263,10 @@ export class ReporteGlobalComponent implements OnInit {
       this.reporteGlobalInd = new reporteGlobal();
       this.reporteGlobalInd.mes = this.validarMes(loop);
       this.reporteGlobalInd.numMes = loop;
-      this.reporteGlobalInd.VMesMatriz = sumaMesMatriz;
-      this.reporteGlobalInd.VMesSucursal1 = sumaMesSuc1;
-      this.reporteGlobalInd.VMesTotal = sumaTotalMes;
-      this.reporteGlobalInd.PorcentajeMes = sumaUtilidad / sumaTotalMes;
+      this.reporteGlobalInd.VMesMatriz = Number(sumaMesMatriz.toFixed(2));
+      this.reporteGlobalInd.VMesSucursal1 = Number(sumaMesSuc1.toFixed(2));
+      this.reporteGlobalInd.VMesTotal = Number(sumaTotalMes.toFixed(2));
+      this.reporteGlobalInd.PorcentajeMes = Number(sumaUtilidad.toFixed(2)) / Number(sumaTotalMes.toFixed(2));
       if(isNaN(this.reporteGlobalInd.PorcentajeMes))
         this.reporteGlobalInd.PorcentajeMes = 0
       console.log(this.reporteGlobalInd)

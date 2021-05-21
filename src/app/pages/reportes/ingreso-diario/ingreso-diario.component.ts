@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { NgForm } from "@angular/forms";
 import { IngresosService } from "src/app/servicios/ingreso-diario";
+import { ProductoService } from "src/app/servicios/producto.service";
 import Swal from "sweetalert2";
+import { producto } from "../../ventas/venta";
 import { ingresoDiario } from "./ingreso-diario";
 
 @Component({
@@ -12,6 +14,7 @@ import { ingresoDiario } from "./ingreso-diario";
 export class IngresoDiarioComponent implements OnInit {
   mostrarLoading: boolean = false;
   ingresosDiarios: ingresoDiario[] = [];
+  productosActivos: producto[] = [];
   ingresoDiarioIndividual: ingresoDiario;
   nowdesde: Date = new Date();
   nombreSucursal: string = ""
@@ -29,12 +32,13 @@ export class IngresoDiarioComponent implements OnInit {
   
 
   constructor(
-    public ingresosService :IngresosService
+    public ingresosService :IngresosService,
+    public productoService : ProductoService
   ) { }
 
   ngOnInit() {
     this.traerRegistrosIngresos()
-
+    this.traerProductos()
   }
 
 
@@ -44,6 +48,20 @@ export class IngresoDiarioComponent implements OnInit {
    })
   }
 
+  traerProductos(){
+    this.productoService.getProducto().subscribe(res => {
+      this.productosActivos = res as producto[];
+      this.mostrarProductos()
+   })
+  }
+
+  mostrarProductos(){
+    this.productosActivos.forEach((element) => {
+        if (element.precio == 0) {
+          console.log(element.PRODUCTO)
+        }
+      });
+  }
   
 
   mostrarUpdate = (e) => {  

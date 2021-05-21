@@ -1326,6 +1326,10 @@ anadirDetallePago = (e) => {
   }
 
 
+
+  
+
+
   getDocumentDefinition() {
     //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
   //console.log("holaaaa"+fecha2); 

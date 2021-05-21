@@ -53,6 +53,7 @@
     #datag2
     id="gridContainer"
     [dataSource]="reporteDetallado"
+    [customizeColumns]="onCustomizeColumns"
     [showBorders]="true"
     [columnWidth]="125">
     <dxo-search-panel
@@ -208,8 +209,9 @@
                     dataType="number"
                     summaryType="sum"
                     showInColumn="TotalAmount"
+                    [customizeText]="customizeValue"
                     displayFormat="$ {0}"
-                    alignment="right">
+                    alignment="center">
                   <dxo-format
                       type="number"
                       [precision]="2">
@@ -221,8 +223,9 @@
                     dataType="number"
                     summaryType="sum"
                     showInColumn="TotalAmount"
+                    [customizeText]="customizeValue"
                     displayFormat="$ {0}"
-                    alignment="right">
+                    alignment="center">
                   <dxo-format
                       type="number"
                       [precision]="2">
@@ -233,8 +236,9 @@
                     column="VDiariaSucursal1"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">
@@ -246,8 +250,9 @@
                     dataType="number"
                     summaryType="sum"
                     showInColumn="TotalAmount"
+                    [customizeText]="customizeValue"
                     displayFormat="$ {0}"
-                    alignment="right">
+                    alignment="center">
                   <dxo-format
                       type="number"
                       [precision]="2">
@@ -258,8 +263,9 @@
                     column="VDiariaTotal"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">
@@ -269,8 +275,9 @@
                     column="MatUBruta"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">
@@ -281,8 +288,9 @@
                     column="Suc1UBruta"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">
@@ -293,8 +301,9 @@
                     column="validacionMatriz"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">
@@ -305,8 +314,9 @@
                     column="validacionSucursal1"
                     dataType="number"
                     displayFormat="$ {0}"
+                    [customizeText]="customizeValue"
                     summaryType="sum"
-                    alignment="right">
+                    alignment="center">
                     <dxo-format
                       type="number"
                       [precision]="2">

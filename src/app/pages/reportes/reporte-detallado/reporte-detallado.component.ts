@@ -153,17 +153,18 @@ export class ReporteDetalladoComponent implements OnInit {
       this.reporteDIndividual.MatPorcentaje = Number(sumaTotalCalculoUtilidadMat.toFixed(2)) / Number(sumaN.toFixed(2)) ;
       this.reporteDIndividual.Suc1UBruta = Number(sumaTotalCalculoUtilidadSuc1.toFixed(2));
       this.reporteDIndividual.Suc1Porcentaje = Number(sumaTotalCalculoUtilidadSuc1.toFixed(2)) / Number(sumaSuc1.toFixed(2)) ;
-
+      diferenciaIngresoMatriz = 0 - this.reporteDIndividual.VDiariaMatriz
+      diferenciaIngresoSucursal1 = 0 - this.reporteDIndividual.VDiariaSucursal1
       
       this.ingresosDiarios.forEach((element) => {
         var loop4 = new Date(element.fecha);
           loop4.setDate(loop4.getDate() - 1);
         if (loop4.toLocaleDateString() == loop.toLocaleDateString()) {
           if(element.sucursal == "matriz")
-            diferenciaIngresoMatriz = Number(this.reporteDIndividual.VDiariaMatriz) -  Number(element.valor)
+            diferenciaIngresoMatriz =  Number(element.valor) - Number(this.reporteDIndividual.VDiariaMatriz)
 
             if(element.sucursal == "sucursal1")
-            diferenciaIngresoSucursal1 =  Number(this.reporteDIndividual.VDiariaSucursal1) -  Number(element.valor) 
+            diferenciaIngresoSucursal1 = Number(element.valor) -Number(this.reporteDIndividual.VDiariaSucursal1)
         }
       });
 
@@ -201,17 +202,7 @@ export class ReporteDetalladoComponent implements OnInit {
     var sumaSuc1: number = 0;
     var sumaTotal: number = 0;
     //Variables matriz
-    var sumaCalculoPCostoMat: number = 0;
-    var sumaCalculoPVentaMat: number = 0;
-    var sumaCalUtilidadMat: number = 0;
-    var sumaTotalCalculoUtilidadMat = 0;
-    //Variables Suc1
-    var sumaCalculoPCostoSuc1: number = 0;
-    var sumaCalculoPVentaSuc1: number = 0;
-    var sumaCalUtilidadSuc1: number = 0;
-    var sumaTotalCalculoUtilidadSuc1 = 0;
-    var sumaDevolMatriz = 0;
-    var sumaDevolSuc1 = 0;
+
     while (loop < end) {
       this.transaccionesGlobales.forEach((element) => {
         if (
@@ -229,7 +220,21 @@ export class ReporteDetalladoComponent implements OnInit {
   }
 
 
-  
+  onCustomizeColumns(columns){  
+        for(var i = 0; i < columns.length; i++)  
+            columns[i].alignment = 'center';  
+    }  
+
+     customizeValue(data: any) { 
+    var valor= "$"+data.value.toFixed(2) 
+      return valor;  
+  }
+
+  customizeValuePercent(data: any) { 
+    var valor= data.value.toFixed(2)  +"%"
+      return valor;  
+  }
+
 
 
 }

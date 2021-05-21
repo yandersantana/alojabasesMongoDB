@@ -13,8 +13,9 @@
 }
 
 
-.marginTabla h2 {
+.marginTabla h4 {
  font-weight: bold;
+ font-size: 18pt;
 }
 
 .remiPro p {
@@ -112,20 +113,7 @@
     background-color: yellow;  
 }   */
 
-::ng-deep .dx-datagrid-headers .dx-datagrid-text-content {
-  text-align: center;
-}
 
-::ng-deep .d2 .dx-datagrid-headers .dx-datagrid-text-content {
-  text-align: center;
-}
-
-::ng-deep .dx-datagrid-text-content {
-  text-align: center;
-}
-::ng-deep #datag2 .dx-datagrid .dx-row > td {
-  text-align: center;
-}
 
 table {
   font-family: arial, sans-serif;
@@ -140,9 +128,7 @@ th {
   padding: 8px;
 }
 
-::ng-deep .dx-texteditor-input {
-  text-align: center;
-}
+
 
 .btnIcons {
   background-color: #0061a9;
@@ -230,15 +216,9 @@ th {
   text-align: center;
 }
 
-::ng-deep .d2 .dx-datagrid-headers .dx-datagrid-text-content {
-  text-align: center;
-}
-
-::ng-deep .dx-datagrid-text-content {
-  text-align: center;
-}
-::ng-deep #datag2 .dx-datagrid .dx-row > td {
-  text-align: center;
+::ng-deep #gridContainer tr.notes-row td {
+    height: 70px;
+    color: #999;
 }
 
 .grilla {
@@ -248,4 +228,18 @@ th {
 
 .general{
   overflow-y: scroll;
+}
+
+::ng-deep .dx-data-row .cell-highlighted {
+    background-color: red;
+}
+ 
+::ng-deep .dx-header-row .cell-highlighted {
+    color: red;
+    font-style: italic;
+}
+
+
+.cell-2 {
+    background-color:blue;
 }

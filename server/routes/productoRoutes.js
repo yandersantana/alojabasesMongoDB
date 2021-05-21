@@ -105,7 +105,7 @@ router.put('/updateProductoSuc1Dir/:id/:cantidad/:precio', async (req, res,next)
     const { cantidad } = req.params;
     const { precio } = req.params;
     console.log(cantidad+ "ddd "+ precio)
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio:req.body.ultimoPrecioCompra , precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal1:cantidad, precio: precio , precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -113,7 +113,7 @@ router.put('/updateProductoSuc2Dir/:id/:cantidad/:precio', async (req, res,next)
     const { id } = req.params;
     const { precio } = req.params;
     const { cantidad } = req.params;
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal2:cantidad,  precio:req.body.ultimoPrecioCompra, precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal2:cantidad,  precio: precio, precio1:req.body.precio1, precio2:req.body.precio2, precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -121,7 +121,7 @@ router.put('/updateProductoSuc3Dir/:id/:cantidad/:precio', async (req, res,next)
     const { id } = req.params;
     const { precio } = req.params;
     const { cantidad } = req.params;
-    await Producto.findByIdAndUpdate(id, {$set: {sucursal3:cantidad,  precio:req.body.ultimoPrecioCompra, precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
+    await Producto.findByIdAndUpdate(id, {$set: {sucursal3:cantidad,  precio:precio, precio1:req.body.precio1,precio2:req.body.precio2,precio3:req.body.precio3, ultimoPrecioCompra:req.body.ultimoPrecioCompra , ultimaFechaCompra:req.body.ultimaFechaCompra}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
@@ -159,13 +159,14 @@ router.put('/updateProductosSucursales/:id/:suc1/:suc2/:suc3', async (req, res,n
 })
 
 router.post('/updateProductosSucursalesNuevo', async (req, res,next) => {
-    console.log(req.body)
     var id = req.body.producto._id;
     var precioNuevo = req.body.producto.precio;
     var suc1 = req.body.suc1;
     var  suc2 = req.body.suc2;
     var  suc3 = req.body.suc3;
-    console.log("sd "+id + " suc1 "+suc1+ " suc2 "+suc2+ " suc3 "+suc3)
+    if(precioNuevo == null)
+    console.log(precioNuevo , req.body.producto)
+    //console.log("sd "+id + " suc1 "+suc1+ " suc2 "+suc2+ " suc3 "+suc3)
     await Producto.findByIdAndUpdate(id, {$set: {sucursal1:suc1,sucursal2:suc2,sucursal3:suc3,precio:precioNuevo}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

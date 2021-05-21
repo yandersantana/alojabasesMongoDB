@@ -797,7 +797,6 @@ export class ProductoComponent implements OnInit {
   actualizarProductossolicitados() {
     new Promise<any>((resolve, reject) => {
       this.productosControlFinal.forEach((element) => {
-        console.log("kkkkkkkkkkk " + JSON.stringify(element));
         this.ordenesService
           .updateEstadoProductos(
             this.ordenleida._id,

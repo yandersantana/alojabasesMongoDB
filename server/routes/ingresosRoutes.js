@@ -8,7 +8,9 @@ router.post('/newIngreso', async (req, res) => {
     const newIngreso = new Ingreso({ 
         fecha:req.body.fecha, 
         sucursal:req.body.sucursal, 
-        valor:req.body.valor
+        depositos:req.body.depositos,
+        valor:req.body.valor,
+        notas:req.body.notas
     });
     await newIngreso.save();
     res.json({status: 'Ingreso creado'});
@@ -28,11 +30,11 @@ router.get('/getIngresos', async (req, res) => {
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
-    console.log(id)
-    console.log(req.body)
     const newIngreso ={ 
         fecha:req.body.fecha, 
         sucursal:req.body.sucursal, 
+        depositos:req.body.depositos,
+        notas:req.body.notas,
         valor:req.body.valor};
     await Ingreso.findByIdAndUpdate(id, {$set: newIngreso}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

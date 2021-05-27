@@ -1,7 +1,9 @@
 import { Component, OnInit } from "@angular/core";
 import { AuthenService } from "src/app/servicios/authen.service";
 import { IngresosService } from "src/app/servicios/ingreso-diario";
+import { ReporteDetalladoService } from "src/app/servicios/reporte-detallado";
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
+import Swal from "sweetalert2";
 import { inventario } from "../../consolidado/consolidado";
 import { objDate, transaccion } from "../../transacciones/transacciones";
 import { ingresoDiario } from "../ingreso-diario/ingreso-diario";
@@ -22,16 +24,32 @@ export class ReporteDetalladoComponent implements OnInit {
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   viewTabla : boolean = false;
+  popupVisibleNotas: boolean = false;
+  noteDate: string = "";
+  fechaPopup: Date;
   fechaAnteriorDesde: Date = new Date();
   ingresosDiarios : ingresoDiario[] = [];
+  reportesDetBase : reporteDetallado[] = [];
+  reportesDetBaseNuevo : reporteDetallado;
+  nota: string = "";
+  arregloNotas: string[] = [];
+  
   constructor(
     public transaccionesService: TransaccionesService,
     public authenService: AuthenService,
+    public reporteDetalladoService: ReporteDetalladoService,
     public ingresosService :IngresosService
   ) {}
 
   ngOnInit() {
     this.traerRegistrosIngresos();
+    this.traerRegistrosReportes();
+  }
+
+  traerRegistrosReportes(){
+    this.reporteDetalladoService.getReporteDetallado().subscribe(res => {
+      this.reportesDetBase = res as reporteDetallado[];
+    })
   }
 
   traerRegistrosIngresos(){
@@ -47,8 +65,6 @@ export class ReporteDetalladoComponent implements OnInit {
     this.fechaAnteriorDesde = this.nowdesde
     var fechaHoy = this.nowdesde
     fechaHoy.setDate(this.nowdesde.getDate() - 15);
-    console.log("1",this.nowdesde)
-    console.log("2",fechaHoy)
     var fechaHasta = new Date()
     fechaHasta.setDate(this.nowhasta.getDate() + 15);
     this.obj = new objDate();
@@ -65,7 +81,6 @@ export class ReporteDetalladoComponent implements OnInit {
   }
 
   separarTransacciones() {
-    console.log("global", this.transaccionesGlobales.length);
     this.fechaAnteriorDesde.setDate(this.nowdesde.getDate() + 15) 
     var start = this.fechaAnteriorDesde;
     var end = this.nowhasta
@@ -219,14 +234,86 @@ export class ReporteDetalladoComponent implements OnInit {
     this.mostrarLoading = false
   }
 
+  mostrarNotas = (e) => {
+    this.mostrarPopupNotas(e.row.data);
+  };
+
+  mostrarPopupNotas(e: any) {
+    this.arregloNotas =[];
+    this.noteDate = e.fecha.toLocaleDateString();
+    this.fechaPopup = e.fecha;
+    this.popupVisibleNotas = true;
+    this.mostrarLoading = true;
+    this.reportesDetBase.forEach((element) => {
+      if(new Date(element.fecha).toLocaleDateString() == this.noteDate){
+       this.arregloNotas = element.notas;
+      }
+    })
+    this.mostrarLoading = false;
+  }
+
+
+  mensajeCorrecto(){
+    Swal.fire({
+      title: "Correcto",
+      text: "Su proceso se realizó con éxito",
+      icon: "success",
+      confirmButtonText: "Ok",
+    }).then((result) => {
+      window.location.reload();
+    });
+  }
+
+
+   actualizarNotas() {
+    this.popupVisibleNotas = false;
+    var bandera = false;
+    this.reportesDetBase.forEach((element) => {
+      if(new Date(element.fecha).toLocaleDateString() == this.noteDate){
+        console.log("entre",element)
+        bandera = true
+        element.notas = this.arregloNotas;
+        this.reporteDetalladoService.updateReporteDetallado(element).subscribe((res) => {
+           this.mensajeCorrecto();
+          },
+          (err) => {
+            alert("error");
+          }
+        );
+      }
+    })
+
+    if(!bandera){
+      this.reportesDetBaseNuevo = new reporteDetallado();
+      this.reportesDetBaseNuevo.fecha = new Date(this.fechaPopup);
+      this.reportesDetBaseNuevo.notas = this.arregloNotas;
+      console.log("sdsd ",this.reportesDetBaseNuevo)
+      this.reporteDetalladoService.newReporteDetallado(this.reportesDetBaseNuevo).subscribe((res) => {
+        this.mensajeCorrecto();
+        },
+        (err) => {
+          alert("error");
+        }
+      );
+    }
+  }
+
+  nuevaNota() {
+    this.arregloNotas.push(this.nota);
+  }
 
   onCustomizeColumns(columns){  
         for(var i = 0; i < columns.length; i++)  
             columns[i].alignment = 'center';  
     }  
 
-     customizeValue(data: any) { 
-    var valor= "$"+data.value.toFixed(2) 
+  customizeValue(data: any) { 
+    var valor = "$"+data.value.toFixed(2) 
+      return valor;  
+  }
+
+  customizeValueRow(data: any) { 
+    var valor= data.value.toFixed(2) 
       return valor;  
   }
 
@@ -234,6 +321,15 @@ export class ReporteDetalladoComponent implements OnInit {
     var valor= data.value.toFixed(2)  +"%"
       return valor;  
   }
+
+  eliminar4(id: number) {
+    this.arregloNotas.splice(id, 1);
+  }
+
+  modificar4(id: number, event: any) {
+    this.arregloNotas[id] = event.target.textContent;
+  }
+
 
 
 

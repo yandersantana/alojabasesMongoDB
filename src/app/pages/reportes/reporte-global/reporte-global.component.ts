@@ -244,6 +244,11 @@ export class ReporteGlobalComponent implements OnInit {
       return valor;  
   }
 
+  customizeValueRow(data: any) { 
+    var valor= data.value.toFixed(2) 
+      return valor;  
+  }
+
   separarTransaccionesPorMes(){
     var loop = 0;
     var sumaMesMatriz: number = 0;

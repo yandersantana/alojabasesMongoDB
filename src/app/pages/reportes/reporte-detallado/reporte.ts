@@ -12,6 +12,7 @@ export class reporteDetallado {
   sumaTotal: number;
   validacionMatriz: number;
   validacionSucursal1: number;
+  notas:string[]=[]
 
   constructor() {}
 }

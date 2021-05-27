@@ -5,5 +5,7 @@ export class ingresoDiario{
     fecha: Date;
     sucursal: string;
     valor:number;
+    depositos:number;
+    notas:string[]=[]
     constructor(){}
 }

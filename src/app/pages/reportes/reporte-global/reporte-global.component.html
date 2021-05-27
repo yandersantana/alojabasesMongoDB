@@ -75,6 +75,7 @@
         dataField="VMesMatriz"
         caption="MATRIZ"
         alignment="center"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -85,6 +86,7 @@
         dataField="VMesSucursal1"
         caption="SUCURSAL1"
         alignment="right"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -95,6 +97,7 @@
         dataField="VMesTotal"
         caption="SUMA TOTAL"
         alignment="right"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -105,6 +108,7 @@
         dataField="PorcentajeMes"
         caption="%"
         alignment="right"
+        [customizeText]="customizeValuePercent"
         dataType="percent">
         <dxo-format
             type="percent"
@@ -247,6 +251,7 @@
         dataField="ComprasMesDirectas"
         caption="DIRECTAS"
         alignment="center"
+        [customizeText]="customizeValueRow"
         alignment="right"
         dataType="currency">
         <dxo-format
@@ -258,6 +263,7 @@
         dataField="ComprasMesIndirectas"
         caption="INDIRECTAS"
         alignment="right"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -268,6 +274,7 @@
         dataField="comprasMesTotal"
         caption="SUMA TOTAL"
         alignment="right"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -365,6 +372,7 @@
       <dxi-column
         dataField="ventasTotales"
         caption="VENTAS"
+        [customizeText]="customizeValueRow"
         alignment="right"
         dataType="currency">
         <dxo-format
@@ -376,6 +384,7 @@
         dataField="comprasTotales"
         caption="COMPRAS"
         alignment="right"
+        [customizeText]="customizeValueRow"
         dataType="currency">
         <dxo-format
             type="currency"
@@ -385,6 +394,7 @@
       <dxi-column
         dataField="indDiferencia"
         caption="IND"
+        [customizeText]="customizeValuePercent"
         alignment="right"
         dataType="percent">
         <dxo-format

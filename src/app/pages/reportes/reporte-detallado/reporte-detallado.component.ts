@@ -1,3 +1,4 @@
+import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { Component, OnInit } from "@angular/core";
 import { AuthenService } from "src/app/servicios/authen.service";
 import { IngresosService } from "src/app/servicios/ingreso-diario";
@@ -183,6 +184,14 @@ export class ReporteDetalladoComponent implements OnInit {
         }
       });
 
+      this.reportesDetBase.forEach((element) => {
+        var loop7 = new Date(element.fecha);
+        loop7.setDate(loop7.getDate() - 1);
+        if(loop7.toLocaleDateString() == loop.toLocaleDateString()){
+          this.reporteDIndividual.notas = element.notas;
+        }
+      })
+
       this.reporteDIndividual.validacionMatriz = diferenciaIngresoMatriz;
       this.reporteDIndividual.validacionSucursal1 = diferenciaIngresoSucursal1;
       if(isNaN(this.reporteDIndividual.MatPorcentaje ))
@@ -244,11 +253,12 @@ export class ReporteDetalladoComponent implements OnInit {
     this.fechaPopup = e.fecha;
     this.popupVisibleNotas = true;
     this.mostrarLoading = true;
-    this.reportesDetBase.forEach((element) => {
+    this.arregloNotas = e.notas;
+    /*this.reportesDetBase.forEach((element) => {
       if(new Date(element.fecha).toLocaleDateString() == this.noteDate){
        this.arregloNotas = element.notas;
       }
-    })
+    })*/
     this.mostrarLoading = false;
   }
 
@@ -331,6 +341,17 @@ export class ReporteDetalladoComponent implements OnInit {
   }
 
 
+
+  onExporting(e) {
+    e.component.beginUpdate();
+    e.component.columnOption("notas", "visible", true);
+  }
+
+
+  onExported(e) {
+    e.component.columnOption("notas", "visible", false);
+    e.component.endUpdate();
+  }
 
 
 }

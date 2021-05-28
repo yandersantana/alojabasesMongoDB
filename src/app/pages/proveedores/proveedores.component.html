@@ -1,4 +1,9 @@
 <br><br>
+
+ <div *ngIf="mostrarLoading">
+    <app-loading></app-loading>
+</div>
+
 <div class="row alin2">
     <div class="col-md-8"><div class="">
        <!--  <h4>Facturas / Proveedor</h4> -->
@@ -48,12 +53,6 @@
 
 
     <div id="grid">
-        <!-- <dx-select-box id="select-prefix"
-            [dataSource]="['All', 'Dr.', 'Mr.', 'Mrs.', 'Ms.']"
-            placeholder= "Select title"
-            [value]="prefix"
-            (onValueChanged)="filterSelected($event)">
-        </dx-select-box> -->
         <div style="text-align: left;">
             <h6>Seleccione los productos facturados</h6>
         </div>

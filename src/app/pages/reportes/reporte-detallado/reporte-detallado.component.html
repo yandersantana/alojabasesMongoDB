@@ -54,6 +54,8 @@
     id="gridContainer"
     [dataSource]="reporteDetallado"
     [customizeColumns]="onCustomizeColumns"
+    (onExporting)="onExporting($event)"
+    (onExported)="onExported($event)"
     [showBorders]="true"
     [columnWidth]="125">
     <dxo-search-panel
@@ -211,6 +213,8 @@
     <dxi-column type="buttons" dataField="bt1" caption="Notas" [width]="130">
       <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
     </dxi-column>
+
+    <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
 
     <dxi-sort-by-group-summary-info
       summaryItem="count"

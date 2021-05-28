@@ -1,40 +1,22 @@
 
 import { Component, OnInit, Pipe, PipeTransform ,ViewChild} from '@angular/core';
-import { DxFormModule, DxDataGridComponent } from 'devextreme-angular';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { Observable, from } from 'rxjs';
-import { AngularFireAuth } from 'angularfire2/auth';
-import {  OrdenDeCompra } from '../compras/compra';
-import { DxDataGridModule } from "devextreme-angular";
-import pdfMake from 'pdfmake/build/pdfmake';
-
-import { AlertsService } from 'angular-alert-module';
-import {  ProductoDetalleVenta ,ProductoDetalleCompra, RemisionProductos } from '../producto/producto';
+import { DxDataGridComponent } from 'devextreme-angular';
+import { OrdenDeCompra } from '../compras/compra';
+import { ProductoDetalleCompra, RemisionProductos } from '../producto/producto';
 import { FacturaProveedor, PagoProveedor,DetallePagoProveedor }  from '../orden-compra/ordencompra';
 import { Proveedor }  from '../compras/compra';
-import {formatDate} from '@angular/common';
-//import {Inject, LOCALE_ID, Pipe, PipeTransform} from '@angular/core';
-import { firestore } from 'firebase/app';
-import Timestamp = firestore.Timestamp;
-import { DxPopupModule, DxButtonModule, DxTemplateModule } from 'devextreme-angular';
 import Swal from 'sweetalert2';
-import { DxSelectBoxModule, DxListModule ,DxListComponent} from 'devextreme-angular';
+import { DxListComponent} from 'devextreme-angular';
 import { DatePipe } from '@angular/common';
-import { element } from 'protractor';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { DetallePagoService } from 'src/app/servicios/detalle-pago.service';
-import { contadoresDocumentos, orden_compra, producto } from '../ventas/venta';
+import { contadoresDocumentos, producto } from '../ventas/venta';
 import { PagoProveedorService } from 'src/app/servicios/pago-proveedor.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { RemisionesService } from 'src/app/servicios/remisiones.service';
-
-
-//import { ConsoleReporter } from 'jasmine';
-
 
 @Component({
   selector: 'app-proveedores',
@@ -71,6 +53,7 @@ export class ProveedoresComponent implements OnInit {
   ordenesCompraAprobadas: OrdenDeCompra[] = []
   now2: Date = new Date();
   now3: Date = new Date();
+  mostrarLoading : boolean = false;
   tipoDocumentos: string[] = [
     "Factura",
     "Cotización",
@@ -387,11 +370,6 @@ contadorF:number=0
       }
     })
 
-  /*   this.productosComprados.forEach(element=>{
-        if(element.solicitud_n == solicitud){
-          this.productosComprados3.push(element)
-        }
-    }) */
 
 
 
@@ -423,7 +401,7 @@ contadorF:number=0
   
   asignarValor(){
     this.totalsuma2=0
-    console.log("Entre a asignar Valores de suma "+this.totalsuma2)
+
   }
 
 
@@ -509,31 +487,24 @@ contadorF:number=0
 
 
   obtenerOrdenes(){
-    console.log("entre a buscar")
     this.ordenesCompra.forEach(element=>{
       if(element.estado=="Pendiente"){
         this.ordenesCompraPendientes.push(element)
       }else if(element.estado=="Rechazado"){
         this.ordenesCompraRechazadas.push(element)
       }
-      console.log("orden "+element.documento)
     })
     this.obtenerOrdenesAprobadas()
   }
 
   obtenerOrdenesAprobadas(){
-    console.log("entre a buscar 4444423232")
     this.ordenesCompra.forEach(element=>{
       if(element.estado=="Aprobado" && element.n_orden>=0){
         this.ordenesCompraAprobadas.push(element)
-       // alert("entre aqui")
       }
-      console.log("orden "+element.n_orden)
+
     })
    
-    
-  //this.comprasForm.dataSource= this.tasks
-
 
   }
 

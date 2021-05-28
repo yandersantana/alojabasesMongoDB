@@ -27,7 +27,10 @@
                 <div *ngIf="viewTabla" style="text-align: center;">
                     <br>
                     <h4>Ingresos Diarios</h4>
-                    <dx-data-grid id="gridContainer" [dataSource]="ingresosDiarios"
+                    <dx-data-grid id="gridContainer" 
+                    (onExporting)="onExporting($event)"
+                    (onExported)="onExported($event)"
+                    [dataSource]="ingresosDiarios"
                      [showBorders]="true">
                         <!-- <dxo-filter-row [visible]="true" ></dxo-filter-row> -->
                         <dxo-export [enabled]="true" fileName="clientes" [allowExportSelectedData]="true"></dxo-export>
@@ -37,6 +40,7 @@
                         <dxi-column dataField="sucursal" caption="Sucursal"></dxi-column>
                         <dxi-column dataField="depositos" caption="Depositos"></dxi-column>
                         <dxi-column dataField="valor" caption="Valor"></dxi-column>
+                        <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
                         <dxi-column type="buttons" dataField="bt1" caption="Notas">
                             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
                         </dxi-column>

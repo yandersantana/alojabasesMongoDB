@@ -159,6 +159,17 @@ export class IngresoDiarioComponent implements OnInit {
     })
   }
 
+  onExporting(e) {
+    e.component.beginUpdate();
+    e.component.columnOption("notas", "visible", true);
+  }
+
+
+  onExported(e) {
+    e.component.columnOption("notas", "visible", false);
+    e.component.endUpdate();
+  }
+
 
 
 

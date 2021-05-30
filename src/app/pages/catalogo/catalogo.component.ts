@@ -169,7 +169,7 @@ export class CatalogoComponent implements OnInit {
     this.traerProductosCatalogo()
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
-    this.traerProductos()
+    
     this.cargarUsuarioLogueado()
   }
 
@@ -204,7 +204,9 @@ export class CatalogoComponent implements OnInit {
   traerProductos(){
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[]; 
+      this.administrarPrecios();
    })
+   
   }
 
   traerAplicaciones(){
@@ -496,6 +498,21 @@ export class CatalogoComponent implements OnInit {
         this.productosCatalogoElim.push(element)
       }
     })
+    this.traerProductos()
+  }
+
+  administrarPrecios(){
+    console.log(this.productosCatalogoUso.length)
+    console.log(this.productosActivos.length)
+    this.productosCatalogoUso.forEach(element=>{
+      this.productosActivos.forEach(element2=>{
+        if(element.PRODUCTO == element2.PRODUCTO){
+          element.precio = element2.precio
+          console.log(element)
+        }
+      })
+    })
+    console.log("ya pase")
   }
 
 

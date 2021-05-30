@@ -19,6 +19,13 @@ router.post('/getOrdenesCompraMensuales', async (req, res,next) => {
     res.json(ordenes)      
 })
 
+router.post('/getOrdenCompraEspecifica', async (req, res,next) => {
+    var numeroDoc = req.body.n_orden;
+    const ordenes = await OrdenCompra.find({n_orden:numeroDoc })
+    res.json(ordenes)      
+})
+
+
 router.get('/getOrdenesCompraID/:id', async (req, res) => {
     const { id } = req.params;
 	const orden = await OrdenCompra.findById(id);

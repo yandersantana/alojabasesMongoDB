@@ -25,6 +25,7 @@ import { RemisionesService } from 'src/app/servicios/remisiones.service';
 })
 export class ProveedoresComponent implements OnInit {
   ordenesCompra: OrdenDeCompra[] = []
+  ordenBuscada: OrdenDeCompra;
   ordenes:OrdenDeCompra[] = []
   ordenes2:OrdenDeCompra[] = []
   ordenes3:OrdenDeCompra[] = []
@@ -193,6 +194,12 @@ contadorF:number=0
    })
   }
 
+  traerOrdenCompraEspecifica(numeroOrden){
+    this.ordenesService.getOrdenEspecifica(numeroOrden).subscribe(res => {
+      return this.ordenBuscada = res[0];
+   })
+  }
+
   traerRemisiones(){
     this.remisionesService.getRemisiones().subscribe(res => {
       this.remisiones = res as RemisionProductos[];
@@ -220,84 +227,6 @@ contadorF:number=0
     })
   }
 
-
-  /* getProveedores(){
-    this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
-      if(data != null)
-        this.proveedores = data
-
-    })
-  } */
-
- /*  getDetalleFacturas(){
-    this.db.collection('/pagosFacturasProveedor').valueChanges().subscribe((data:DetallePagoProveedor[]) => {
-      if(data != null)
-        this.detallePago2 = data
-
-    })
-  } */
-
-
-/*   async getfacturasProveedor() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/contadorFactProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.facturaNp = contador.payload.data()['n_documento']+1;  
-      console.log("conttttt"+ this.facturaNp)  
-    });;
-  } */
-
- /*  async getPagosProveedor() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/pagoProveedor').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.facturaNp2 = contador.payload.data()['n_documento']+1;  
-      console.log("conttttt"+ this.facturaNp)  
-    });;
-  }
- */
-  /* async getOrdenCompra() {
-    
-    await this.db.collection('ordenesDeCompra').snapshotChanges().subscribe((ordenes) => {
-    
-        ordenes.forEach((nt: any) => {
-          this.ordenesCompra.push(nt.payload.doc.data());    
-        })
-     
-      console.log("kjkj"+ordenes.length)
-      this.obtenerOrdenes()
-      //this.tasks=this.ordenesCompra
-      
-    });;
-   
-  } */
-
-  /* async getProductosComprados() {
-    
-    await this.db.collection('productosComprados').snapshotChanges().subscribe((productoC) => {
-      
-      productoC.forEach((nt: any) => {
-        this.productosComprados.push(nt.payload.doc.data());
-       
-      })
-      console.log("kjkj"+productoC.length)
-    });;
-
-  } */
-
-
- /*  async getFacturasProveedor() {
-    
-    await this.db.collection('facturasProveedor').snapshotChanges().subscribe((productoC) => {
-      
-      productoC.forEach((nt: any) => {
-        this.facturaProveedor2.push(nt.payload.doc.data());
-       
-      })
-     
-    });;
-
-  } */
 
   limpiarArreglo(){
     var cont=0
@@ -341,13 +270,37 @@ contadorF:number=0
 
   validarSolicitud(){
     this.limpiarArreglo()
-  let numero =this.datoNsolicitud
+    let numero =this.datoNsolicitud
     let solicitud=0
     this.facturaProveedor2.forEach(element=>{
       if(this.datoNsolicitud==element.nSolicitud){
           this.banderaProductos=true
       }
     })
+
+    /*var ordenEncontrada = new OrdenDeCompra()
+    var ordenEncontrada2 = this.traerOrdenCompraEspecifica
+
+    this.ordenesService.getOrdenEspecifica(numero).subscribe(res => {
+        this.ordenBuscada = res[0];
+    })
+    
+    this.ordencompraleida = this.ordenBuscada
+    this.productosCompradosLeidos= this.ordenBuscada.productosComprados
+    this.facturaProveedor.documento_solicitud= this.ordenBuscada.documento
+    solicitud= this.ordenBuscada..documento
+    if(this.ordenBuscada.tipo=="Entregado"){
+      this.datoTotal = this.ordenBuscada.total
+      this.datoNFact= this.ordenBuscada.factPro
+      this.facturaProveedor.estado3="Ingresada"
+      setTimeout(() => {
+        this.dataGrid3.instance.selectAll()
+      }, 2000);
+      
+    }*/
+
+
+
     this.ordenesCompra.forEach(element=>{
       if(element.n_orden == numero){
         this.ordencompraleida=element

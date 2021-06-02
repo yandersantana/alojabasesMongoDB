@@ -19,9 +19,21 @@ router.post('/getOrdenesCompraMensuales', async (req, res,next) => {
     res.json(ordenes)      
 })
 
-router.post('/getOrdenCompraEspecifica', async (req, res,next) => {
-    var numeroDoc = req.body.n_orden;
-    const ordenes = await OrdenCompra.find({n_orden:numeroDoc })
+router.post("/getOrdenesPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const ordenes = await OrdenCompra.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(ordenes);
+});
+
+router.post('/getOrdenCompraEspecifica/:ordenId', async (req, res,next) => {
+    var ordenId = req.body.n_orden;
+    const ordenes = await OrdenCompra.find({n_orden: ordenId })
     res.json(ordenes)      
 })
 

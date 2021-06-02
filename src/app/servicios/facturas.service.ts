@@ -33,6 +33,13 @@ export class FacturasService {
     );
   }
 
+  getFacturasDocumentoVenta(factura) {
+    return this.http.post(
+      this.URL + `/getFacturasPorDocumentoVenta/${factura.documento_n}`,
+      factura
+    );
+  }
+
   updateFacturas(facturas) {
     return this.http.put(this.URL + `/update/${facturas._id}`, facturas);
   }

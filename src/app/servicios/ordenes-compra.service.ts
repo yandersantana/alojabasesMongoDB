@@ -19,8 +19,12 @@ export class OrdenesCompraService {
     return this.http.get(this.URL + "/getOrdenesCompra");
   }
 
-  getOrdenEspecifica(ordenes) {
-    return this.http.post(this.URL + "/getOrdenCompraEspecifica", ordenes);
+  getOrdenEspecifica(ordenNueva) {
+    return this.http.post(this.URL + `/getOrdenCompraEspecifica/${ordenNueva.n_orden}`,ordenNueva);
+  }
+
+  getOrdenesCompraPorRango(objFecha) {
+    return this.http.post(this.URL + "/getOrdenesPorRango", objFecha);
   }
 
   getOrdenesMensuales(objFecha) {

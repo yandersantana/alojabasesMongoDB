@@ -149,7 +149,7 @@ contadorF:number=0
     this.traerProveedores()
     this.traerFacturasProveedor()
     this.traerContadoresDocumentos()
-    this.traerOrdenesCompra()
+    //this.traerOrdenesCompra()
     this.traerProductos()
     this.traerPagosFacturasProveedor()
     this.traerPagosFacturas()
@@ -214,8 +214,10 @@ contadorF:number=0
   }
 
   traerFacturasProveedor(){
+    this.mostrarLoading = true
     this.facturasProveedorService.getFacturasProveedor().subscribe(res => {
       this.facturaProveedor2 = res as FacturaProveedor[];
+      this.mostrarLoading = false;
    })
   }
 
@@ -269,6 +271,7 @@ contadorF:number=0
   
 
   validarSolicitud(){
+    this.mostrarLoading= true
     this.limpiarArreglo()
     let numero =this.datoNsolicitud
     let solicitud=0
@@ -278,14 +281,20 @@ contadorF:number=0
       }
     })
 
-    /*var ordenEncontrada = new OrdenDeCompra()
+    var ordenNueva = new OrdenDeCompra()
     var ordenEncontrada2 = this.traerOrdenCompraEspecifica
-
-    this.ordenesService.getOrdenEspecifica(numero).subscribe(res => {
+    ordenNueva.n_orden = numero
+    this.ordenesService.getOrdenEspecifica(ordenNueva).subscribe(res => {
         this.ordenBuscada = res[0];
+        if(this.ordenBuscada != null || this.ordenBuscada != undefined) {
+          this.continuarProceso()
+        }else{
+          this.mostrarLoading = false
+          this.mostrarError()
+        }
     })
     
-    this.ordencompraleida = this.ordenBuscada
+    /*this.ordencompraleida = this.ordenBuscada
     this.productosCompradosLeidos= this.ordenBuscada.productosComprados
     this.facturaProveedor.documento_solicitud= this.ordenBuscada.documento
     solicitud= this.ordenBuscada..documento
@@ -301,7 +310,7 @@ contadorF:number=0
 
 
 
-    this.ordenesCompra.forEach(element=>{
+    /*this.ordenesCompra.forEach(element=>{
       if(element.n_orden == numero){
         this.ordencompraleida=element
         this.productosCompradosLeidos= element.productosComprados
@@ -335,8 +344,29 @@ contadorF:number=0
         console.log("es correcto")
         flag=false
       }
-    })
+    })*/
    //this.mostrarError()
+  }
+
+  continuarProceso(){
+    let solicitud=0
+    this.ordencompraleida = this.ordenBuscada
+    this.productosCompradosLeidos= this.ordenBuscada.productosComprados
+    this.facturaProveedor.documento_solicitud= this.ordenBuscada.documento
+    solicitud= this.ordenBuscada.documento
+    if(this.ordenBuscada.tipo=="Entregado"){
+      this.datoTotal = this.ordenBuscada.total
+      this.datoNFact= this.ordenBuscada.factPro
+      this.facturaProveedor.estado3="Ingresada"
+      setTimeout(() => {
+        this.dataGrid3.instance.selectAll()
+      }, 2000);
+    }
+    var flag:boolean=true
+    this.newButtonEnabled2=false
+    this.productosComprados3=this.ordenBuscada.productosComprados
+    flag=false
+    this.mostrarLoading= false;
   }
 
   mostrarError(){

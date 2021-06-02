@@ -277,6 +277,7 @@ export class productosPendientesEntrega{
     estado:string
     tipo_documento:string
     notas:string
+    disponibilidadBodega:number
     constructor(){
         this.cajasEntregadas=0
         this.piezasEntregadas=0

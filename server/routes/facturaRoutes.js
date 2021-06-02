@@ -21,9 +21,24 @@ router.post("/getFacturasMensuales", async (req, res, next) => {
 
 router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
   const { documento } = req.params;
+  console.log(req.params)
+  console.log(documento)
   const documentos = await Factura.find({
     documento_n: documento,
   });
+  
+  res.json(documentos);
+});
+
+
+router.post("/getFacturasPorDocumentoVenta/:documento", async (req, res, next) => {
+  const { documento } = req.params;
+  console.log(req.params)
+  console.log(documento)
+  const documentos = await Factura.find({
+    documento_n: documento,
+  });
+  
   res.json(documentos);
 });
 

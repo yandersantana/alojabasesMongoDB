@@ -27,9 +27,6 @@ export class ContadoresDocumentosService {
   }
 
   updateContadoresIDFacturaMatriz(contadores) {
-    console.log(
-      "dddddff " + this.URL + `/updateIdFacturaMatriz/${contadores._id}`
-    );
     return this.http.put(
       this.URL + `/updateIdFacturaMatriz/${contadores._id}`,
       contadores

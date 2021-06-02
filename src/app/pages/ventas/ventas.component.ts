@@ -14,7 +14,7 @@ import { DatePipe } from '@angular/common';
 import { read } from 'fs';
 import { element } from 'protractor';
 import dxAutocomplete from 'devextreme/ui/autocomplete';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { ReturnStatement, THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { style } from '@angular/animations';
 import { dxFormGroupItem } from 'devextreme/ui/form';
 import HierarchicalCollectionWidget from 'devextreme/ui/hierarchical_collection/ui.hierarchical_collection_widget';
@@ -62,7 +62,7 @@ pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 export class VentasComponent implements OnInit {
 //consolidado
-//productos:producto[]=[]
+  contadorVenta =0;
   transacciones2:transaccion[]=[]
   invetarioP:inventario[]=[]
   invetarioProd:inventario
@@ -3381,14 +3381,30 @@ cambiarestado(e,i:number){
       }
     }
   
-    guardarFactura(){
+    async guardarFactura(){
+      this.contadorVenta++
+      var validacion = false
       this.factura.username= this.username
       this.factura.fecha= this.now
-     // alert(this.factura.fecha)
-      //this.factura.fecha2= this.now.toLocaleString()
       this.factura.fecha2= new Date().toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
+      //validacion =  await this.validarNumeroFactura(this.factura , "Factura")
       this.facturasService.newFactura(this.factura).subscribe(
+        res => {
+          this.actualizarFacturero()
+        },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
+          })
+        })
+
+
+      /*console.log(validacion)
+      if(validacion == true){
+        this.facturasService.newFactura(this.factura).subscribe(
         res => {
           console.log(res + "entre por si");
           this.actualizarFacturero()
@@ -3400,6 +3416,51 @@ cambiarestado(e,i:number){
             icon: 'error'
           })
         })
+      }else{
+        this.factura.documento_n = Number(this.factura.documento_n) + this.contadorVenta
+        console.log(this.factura.documento_n)
+        //this.generarFactura()
+      }*/
+      
+    }
+
+    async validarNumeroFactura(factura , tipo){
+      var resultado;
+        switch (tipo) {
+          case "Factura":
+            alert("entro con "+factura.documento_n)
+            await this.facturasService.getFacturasDocumentoVenta(factura).subscribe(res => {
+                this.facturas = res as factura[];
+                alert(this.facturas.length)
+                if(this.facturas.length == 0){
+                  this.facturasService.newFactura(this.factura).subscribe(
+                    res => {
+                      console.log(res + "entre por si");
+                      this.actualizarFacturero()
+                    },
+                    err => {
+                      Swal.fire({
+                        title: err.error,
+                        text: 'Revise e intente nuevamente',
+                        icon: 'error'
+                      })
+                    })
+                }else{
+                  this.factura.documento_n = Number(this.factura.documento_n) + this.contadorVenta
+                  this.numeroFactura2 = this.factura.documento_n
+                  console.log(this.factura.documento_n)
+                  this.generarFactura()
+                }
+            })
+            break;
+          case "NotaVenta":
+            
+            break;
+        
+          default:
+            break;
+        }
+        return resultado;
     }
 
     guardarFactura2(){
@@ -3531,7 +3592,8 @@ cambiarestado(e,i:number){
         }) */
     }
 
-  generarFactura(e) {
+  generarFactura() {
+    console.log("validando "+this.factura.documento_n)
     this.telefonoCliente= this.factura.cliente.celular
     this.factura.cliente.cliente_nombre= this.mensaje
    

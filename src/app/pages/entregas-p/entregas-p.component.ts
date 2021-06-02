@@ -401,7 +401,10 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+            html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal1+
+              '</b> M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -414,7 +417,10 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+            html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal2+
+              '</b> M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -427,7 +433,10 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+            html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal3+
+              '</b> M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -463,7 +472,11 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+             html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal1+
+              '</b> M2/Cajas',
+            //text: 'No hay producto suficiente, usted dispone con '+this.productoL.sucursal1 +' M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -476,7 +489,10 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+            html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal2+
+              '</b> M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -489,7 +505,10 @@ export class EntregasPComponent implements OnInit {
           this.popupvisible=false
           Swal.fire({
             title: 'Error',
-            text: 'No hay producto suficiente',
+            html:
+              'No hay producto suficiente, <br>' +
+              'Usted dispone de <b>' +this.productoL.sucursal3+
+              '</b> M2/Cajas',
             icon: 'error',
             confirmButtonText: 'Ok'
           })
@@ -1146,6 +1165,12 @@ export class EntregasPComponent implements OnInit {
         this.productoLeido= element
         this.entregaProducto.productoPorEntregar=element
       }
+      /*this.productos.forEach(element2=>{
+        if(element.producto.PRODUCTO == element2.PRODUCTO){
+          this.productoLeido.disponibilidadBodega = element2.
+        }
+        
+      })*/
     })
 
     this.productosEntregasSuc.forEach(element=>{

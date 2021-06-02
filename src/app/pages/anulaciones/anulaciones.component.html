@@ -9,12 +9,62 @@
         ></dx-select-box></div>
 </div>
 
+<div *ngIf="mostrarLoading">
+    <app-loading></app-loading>
+</div>
 
 
 
 <div  class="remiPro">
 
     <div id="ordenes" style="display: block;">
+
+        <div class="row">
+        <div class="col-md-12 card carIn">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="row"  style="margin-top: 0.7rem">
+                        <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5>Seleccione el Rango de Fechas</h5></div>
+                        <br><br><br>
+                        <div class="col-md-6"> 
+                          <div class="row">
+                            <div class="col-md-3">Desde</div>
+                            <div class="col-md-9">
+                              <dx-date-box
+                                [(value)]="nowdesde"
+                                type="date">
+                              </dx-date-box>
+                            </div>
+                          </div>        
+                        </div>
+
+                        <div class="col-md-6"> 
+                          <div class="row">
+                            <div class="col-md-3">Hasta</div>
+                            <div class="col-md-9">
+                              <dx-date-box
+                                 [(value)]="nowhasta"
+                                type="date">
+                              </dx-date-box>
+                            </div>
+                          </div>        
+                        </div>
+                        
+                    </div>
+                    <br>
+                    <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"><button class="btn btn-block btn-success "  (click)="traerTransaccionesPorRango()">Buscar</button></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+    </div>
+
+
         <!-- <p>Esto de aqui verá el usuario</p> -->
         <div style="text-align: center;"><h4>Ordenes de Compras </h4></div>
     

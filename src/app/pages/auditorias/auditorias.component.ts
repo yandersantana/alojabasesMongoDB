@@ -7,7 +7,6 @@ import { Sucursal } from '../compras/compra';
 import { producto, contadoresDocumentos } from '../ventas/venta';
 import { auditoria, auditoriasProductos, coincidencias } from './auditorias';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
-import { element } from 'protractor';
 import { AuditoriasService } from 'src/app/servicios/auditorias.service';
 import Swal from 'sweetalert2';
 import { AuditoriaProductoService } from 'src/app/servicios/auditoria-producto.service';
@@ -18,11 +17,9 @@ import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
-import { stringify } from 'querystring';
 
 @Component({
   selector: 'app-auditorias',
@@ -123,7 +120,7 @@ export class AuditoriasComponent implements OnInit {
     this.traerContadoresDocumentos()
     this.traerAuditorias()
     this.traerAuditoriasProductos()
-    this.traerTransacciones()
+    //this.traerTransacciones()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos()
     /* var x = document.getElementById("newAudGlobal");
@@ -193,6 +190,7 @@ onHidden() {
   }
 
   traerProductos(){
+    this.mostrarLoading = true;
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[];
       this.llenarComboProductos()
@@ -225,6 +223,7 @@ onHidden() {
       store: this.productos,  
       sort: [{ field: "PRODUCTO", asc: true }],    
     });
+    this.mostrarLoading = false;
   }
 
  
@@ -267,7 +266,7 @@ onHidden() {
    compararProducto(){
     var coincidencia = false;
     if(this.auditoriaProductosleida.length == 0){
-      this.buscarInformacion()
+      this.buscarInformacionNuevoProceso()
     }else{
        this.auditoriaProductosleida.forEach(element=>{
         if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
@@ -313,7 +312,7 @@ onHidden() {
 
       if(!coincidencia){
         this.btnRe=false
-        this.buscarInformacion()
+        this.buscarInformacionNuevoProceso()
       }
     }
     
@@ -359,7 +358,7 @@ onHidden() {
     var z1 = document.getElementById("newAud");
     var z2 = document.getElementById("editAud");
     var z3 = document.getElementById("tablaAuditoria");
-    var z4 = document.getElementById("novedades");
+    //var z4 = document.getElementById("novedades");
 
     
 
@@ -372,7 +371,7 @@ onHidden() {
         z0.style.display="none";
         z2.style.display="none";
         z3.style.display="none";
-        z4.style.display="none";
+        //z4.style.display="none";
        
        break;
       case "Ver Auditorias":
@@ -394,6 +393,7 @@ onHidden() {
           case "matriz":
             this.auditoria.cajas_sistema= element.cantidadCajas
             this.auditoria.piezas_sistema= element.cantidadPiezas
+            console.log("aquiii",element)
             this.ubicaciones= element.producto.ubicacionSuc1
             this.calcularTotalM2Base()
             break;
@@ -408,6 +408,40 @@ onHidden() {
             this.auditoria.piezas_sistema= element.cantidadPiezas3
             this.ubicaciones= element.producto.ubicacionSuc3
             this.calcularTotalM2Base()
+            break;
+          default:
+            break;
+        }
+        
+      }
+    })
+    this.calcularTotalM2()
+  }
+
+  buscarInformacionNuevoProceso(){
+    this.productosActivos.forEach(element=>{
+      if(element.PRODUCTO == this.auditoria.producto.PRODUCTO){
+        switch (this.auditoria.sucursal.nombre) {
+          case "matriz":
+            this.auditoria.cajas_sistema= Math.trunc((element.sucursal1+0.01) / element.M2);
+            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal1+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
+            this.ubicaciones= element.ubicacionSuc1
+            this.auditoria.m2base = element.sucursal1
+            console.log("m2",this.auditoria.m2base)
+            break;
+          case "sucursal1":
+            this.auditoria.cajas_sistema= Math.trunc((element.sucursal2+0.01) / element.M2);
+            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal2+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
+            this.ubicaciones= element.ubicacionSuc2
+            this.auditoria.m2base = element.sucursal2
+            console.log("m2",this.auditoria.m2base)
+            break;
+          case "sucursal2":
+            this.auditoria.cajas_sistema= Math.trunc((element.sucursal3+0.01) / element.M2);
+            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal3+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
+            this.ubicaciones= element.ubicacionSuc3
+            this.auditoria.m2base = element.sucursal3
+            console.log("m2",this.auditoria.m2base)
             break;
           default:
             break;

@@ -285,7 +285,9 @@ contadorF:number=0
     var ordenEncontrada2 = this.traerOrdenCompraEspecifica
     ordenNueva.n_orden = numero
     this.ordenesService.getOrdenEspecifica(ordenNueva).subscribe(res => {
+        this.ordenesCompra = res as OrdenDeCompra[];
         this.ordenBuscada = res[0];
+        this.obtenerOrdenes()
         if(this.ordenBuscada != null || this.ordenBuscada != undefined) {
           this.continuarProceso()
         }else{

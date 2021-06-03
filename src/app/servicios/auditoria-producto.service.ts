@@ -6,9 +6,9 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class AuditoriaProductoService {
-  private URL = 'http://localhost:3000/auditoriasProductos'; //localhost
+  //private URL = 'http://localhost:3000/auditoriasProductos'; //localhost
   //private URL = "http://104.131.82.174:3000/auditoriasProductos";
-  //private URL = "http://104.248.14.190:3000/auditoriasProductos"; //localhost
+  private URL = "http://104.248.14.190:3000/auditoriasProductos"; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}
 

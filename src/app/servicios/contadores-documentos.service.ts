@@ -8,8 +8,8 @@ import { factura } from "../pages/ventas/venta";
 })
 export class ContadoresDocumentosService {
   facturas: factura[];
-  private URL = 'http://localhost:3000/contadores'; //localhost
-  //private URL = "http://104.248.14.190:3000/contadores";
+  //private URL = 'http://localhost:3000/contadores'; //localhost
+  private URL = "http://104.248.14.190:3000/contadores";
   //private URL = "http://104.131.82.174:3000/contadores";
 
   constructor(public http: HttpClient, public router: Router) {}

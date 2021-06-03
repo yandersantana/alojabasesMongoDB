@@ -6,9 +6,9 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class ProductosEntregadosService {
-  //private URL = 'http://localhost:3000/productosEntregados'; //localhost
+  private URL = 'http://localhost:3000/productosEntregados'; //localhost
   //private URL = "http://104.248.14.190:3000/productosEntregados";
-  private URL = 'http://104.131.82.174:3000/productosEntregados';
+  //private URL = 'http://104.131.82.174:3000/productosEntregados';
   constructor(public http: HttpClient, public router: Router) {}
 
   newProductoEntregado(productoIng) {

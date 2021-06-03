@@ -6,9 +6,9 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class TrasladosService {
-  //private URL = 'http://localhost:3000/traslados'; //localhost
+  private URL = 'http://localhost:3000/traslados'; //localhost
   //private URL = "http://104.248.14.190:3000/traslados";
-  private URL = 'http://104.131.82.174:3000/traslados';
+  //private URL = 'http://104.131.82.174:3000/traslados';
   constructor(public http: HttpClient, public router: Router) {}
 
   newTraslado(traslado) {

@@ -6,9 +6,9 @@ import { Observable } from "rxjs";
   providedIn: "root",
 })
 export class BulkUploadService {
-  //private baseUrl = 'http://localhost:3000/upload';
+  private baseUrl = 'http://localhost:3000/upload';
   //private baseUrl = "http://104.248.14.190:3000/upload"; //localhost
-  private baseUrl = "http://104.131.82.174:3000/upload";
+  //private baseUrl = "http://104.131.82.174:3000/upload";
 
   constructor(private http: HttpClient) {}
 

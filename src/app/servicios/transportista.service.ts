@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class TransportistaService {
-  //private URL = 'http://localhost:3000/transportista'; //localhost
-  private URL = "http://104.248.14.190:3000/transportista";
+  private URL = 'http://localhost:3000/transportista'; //localhost
+  //private URL = "http://104.248.14.190:3000/transportista";
   //private URL = 'http://104.131.82.174:3000/transportista';
   constructor(public http: HttpClient, public router: Router) {}
 

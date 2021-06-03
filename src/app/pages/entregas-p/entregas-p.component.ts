@@ -1,13 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { AngularFireAuth } from 'angularfire2/auth';
-import { AlertsService } from 'angular-alert-module';
 import { productosPendientesEntrega, producto, contadoresDocumentos } from '../ventas/venta';
 import { entregaProductos, documentoGenerado } from './entrega';
 import pdfMake from 'pdfmake/build/pdfmake';
 import Swal from 'sweetalert2';
-import { element } from 'protractor';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
@@ -17,6 +12,7 @@ import { ProductosEntregadosService } from 'src/app/servicios/productos-entregad
 import { DocumentoGeneradoEntregaService } from 'src/app/servicios/documento-generado-entrega.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import { objDate } from '../transacciones/transacciones';
 
 @Component({
   selector: 'app-entregas-p',
@@ -31,12 +27,17 @@ export class EntregasPComponent implements OnInit {
   productosPendientesParaElim: productosPendientesEntrega[]=[]
   productosPendientesEliminados: productosPendientesEntrega[]=[]
   productosPendientesEntregados: productosPendientesEntrega[]=[]
+  nowdesde: Date = new Date();
+  nowhasta: Date = new Date();
+  obj: objDate;
   popupvisible:boolean=false
   popupvisible2:boolean=false
   numeroFactura:string=""
   entDir:boolean=false
   titulo:string=""
   correo:string
+  fechaAnteriorDesde: Date = new Date();
+  mostrarLoading:boolean = false
   usuarioLogueado:user
   cantidadEntCajas=0
   cantidadEntPiezas=0
@@ -117,10 +118,11 @@ export class EntregasPComponent implements OnInit {
   }
 
   traerProductosPendientesEntrega(){
-    this.productosPendientesService.getProductoPendiente().subscribe(res => {
+    this.cargarUsuarioLogueado()
+    /*this.productosPendientesService.getProductoPendiente().subscribe(res => {
       this.productosPendientesGlobales = res as productosPendientesEntrega[];
       this.cargarUsuarioLogueado()
-   })
+   })*/
   }
 
   traerProductosEntregados(){
@@ -166,7 +168,7 @@ export class EntregasPComponent implements OnInit {
               z.style.display = "block";
               
             }
-            this.separarRegistrosDevoluciones()
+            //this.separarRegistrosDevoluciones()
           },
           err => {
           }
@@ -212,6 +214,16 @@ export class EntregasPComponent implements OnInit {
     
   }
 
+  limpiarRegistros(){
+    this.productosPendientesNoEN = []
+    this.productosPendientesParaElim = []
+    this.productosPendientesEliminados = []
+    this.productosPendientes = []
+    this.productosPendientesEntregados = []
+    this.productosPendientesGlobales = []
+  }
+
+
  
 
   separarEntregas(){
@@ -227,6 +239,7 @@ export class EntregasPComponent implements OnInit {
         this.productosPendientesEntregados.push(element)
       }
     })
+    this.mostrarLoading = false
   }
 
 
@@ -844,14 +857,7 @@ export class EntregasPComponent implements OnInit {
           window.location.reload()
         }) },err => {})
 
-       /*  this.db.collection('/documentoEntrega').doc(e.Ndocumento+"").update({"estado":"PENDIENTE"}).then(res => {  Swal.fire({
-          title: 'Correcto',
-          text: 'Un administrador aprobará su solicitud',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => alert(err));   */
+
        
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -891,6 +897,32 @@ export class EntregasPComponent implements OnInit {
       }
     })
   }
+
+  traerTransaccionesPorRango(numero) {
+    this.limpiarRegistros()
+    this.mostrarLoading = true;
+    this.fechaAnteriorDesde = this.nowdesde
+    var fechaHoy = this.nowdesde
+    fechaHoy.setDate(this.nowdesde.getDate());
+    var fechaHasta = new Date()
+    fechaHasta.setDate(this.nowhasta.getDate()+1);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHasta;
+    this.obj.fechaAnterior = fechaHoy;
+    switch (numero) {
+      case 1:
+        this.productosPendientesService.getProductosPendientesPorRango(this.obj).subscribe(res => {
+            this.productosPendientesGlobales = res as productosPendientesEntrega[];
+            console.log(this.productosPendientesGlobales)
+            this.separarRegistrosDevoluciones()
+        })
+        break;
+      default:
+        break;
+    }
+    
+  }
+
 
 
   eliminarDocumento(e){

@@ -25,6 +25,10 @@ export class NotasVentasService {
     return this.http.post(this.URL + "/getNotasVentaMensuales", objFecha);
   }
 
+  getNotasVentaPorRango(objFecha) {
+    return this.http.post(this.URL + "/getNotasVentaPorRango", objFecha);
+  }
+
   getNotasVemtaDocumento(documento) {
     return this.http.post(
       this.URL + `/getNotasVentaPorDocumento/${documento}`,

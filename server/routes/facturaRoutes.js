@@ -42,6 +42,18 @@ router.post("/getFacturasPorDocumentoVenta/:documento", async (req, res, next) =
   res.json(documentos);
 });
 
+router.post("/getFacturasPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const ordenes = await Factura.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(ordenes);
+});
+
 router.put("/update2/:id/:observaciones", async (req, res, next) => {
   const { id } = req.params;
   const { observaciones } = req.params;

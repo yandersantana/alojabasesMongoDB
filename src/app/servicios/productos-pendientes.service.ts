@@ -19,6 +19,10 @@ export class ProductosPendientesService {
     return this.http.get(this.URL + "/getProductosPendientes");
   }
 
+  getProductosPendientesPorRango(objFecha) {
+    return this.http.post(this.URL + "/getProductosPendientesPorRango", objFecha);
+  }
+
   getProductosPendientesEntrega() {
     return this.http.get(this.URL + "/getProductosPendientesEntrega");
   }

@@ -220,11 +220,11 @@ contadores:contadoresDocumentos[]
   
   //se ejecuta apenas se carga la pantalla
   ngOnInit() {
+   this.traerProductos()
    this.cargarUsuarioLogueado()
    this.traerSucursales()
    this.traerContadoresDocumentos()
    this.traerClientes()
-   this.traerProductos()
    this.traerFacturas()
    this.traerParametrizaciones()
    this.traerProformas()
@@ -284,7 +284,7 @@ contadores:contadoresDocumentos[]
   }
 
   traerProductos(){
-    this.productoService.getProducto().subscribe(res => {
+    this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[];
       this.llenarPR()
       this.llenarComboProductos()

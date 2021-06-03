@@ -19,6 +19,18 @@ router.post("/getNotasVentaMensuales", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getNotasVentaPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const notas = await NotasVenta.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(notas);
+});
+
 router.post("/getNotasVentaPorDocumento/:documento", async (req, res, next) => {
   const { documento } = req.params;
   const documentos = await NotasVenta.find({

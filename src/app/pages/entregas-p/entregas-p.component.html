@@ -11,8 +11,58 @@
         (onValueChanged)="opcionMenu($event)"
         ></dx-select-box></div>
 </div>
+
+<div *ngIf="mostrarLoading">
+    <app-loading></app-loading>
+</div>
+
+
 <br>
 <div id="pendientes" style="display: block;">
+    <div class="row">
+            <div class="col-md-12 card carIn">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-8">
+                        <div class="row"  style="margin-top: 0.7rem">
+                            <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5>Seleccione el Rango de Fechas</h5></div>
+                            <br><br><br>
+                            <div class="col-md-6"> 
+                            <div class="row">
+                                <div class="col-md-3">Desde</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowdesde"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
+                            </div>        
+                            </div>
+
+                            <div class="col-md-6"> 
+                            <div class="row">
+                                <div class="col-md-3">Hasta</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowhasta"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
+                            </div>        
+                            </div>
+                            
+                        </div>
+                        <br>
+                        <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4"><button class="btn btn-block btn-success "  (click)="traerTransaccionesPorRango(1)">Buscar</button></div>
+                            <div class="col-md-4"></div>
+                        </div>
+                    </div>
+                    <div class="col-md-2"></div>
+                </div>     
+            </div>
+        </div>
     <h4>Productos Pendientes Entrega</h4>
     <dx-data-grid #datag2
         id="gridContainer"

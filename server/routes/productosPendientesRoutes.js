@@ -26,7 +26,17 @@ router.put('/actualizarNota/:id/:nota', async (req, res,next) => {
     res.json({status: 'factura Updated'});  
 })
 
-
+router.post("/getProductosPendientesPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const productos = await ProductosPendientes.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(productos);
+});
 
 
 router.put('/updateEstado/:id', async (req, res,next) => {

@@ -8,7 +8,7 @@ import { ProductoDetalleCompra } from '../producto/producto';
 import Swal from 'sweetalert2';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { factura, venta, producto, contadoresDocumentos } from '../ventas/venta';
-import { objDate, transaccion } from '../transacciones/transacciones';
+import { objDate, tipoBusquedaTransaccion, transaccion } from '../transacciones/transacciones';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
@@ -101,6 +101,7 @@ subtotal:number=0
   contadores:contadoresDocumentos[]=[]
   obj: objDate;
   fechaAnteriorDesde: Date = new Date();
+  busquedaTransaccion: tipoBusquedaTransaccion;
 
   expensesCollection3: AngularFirestoreCollection<transaccion>;
 
@@ -207,7 +208,54 @@ subtotal:number=0
     );
   }*/
 
-  traerTransaccionesPorRango() {
+  traerTransaccionesPorRango(numero) {
+    this.mostrarLoading = true;
+    this.limpiarArreglos()
+    this.fechaAnteriorDesde = this.nowdesde
+    var fechaHoy = this.nowdesde
+    fechaHoy.setDate(this.nowdesde.getDate());
+    var fechaHasta = new Date()
+    fechaHasta.setDate(this.nowhasta.getDate()+1);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHasta;
+    this.obj.fechaAnterior = fechaHoy;
+    switch (numero) {
+      case 1:
+        this.ordenesService.getOrdenesCompraPorRango(this.obj).subscribe(
+          (res) => {
+            this.ordenesCompra = res as OrdenDeCompra[];
+            this.obtenerOrdenesPendientes()
+          },
+          () => {}
+        );
+        break;
+      case 2:
+        this.facturasService.getFacturasPorRango(this.obj).subscribe(
+          (res) => {
+            this.facturas = res as factura[];
+            this.dividirFacturas()
+          },
+          () => {}
+        );
+        break;
+      case 3:
+        this.notasventaService.getNotasVentaPorRango(this.obj).subscribe(
+          (res) => {
+           this.notasVenta = res as factura[];
+            this.dividirNotasVenta()
+          },
+          () => {}
+        );
+        break;
+    
+      default:
+        break;
+    }
+    
+  }
+
+
+  traerFacturasPorRango() {
     this.mostrarLoading = true;
     this.fechaAnteriorDesde = this.nowdesde
     var fechaHoy = this.nowdesde
@@ -267,15 +315,34 @@ subtotal:number=0
     this.mostrarLoading = false
   }
 
+  limpiarArreglos(){
+    this.ordenesCompra = []
+    this.ordenesCompraPendientes = []
+    this.ordenesCompraPendientesAnulacion = []
+    this.ordenesCompraAnuladas = []
+    this.ordenesCompraDirectasPendientes = []
+    this.ordenesCompraDirectasPendientesAnulacion = []
+    this.ordenesCompraDirectasAnuladas = []
+    this.ordenesCompraDirectasPendientesAnulacion = []
+    this.facturasELI = []
+    this.facturasPEN = []
+    this.facturasAP = []
+    this.notasVentaELI = []
+    this.notasVentaPEN = []
+    this.notasVentaAP = []
+    this.facturas = []
+    this.notasVenta = []
+  }
+
+
+
   eliminarTransacciones5(e){
     this.transacciones.forEach(element=>{
       if(element.documento== e.documento && element.orden_compra == e.n_orden ){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
       }
     })
- 
-     
-    }
+  }
  
     actualizarProductos3(e){
      this.eliminarTransacciones5(e)
@@ -380,11 +447,11 @@ subtotal:number=0
   }
 
   eliminarFactura= (e) => {  
-    this.eliminarFact(e.row.data) 
+    this.validarTransaccionesFactura(e.row.data) 
   }
 
   eliminarNotaVenta= (e) => {  
-    this.eliminarNot(e.row.data) 
+    this.validarTransaccionesNotaVenta(e.row.data) 
   }
 
   anularOrden2 = (e) => {  
@@ -419,7 +486,6 @@ subtotal:number=0
 
 
   dividirFacturas(){
-    //alert("si entroo" + this.facturas.length)
     this.facturas.forEach(element=>{
       if(element.estado == "ANULADA"){
         this.facturasELI.push(element)
@@ -429,7 +495,7 @@ subtotal:number=0
         this.facturasAP.push(element)
       }
     })
-
+    this.mostrarLoading = false
   }
 
   dividirNotasVenta(){
@@ -442,6 +508,7 @@ subtotal:number=0
         this.notasVentaAP.push(element)
       }
     })
+    this.mostrarLoading= false
   }
 
 
@@ -1776,6 +1843,46 @@ subtotal:number=0
       window.location.reload()
     })
   }
+
+
+  validarTransaccionesFactura(e){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.documento_n+""
+    this.busquedaTransaccion.tipoTransaccion = "venta-fact"
+    this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transacciones = res as transaccion[];
+      console.log("transacciones",this.transacciones)
+      if(this.transacciones.length == 0){
+          Swal.fire({
+            title: 'Error',
+            text: "No se encontraron transacciones para esta orden",
+            icon: 'error'
+          })
+      }else{
+        this.eliminarFact(e)
+      }
+    })
+  }
+
+
+  validarTransaccionesNotaVenta(e){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.documento_n+""
+    this.busquedaTransaccion.tipoTransaccion = "venta-not"
+    this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transacciones = res as transaccion[];
+      console.log("transacciones",this.transacciones)
+      if(this.transacciones.length == 0){
+          Swal.fire({
+            title: 'Error',
+            text: "No se encontraron transacciones para esta orden",
+            icon: 'error'
+          })
+      }else{
+        this.eliminarNot(e)
+      }
+    })
+  }
   
   eliminarFact(e){
     Swal.fire({
@@ -1847,13 +1954,6 @@ subtotal:number=0
     this.transacciones.forEach(element=>{
       if(element.documento== num+"" && element.tipo_transaccion=="venta-not"){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
-    /*  console.log("entre con el "+element.idTransaccion)
-       this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
-       this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
-         querySnapshot.forEach(function(doc) {
-           doc.ref.delete();
-         });
-       }); */
       }
     })
    }
@@ -2117,23 +2217,28 @@ subtotal:number=0
 
 
   compararCantidades(e:any){
-    var cont=0
-     var contVal=0
-      /*this.productosComprados2.forEach(element=>{
-        cont++
-      })
-      if(cont>=0){
-        this.productosComprados2.forEach(element=>{
-          this.productosComprados2.splice(0)
-        })
-      }
-      var orden_n=e.documento
-      this.productosComprados.forEach(element=>{
-        if(element.solicitud_n == orden_n){
-          this.productosComprados2.push(element)
-        }
-      })*/
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.documento+""
+    this.busquedaTransaccion.tipoTransaccion = "compra-dir"
+    this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+          this.transacciones = res as transaccion[];
+          console.log("transacciones",this.transacciones)
+          if(this.transacciones.length == 0){
+             Swal.fire({
+                title: 'Error',
+                text: "No se encontraron transacciones para esta orden",
+                icon: 'error'
+             })
+          }else{
+           this.continuarAnulacionCompraDirecta(e)
+          }
+    })
+  }
 
+  continuarAnulacionCompraDirecta(e:any){
+     var cont=0
+     var contVal=0
+      
       this.ordenesCompraDirectasPendientesAnulacion.forEach(element=>{
         if(e.documento== element.documento){
           this.productosComprados2=element.productosComprados
@@ -2142,12 +2247,11 @@ subtotal:number=0
     
     var suma=0
     var contIn=0
-    //alert("sss "+this.productosComprados2.length)
     this.productosComprados2.forEach(element=>{
       this.productos.forEach(element2=>{
         if(element.nombreComercial.PRODUCTO == element2.PRODUCTO){
           suma=element.cantidad
-          //alert("hasta aqui llegue")
+          console.log(e.sucursal.nombre)
           switch (e.sucursal.nombre) {
             case "matriz":
               if(suma>element2.sucursal1){
@@ -2336,6 +2440,7 @@ subtotal:number=0
         console.log("si encontre...222"+ orden_n)
          this.ordenDeCompra2 = element
          this.productosComprados2=element.productosComprados
+         console.log("2ssss",this.productosComprados2)
          this.numOrden= element.documento
          if(element.n_orden>0){
           this.numOrden= element.n_orden

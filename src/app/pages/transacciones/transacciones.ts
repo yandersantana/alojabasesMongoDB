@@ -42,3 +42,12 @@ export class objDate {
   fechaAnterior: Date;
   constructor() {}
 }
+
+
+export class tipoBusquedaTransaccion {
+  NumDocumento: string;
+  tipoTransaccion: string;
+  constructor(){
+
+  }
+}

@@ -33,6 +33,15 @@ router.post("/getTransaccionesPorProducto", async (req, res, next) => {
   res.json(transacciones);
 });
 
+
+router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
+  console.log(req.body)
+  const transacciones = await Transacciones.find({ tipo_transaccion: req.body.tipoTransaccion , documento:req.body.NumDocumento });
+  res.json(transacciones);
+});
+
+
+
 router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;

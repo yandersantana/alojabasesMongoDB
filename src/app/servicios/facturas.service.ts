@@ -33,6 +33,10 @@ export class FacturasService {
     );
   }
 
+  getFacturasPorRango(objFecha) {
+    return this.http.post(this.URL + "/getFacturasPorRango", objFecha);
+  }
+
   getFacturasDocumentoVenta(factura) {
     return this.http.post(
       this.URL + `/getFacturasPorDocumentoVenta/${factura.documento_n}`,

@@ -27,6 +27,11 @@ export class TransaccionesService {
     return this.http.post(this.URL + "/getTransaccionesPorProducto", producto);
   }
 
+  getTransaccionesPorTipoDocumento(tipobusqueda) {
+    console.log(tipobusqueda)
+    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
+  }
+
   getTransaccionesPorProductoYFecha(producto) {
     return this.http.post(
       this.URL + "/getTransaccionesPorProductoYFecha",

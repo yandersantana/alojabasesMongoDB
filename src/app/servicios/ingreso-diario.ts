@@ -8,8 +8,8 @@ import { ingresoDiario } from "../pages/reportes/ingreso-diario/ingreso-diario";
 })
 export class IngresosService {
   ingresos: ingresoDiario[];
-  //private URL = "http://104.248.14.190:3000/ingresosDiarios";
-  private URL = "http://104.131.82.174:3000/ingresosDiarios";
+  private URL = "http://104.248.14.190:3000/ingresosDiarios";
+  //private URL = "http://104.131.82.174:3000/ingresosDiarios";
   //private URL = 'http://localhost:3000/ingresosDiarios'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}

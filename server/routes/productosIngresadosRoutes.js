@@ -8,6 +8,12 @@ router.get('/getProductosIngresados', async (req, res) => {
 })
 
 
+router.post('/getProductosIngresadosOrden/:ordenId', async (req, res,next) => {
+    var ordenId = req.body.numeroOrden;
+    const ordenes = await ProductosIngresados.find({numeroOrden: ordenId })
+    res.json(ordenes)      
+})
+
 
 router.put('/updateEstadoIngreso/:id/:estado', async (req, res,next) => {
     const { id } = req.params;

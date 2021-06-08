@@ -1,8 +1,7 @@
 import {
   Component,
   OnInit,
-  ViewChild,
-  ɵALLOW_MULTIPLE_PLATFORMS,
+  ViewChild
 } from "@angular/core";
 import { Producto, bodega, productosObsequio } from "./producto";
 import { Observable } from "rxjs";
@@ -23,11 +22,10 @@ import {
 } from "../producto/producto";
 import {
   AngularFirestore,
-  AngularFirestoreCollection,
 } from "angularfire2/firestore";
 import Swal from "sweetalert2";
 import pdfMake from "pdfmake/build/pdfmake";
-import { objDate, transaccion } from "../transacciones/transacciones";
+import { objDate, tipoBusquedaTransaccion, transaccion } from "../transacciones/transacciones";
 import { parametrizacionsuc } from "../parametrizacion/parametrizacion";
 import { ParametrizacionesService } from "src/app/servicios/parametrizaciones.service";
 import { ContadoresDocumentosService } from "src/app/servicios/contadores-documentos.service";
@@ -109,6 +107,8 @@ export class ProductoComponent implements OnInit {
   var2: boolean = true;
   var3: boolean = true;
   var4: boolean = true;
+
+  busquedaTransaccion: tipoBusquedaTransaccion;
 
   //personList: Array<any>
   imagenLogotipo =
@@ -203,17 +203,18 @@ export class ProductoComponent implements OnInit {
 
   ngOnInit() {
     this.setearFechaMensual();
-    this.traerProductosObsequio();
     this.traerProductos();
-    this.traerOrdenesCompra();
-    this.traerTransacciones();
+    this.traerProductosObsequio();
+
+    //this.traerOrdenesCompra();
+    //this.traerTransacciones();
     this.traerParametrizaciones();
     this.traerSucursales();
     this.traerContadoresDocumentos();
-    this.traerfacturasProveedor();
+    //this.traerfacturasProveedor();
     this.traerBodegas();
     //this.traerRemisionesMensuales()
-    this.traerProductosIngresados();
+    //this.traerProductosIngresados();
     this.getIDDocumentos();
     this.cargarUsuarioLogueado();
   }
@@ -292,8 +293,10 @@ export class ProductoComponent implements OnInit {
   }
 
   traerProductos() {
-    this.productoService.getProducto().subscribe((res) => {
+    this.mostrarLoading = true
+    this.productoService.getProductosActivos().subscribe((res) => {
       this.productos = res as producto[];
+      this.mostrarLoading = false;
     });
   }
 
@@ -374,7 +377,7 @@ export class ProductoComponent implements OnInit {
 
   getCourseFile2 = (e) => {
     //this.eliminarRemision(e.row.data)
-    this.compararCantidades(e.row.data);
+    this.traerProductosIngresadosPorOrden(e.row.data);
   };
 
   getCourseFile6 = (e) => {
@@ -458,12 +461,19 @@ export class ProductoComponent implements OnInit {
     e.component.endUpdate();
   }
 
+
+  traerProductosIngresadosPorOrden(e: any){
+    var newFacturaP = new ProductoDetalleEntrega()
+    newFacturaP.numeroOrden = e.num_orden
+    this.productosIngresadoService.getProductosIngresadosPorOrden(newFacturaP).subscribe((res) => {
+      this.productosEntregadosBase = res as ProductoDetalleEntrega[];
+      this.compararCantidades(e)
+    });
+  }
+
   compararCantidades(e: any) {
     this.productosEntregadosBase.forEach((element) => {
-      if (
-        element.numeroRemision == e.id_remision &&
-        e.num_orden == element.numeroOrden
-      ) {
+      if (element.numeroRemision == e.id_remision && e.num_orden == element.numeroOrden) {
         this.productosEntregadosBase2.push(element);
       }
     });
@@ -531,21 +541,33 @@ export class ProductoComponent implements OnInit {
   }
 
   eliminarRemision(e: any) {
-    var data = "";
+     var newOrden = new OrdenDeCompra()
+    newOrden.n_orden = e.num_orden
+    this.ordenesService.getOrdenEspecifica(newOrden).subscribe((res) => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+    });
 
+    var facturaP = new FacturaProveedor()
+    facturaP.nSolicitud = e.num_orden
+    this.facturasProveedorService.getFacturasDocumento(facturaP).subscribe((res) => {
+      this.facturaProveedor = res as FacturaProveedor[];
+      this.continuarEliminando(e)
+    });  
+
+   
+  }
+
+
+  continuarEliminando(e:any){
+    var data = "";
     var sumaProductos = 0;
     var num1: number = 0;
     var num2: number = 0;
     var num3: number = 0;
     data = e.id_remision + "";
-
     this.facturaProveedor.forEach((element) => {
-      if (
-        element.nSolicitud == e.num_orden &&
-        element.nFactura == e.num_FactPro
-      ) {
+      if (element.nSolicitud == e.num_orden && element.nFactura == e.num_FactPro) {
         this.ifFacturaP = element._id;
-        console.log("el numero es " + this.ifFacturaP);
       }
     });
 
@@ -558,11 +580,9 @@ export class ProductoComponent implements OnInit {
       cancelButtonText: "No",
     }).then((result) => {
       if (result.value) {
-        //Swal.clos
         this.mensajeGuardando();
         new Promise<any>((resolve, reject) => {
           var entre: boolean = true;
-          console.log("extraje la remision " + e.id_remision);
           this.remisionesService.updateEstado(e, "Eliminada").subscribe(
             (res) => {
               console.log(res + "entre por si");
@@ -581,10 +601,7 @@ export class ProductoComponent implements OnInit {
                 alert("error");
               }
             );
-          //pendiente de realizar
-          /*  this.facturasProveedorService.updateEstado3(e,"Por Ingresar").subscribe( res => {console.log(res + "entre por si");}, err => {alert("error")}) */
-          //this.db.collection('/remisionProductos').doc(data).update({"estado":"Eliminada"})
-          //this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Por Ingresar"});
+
           this.productosEntregadosBase.forEach((element) => {
             if (element.numeroRemision == e.id_remision) {
               console.log(
@@ -695,27 +712,38 @@ export class ProductoComponent implements OnInit {
       }
     });
 
-    this.eliminarTransacciones(e.id_remision, e.num_orden);
+    this.eliminarTransacciones(e.id_remision, e.num_orden, e.num_FactPro);
   }
 
-  eliminarTransacciones(num: number, num2: number) {
-    this.transacciones.forEach((element) => {
-      if (element.factPro == num + "" && element.orden_compra == num2) {
-        this.transaccionesService.deleteTransaccion(element).subscribe(
-          (res) => {
-            console.log(res + "termine1");
-          },
-          (err) => {
-            alert("error");
+  eliminarTransacciones(num: number, num2: number , numFact : string) {
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = numFact
+    this.busquedaTransaccion.tipoTransaccion = "compra"
+    this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transacciones = res as transaccion[];
+      console.log("fffff",this.transacciones)
+      if(this.transacciones.length != 0){
+        this.transacciones.forEach((element) => {
+          if (element.factPro == num + "" && element.orden_compra == num2) {
+            this.transaccionesService.deleteTransaccion(element).subscribe(
+              (res) => {
+                console.log(res + "termine1");
+              },
+              (err) => {
+                alert("error");
+              }
+            );
           }
-        );
+        });
+      }else{
+        Swal.fire("Cancelado!", "No hay transacciones.", "error");
       }
-    });
+    }); 
   }
 
   cargarDatosRemisión(e: any) {
     // alert("voy a buscar la remision "+e.id_remision)
-    var cont = 0;
+    /*var cont = 0;
     this.productosControlIngresados.forEach((element) => {
       cont++;
     });
@@ -723,8 +751,22 @@ export class ProductoComponent implements OnInit {
       this.productosControlIngresados.forEach((element) => {
         this.productosControlIngresados.splice(0);
       });
-    }
+    }*/
+    this.mostrarLoading = true
+    this.productosControlIngresados = []
+     var newFacturaP = new ProductoDetalleEntrega()
+    newFacturaP.numeroOrden = e.num_orden
+    this.productosIngresadoService.getProductosIngresadosPorOrden(newFacturaP).subscribe((res) => {
+      this.productosEntregadosBase = res as ProductoDetalleEntrega[];
+      console.log(this.productosEntregadosBase)
+      this.seguirCreando(e)
+    });
 
+
+    
+  }
+
+  seguirCreando(e:any){
     this.productosEntregadosBase.forEach((element) => {
       if (
         e.id_remision == element.numeroRemision &&
@@ -1770,10 +1812,7 @@ export class ProductoComponent implements OnInit {
     this.facturaProveedor.forEach((element) => {
       if (element.nFactura == e.value) {
         this.ifFacturaP = element._id;
-        //alert(element.fecha)
         this.fecha1 = new Date(element.fecha);
-        console.log(element.total);
-        // alert("xsxs "+JSON.stringify(element))
         this.remisionProducto.total = element.total;
       }
     });
@@ -1784,14 +1823,6 @@ export class ProductoComponent implements OnInit {
     this.contadorDev2 = 0;
     this.saldo = 0;
     this.saldo2 = 0;
-
-    // this.selectBox.endUpdate()
-    // this.selectBox.instance.beginUpdate()
-    //this.eliminarceldas()
-    /* if(this.contadorTabla<=0){
-    this.llenarTabla(this.remisionProducto.num_FactPro)
-   }
-   this.contadorTabla++ */
     this.llenarTabla(this.remisionProducto.num_FactPro);
   }
 
@@ -1808,9 +1839,18 @@ export class ProductoComponent implements OnInit {
     });
   }
 
+  traerFacturasPorOrden(){
+    this.mostrarLoading = true
+    let numero = this.datoNsolicitud;
+    var facturaP = new FacturaProveedor()
+    facturaP.nSolicitud = numero
+    this.facturasProveedorService.getFacturasDocumento(facturaP).subscribe((res) => {
+      this.facturaProveedor = res as FacturaProveedor[];
+      this.cargarFacturas()
+    });
+  }
+
   cargarFacturas() {
-    console.log("eeeeeeeeeeennnnnnnnttr");
-    //this.eliminarceldas()
     if (this.contIngresos > 0) {
       window.location.reload();
     }
@@ -1819,21 +1859,20 @@ export class ProductoComponent implements OnInit {
     let numero = this.datoNsolicitud;
     var bandera: boolean = true;
     var cont = 0;
-    this.facturaProveedor2.forEach((element) => {
+    /*this.facturaProveedor2.forEach((element) => {
       cont++;
     });
     if (cont >= 0) {
       this.facturaProveedor2.forEach((element) => {
         this.facturaProveedor2.splice(0);
       });
-    }
+    }*/
 
     this.facturaProveedor.forEach((element) => {
       if (element.nSolicitud == numero && element.estado3 != "Ingresada") {
         this.solicitudOrdenC = element.documento_solicitud;
         this.facturaProveedor2.push(element);
         this.remisionProducto.nombre_proveedor = element.proveedor;
-        console.log("llene el " + element.nFactura);
       }
     });
 
@@ -1844,6 +1883,7 @@ export class ProductoComponent implements OnInit {
       bandera = true;
       this.ejecutar(bandera);
     }
+    this.mostrarLoading = false;
   }
 
   ejecutar(bandera: boolean) {
@@ -1970,48 +2010,69 @@ export class ProductoComponent implements OnInit {
     }
   }
 
+  
+
   llenarTabla(num: string) {
     this.limpiarArreglo();
     this.limpiarArreglo2();
     this.limpiarArreglo3();
-    //this.eliminarceldas()
     let numero = this.datoNsolicitud;
     let solicitud = 0;
 
+    /*this.ordenesCompra.forEach((element) => {
+      if (element.n_orden == numero) {
+        this.solicitudNOrden = element.documento;
+        this.ordenleida = element;
+        solicitud = element.documento;
+        this.solNum = element.documento;
+        this.productosComprados = element.productosComprados;
+      }
+    });*/
+
+    var newOrden = new OrdenDeCompra()
+    newOrden.n_orden = numero
+    this.ordenesService.getOrdenEspecifica(newOrden).subscribe((res) => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+      if(this.ordenesCompra.length != 0){
+        this.seguirProceso(num)
+      }else{
+        Swal.fire("Error!", "No se ha podido traer la informacion", "error");
+      }
+      
+    });
+
+
+   
+  }
+
+
+  seguirProceso(num:string){
+    let numero = this.datoNsolicitud;
+    let solicitud = 0;
     this.ordenesCompra.forEach((element) => {
       if (element.n_orden == numero) {
         this.solicitudNOrden = element.documento;
         this.ordenleida = element;
-        // alert("hjhj "+JSON.stringify(this.ordenleida))
         solicitud = element.documento;
         this.solNum = element.documento;
         this.productosComprados = element.productosComprados;
-        //bandera=false
       }
-    });
-    // alert("KK "+JSON.stringify(this.productosComprados))
-
+    })
+      
     var arregloProductos = [];
     this.facturaProveedor2.forEach((element) => {
       if (num == element.nFactura) {
         arregloProductos = element.productos;
-        //alert("arreglo "+arregloProductos)
       }
     });
-    console.log("el " + num);
-    console.log("el arreglo es" + arregloProductos);
+
     for (let index = 0; index < arregloProductos.length; index++) {
       this.productosComprados.forEach((element) => {
         if (arregloProductos[index] == element.nombreComercial.PRODUCTO) {
-          //alert("entre kk")
           this.productosSolicitados.push(element);
         }
       });
     }
-
-    this.productosSolicitados.forEach((element) => {
-      console.log("producto.... " + JSON.stringify(element));
-    });
 
     this.productosSolicitados.forEach((element) => {
       this.productosEntregados1 = new ProductoDetalleEntrega();
@@ -2039,12 +2100,8 @@ export class ProductoComponent implements OnInit {
       //this.productosEntregados1.estado="Ok"
       this.productosEntregados.push(this.productosEntregados1);
     });
-
-    this.productosEntregados.forEach((element) => {
-      console.log("aquu mostrando el producto " + JSON.stringify(element));
-    });
-    console.log("Hay " + this.productosEntregados.length);
     this.obtenerProductosIngresados();
+  
   }
 
   registrarDatos() {
@@ -2188,7 +2245,7 @@ export class ProductoComponent implements OnInit {
 
   obtenerProductosIngresados() {
     //para vaciar arrgelo
-    var cont = 0;
+    /*var cont = 0;
     this.productosControlFinal.forEach((element) => {
       cont++;
     });
@@ -2199,26 +2256,30 @@ export class ProductoComponent implements OnInit {
       });
 
       console.log("mostrando despues" + this.productosControlFinal.length);
-    }
+    }*/
     // *******aqui termina************
+    this.productosControlFinal = []
+    var newFacturaP = new ProductoDetalleEntrega()
+    newFacturaP.numeroOrden = this.datoNsolicitud
+    this.productosIngresadoService.getProductosIngresadosPorOrden(newFacturaP).subscribe((res) => {
+      this.productosEntregadosBase = res as ProductoDetalleEntrega[];
+      this.cargarProductosOrden()
+    });
 
+    
+  }
+
+
+  cargarProductosOrden(){
     this.productosEntregadosBase.forEach((element) => {
-      if (
-        element.numeroOrden == this.datoNsolicitud &&
-        element.estadoIngreso != "Eliminado"
-      ) {
-        console.log("entre a ver " + JSON.stringify(element));
+      if (element.numeroOrden == this.datoNsolicitud && element.estadoIngreso != "Eliminado") {
         this.productoIngresado = new ControlProductos();
-        console.log(element.cantidadEntregada);
-        this.productoIngresado.nombre_comercial =
-          element.nombreComercial.PRODUCTO;
+        this.productoIngresado.nombre_comercial = element.nombreComercial.PRODUCTO;
         this.productoIngresado.cantidadentregada = element.cantidadEntregada;
-        this.productoIngresado.cantidadentregadapiezas =
-          element.cantidadEntregadapiezas;
+        this.productoIngresado.cantidadentregadapiezas = element.cantidadEntregadapiezas;
         this.productoIngresado.cantidadsolicitada = element.cantidadSolicitada;
         this.productoIngresado.cantidadDevuelta = element.cantidadDevuelta;
-        this.productoIngresado.cantidadDevueltapiezas =
-          element.cantidadDevueltapiezas;
+        this.productoIngresado.cantidadDevueltapiezas = element.cantidadDevueltapiezas;
         this.productoIngresado.fecha = element.fecha;
         this.productosControl.push(this.productoIngresado);
       }
@@ -2227,7 +2288,6 @@ export class ProductoComponent implements OnInit {
     let sum1,
       sum2 = 0;
     let calculot = 0;
-    console.log("losssssss" + this.productosEntregados.length);
 
     this.productosEntregados.forEach((element1) => {
       this.productosControl.forEach((element) => {
@@ -2241,21 +2301,9 @@ export class ProductoComponent implements OnInit {
             Number(element.cantidadDevueltapiezas) + this.contadorDev2;
         }
       });
-
-      // this.saldo=Number(element1.cantidadSolicitadacajas)-this.contadorp2+this.contadorDev
-      // this.saldo2=Number(element1.cantidadSolicitadapiezas)-this.contadorp3+this.contadorDev2
-      sum1 =
-        Number(element1.cantidadSolicitadacajas) -
-        this.contadorp2 -
-        this.contadorDev;
-      //alert("aaa"+sum1)
-      sum2 =
-        Number(element1.cantidadSolicitadapiezas) -
-        this.contadorp3 -
-        this.contadorDev2;
-      calculot =
-        element1.nombreComercial.M2 * sum1 +
-        (sum2 * element1.nombreComercial.M2) / element1.nombreComercial.P_CAJA;
+      sum1 = Number(element1.cantidadSolicitadacajas) - this.contadorp2 - this.contadorDev;
+      sum2 = Number(element1.cantidadSolicitadapiezas) - this.contadorp3 - this.contadorDev2;
+      calculot = element1.nombreComercial.M2 * sum1 +(sum2 * element1.nombreComercial.M2) / element1.nombreComercial.P_CAJA;
       this.saldo = Math.trunc(calculot / element1.nombreComercial.M2);
       this.saldo2 =
         Math.trunc(
@@ -2264,7 +2312,6 @@ export class ProductoComponent implements OnInit {
         ) -
         this.saldo * element1.nombreComercial.P_CAJA;
 
-      console.log("mostrando calculo" + calculot);
       this.productoIngresado = new ControlProductos();
       this.productoIngresado.nombre_comercial =
         element1.nombreComercial.PRODUCTO;
@@ -2286,14 +2333,6 @@ export class ProductoComponent implements OnInit {
           ) *
             element1.nombreComercial.P_CAJA);
       this.productoIngresado.cantidadentregadapiezas = this.contadorp3;
-      console.log("producto " + this.productoIngresado.nombre_comercial);
-      console.log(
-        "entre a mostrar cjas" + this.productoIngresado.cantidadSolicitadacajas
-      );
-      console.log(
-        "entre a mostrarpiezas" +
-          this.productoIngresado.cantidadSolicitadapiezas
-      );
       this.productoIngresado.saldo = this.saldo;
       this.productoIngresado.saldopiezas = this.saldo2;
       this.productoIngresado.saldom2 = calculot;
@@ -2437,8 +2476,6 @@ export class ProductoComponent implements OnInit {
   }
 
   crearPDF() {
-    console.log("entre  a creaar PDF");
-    //var win = window.open('', '_blank');
     const documentDefinition = this.getDocumentDefinition();
     pdfMake
       .createPdf(documentDefinition)
@@ -2448,6 +2485,7 @@ export class ProductoComponent implements OnInit {
       );
     // pdfMake.createPdf(documentDefinition).open({}, win);
     //this.mostrarMensaje()
+    this.mostrarLoading = false
   }
 
   crearPDF2() {

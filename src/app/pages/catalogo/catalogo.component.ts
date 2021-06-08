@@ -303,8 +303,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   uploadFiles() {
-    
-   
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!="" && this.catalogo2.precio !=0 && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       
@@ -617,7 +615,6 @@ export class CatalogoComponent implements OnInit {
     new Promise<any>((resolve, reject) => {
       this.productoService.newProducto(this.nuevoProducto).subscribe(
         res => {
-          console.log(res + "entre por si");
           this.mostrarMensaje()
         },
         err => {

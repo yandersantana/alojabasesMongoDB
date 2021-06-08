@@ -19,6 +19,14 @@ router.post('/getRemisionesMensuales', async (req, res,next) => {
     res.json(remisiones)      
 })
 
+
+router.post('/getRemisionEspecifica/:ordenId', async (req, res,next) => {
+    var ordenId = req.body.num_orden;
+    const remision = await Remision.find({num_orden: ordenId })
+    res.json(remision)      
+})
+
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const remision = {

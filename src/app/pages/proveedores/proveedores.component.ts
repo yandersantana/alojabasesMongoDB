@@ -425,7 +425,8 @@ contadorF:number=0
       }
     })
 
-
+    console.log(this.totalOrden)
+    console.log(this.totalsuma2)
     this.totalsuma=this.totalOrden-this.totalsuma2
     var s = document.getElementById("divestado");
     if(this.totalsuma>0){

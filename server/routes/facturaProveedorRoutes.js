@@ -7,6 +7,18 @@ router.get('/getFacturasProveedor', async (req, res) => {
     res.send(facturas)      
 })
 
+router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
+  const { documento } = req.params;
+  var tipoEstado="Por Ingresar"
+  console.log(req.params)
+  console.log(documento)
+  const documentos = await FacturaProveedor.find({
+    nSolicitud: documento
+  });
+  
+  res.json(documentos);
+});
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;

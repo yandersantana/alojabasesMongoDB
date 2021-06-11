@@ -928,6 +928,12 @@ _handleReaderLoaded(readerEvt) {
   }
 
   continuarGuardando(){
+    var idProducto=""
+    this.productosActivos.forEach(element=>{
+      if(element.PRODUCTO == this.catalogo2.PRODUCTO){
+        idProducto = element._id
+      }
+    })
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!=""  && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
@@ -949,13 +955,31 @@ _handleReaderLoaded(readerEvt) {
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
             ///updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
-            this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
-              res => {
-                
-                this.mostrarMensaje()
-              },
+            /*this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
+              res => { this.mostrarMensaje()},
+              err => { console.log(err); this.mensajeError() }
+            )*/
+            var nuevoProducto = new producto()
+            nuevoProducto._id = idProducto
+            nuevoProducto.PRODUCTO = this.catalogo2.PRODUCTO
+            nuevoProducto.REFERENCIA = this.catalogo2.REFERENCIA
+            nuevoProducto.nombre_comercial = this.catalogo2.NOMBRE_COMERCIAL
+            nuevoProducto.APLICACION = this.catalogo2.APLICACION
+            nuevoProducto.M2 = this.catalogo2.M2
+            nuevoProducto.P_CAJA = this.catalogo2.P_CAJA
+            nuevoProducto.porcentaje_ganancia = this.catalogo2.porcentaje_ganancia
+            nuevoProducto.precio = this.catalogo2.precio
+            nuevoProducto.ESTADO = this.catalogo2.ESTADO
+            /*this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
+              res => { this.mostrarMensaje()},
+              err => { console.log(err); this.mensajeError() }
+            )*/
+
+            this.productoService.updateNuevoProductoCatalogo(nuevoProducto).subscribe(
+              res => { this.mostrarMensaje()},
               err => { console.log(err); this.mensajeError() }
             )
+
             //this.mostrarMensaje()
           },
           err => { console.log(err); this.mensajeError() }

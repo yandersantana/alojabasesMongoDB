@@ -102,7 +102,10 @@ export class EntregasPComponent implements OnInit {
     this.traerParametrizaciones()
     this.traerProductosPendientesEntrega()
     this.traerDocumentoGenerado()
-    
+
+    var fechaHoy = this.nowdesde
+    fechaHoy.setDate(this.nowdesde.getDate()-30);
+    this.nowdesde = fechaHoy;
   }
 
   traerParametrizaciones(){

@@ -88,6 +88,10 @@ export class ProductoService {
     );
   }
 
+  updateNuevoProductoCatalogo(producto) {
+    return this.http.put(this.URL +`/updateProductoCatalogo/${producto._id}`,producto);
+  }
+
   updateProductoAplicacion(id: string, aplicacion: string) {
     return this.http.put(
       this.URL + `/updateAplicacion/${id}/${aplicacion}`,

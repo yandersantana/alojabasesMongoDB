@@ -4,9 +4,6 @@ import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { ActivatedRoute } from "@angular/router";
 import { producto } from "../ventas/venta";
 import { ProductoService } from "src/app/servicios/producto.service";
-
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
-import { element } from "protractor";
 import { ControlPreciosService } from "src/app/servicios/control-precios.service";
 import { PrecioEspecialService } from "src/app/servicios/precio-especial.service";
 import { preciosEspeciales, precios } from "../control-precios/controlPrecios";
@@ -134,8 +131,8 @@ export class ConsultasComponent implements OnInit {
   }
 
   traerProductos() {
-    this.productoService.getProducto().subscribe((res) => {
-      this.productosActivos = res as producto[];
+    this.productoService.getProductosActivos().subscribe((res) => {
+      this.productos = res as producto[];
       this.llenarComboProductos();
     });
   }
@@ -162,11 +159,11 @@ export class ConsultasComponent implements OnInit {
   }
 
   llenarComboProductos() {
-    this.productosActivos.forEach((element) => {
+    /*this.productosActivos.forEach((element) => {
       if (element.ESTADO == "ACTIVO") {
         this.productos.push(element);
       }
-    });
+    });*/
 
     this.productos22 = new DataSource({
       store: this.productos,
@@ -178,7 +175,7 @@ export class ConsultasComponent implements OnInit {
     this.mostrarTabla = false;
     this.transaccionesCompras = [];
     this.transaccionesGlobales = [];
-    this.productosActivos.forEach((element) => {
+    this.productos.forEach((element) => {
       if (element.PRODUCTO == this.nombre_producto) {
         this.productoLeido = element;
       }
@@ -238,10 +235,15 @@ export class ConsultasComponent implements OnInit {
     this.ubi1 = this.productoLeido.ubicacionSuc1;
     this.ubi2 = this.productoLeido.ubicacionSuc2;
     this.ubi3 = this.productoLeido.ubicacionSuc3;
+    //this.infoproducto.notas = this.productoLeido.notas;
+    this.infoproducto.notas = ""
+    this.productoLeido.notas.forEach((element) => {
+      this.infoproducto.notas = element +" , "+ this.infoproducto.notas
+    });
 
     this.productosCatalogo.forEach((element) => {
       if (element.PRODUCTO == this.infoproducto.producto) {
-        this.infoproducto.notas = element.notas;
+        //this.infoproducto.notas = element.notas;
         this.infoproducto.fabrica = element.CASA;
         this.imagenes = element.IMAGEN;
       }

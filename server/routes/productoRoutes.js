@@ -77,7 +77,7 @@ router.put('/updatePCatalogo/:producto/:referencia/:nombre/:aplicacion/:m2/:pcaj
 
 router.put('/updateProductoCatalogo/:id', async (req, res,next) => {
     const { id } = req.params;
-    const { producto } = req.body.PRODUCTO;
+    /*const { producto } = req.body.PRODUCTO;
     const { referencia } = req.body.REFERENCIA;
     const { nombre } = req.body.nombre_comercial;
     const { aplicacion } = req.body.APLICACION;
@@ -85,10 +85,14 @@ router.put('/updateProductoCatalogo/:id', async (req, res,next) => {
     const { pcaja } = req.body.P_CAJA;
     const { ganancia } = req.body.porcentaje_ganancia;
     const { precio } = req.body.precio;
-    const { estado } = req.body.ESTADO;
+    const { estado } = req.body.ESTADO;*/
     console.log(id)
-    await Producto.findByIdAndUpdate(id, {$set: {REFERENCIA:referencia,nombre_comercial:nombre,APLICACION:aplicacion,M2:m2,P_CAJA:pcaja,porcentaje_ganancia:ganancia,precio:precio,ESTADO:estado}}, {new: true});
-    res.json({status: 'Actualización Exitosa'}); 
+    console.log(req.body.M2)
+    await Producto.findByIdAndUpdate(id, {$set: {REFERENCIA:req.body.REFERENCIA,
+        nombre_comercial:req.body.nombre_comercial,APLICACION:req.body.APLICACION,
+        M2:req.body.M2,P_CAJA:req.body.P_CAJA,porcentaje_ganancia:req.body.porcentaje_ganancia,
+        precio:req.body.precio,ESTADO:req.body.ESTADO}}, {new: true});
+    res.json({status: 'Actualización Exitosa'});
 })
 
 

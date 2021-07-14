@@ -323,17 +323,19 @@ export class DevolucionesComponent implements OnInit {
         element.tipo_documento == e.value
       ) {
         bandera = false;
-        Swal.fire(
+        /*Swal.fire(
           "ERROR",
           "Este documento tiene productos pendientes de entrega, eliminelos y vuelva a intentar",
           "error"
-        );
+        );*/
       }
     });
 
-    if (bandera) {
-      this.obtenerDocumento(e);
-    }
+
+    this.obtenerDocumento(e);
+   /* if (bandera) {
+      
+    }*/
   }
 
   obtenerDocumento(e) {
@@ -448,43 +450,59 @@ export class DevolucionesComponent implements OnInit {
   }
 
   obtenerDetallesDoc(e, i: number) {
-    //alert("eee "+e.value)
     var canti = 0;
-    this.productosVendidos2.forEach((element) => {
-      if (element.producto.PRODUCTO == e.value) {
-        canti = 0;
-        /*    this.productosDevueltos[i].producto=element.producto
-        this.productosDevueltos[i].producto.PRODUCTO=element.producto.PRODUCTO
-        this.varProducto=element.producto.PRODUCTO */
-        this.productosDevueltos[i].producto = element.producto;
-        this.productosDevueltos[i].cantFactCajas = Math.trunc(
-          element.cantidad / element.producto.M2
-        );
-        this.productosDevueltos[i].cantFactPiezas =
-          Math.trunc(
-            (element.cantidad * element.producto.P_CAJA) / element.producto.M2
-          ) -
-          this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
-        //this.valorEnM2=Math.trunc(this.caltotal * this.calp / this.calmetros) - (this.cantidadcal * this.calp);
-        //this.productosDevueltos[i].valorunitario=element.precio_venta-(element.precio_venta*(element.descuento/100))
-        //this.productosDevueltos[i].valorunitario=(((element.producto.P_CAJA*this.productosDevueltos[i].cantFactCajas)+this.productosDevueltos[i].cantFactPiezas)/element.total)
-        this.productosDevueltos[i].valorunitariopiezas =
-          element.total /
-            (element.producto.P_CAJA *
-              this.productosDevueltos[i].cantFactCajas +
-              this.productosDevueltos[i].cantFactPiezas) -
-          (element.total /
-            (element.producto.P_CAJA *
-              this.productosDevueltos[i].cantFactCajas +
-              this.productosDevueltos[i].cantFactPiezas)) *
-            (element.descuento / 100);
-        this.productosDevueltos[i].valorunitario =
-          ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
-            this.productosDevueltos[i].cantFactPiezas) /
-            element.cantidad) *
-          this.productosDevueltos[i].valorunitariopiezas;
+    var bandera = true;
+    this.productosPendientes.forEach((element) => {
+      if (element.producto.PRODUCTO == e.value ) {
+        bandera = false;
+         Swal.fire({
+                title: "ERROR",
+                text: "Este producto tiene una entrega pendiente",
+                icon: "error",
+                confirmButtonText: "Ok",
+              }).then((result) => {
+                this.deleteProducto(e,i);
+              });
       }
     });
+
+    if(bandera){
+      this.productosVendidos2.forEach((element) => {
+        if (element.producto.PRODUCTO == e.value) {
+          canti = 0;
+
+          this.productosDevueltos[i].producto = element.producto;
+          this.productosDevueltos[i].cantFactCajas = Math.trunc(
+            element.cantidad / element.producto.M2
+          );
+          this.productosDevueltos[i].cantFactPiezas =
+            Math.trunc((element.cantidad * element.producto.P_CAJA) / element.producto.M2) -
+            this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
+
+          this.productosDevueltos[i].valorunitariopiezas =
+            element.total /
+              (element.producto.P_CAJA *
+                this.productosDevueltos[i].cantFactCajas +
+                this.productosDevueltos[i].cantFactPiezas) -
+            (element.total /
+              (element.producto.P_CAJA *
+                this.productosDevueltos[i].cantFactCajas +
+                this.productosDevueltos[i].cantFactPiezas)) *
+              (element.descuento / 100);
+          this.productosDevueltos[i].valorunitario =
+            ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
+              this.productosDevueltos[i].cantFactPiezas) /
+              element.cantidad) *
+            this.productosDevueltos[i].valorunitariopiezas;
+          }
+        });
+
+    }
+
+
+
+
+    
   }
 
   deleteProducto(e, i: number) {

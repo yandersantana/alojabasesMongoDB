@@ -1152,6 +1152,7 @@ export class ProductoComponent implements OnInit {
             this.transaccion.factPro = this.Id_remision + "";
             this.transaccion.proveedor = this.remisionProducto.nombre_proveedor;
             this.transaccion.idTransaccion = this.number_transaccion++;
+            
 
             this.transaccionesService
               .newTransaccion(this.transaccion)
@@ -1288,6 +1289,7 @@ export class ProductoComponent implements OnInit {
         this.transaccion.usuario = this.usuarioLogueado[0].username;
         this.transaccion.factPro = this.Id_remision + "";
         this.transaccion.idTransaccion = this.number_transaccion++;
+        this.transaccion.observaciones = element.observaciones;
 
         this.transaccionesService.newTransaccion(this.transaccion).subscribe(
           (res) => {

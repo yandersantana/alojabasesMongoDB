@@ -812,6 +812,7 @@ export class AudTablaComponent implements OnInit {
           this.transaccion.factPro=""
           this.transaccion.maestro=""
           this.transaccion.producto=element.producto.PRODUCTO
+          this.transaccion.observaciones=element.observaciones
           if(element.cajas_diferencia <0 || element.piezas_diferencia<0){
             this.transaccion.cajas=element.cajas_diferencia*(-1)
             this.transaccion.piezas=element.piezas_diferencia*(-1)

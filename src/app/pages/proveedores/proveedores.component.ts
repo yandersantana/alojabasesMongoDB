@@ -17,6 +17,7 @@ import { contadoresDocumentos, producto } from '../ventas/venta';
 import { PagoProveedorService } from 'src/app/servicios/pago-proveedor.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { RemisionesService } from 'src/app/servicios/remisiones.service';
+import { objDate } from '../transacciones/transacciones';
 
 @Component({
   selector: 'app-proveedores',
@@ -134,18 +135,20 @@ selectionModeValue: string = "all";
 productosActivos:producto[]=[]
 banderaProductos:boolean=false
 contadorF:number=0
+obj:objDate
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('datag3') dataGrid4: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
 //@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
   constructor( public contadoresService:ContadoresDocumentosService,public remisionesService:RemisionesService, public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
-
+    this.obj = new objDate();
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
    }
 
   ngOnInit() {
+    this.setearFechaMensual();
     this.traerProveedores()
     this.traerFacturasProveedor()
     this.traerContadoresDocumentos()
@@ -466,11 +469,6 @@ contadorF:number=0
   }
 
  
-         
-        
-         
-        
-
 
   obtenerOrdenes(){
     this.ordenesCompra.forEach(element=>{
@@ -490,6 +488,7 @@ contadorF:number=0
       }
 
     })
+    this.mostrarLoading = false;
    
 
   }
@@ -1066,11 +1065,9 @@ anadirDetallePago = (e) => {
         this.ordenes.splice(0)    
       })
     }
-    //alert("hay "+this.ordenesCompra.length)
+
     this.ordenesCompraAprobadas.forEach(element=>{
-      console.log("sdsdsd "+JSON.stringify(element))
       if(element.proveedor.nombre_proveedor == this.pago_proveedor.beneficiario){
-        console.log("encontre la orden #"+element.n_orden)
         this.ordenes2.push(element)
       }
     })
@@ -1492,6 +1489,32 @@ anadirDetallePago = (e) => {
     })
   }
 
+
+
+   traerOrdenesCompraMensuales(){
+   /* this.ordenesCompra=[]
+    this.ordenesCompraPendientes=[]
+    this.ordenesCompraRechazadas=[]
+    this.ordenesCompraAprobadas=[]
+    this.ordenesCompraDirectas=[]*/
+    this.mostrarLoading=true;
+    this.ordenesService.getOrdenesMensuales(this.obj).subscribe(res => {
+      this.ordenesCompra = res as OrdenDeCompra[];
+      this.obtenerOrdenes()
+   })
+  }
+
+  setearFechaMensual(){
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    this.obj = new objDate();
+    this.obj.fechaActual = fechaHoy;
+    this.obj.fechaAnterior = fechaAnterior;
+  }
+
+
   opcionMenu(e){
     var x = document.getElementById("op1");
     var y = document.getElementById("op2");
@@ -1520,6 +1543,7 @@ anadirDetallePago = (e) => {
         y.style.display="none";
         z.style.display="block";
         z1.style.display="none";
+        this.traerOrdenesCompraMensuales();
         break;
 
         case "Facturas Ingresadas":

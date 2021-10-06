@@ -11,7 +11,8 @@ const PagosProveedorSchema = new Schema({
     nombre_banco: { type: String, required: false},
     n_cuenta: { type: Number, required: false},
     valor: { type: Number, required: false},
-    beneficiario: { type: String, required: false}
+    beneficiario: { type: String, required: false},
+    estado: { type: String, required: false}
 },{
     timestamps:true
 });

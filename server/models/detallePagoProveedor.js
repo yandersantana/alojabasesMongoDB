@@ -11,6 +11,7 @@ const detallePagoSchema = new Schema({
     beneficiario: { type: String, required: false},
     orden_compra: { type: Number, required: false},
     fecha_vencimiento: { type: String, required: false},
+    fecha_pago: { type: String, required: false},
     valor: { type: Number, required: false},
     no_conformidad: { type: Number, required: false},
     total: { type: Number, required: false},

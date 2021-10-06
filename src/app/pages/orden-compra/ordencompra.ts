@@ -31,6 +31,7 @@ export class PagoProveedor{
     fecha_pago: string
     valor:number=0
     beneficiario: string
+    estado : string
     constructor(){
 
     }
@@ -44,6 +45,7 @@ export class DetallePagoProveedor{
     beneficiario: string
     orden_compra:number
     fecha_vencimiento: string
+    fecha_pago:string
     valor:number
     no_conformidad:number
     total:number
@@ -52,7 +54,7 @@ export class DetallePagoProveedor{
     estado:string
     constructor(){
         this.no_conformidad=0
-        this.estado="Pagado"
+        this.estado="Por Pagar"
 
     }
 }

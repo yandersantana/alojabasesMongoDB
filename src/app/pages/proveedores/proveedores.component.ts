@@ -554,6 +554,10 @@ obj:objDate
     this.rechazarPagoAsociado(e.row.data) 
   }
 
+  getCourseFile7 = (e) => {  
+    this.rechazarRemisión(e.row.data) 
+  }
+
   rechazarEliminacion(e:any){
     var contadoEn=0
     Swal.fire({
@@ -1023,6 +1027,7 @@ obj:objDate
       e.component.columnOption("valor", "total", true);
       e.component.columnOption("no_conformidad", "visible", true);
       e.component.columnOption("observaciones", "visible", true);
+      e.component.columnOption("fecha_pago", "visible", true);
     };
     onExported (e) {
       e.component.columnOption("total", "visible", false);
@@ -1030,6 +1035,7 @@ obj:objDate
       e.component.columnOption("valor", "total", false);
       e.component.columnOption("no_conformidad", "visible", false);
       e.component.columnOption("observaciones", "visible", false);
+      e.component.columnOption("fecha_pago", "visible", false);
       e.component.endUpdate();
     }
   
@@ -1397,6 +1403,7 @@ anadirDetallePago = (e) => {
     this.pago_proveedor.n_cuenta= this.n_cuenta
     this.pago_proveedor.nombre_banco= this.nombre_banco
     this.pago_proveedor.valor= this.valor
+    this.pago_proveedor.estado = "Por Pagar"
 
     if( this.pago_proveedor.n_cheque!=undefined &&  this.pago_proveedor.n_cuenta!=undefined  && this.pago_proveedor.nombre_banco!=undefined && 
     this.pago_proveedor.valor!=0){
@@ -1430,11 +1437,6 @@ anadirDetallePago = (e) => {
           this.contadores[0].pagoProveedor_Ndocumento=this.facturaNp2
           this.contadoresService.updateContadoresIDPagosproveedor(this.contadores[0]).subscribe( res => {}, err => {alert("error")})
          }, err => {alert("error")})
-        //this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
-       /*  this.db
-              .collection("/pagoProveedor")
-              .doc("matriz").set({ n_documento:this.facturaNp2 })
-              .then(res => { }); */
               this.actualizarFacturas()
         this.detallePago.forEach(element => {
                 element.beneficiario = this.pago_proveedor.beneficiario
@@ -1442,8 +1444,6 @@ anadirDetallePago = (e) => {
                 element.n_cheque = this.pago_proveedor.n_cheque
                 element.idPago= this.facturaNp2
                 this.detallePagoService.newDetallePago(element).subscribe( res => {cont45++,this.mensajeConfi(cont45)}, err => {alert("error")})
-                /* this.db.collection("/pagosFacturasProveedor").add({ ...element })
-                .then(res => { cont45++,this.mensajeConfi(cont45)}, err => alert(err)); */
               });       
        
         //this.getPagosProveedor()
@@ -1475,6 +1475,77 @@ anadirDetallePago = (e) => {
       console.log("todavia no entre")
     }
   }
+
+
+
+
+  rechazarRemisión(e: any) {
+    Swal.fire({
+    /*   title: "Advertencia", */
+      html: "<h5>Se actualizará el estado del Cheque a <b>Pagado</b></h5>"+
+      "<br>Banco : "+e.nombre_banco+
+      "<br>Beneficiario : "+e.beneficiario+
+      "<br>Valor : $"+e.valor+
+      "<br><br> Ingrese algun comentario y de clic en enviar",
+      icon: "warning",
+      input: "textarea",
+      showCancelButton: true,
+      confirmButtonText: "Enviar",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.value) {
+        var fecha = new Date();
+
+        e.observaciones = e.observaciones + ","+result.value;
+        e.estado = "Pagado";
+        e.fecha_pago = fecha.toLocaleDateString();
+        console.log(e);
+        this.detallePagoService
+          .updateEstadoPago(e)
+          .subscribe(
+            (res) => {
+              Swal.close();
+              Swal.fire({
+                title: "Correcto",
+                text: "Se actualizo correctamente su registro",
+                icon: "success",
+                confirmButtonText: "Ok",
+              }).then((result) => {
+                window.location.reload();
+              });
+            },
+            (err) => {
+              alert("error");
+            }
+          );
+        let timerInterval;
+        Swal.fire({
+          title: "Guardando !",
+          html: "Procesando",
+          timerProgressBar: true,
+          onBeforeOpen: () => {
+            Swal.showLoading();
+            timerInterval = setInterval(() => {
+              const content = Swal.getContent();
+              if (content) {
+                const b = content.querySelector("b");
+              }
+            }, 100);
+          },
+          onClose: () => {
+            clearInterval(timerInterval);
+          },
+        }).then((result) => {
+          if (result.dismiss === Swal.DismissReason.timer) {
+          }
+        });
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire("Cancelado!");
+      }
+    });
+  }
+
+
 
   actualizarFacturas(){
     var dato=""

@@ -23,6 +23,11 @@ export class PagoProveedorService {
     return this.http.put(this.URL + `/update/${pagoP._id}`, pagoP);
   }
 
+  updateEstadoPagoProveedor(pagoP) {
+    console.log(pagoP)
+    return this.http.put(this.URL + `/updateEstadoPago/${pagoP._id}`, pagoP);
+  }
+
   deletePagosProveedor(pagoP) {
     return this.http.delete(this.URL + `/delete/${pagoP._id}`, pagoP);
   }

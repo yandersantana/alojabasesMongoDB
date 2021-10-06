@@ -16,8 +16,26 @@ router.put('/update/:id', async (req, res,next) => {
         nombre_banco: req.body.nombre_banco,
         n_cuenta: req.body.n_cuenta,
         valor: req.body.valor,
+        estado: req.body.estado,
         beneficiario:req.body.beneficiario};
     console.log("llegue hasta aquu")
+    await PagoProveedor.findByIdAndUpdate(id, {$set: notasv}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
+router.put('/updateEstadoPago/:id', async (req, res,next) => {
+    const { id } = req.params;
+    const notasv = {
+        n_cheque: req.body.n_cheque,
+        fecha_transaccion: req.body.fecha_transaccion,
+        fecha_factura: req.body.fecha_factura,
+        nombre_banco: req.body.nombre_banco,
+        n_cuenta: req.body.n_cuenta,
+        valor: req.body.valor,
+        estado: req.body.estado,
+        beneficiario:req.body.beneficiario};
+    console.log("llegue hasta aquu",notasv)
     await PagoProveedor.findByIdAndUpdate(id, {$set: notasv}, {new: true});
     res.json({status: 'factura Updated'});  
 })
@@ -36,6 +54,7 @@ router.post('/newPagoProveedor', async (req, res) => {
     nombre_banco: req.body.nombre_banco,
     n_cuenta: req.body.n_cuenta,
     valor: req.body.valor,
+    estado: req.body.estado,
     beneficiario:req.body.beneficiario
     });
     await newPago.save();

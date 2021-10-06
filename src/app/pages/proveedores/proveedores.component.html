@@ -455,12 +455,16 @@
             </dxi-column>
             <dxi-column
                 dataField="beneficiario"
-                dataType="string" 
-                > 
+                dataType="string"> 
             </dxi-column>
             <dxi-column
                 dataField="fact_proveedor"
                 dataType="string" > 
+            </dxi-column>
+             <dxi-column
+                dataField="estado"
+                caption="Estado"
+                dataType="string"> 
             </dxi-column>
             <dxi-column
                 dataField="orden_compra"
@@ -469,6 +473,11 @@
             </dxi-column>
             <dxi-column
                 dataField="fecha_vencimiento"
+                dataType="string"
+                [visible]="false" > 
+            </dxi-column>
+            <dxi-column
+                dataField="fecha_pago"
                 dataType="string"
                 [visible]="false" > 
             </dxi-column>
@@ -494,6 +503,9 @@
             </dxi-column>
             <dxi-column type="buttons" dataField="bt3" caption="Eliminar" width="15%" [visible]="false">
                 <dxi-button icon="clear" [onClick]="getCourseFile6"></dxi-button>   
+            </dxi-column>
+             <dxi-column type="buttons"    dataField="bt2"  caption="Actualizar" width="15%" [visible]="true">
+                <dxi-button icon="exportselected" [onClick]="getCourseFile7"></dxi-button>   
             </dxi-column>
             
 

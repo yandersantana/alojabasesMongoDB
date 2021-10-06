@@ -19,6 +19,7 @@ router.put('/update/:id', async (req, res,next) => {
         orden_compra: req.body.orden_compra,
         fecha_vencimiento:req.body.fecha_vencimiento,
         valor:req.body.valor,
+        fecha_pago: req.body.fecha_pago,
         no_conformidad:req.body.no_conformidad,
         total:req.body.total,
         estado:req.body.estado,
@@ -36,6 +37,13 @@ router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     res.json({status: 'factura Updated'});  
 })
 
+router.put('/updateEstadoPago/:id', async (req, res,next) => {
+    const { id } = req.params;
+    console.log(req.body)
+    await DetallePago.findByIdAndUpdate(id, {$set: {estado:req.body.estado,fecha_pago:req.body.fecha_pago,observaciones:req.body.observaciones}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
 
 router.delete('/delete/:id', async (req, res,next) => {
     await DetallePago.findByIdAndRemove(req.params.id);
@@ -48,6 +56,7 @@ router.post('/newDetallePago', async (req, res) => {
         n_cheque: req.body.n_cheque,
         nombre_banco: req.body.nombre_banco,
         fact_proveedor: req.body.fact_proveedor,
+        fecha_pago: req.body.fecha_pago,
         beneficiario: req.body.beneficiario,
         orden_compra: req.body.orden_compra,
         fecha_vencimiento:req.body.fecha_vencimiento,

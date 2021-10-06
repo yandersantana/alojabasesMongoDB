@@ -32,6 +32,12 @@ export class DetallePagoService {
     );
   }
 
+  updateEstadoPago(detallePago) {
+    console.log(detallePago)
+    return this.http.put(
+      this.URL + `/updateEstadoPago/${detallePago._id}`,detallePago);
+  }
+
   deleteDetallePago(detallePago) {
     return this.http.delete(
       this.URL + `/delete/${detallePago._id}`,

@@ -1579,7 +1579,7 @@ anadirDetallePago = (e) => {
     var fechaHoy = new Date();
     var fechaAnterior = new Date();
     fechaHoy.setDate(fechaHoy.getDate() + 1);
-    fechaAnterior.setDate(fechaHoy.getDate() - 30);
+    fechaAnterior.setDate(fechaHoy.getDate() - 60);
     this.obj = new objDate();
     this.obj.fechaActual = fechaHoy;
     this.obj.fechaAnterior = fechaAnterior;

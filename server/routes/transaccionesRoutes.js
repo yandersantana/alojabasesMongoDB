@@ -35,7 +35,6 @@ router.post("/getTransaccionesPorProducto", async (req, res, next) => {
 
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
-  console.log(req.body)
   const transacciones = await Transacciones.find({ tipo_transaccion: req.body.tipoTransaccion , documento:req.body.NumDocumento });
   res.json(transacciones);
 });

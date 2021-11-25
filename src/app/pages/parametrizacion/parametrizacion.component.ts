@@ -5,7 +5,6 @@ import { sucursal, contadoresDocumentos } from '../ventas/venta';
 import { Sucursal } from '../compras/compra';
 import Swal from 'sweetalert2';
 import { parametrizacionsuc } from './parametrizacion';
-import { element } from 'protractor';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';

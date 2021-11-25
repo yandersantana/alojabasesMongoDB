@@ -6,8 +6,6 @@ const path= require('path');
 require('./database');
 
 app.set('port', process.env.PORT || 3000);
-//var app = connect().use(connect.static('public')).listen(3000, "0.0.0.0");
-// middlewares
 app.use(cors());
 app.use(express.json());
 
@@ -15,8 +13,6 @@ const bodyParser = require('body-parser');
 
 app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
-//app.use('/uploads', express.static('uploads'));
-/*app.use(express.static(path.join(__dirname,'frontend'))); */
 app.use(express.static(path.join(__dirname,'frontend')));
 app.use('/server/uploads', express.static('server/uploads'));
 
@@ -56,9 +52,11 @@ app.use('/auditorias', require('./routes/auditoriaRoutes'));
 app.use('/auditoriasProductos', require('./routes/auditoriaProductoRoutes'));
 app.use('/ingresosDiarios', require('./routes/ingresosRoutes'));
 app.use('/reporteDetallado', require('./routes/reporteDetallado'));
-
-
+app.use('/cuentas', require('./routes/cuentaRoutes'));
+app.use('/subCuentas', require('./routes/subCuentaRoutes'));
 app.use('/preciosEspeciales', require('./routes/precioEspecialRoutes'));
+app.use('/transaccionFinanciera', require('./routes/transaccionesFinancierasRoutes'));
+app.use('/reciboCaja', require('./routes/reciboCaja'));
 
 
 

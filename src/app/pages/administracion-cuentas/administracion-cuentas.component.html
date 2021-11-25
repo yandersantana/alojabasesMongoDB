@@ -1,0 +1,209 @@
+<div id="administracion" style="display: block;">
+    <br>
+    <div class="card mb-3">
+        <div class="card-header" style="font-weight: bold;">
+           <h6>DETALLE CUENTAS</h6>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-2">
+                    <div class="row botones">
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">CUENTAS</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">SUBCUENTAS</button></div>
+                    </div>
+                </div>
+                <div class="col-md-10 card carIn">
+                    <div *ngIf="sectionCuentas">
+                        <div class="row" class="fomR">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6"><div style="text-align: center;"><h4>CUENTAS</h4></div></div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <!-- <button class="btn" type="button" (click)="desbloquear()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> -->
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button class="btn" type="button" (click)="mostrarPopup()"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                                
+                            <div *ngFor="let cuenta of listaCuentas; let id = index">
+                                <div class="row espacio">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6">
+                                        <input type="text" value={{cuenta.nombre}} [disabled]="varDis" class="form-control" #box (keyup)="onKey(box.value)">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="guardar($event, cuenta)">
+                                                    <button class="btn" type="submit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="eliminar($event, cuenta)">
+                                                    <button  class="btn" type="submit" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    
+                                </div>
+                            </div>
+                               
+                        </div>
+                        
+                    </div>
+
+
+                     <div *ngIf="sectionSubCuentas">
+                        <div class="row" class="fomR">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6"><div style="text-align: center;"><h4>SUB-CUENTAS</h4></div></div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button class="btn" type="button" (click)="desbloquearSub()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <button class="btn" type="button" (click)="mostrarPopupSubCuenta()"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                                
+                            <div *ngFor="let cuenta of listaCuentas; let id = index">
+                                <div class="row espacio">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <input type="text" value={{cuenta.nombre}} [disabled]="true" class="form-control" #box>
+                                        <div *ngFor="let subCuenta of cuenta.sub_cuentaList; let id = index">
+                                            <div class="row espacio">
+                                                <div class="col-md-1"></div>
+                                                <div class="col-md-8">
+                                                    <input type="text" value={{subCuenta.nombre}} [disabled]="bloqueoSubCuenta" class="form-control" #box (keyup)="onKey(box.value)">
+                                                </div>
+                                                <div class="col-md-2">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <form role="form" (submit)="actualizarSubCuenta($event, subCuenta)">
+                                                                <button class="btn" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                                                            </form>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <form role="form" (submit)="eliminarSubCuenta($event, subCuenta)">
+                                                                <button  class="btn" type="submit" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                            </form>
+                                                        </div>
+                                                    </div> 
+                                                </div>
+                                                <div class="col-md-1"></div>
+                                                
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    
+                                </div>
+                            </div>
+                               
+                        </div>
+                        
+                    </div>
+
+
+                   
+                </div>
+                
+            </div>
+        </div>
+        </div>
+</div>
+
+
+
+<dx-popup [width]="500" [height]="350" [showTitle]="true" title="Nueva Cuenta" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Nombre</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="cuenta.nombre"
+                        name="nombre" class="form-control" placeholder="Nombre"
+                        required></div>
+                        <br><br>
+                <div class="col-md-4" style="text-align: left;">Tipo</div>
+                <div class="col-md-8">
+                <dx-select-box
+                    [items]="menu1"
+                    [(value)]="cuenta.tipoCuenta"
+                    [readOnly]="false"
+                    [disabled]="false"
+                    (onValueChanged)="obtenerTipoCuenta($event)">
+                </dx-select-box>
+            </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" *ngIf="isNew"><button class="btn btn2" type="button"
+                        (click)="saveNewCuenta()">Guardar</button></div>
+                <div class="col-md-4" *ngIf="!isNew"><button class="btn btn2" type="button"
+                        (click)="actualizarCuenta()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+                 
+            </div>
+        </div>
+    </div>
+</dx-popup>
+
+
+<dx-popup [width]="500" [height]="350" [showTitle]="true" title="Nueva SubCuenta" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleSubcuenta">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Cuenta</div>
+                <div class="col-md-8"> 
+                    <dx-select-box [items]="listaCuentas" 
+                        displayExpr="nombre"
+                        [searchEnabled]="true"
+                        valueExpr="_id"
+                        [readOnly]="false" 
+                        (onValueChanged)="obtenerIdCuenta($event)"
+                        [disabled]="false">
+                    </dx-select-box>
+                </div>
+                <br><br><br>
+                <div class="col-md-4" style="text-align: left;">Nombre</div>
+                <div class="col-md-8"> 
+                    <input type="text" [(ngModel)]="subCuenta.nombre"
+                        name="nombre" class="form-control" placeholder="Nombre" required>
+                </div>
+            </div>
+        </div>
+
+        
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4"><button class="btn btn2" type="button"
+                        (click)="saveNewSubCuenta()">Guardar</button></div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>
+    </div>
+</dx-popup>

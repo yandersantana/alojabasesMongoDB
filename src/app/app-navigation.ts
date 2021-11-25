@@ -306,8 +306,8 @@ export const navigationAdmin = [
     icon: "fa fa-bar-chart",
     items: [
       {
-        text: "Caja menos",
-        path: "",
+        text: "Caja Menor",
+        path: "/caja-menor",
       },
       {
         text: "Registros Caja",
@@ -315,7 +315,7 @@ export const navigationAdmin = [
       },
       {
         text: "Recibos de Caja",
-        path: "",
+        path: "/recibo-caja",
       },
       {
         text: "Cuentas por Cobrar",
@@ -332,6 +332,10 @@ export const navigationAdmin = [
       {
         text: "Activos Fijos",
         path: "",
+      },
+      {
+        text: "Administrar Cuentas",
+        path: "/administracion-cuentas",
       },
     ],
   },

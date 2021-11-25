@@ -1,0 +1,105 @@
+.btn{
+    background-color: #0061a9;
+    color: white;
+    width: 50px;
+    margin-top: -0.3em;
+}
+
+.sectionDatos{
+    background-color: white;
+    margin-left: 0.1em;
+    margin-right: 0em;
+}
+
+
+.sectionDatos div{
+  height: 1.5em;
+  font-weight: bold;
+}
+
+.imgProducto{
+    width: auto;
+    height: 50px;
+    }
+    
+    .centrarTD{
+        vertical-align: middle;
+        font-size: 1em;
+    }
+    
+    .centrarTD2{
+        vertical-align: middle;
+        font-size: 1em;
+    }
+    
+    .fondobt{
+        background-color: white;
+        border-color: white;
+        color: blue;
+    }
+    
+    table, th, td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+      th, td {
+        padding: 5px;
+        text-align: left;    
+      }
+    
+    
+    
+      .botones button{
+        background-color: #0061a9;
+        border-radius: 4px;
+        color: white;
+        width: 100%;
+        margin: 0.5em;
+        
+        }
+        
+        .botones button:hover {
+            box-shadow: 0 12px 16px 0 rgba(0,0,0,0.24), 0 17px 50px 0 rgba(0,0,0,0.19);
+          }
+        
+        .carIn{
+            margin-top: 0.5em;
+        }
+        
+        .espacio{
+            margin-top: 1.5em;
+        }
+        
+        .newr{
+         margin-top: 2em;
+         margin-bottom: 2em;
+        }
+        
+        .fomR{
+            margin: 2em;
+        }
+        
+        .btn2{
+            background-color: #0061a9;
+            color: white;
+            width: 100%;
+            margin-top: 3em;
+        }
+
+        .espacio{
+           // margin-top: 0.3em;
+        }
+
+        .espacio input{
+            margin-top: -0.5em;
+        }
+
+        .texto p{
+            font-weight: bold;
+            margin-top: -1em;
+            margin-left: 2em;
+        }
+
+        input .cons { 
+            text-align: center; 
+        }

@@ -51,8 +51,6 @@ export class AuthService {
      this.user2.email=login
     this.user2.password=password
     try{
-      //var result = await this.authenService.signIn(this.user2)
-      console.log(this.user2)
       this.authenService.signIn(this.user2)
         .subscribe(
           res => {
@@ -80,7 +78,6 @@ export class AuthService {
 
     try{
       if("token" in localStorage){ 
-        console.log("si estoy logeado")
         this.router.navigate(['/home']);
       }else{
         console.log("no")
@@ -112,10 +109,7 @@ export class AuthGuardService implements CanActivate {
     canActivate(route: ActivatedRouteSnapshot): boolean {
         const isLoggedIn = this.authService.isLoggedIn;
         const isLoginForm = route.routeConfig.path === 'login-form';
-      console.log("33 "+isLoggedIn)
-      console.log("22 "+isLoginForm)
         if (isLoggedIn && isLoginForm) {
-          console.log("entre")
             this.router.navigate(['/']);
             return false;
         }
@@ -123,32 +117,6 @@ export class AuthGuardService implements CanActivate {
         if (!isLoggedIn && !isLoginForm) {
             this.router.navigate(['/login-form']);
         }
-
-        /* if (isLoggedIn) {
-          //alert("entre")
-          this.authenService.returnUserRol().subscribe((ordenes: user[]) => {
-            new Promise<any>((resolve, reject) => {
-              ordenes.forEach((nt) => {
-                this.role = nt.rol
-               console.log("sx "+this.role)
-                if (route.data.roles && route.data.roles.indexOf(this.role) === -1) {
-                  // role not authorised so redirect to home page
-                  this.router.navigate(['/dashboard']);
-                  return false;
-                }
-    
-    
-    
-              })
-    
-            })
-          })
-    
-          console.log(this.role)
-          return true;
-        }else{
-         // alert("ll")
-        } */
 
         return isLoggedIn || isLoginForm;
     }

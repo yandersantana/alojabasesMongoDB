@@ -1,0 +1,209 @@
+<br><br>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+        <div class="card">
+            <h5 class="card-header text-center font-weight-bold text-uppercase ">RECIBO DE CAJA</h5>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-9">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4">Fecha:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.fecha" [readOnly]="isReadOnly"></dx-text-box></div>
+
+                                    <div class="col-md-4">Doc. Venta:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.docVenta" [readOnly]="isReadOnly"></dx-text-box></div>
+
+                                    <div class="col-md-4">Cliente:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.cliente" [readOnly]="isReadOnly"></dx-text-box></div>
+
+                                    <div class="col-md-4">RUC:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.ruc" [readOnly]="isReadOnly"></dx-text-box></div>
+
+                                    <div class="col-md-4">Sucursal:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4">Tipo Pago:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.tipoPago" [readOnly]="false"></dx-text-box></div>
+
+                                    <div class="col-md-4">Num. Doc:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.numDocumento" [readOnly]="false"></dx-text-box></div>
+
+                                    <div class="col-md-4">Banco:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.banco" [readOnly]="false"></dx-text-box></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div style="text-align: center;">CONSECUTIVO</div>
+                        <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">{{reciboCaja.idDocumento}}</div>
+                    </div>
+                </div>
+
+                
+                <div style="text-align: right;">
+                    <dx-button [text]="'Agregar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="addElement()"></dx-button>              
+                </div>
+                
+                <div class="card cardPadding">
+                    <div class="espacioDivs2 espacioSelect">
+                        <div *ngFor="let p of listadoOperaciones;let i = index" style="text-align: center;margin-top: 1em;">
+                            <div class="row">
+                                <div class="col-md-4"> 
+                                    <div class="row">
+                                        <div class="col-md-4">Cuenta</div>
+                                        <div class="col-md-8">
+                                            <dx-select-box [items]="listaCuentas" 
+                                                displayExpr="nombre"
+                                                [(value)]="p.idCuenta"
+                                                [searchEnabled]="true"
+                                                valueExpr="_id"
+                                                [readOnly]="false" 
+                                                (onValueChanged)="buscarSubCuentas($event,i)"
+                                                [disabled]="false">
+                                            </dx-select-box>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" *ngIf="i==0"> 
+                                    <div class="row">
+                                        <div class="col-md-4">SubCuenta</div>
+                                        <div class="col-md-8">
+                                            <dx-select-box [items]="listaSubCuentas" 
+                                                displayExpr="nombre"
+                                                 [(value)]="p.idSubCuenta"
+                                                [searchEnabled]="true"
+                                                valueExpr="_id"
+                                                [readOnly]="false" 
+                                                [disabled]="false">
+                                            </dx-select-box>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" *ngIf="i==1"> 
+                                    <div class="row">
+                                        <div class="col-md-4">SubCuenta</div>
+                                        <div class="col-md-8">
+                                            <dx-select-box [items]="listaSubCuentas2" 
+                                                displayExpr="nombre"
+                                                 [(value)]="p.idSubCuenta"
+                                                [searchEnabled]="true"
+                                                valueExpr="_id"
+                                                [readOnly]="false" 
+                                                [disabled]="false">
+                                            </dx-select-box>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4" *ngIf="i==2"> 
+                                    <div class="row">
+                                        <div class="col-md-4">SubCuenta</div>
+                                        <div class="col-md-8">
+                                            <dx-select-box [items]="listaSubCuentas3" 
+                                                displayExpr="nombre"
+                                                 [(value)]="p.idSubCuenta"
+                                                [searchEnabled]="true"
+                                                valueExpr="_id"
+                                                [readOnly]="false" 
+                                                [disabled]="false">
+                                            </dx-select-box>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4"> 
+                                    <div class="row">
+                                        <div class="col-md-4">Valor</div>
+                                        <div class="col-md-4">
+                                        <dx-number-box [(value)]="p.valor"></dx-number-box>
+                                        </div>
+                                        <div class="col-md-4"><dx-button icon="clear" (onClick)="eliminarRegistro(i)" ></dx-button></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+
+                <br><br>
+
+                <div class="row">
+                    <div class="col-md-6">
+                        <br><br>
+                        Observaciones:
+                        <br>
+                        <dx-text-area [height]="150" class="form-control" [maxLength]="500" [(value)]="reciboCaja.observaciones">
+                        </dx-text-area>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="row espacioDivs align">
+                            <div class="col-md-6">Valor Factura</div>
+                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorFactura"  (onValueChanged)="calcularValores()"></dx-number-box></div>
+                            <div class="col-md-3"></div>
+
+                            <div class="col-md-6">Recargos</div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorRecargo" (onValueChanged)="calcularValores()"></dx-number-box></div>
+
+                            <div class="col-md-6">Pago Efectivo</div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorPagoEfectivo" (onValueChanged)="calcularValores()"></dx-number-box></div>
+
+                            <div class="col-md-6">Pagos Otros Medios</div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorOtros" (onValueChanged)="calcularValores()"></dx-number-box></div>
+
+                            <hr width="100%">
+                            <div class="col-md-6" style="margin-top: -0.2em;margin-bottom: -0.4em;">Totales</div>
+                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal1"></dx-number-box></div>
+                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal2"></dx-number-box></div>
+                             <hr width="100%">
+
+                            <div class="col-md-6">Saldos</div>
+                            <div class="col-md-3"></div>
+                            <div class="col-md-3"><dx-number-box [(value)]="reciboCaja.valorSaldos"></dx-number-box></div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <br><br>
+                    <dx-button [text]="'Guardar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>
+
+
+
+
+<div *ngIf="mostrarLoading">
+    <dx-popup
+        [width]="450"
+        [height]="250"
+        [showTitle]="false"
+        [dragEnabled]="false"
+        [closeOnOutsideClick]="false"
+        [visible]="true">
+        <div *dxTemplate="let data of 'content'" class="content">
+            <br><br><br>
+            <dx-load-indicator id="large-indicator" height="60" width="60"></dx-load-indicator>
+            <h4>Guardando</h4>
+        </div>
+    </dx-popup>
+</div>

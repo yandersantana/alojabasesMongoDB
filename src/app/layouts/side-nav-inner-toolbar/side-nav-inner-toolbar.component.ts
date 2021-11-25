@@ -58,7 +58,6 @@ export class SideNavInnerToolbarComponent implements OnInit {
   }
 
   crearPerfil() {
-    console.log("si entre a buscar")
     if (localStorage.getItem("maily") != '') {
       this.correo = localStorage.getItem("maily");
 
@@ -71,7 +70,6 @@ export class SideNavInnerToolbarComponent implements OnInit {
             this.user.name = nt.name;
             this.user.rol = nt.rol
             this.buscarRol()
-            //this.imagePath = "../../../assets/img/brand/perfil-avatar-hombre-icono-redondo_24640-14044.jpg"
           }
         })
       })

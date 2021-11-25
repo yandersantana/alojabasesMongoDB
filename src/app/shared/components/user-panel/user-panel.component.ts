@@ -41,9 +41,7 @@ export class UserPanelComponent implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            console.log("dd "+JSON.stringify(this.usuarioLogueado))
             this.user=this.usuarioLogueado[0].username
-            console.log("dcc "+this.user)
             sessionStorage.setItem("user", this.usuarioLogueado[0].username)
           },
           err => {

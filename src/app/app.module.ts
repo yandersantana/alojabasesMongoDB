@@ -1,6 +1,5 @@
 import { BrowserModule } from "@angular/platform-browser";
 import { NgModule } from "@angular/core";
-
 import { AppComponent } from "./app.component";
 import {
   SideNavOuterToolbarModule,
@@ -34,13 +33,13 @@ import {
   DxLoadIndicatorModule,
   DxLoadPanelModule,
   DxListModule,
+  DxTextAreaModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
 import { AngularFirestoreModule } from "angularfire2/firestore";
 import { environment } from "src/environments/environment";
 import { TransaccionesComponent } from "./pages/transacciones/transacciones.component";
 import {
-  DatePipe,
   LocationStrategy,
   HashLocationStrategy,
 } from "@angular/common";
@@ -59,7 +58,6 @@ import { CatalogoComponent } from "./pages/catalogo/catalogo.component";
 import { ConsolidadoComponent } from "./pages/consolidado/consolidado.component";
 import { DevolucionesComponent } from "./pages/devoluciones/devoluciones.component";
 import { RegistrosVentasComponent } from "./pages/registros-ventas/registros-ventas.component";
-import dxGallery from "devextreme/ui/gallery";
 import { FormsModule } from "@angular/forms";
 import { PinchZoomModule } from "ngx-pinch-zoom";
 import { ParametrizacionComponent } from "./pages/parametrizacion/parametrizacion.component";
@@ -84,6 +82,9 @@ import { LoadingComponent } from "./pages/loading/loading.component";
 import { ReporteDetalladoComponent } from "./pages/reportes/reporte-detallado/reporte-detallado.component";
 import { ReporteGlobalComponent } from "./pages/reportes/reporte-global/reporte-global.component";
 import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-diario.component";
+import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
+import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
+import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
 
 @NgModule({
   declarations: [
@@ -123,7 +124,10 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
     LoadingComponent,
     ReporteDetalladoComponent,
     ReporteGlobalComponent,
-    IngresoDiarioComponent
+    IngresoDiarioComponent,
+    AdministracionCuentasComponent,
+    CajaMenorComponent,
+    ReciboCajaComponent
   ],
   imports: [
     BrowserModule,
@@ -158,6 +162,7 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
     AngularFirestoreModule,
     DxValidatorModule,
     DxTemplateModule,
+    DxTextAreaModule,
     AlertsModule.forRoot(),
   ],
   exports: [CatalogoComponent],

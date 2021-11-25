@@ -1,69 +1,3 @@
-/* import { NgModule } from '@angular/core';
-import { Routes, RouterModule } from '@angular/router';
-import { LoginFormComponent } from './shared/components';
-import { AuthGuardService } from './shared/services';
-import { HomeComponent } from './pages/home/home.component';
-import { ProfileComponent } from './pages/profile/profile.component';
-import { DisplayDataComponent } from './pages/display-data/display-data.component';
-import { DxDataGridModule, DxFormModule } from 'devextreme-angular';
-import { VentasComponent } from './pages/ventas/ventas.component';
-import { ComprasComponent } from './pages/compras/compras.component';
-import { OrdenCompraComponent } from './pages/orden-compra/orden-compra.component';
-import { TransaccionesComponent } from './pages/transacciones/transacciones.component';
-
-const routes: Routes = [
-  {
-    path: 'display-data',
-    component: DisplayDataComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'profile',
-    component: ProfileComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'login-form',
-    component: LoginFormComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'compras',
-    component: ComprasComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'ventas',
-    component: VentasComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'transacciones',
-    component: TransaccionesComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  
-  {
-    path: 'OrdenCompra',
-    component: OrdenCompraComponent,
-    canActivate: [ AuthGuardService ]
-  },
-  {
-    path: 'home',
-    component: HomeComponent,
-    canActivate: [ AuthGuardService ]
-  },
-];
-
-@NgModule({
-  imports: [RouterModule.forRoot(routes), DxDataGridModule, DxFormModule],
-  providers: [AuthGuardService],
-  exports: [RouterModule],
-  declarations: [HomeComponent, ProfileComponent, DisplayDataComponent]
-})
-export class AppRoutingModule { }
- */
-
 import { NgModule } from "@angular/core";
 import { Routes, RouterModule } from "@angular/router";
 import { LoginFormComponent } from "./shared/components";
@@ -86,16 +20,13 @@ import { CatalogoComponent } from "./pages/catalogo/catalogo.component";
 import { ComprasComponent } from "./pages/compras/compras.component";
 import { DevolucionesComponent } from "./pages/devoluciones/devoluciones.component";
 import { ConsolidadoComponent } from "./pages/consolidado/consolidado.component";
-
 import { RegistrosVentasComponent } from "./pages/registros-ventas/registros-ventas.component";
 import { EntregasPComponent } from "./pages/entregas-p/entregas-p.component";
 import { ParametrizacionComponent } from "./pages/parametrizacion/parametrizacion.component";
 import { UserComponent } from "./pages/user/user.component";
-import { VerifyAuthGuard } from "./verify-auth.guard";
 import { ClientesComponent } from "./pages/clientes/clientes.component";
 import { ControlPreciosComponent } from "./pages/control-precios/control-precios.component";
 import { CalculadorasComponent } from "./pages/calculadora/calculadora.component";
-import { CalculadoraComponent } from "./pages/ventas/calculadora/calculadora.component";
 import { AuditoriasComponent } from "./pages/auditorias/auditorias.component";
 import { BodegasComponent } from "./pages/bodegas/bodegas.component";
 import { AuditoriaClComponent } from "./pages/auditoria-cl/auditoria-cl.component";
@@ -109,6 +40,9 @@ import { IndicadoresComponent } from "./pages/indicadores/indicadores.component"
 import { ReporteDetalladoComponent } from "./pages/reportes/reporte-detallado/reporte-detallado.component";
 import { ReporteGlobalComponent } from "./pages/reportes/reporte-global/reporte-global.component";
 import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-diario.component";
+import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
+import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
+import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
 
 const routes: Routes = [
   {
@@ -252,6 +186,21 @@ const routes: Routes = [
   {
     path: "anulaciones",
     component: AnulacionesComponent,
+    canActivate: [AuthGuardService],
+  },
+   {
+    path: "administracion-cuentas",
+    component: AdministracionCuentasComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "caja-menor",
+    component: CajaMenorComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "recibo-caja",
+    component: ReciboCajaComponent,
     canActivate: [AuthGuardService],
   },
   {

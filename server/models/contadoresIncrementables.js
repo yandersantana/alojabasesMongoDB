@@ -20,7 +20,8 @@ const ContadoresSchema = new Schema({
     contProductosPendientes_Ndocumento: { type: Number, required: false},
     contDocumentoEntrega_Ndocumento:{ type: Number, required: false},
     auditorias_Ndocumento:{ type: Number, required: false},
-    contProductosEntregadosSucursal_Ndocumento:{ type: Number, required: false}
+    contProductosEntregadosSucursal_Ndocumento:{ type: Number, required: false},
+    reciboCaja_Ndocumento:{ type: Number, required: false}
     
 },{
     timestamps:true

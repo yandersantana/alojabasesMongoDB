@@ -634,7 +634,7 @@ export const navigationSupervisor = [
       },
       {
         text: "Reporte Detallado",
-        path: "menu-indicadores",
+        path: "reporte-detallado",
       },
     ],
   },

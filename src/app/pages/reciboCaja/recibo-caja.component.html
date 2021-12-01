@@ -1,5 +1,28 @@
+
+
+
 <br><br>
-<div class="row">
+
+<div class="row remiPro">
+    <div class="col-md-8"></div>
+    <div class="col-md-4"> 
+        <dx-select-box [items]="menu" 
+        [value]="menu[0]" 
+        [readOnly]="false" 
+        [disabled]="false"
+        class="form-control select"
+        (onValueChanged)="opcionMenu($event)"
+        ></dx-select-box>
+    </div>
+</div>
+
+<div *ngIf="mostrarLoadingBase">
+  <app-loading></app-loading>
+</div>
+
+
+<br><br>
+<div class="row" *ngIf="newRecibo">
     <div class="col-md-1"></div>
     <div class="col-md-10">
         <div class="card">
@@ -143,7 +166,7 @@
                         <br><br>
                         Observaciones:
                         <br>
-                        <dx-text-area [height]="150" class="form-control" [maxLength]="500" [(value)]="reciboCaja.observaciones">
+                        <dx-text-area [height]="150" class="form-control padding-ob" [maxLength]="500" [(value)]="reciboCaja.observaciones">
                         </dx-text-area>
                     </div>
                     <div class="col-md-6">
@@ -166,8 +189,8 @@
 
                             <hr width="100%">
                             <div class="col-md-6" style="margin-top: -0.2em;margin-bottom: -0.4em;">Totales</div>
-                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal1"></dx-number-box></div>
-                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal2"></dx-number-box></div>
+                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal1" [readOnly]="true"></dx-number-box></div>
+                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal2" [readOnly]="true"></dx-number-box></div>
                              <hr width="100%">
 
                             <div class="col-md-6">Saldos</div>
@@ -188,6 +211,124 @@
     </div>
     <div class="col-md-1"></div>
 </div>
+
+
+<div *ngIf="!newRecibo">
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Recibos de Caja Generados</h5>
+        <div class="card-body">
+                <div class="row">
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
+                        <div class="row card">
+                            <div class="col-md-12"> 
+                                <div class="row">
+                                    <div class="col-md-3"  style="margin-top: 0.5em;">Desde</div>
+                                    <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowdesde"
+                                        type="date">
+                                    </dx-date-box>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-top: 0.5em;">Hasta</div>
+                                    <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowhasta"
+                                        type="date">
+                                    </dx-date-box>
+                                    </div>
+
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4 btnSearch">
+                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerRecibosCajaPorRango()">Buscar</button>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>        
+                            </div>
+                        </div>                
+                    </div>
+                    
+                    <div class="col-md-4 " style="margin-left: 1em;">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
+                    <div class="row card">
+                        <br><br>
+                        <div class="col-md-12"> 
+                            <div class="row">  
+                        
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerRecibosCaja()">Buscar Todos</button>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>        
+                        </div>
+                        <br>
+                    </div>         
+
+                </div>
+                <div class="col-md-2"></div>
+            </div>   
+        </div>
+    </div>
+
+    <br>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="listadoRecibosCaja"
+        [showBorders]="true"
+        (onExporting)="onExporting($event)"
+        (onExported)="onExported($event)">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="Recibos_de_caja" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="idDocumento" caption="RC" dataType="number" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
+        <dxi-column dataField="docVenta" caption="Documento" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number"></dxi-column>
+
+        <dxi-column dataField="observaciones" caption="Notas" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="numDocumento" caption="N Documento" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorRecargo" caption="Valor Recargo" dataType="number" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorPagoEfectivo" caption="Valor Pago Efectivo" dataType="number" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number" [visible]="false"></dxi-column>
+
+    <!--   <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
+            <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+        </dxi-column> -->
+        
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+ 
+
+
+
+
+
+
+
+
+
+
 
 
 

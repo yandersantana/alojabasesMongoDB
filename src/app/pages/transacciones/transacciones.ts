@@ -24,14 +24,6 @@ export class transaccion {
   cantM2: number;
   movimiento: number;
   createdAt: Date;
-  /*  marca_temporal:Date = new Date()
-    fecha:Date
-    sucursal:string
-    transaccion:string
-    documento:string
-    producto:string
-    cajas:number
-    piezas:number */
   constructor() {
     this.valor = 0;
   }

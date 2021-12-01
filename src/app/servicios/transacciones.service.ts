@@ -28,7 +28,6 @@ export class TransaccionesService {
   }
 
   getTransaccionesPorTipoDocumento(tipobusqueda) {
-    console.log(tipobusqueda)
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }
 

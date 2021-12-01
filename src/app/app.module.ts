@@ -85,6 +85,8 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
 import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
 import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
+import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
+import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 
 @NgModule({
   declarations: [
@@ -127,7 +129,9 @@ import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
     IngresoDiarioComponent,
     AdministracionCuentasComponent,
     CajaMenorComponent,
-    ReciboCajaComponent
+    ReciboCajaComponent,
+    CuentaPorCobrarComponent,
+    TransaccionesFinancierasComponent
   ],
   imports: [
     BrowserModule,

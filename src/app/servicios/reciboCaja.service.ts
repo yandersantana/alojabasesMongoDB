@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 })
 export class ReciboCajaService {
   //private URL = "http://104.248.14.190:3000/reciboCaja";
-  //private URL = "http://104.131.82.174:3000/reciboCaja";
-  private URL = 'http://localhost:3000/reciboCaja'; //localhost
+  private URL = "http://104.131.82.174:3000/reciboCaja";
+  //private URL = 'http://localhost:3000/reciboCaja'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}
 

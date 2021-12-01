@@ -1,0 +1,106 @@
+<div *ngIf="mostrarLoading">
+  <app-loading></app-loading>
+</div>
+
+
+<br><br>
+ <div class="card">
+    <h5 class="card-header text-center font-weight-bold text-uppercase ">Transacciones Financieras</h5>
+    <div class="card-body">
+            <div class="row">
+            <div class="col-md-2"></div>
+            <div class="col-md-4">
+                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
+                <div class="row card">
+                    <div class="col-md-12"> 
+                        <div class="row">
+                            <div class="col-md-3">Desde</div>
+                            <div class="col-md-9">
+                            <dx-date-box
+                                [(value)]="nowdesde"
+                                type="date">
+                            </dx-date-box>
+                            </div>
+
+                            <div class="col-md-3">Hasta</div>
+                            <div class="col-md-9">
+                            <dx-date-box
+                                [(value)]="nowhasta"
+                                type="date">
+                            </dx-date-box>
+                            </div>
+
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 btnSearch">
+                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesPorRango()">Buscar</button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>        
+                    </div>
+                </div>                
+            </div>
+            
+            <div class="col-md-4 " style="margin-left: 1em;">
+                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
+                <div class="row card">
+                    <br><br>
+                    <div class="col-md-12"> 
+                        <div class="row">  
+                    
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6 btnSearch">
+                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerListaTransacciones()">Buscar Todos</button>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>        
+                    </div>
+                    <br>
+                </div>         
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>   
+    </div>
+</div>
+<!-- [columnWidth]="125" -->
+<br>
+<dx-data-grid #datag2
+    id="gridContainer"
+    [dataSource]="listaTransacciones"
+    (onExporting)="onExporting($event)"
+    (onExported)="onExported($event)"
+     [showBorders]="true"
+    >
+    <dxo-filter-row [visible]="true" ></dxo-filter-row>
+    <dxo-export [enabled]="true" fileName="Transacciones Financieras" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+    <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" sortOrder="desc" ></dxi-column>
+    <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+    <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+    <dxi-column dataField="rCajaId" caption="RC" dataType="string" ></dxi-column>
+    <dxi-column dataField="documentoVenta" caption="Fact" dataType="string"></dxi-column>
+    <dxi-column dataField="valor" caption="Valor" dataType="string" [visible]="true"></dxi-column>
+    <dxi-column dataField="cuenta" caption="Cuenta" dataType="string"></dxi-column>
+    <dxi-column dataField="tipoCuenta" caption="Tipo Cuenta" dataType="string"></dxi-column>
+    <dxi-column dataField="subCuenta" caption="SubCuenta" dataType="string"></dxi-column>
+    <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
+    
+  <!--   <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
+        <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+    </dxi-column>
+    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
+        <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
+    </dxi-column>
+    <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
+        <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+    </dxi-column> -->
+    <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+    <dxo-paging [pageSize]="12"></dxo-paging>
+    <dxo-pager
+        [showPageSizeSelector]="true"
+        [allowedPageSizes]="[8, 12, 20]"
+    ></dxo-pager>
+</dx-data-grid>
+
+
+

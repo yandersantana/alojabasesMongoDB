@@ -19,6 +19,10 @@ export class TransaccionesFinancierasService {
     return this.http.get(this.URL + "/getTransacciones");
   }
 
+  getTransaccionesFinancierasPorRango(objFecha) {
+    return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
+  }
+
   deleteTransaccionFinanciera(transaccion) {
     return this.http.delete(
       this.URL + `/delete/${transaccion._id}`,

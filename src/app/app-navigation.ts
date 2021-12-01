@@ -319,7 +319,7 @@ export const navigationAdmin = [
       },
       {
         text: "Cuentas por Cobrar",
-        path: "",
+        path: "/cuentas-porCobrar",
       },
       {
         text: "Cuentas por Pagar",
@@ -328,14 +328,14 @@ export const navigationAdmin = [
       {
         text: "Anulaciones",
         path: "/anulaciones",
-      },
-      {
-        text: "Activos Fijos",
-        path: "",
-      },
+      }, 
       {
         text: "Administrar Cuentas",
         path: "/administracion-cuentas",
+      },
+      {
+        text: "Transacciones Financieras",
+        path: "/transacciones-financieras",
       },
     ],
   },
@@ -566,7 +566,7 @@ export const navigationSupervisor = [
       },
       {
         text: "Cuentas por Cobrar",
-        path: "",
+        path: "/cuentas-porCobrar",
       },
       {
         text: "Cuentas por Pagar",

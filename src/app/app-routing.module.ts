@@ -7,7 +7,6 @@ import { ProfileComponent } from "./pages/profile/profile.component";
 import { DisplayDataComponent } from "./pages/display-data/display-data.component";
 import { DxDataGridModule, DxFormModule } from "devextreme-angular";
 import { VentasComponent } from "./pages/ventas/ventas.component";
-
 import { TransaccionesComponent } from "./pages/transacciones/transacciones.component";
 import { OrdenCompraComponent } from "./pages/orden-compra/orden-compra.component";
 import { ProductoComponent } from "./pages/producto/producto.component";
@@ -43,6 +42,8 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
 import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
 import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
+import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
+import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 
 const routes: Routes = [
   {
@@ -201,6 +202,16 @@ const routes: Routes = [
   {
     path: "recibo-caja",
     component: ReciboCajaComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "cuentas-porCobrar",
+    component: CuentaPorCobrarComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "transacciones-financieras",
+    component: TransaccionesFinancierasComponent,
     canActivate: [AuthGuardService],
   },
   {

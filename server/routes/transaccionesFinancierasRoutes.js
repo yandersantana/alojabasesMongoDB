@@ -7,6 +7,19 @@ router.get("/getTransacciones", async (req, res) => {
   res.send(transacciones);
 });
 
+router.post("/getTransaccionesPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const transacciones = await TransaccionFinanciera.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(transacciones);
+});
+
+
 router.delete("/delete/:id", async (req, res, next) => {
   await TransaccionFinanciera.findByIdAndRemove(req.params.id);
   res.json({ status: "Transaccion Eliminada" });
@@ -27,7 +40,8 @@ router.post("/newTransaccion", async (req, res) => {
     soporte: req.body.soporte,
     dias: req.body.dias,
     vencimiento: req.body.vencimiento,
-    notas: req.body.notas
+    notas: req.body.notas,
+    tipoCuenta: req.body.tipoCuenta
   });
   await newTransaccion.save();
   res.json({ status: "Sucursal creado" });

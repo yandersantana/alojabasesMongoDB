@@ -20,8 +20,12 @@ export class ReciboCajaService {
     return this.http.get(this.URL + "/getRecibosCaja");
   }
 
-  getReciboCajaPorId(tipobusqueda) {
-    return this.http.post(this.URL + "/getReciboCajaPorId", tipobusqueda);
+  getReciboCajaPorId(idRecibo) {
+    return this.http.post(this.URL + "/getReciboCajaPorId", idRecibo);
+  }
+
+  getReciboCajaPorIdConsecutivo(idRecibo) {
+    return this.http.post(this.URL + "/getReciboCajaPorIdConsecutivo", idRecibo);
   }
 
   getReciboCajaPorRango(objFecha) {

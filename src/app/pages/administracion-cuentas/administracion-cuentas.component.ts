@@ -1,10 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { Cuenta, SubCuenta } from './administracion-cuenta';
+import { CentroCosto, Cuenta, SubCuenta } from './administracion-cuenta';
 import { CuentasService } from 'src/app/servicios/cuentas.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
-import { timingSafeEqual } from 'crypto';
-
+import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
 
 @Component({
   selector: 'app-administracion-cuentas',
@@ -14,6 +13,7 @@ import { timingSafeEqual } from 'crypto';
 export class AdministracionCuentasComponent implements OnInit {
 
   listaCuentas : Cuenta[]=[]
+  listaCentroCosto : CentroCosto[]=[]
   cuenta = {
     nombre:"",
     tipoCuenta:""
@@ -21,6 +21,10 @@ export class AdministracionCuentasComponent implements OnInit {
   subCuenta = {
     nombre:""
   }
+  centroCosto = {
+    nombre:""
+  }
+  centroCsotos:CentroCosto[]=[]
   varDis:boolean=true
   bloqueoSubCuenta:boolean=true
 
@@ -29,13 +33,13 @@ export class AdministracionCuentasComponent implements OnInit {
   valueCuenta= "";
   cuentaPrueba:Cuenta[]=[]
   newCuenta:Cuenta
-  cuentaPrueba1:Cuenta
-  cuentaPrueba2:Cuenta
-  cuentaPrueba3:Cuenta
+  newCentroCosto:CentroCosto
   popupVisible:boolean = false
   popupVisibleSubcuenta:boolean = false
+  popupVisibleCosto:boolean = false
   sectionCuentas:boolean = true
   sectionSubCuentas:boolean = false
+  sectionCostos:boolean = false
 
   newSubCuenta: SubCuenta
   idCuenta:string
@@ -43,44 +47,20 @@ export class AdministracionCuentasComponent implements OnInit {
 
   menu1: string[] = ["Ingresos", "Salidas", "Reales y Transitorias"];
 
-  subCuentaPrueba: SubCuenta[]=[]
-  subCuentaPrueba1: SubCuenta
-  subCuentaPrueba2: SubCuenta
-  subCuentaPrueba3: SubCuenta
   constructor(
     public _cuentasService : CuentasService,
     public _subCuentasService : SubCuentasService,
+    public _centroCostoService : CentroCostoService,
     ) {
    }
 
   ngOnInit() {
-    this.subCuentaPrueba1 = new SubCuenta();
-    this.subCuentaPrueba1._id = "12345";
-    this.subCuentaPrueba1.nombre = "ACTIVOS";
-
-    this.subCuentaPrueba2 = new SubCuenta();
-    this.subCuentaPrueba2._id = "234234";
-    this.subCuentaPrueba2.nombre = "PASIVOS";
-
-
-    this.subCuentaPrueba.push(this.subCuentaPrueba1);
-    this.subCuentaPrueba.push(this.subCuentaPrueba2);
-
     this.traerListaCuentas()
-    //this.traerContadoresDocumentos()
-
-    
   }
 
 
   onKey(value: string) {
     this.valueCuenta = value;
-  }
-
-  
-
-  enviar(e,cuenta){
-    console.log("desbloqueare",cuenta._id +"sdsd :"+this.valueCuenta)
   }
 
   mostrarPopup(){
@@ -91,6 +71,11 @@ export class AdministracionCuentasComponent implements OnInit {
   mostrarPopupSubCuenta(){
     this.popupVisibleSubcuenta=true
     this.subCuenta.nombre = "";
+  }
+
+  mostrarPopupCentroCosto(){
+    this.popupVisibleCosto=true
+    this.centroCosto.nombre = "";
   }
  
   traerListaCuentas(){
@@ -107,9 +92,12 @@ export class AdministracionCuentasComponent implements OnInit {
       element.sub_cuentaList = res as SubCuenta[];
       })
     })
+  }
 
-    
-
+  traerCuentasCostos(){
+    this._centroCostoService.getCentrosCostos().subscribe(res => {
+      this.listaCentroCosto = res as CentroCosto[];
+   })
   }
 
 
@@ -143,6 +131,17 @@ export class AdministracionCuentasComponent implements OnInit {
     })
   }
 
+  correctoCostos(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerCuentasCostos();
+    })
+  }
+
   messaggeDelete(){
     Swal.fire({
       title: 'Correcto',
@@ -153,15 +152,18 @@ export class AdministracionCuentasComponent implements OnInit {
       this.traerListaCuentas();
     })
   }
-  
 
-  error(){
+  messaggeDeleteCosto(){
     Swal.fire({
-      title: "Error",
-      text: 'Revise e intente nuevamente',
-      icon: 'error'
+      title: 'Correcto',
+      text: 'Se ha eliminado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerCuentasCostos();
     })
   }
+  
 
 
    saveNewCuenta(){
@@ -171,7 +173,6 @@ export class AdministracionCuentasComponent implements OnInit {
       this.newCuenta = new Cuenta();
       this.newCuenta.nombre = this.cuenta.nombre;
       this.newCuenta.tipoCuenta = this.cuenta.tipoCuenta;
-      console.log("cuenta",this.newCuenta);
       this.mensajeGuardando()
       new Promise<any>((resolve, reject) => {
         this._cuentasService.newCuenta(this.newCuenta).subscribe(
@@ -179,51 +180,48 @@ export class AdministracionCuentasComponent implements OnInit {
             this.correcto()
           },
           err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
-            })
+             this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
           })
       })
     }else{
       this.popupVisible = false;
-      Swal.fire({
-        title: 'Error',
-        text: 'El nombre de cuenta a crear ya existe',
-        icon: 'error'
-      })
+      this.mostrarMensajeGenerico(2,"El nombre de cuenta a crear ya existe");
     }
   } 
 
 
   saveNewSubCuenta(){
-    if(true){
-      this.popupVisibleSubcuenta = false;
-      this.newSubCuenta  = new SubCuenta();
-      this.newSubCuenta.idCuenta = this.idCuenta;
-      this.newSubCuenta.nombre = this.subCuenta.nombre;
+    this.popupVisibleSubcuenta = false;
+    this.newSubCuenta  = new SubCuenta();
+    this.newSubCuenta.idCuenta = this.idCuenta;
+    this.newSubCuenta.nombre = this.subCuenta.nombre;
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._subCuentasService.newSubCuenta(this.newSubCuenta).subscribe(
+        res => {
+          this.correcto()
+        },
+        err => {
+          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
+        })
+    })
+  } 
+
+  saveNewCentroCosto(){
+    var existe = this.listaCentroCosto.find(element=> element.nombre == this.centroCosto.nombre);
+    if(!existe){
+      this.popupVisibleCosto = false;
+      this.newCentroCosto = new CentroCosto();
+      this.newCentroCosto.nombre = this.centroCosto.nombre;
       this.mensajeGuardando()
       new Promise<any>((resolve, reject) => {
-        this._subCuentasService.newSubCuenta(this.newSubCuenta).subscribe(
-          res => {
-            this.correcto()
-          },
-          err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
-            })
-          })
+        this._centroCostoService.newCentroCosto(this.newCentroCosto).subscribe(
+          res => {this.correctoCostos()},
+          err => {this.mostrarMensajeGenerico(2,"Error a guardar")})
       })
     }else{
-      this.popupVisible = false;
-      Swal.fire({
-        title: 'Error',
-        text: 'El nombre de cuenta a crear ya existe',
-        icon: 'error'
-      })
+      this.popupVisibleCosto = false;
+      this.mostrarMensajeGenerico(2,"El nombre a crear ya existe")
     }
   } 
 
@@ -232,63 +230,60 @@ export class AdministracionCuentasComponent implements OnInit {
     this.cuenta = cuenta;
     this.popupVisible = true;
     this.isNew = false;
-    
+  }
+
+  actualizaDetalleCosto(e,centroCosto){
+    this.centroCosto = centroCosto;
+    this.popupVisibleCosto = true;
+    this.isNew = false;
   }
 
   actualizarCuenta(){
-    /* var existe = this.listaCuentas.find(element=> element.nombre == this.cuenta.nombre);
-    if(!existe){ */
-      this.mensajeGuardando()
-      new Promise<any>((resolve, reject) => {
-        this._cuentasService.updateCuentas(this.cuenta).subscribe(
-          res => {
-            this.popupVisible = false;
-            this.correcto()
-          },
-          err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
-            })
-          })
-      })
-    //}
-   /*  else{
-      Swal.fire({
-        title: 'Error',
-        text: 'El nombre de cuenta a crear ya existe',
-        icon: 'error'
-      })
-    }  */
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._cuentasService.updateCuentas(this.cuenta).subscribe(
+        res => {
+          this.popupVisible = false;
+          this.correcto()
+        },
+        err => {
+          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente");
+        })
+    })
+
+  }
+
+  actualizarDetalleCosto(){
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._centroCostoService.updateCentroCosto(this.centroCosto).subscribe(
+        res => {
+          this.popupVisibleCosto = false;
+          this.correctoCostos();
+        },
+        err => {
+          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
+        })
+    })
+
   }
 
 
   actualizarSubCuenta(e,subCuenta){
     //var existe = this.listaCuentas.find(element=> element.nombre == this.valueCuenta);
-    if(true){
-      subCuenta.nombre = this.valueCuenta;
-      this.mensajeGuardando()
-      new Promise<any>((resolve, reject) => {
-        this._subCuentasService.updateSubCuentas(subCuenta).subscribe(
-          res => {
-            this.correcto()
-          },
-          err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
-            })
-          })
-      })
-    }else{
-      Swal.fire({
-        title: 'Error',
-        text: 'El nombre de cuenta a crear ya existe',
-        icon: 'error'
-      })
-    }
+
+    subCuenta.nombre = this.valueCuenta;
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._subCuentasService.updateSubCuentas(subCuenta).subscribe(
+        res => {
+          this.correcto()
+        },
+        err => {
+            this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
+        })
+    })
+
   }
 
 
@@ -310,11 +305,7 @@ export class AdministracionCuentasComponent implements OnInit {
           },err => {alert("error")})
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Cancelado!',
-          'Se ha cancelado su proceso.',
-          'error'
-        )
+         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.")
       }
     })
   }
@@ -336,11 +327,28 @@ export class AdministracionCuentasComponent implements OnInit {
           },err => {alert("error")})
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Cancelado!',
-          'Se ha cancelado su proceso.',
-          'error'
-        )
+         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.");
+      }
+    })
+  }
+
+  eliminarDetalleCosto(e,detalleCosto){
+    Swal.fire({
+      title: 'Eliminar Cuenta',
+      text: "Esta seguro que desea eliminar "+ detalleCosto.nombre,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._centroCostoService.deleteCentroCpsto(detalleCosto).subscribe(
+          res => {
+           this.messaggeDeleteCosto();
+          },err => {alert("error")})
+     
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.");
       }
     })
   }
@@ -372,16 +380,42 @@ export class AdministracionCuentasComponent implements OnInit {
   mostrar(i:number){
     switch (i) {
       case 1:
-       this.sectionCuentas = true;
-       this.sectionSubCuentas = false;
-       break;
+        this.sectionCuentas = true;
+        this.sectionSubCuentas = false;
+        this.sectionCostos = false;
+        break;
   
       case 2:
-         this.sectionCuentas = false;
-       this.sectionSubCuentas = true;
+        this.sectionCuentas = false;
+        this.sectionSubCuentas = true;
+        this.sectionCostos = false;
+        break;
+
+      case 3:
+        this.sectionCuentas = false;
+        this.sectionSubCuentas = false;
+        this.sectionCostos = true;
+        if(this.listaCentroCosto.length == 0)
+            this.traerCuentasCostos();
         break;
       default:    
     }      
+  }
+
+  mostrarMensajeGenerico(tipo:number , texto:string){
+    if(tipo == 1){
+      Swal.fire({
+        title: "Correcto",
+        text: texto,
+        icon: 'success'
+      })
+    }else{
+      Swal.fire({
+        title: "Error",
+        text: texto,
+        icon: 'error'
+      })
+    }
   }
 
 }

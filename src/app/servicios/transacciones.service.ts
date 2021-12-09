@@ -32,10 +32,7 @@ export class TransaccionesService {
   }
 
   getTransaccionesPorProductoYFecha(producto) {
-    return this.http.post(
-      this.URL + "/getTransaccionesPorProductoYFecha",
-      producto
-    );
+    return this.http.post(this.URL + "/getTransaccionesPorProductoYFecha",producto);
   }
 
   updateTransaccion(transaccion) {
@@ -43,14 +40,10 @@ export class TransaccionesService {
   }
 
   deleteTransaccion(transaccion) {
-    return this.http.delete(
-      this.URL + `/delete/${transaccion._id}`,
-      transaccion
-    );
+    return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
   }
 
   deleteTransaccionPorDevoluciones(transaccion) {
-    console.log(transaccion);
     return this.http.post(this.URL + `/deletePorDocumento`, transaccion);
   }
 }

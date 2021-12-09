@@ -44,6 +44,7 @@ import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
+import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 
 const routes: Routes = [
   {
@@ -202,6 +203,11 @@ const routes: Routes = [
   {
     path: "recibo-caja",
     component: ReciboCajaComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "comprobante-pago",
+    component: ComprobantePagoComponent,
     canActivate: [AuthGuardService],
   },
   {

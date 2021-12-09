@@ -1,11 +1,13 @@
 import { Component, OnInit, ViewChild } from "@angular/core";
 import { objDate, transaccion } from "./transacciones";
-import { AngularFireAuth } from "angularfire2/auth";
-import { AngularFirestore } from "angularfire2/firestore";
 import { DxDataGridComponent } from "devextreme-angular";
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
+import DataSource from "devextreme/data/data_source";
+import { ProductoService } from "src/app/servicios/producto.service";
+import { producto } from "../ventas/venta";
+import { productoTransaccion } from "../consolidado/consolidado";
 
 @Component({
   selector: "app-transacciones",
@@ -21,66 +23,110 @@ export class TransaccionesComponent implements OnInit {
   correo: string;
   usuarioLogueado: user;
   obj: objDate;
-  menu1: string[] = ["Transacciones Mensuales", "Transacciones Globales"];
+  nowdesde: Date = new Date();
+  nowhasta: Date = new Date();
+  productos22: DataSource;
+  productos: producto[] = [];
+  isBusqGeneral:boolean = true;
+  nombreProducto : string = "";
+  proTransaccion: productoTransaccion;
+  mensajeLoading = "Cargando..";
+  menu1: string[] = ["Búsqueda General", "Búsqueda Individual"];
   @ViewChild("datag2") dataGrid2: DxDataGridComponent;
   constructor(
     public transaccionesService: TransaccionesService,
-    public authenService: AuthenService
+    public authenService: AuthenService,
+    public _productoService : ProductoService
   ) {}
 
   ngOnInit() {
+    this.proTransaccion = new productoTransaccion();
+    this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.cargarUsuarioLogueado();
     this.traerTransaccionesPorRango();
   }
 
   traerTransaccionesPorRango() {
     this.transaccionesGlobales = [];
+    this.mensajeLoading = "Cargando Transacciones";
     this.mostrarLoading = true;
-    var fechaHoy = new Date();
-    var fechaAnterior = new Date();
-    fechaHoy.setDate(fechaHoy.getDate() + 1);
-    fechaAnterior.setDate(fechaHoy.getDate() - 30);
     this.obj = new objDate();
-    this.obj.fechaActual = fechaHoy;
-    this.obj.fechaAnterior = fechaAnterior;
-    this.transaccionesService.getTransaccionesPorRango(this.obj).subscribe(
-      (res) => {
-        this.transaccionesGlobales = res as transaccion[];
-        this.separarTransacciones();
-      },
-      () => {}
-    );
+    this.obj.fechaActual = this.nowhasta;
+    this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+
+    if(this.isBusqGeneral){
+      this.transaccionesService.getTransaccionesPorRango(this.obj).subscribe(
+        (res) => {
+          this.transaccionesGlobales = res as transaccion[];
+          this.separarTransacciones();
+        },
+        () => {}
+      );
+    }else{
+      this.proTransaccion.nombre = this.nombreProducto;
+      this.proTransaccion.fechaActual = this.obj.fechaActual;
+      this.proTransaccion.fechaAnterior = this.obj.fechaAnterior;
+      this.transaccionesService.getTransaccionesPorProductoYFecha(this.proTransaccion).subscribe((res) => {
+          this.transaccionesGlobales = res as transaccion[];
+          this.separarTransacciones();
+      });
+
+    }
+    
   }
 
   traerTransacciones() {
     this.transaccionesGlobales = [];
+    this.mensajeLoading = "Cargando Transacciones";
     this.mostrarLoading = true;
-    this.transaccionesService.getTransaccion().subscribe(
-      (res) => {
+    if(this.isBusqGeneral){
+      this.transaccionesService.getTransaccion().subscribe(
+        (res) => {
+          this.transaccionesGlobales = res as transaccion[];
+          this.separarTransacciones();
+        },
+        () => {}
+      );
+    }else{
+      this.proTransaccion.nombre = this.nombreProducto;
+      this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion).subscribe((res) => {
         this.transaccionesGlobales = res as transaccion[];
         this.separarTransacciones();
-      },
-      () => {}
-    );
+      });
+    }
+    
   }
 
+  traerProductosUnitarios() {
+    this.mensajeLoading = "Cargando Productos";
+    this.mostrarLoading = true;
+    this.productos = [];
+    this._productoService.getProductosActivos().subscribe((res) => {
+      this.productos = res as producto[];
+      this.separarProducto();
+      this.mostrarLoading = false;
+    });
+  }
+
+  separarProducto() {
+    this.productos22 = new DataSource({
+      store: this.productos,
+      sort: [{ field: "PRODUCTO", asc: true }],
+    });
+  }
+
+
   opcionMenu(e) {
-    //var x = document.getElementById("menu1");
-    //var y = document.getElementById("menu2");
-
     switch (e.value) {
-      case "Transacciones Mensuales":
-        //x.style.display = "block";
-        //y.style.display="none";
-        this.traerTransaccionesPorRango();
-
+      case "Búsqueda General":
+        this.isBusqGeneral = true;
         break;
 
-      case "Transacciones Globales":
-        this.traerTransacciones();
-        //x.style.display = "none";
-        //y.style.display="block";
-
+      case "Búsqueda Individual":
+        this.isBusqGeneral = false;
+        if(this.productos.length == 0)
+          this.traerProductosUnitarios();
         break;
 
       default:
@@ -121,7 +167,6 @@ export class TransaccionesComponent implements OnInit {
       this.transacciones = this.transaccionesGlobales;
       this.terminarLoading();
     }
-    //this.mostrarLoading=false
   }
 
   terminarLoading() {
@@ -129,7 +174,7 @@ export class TransaccionesComponent implements OnInit {
   }
 
   cargarUsuarioLogueado() {
-    const promesaUser = new Promise((res, err) => {
+    new Promise((res, err) => {
       if (localStorage.getItem("maily") != "") {
         this.correo = localStorage.getItem("maily");
       }
@@ -143,14 +188,6 @@ export class TransaccionesComponent implements OnInit {
         (err) => {}
       );
     });
-  }
-
-  restarDias() {
-    var fechaHoy = new Date();
-    var fechaAnterior = new Date();
-    fechaHoy.setDate(fechaHoy.getDate() + 1);
-    fechaAnterior.setDate(fechaHoy.getDate() - 15);
-    console.log("la fecha es", fechaHoy, fechaAnterior);
   }
 
   mostrarpopup() {

@@ -1,5 +1,4 @@
 const { Router } = require('express');
-const { connectableObservableDescriptor } = require('rxjs/internal/observable/ConnectableObservable');
 const router = Router();
 const ReciboCaja = require('../models/reciboCaja')
 
@@ -34,13 +33,21 @@ router.get('/getRecibosCaja', async (req, res) => {
 
 
 
-router.post('/getReciboCajaPorId', async (req, res, next) => {
+router.post('/getReciboCajaPorIdConsecutivo', async (req, res, next) => {
   const documentos = await ReciboCaja.find({
     idDocumento: req.body.idDocumento
   });
   res.json(documentos);
 });
 
+
+router.post('/getReciboCajaPorId', async (req, res, next) => {
+  const documentos = await ReciboCaja.find({
+    _id: req.body._id
+  });
+  res.json(documentos);
+});
+ 
 
 router.post("/getReciboCajaPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;

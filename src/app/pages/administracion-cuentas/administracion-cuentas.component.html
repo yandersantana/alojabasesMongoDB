@@ -10,6 +10,7 @@
                     <div class="row botones">
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(1)">CUENTAS</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">SUBCUENTAS</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">CENTRO DE COSTO</button></div>
                     </div>
                 </div>
                 <div class="col-md-10 card carIn">
@@ -21,9 +22,6 @@
                                     <div class="col-md-6"><div style="text-align: center;"><h4>CUENTAS</h4></div></div>
                                     <div class="col-md-2">
                                         <div class="row">
-                                            <div class="col-md-6">
-                                                <!-- <button class="btn" type="button" (click)="desbloquear()"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button> -->
-                                            </div>
                                             <div class="col-md-6">
                                                 <button class="btn" type="button" (click)="mostrarPopup()"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
                                             </div>
@@ -62,8 +60,7 @@
                         
                     </div>
 
-
-                     <div *ngIf="sectionSubCuentas">
+                    <div *ngIf="sectionSubCuentas">
                         <div class="row" class="fomR">
                             <div class="col-md-12">
                                 <div class="row">
@@ -122,6 +119,52 @@
                         
                     </div>
 
+                    <div *ngIf="sectionCostos">
+                        <div class="row" class="fomR">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6"><div style="text-align: center;"><h4>CENTRO DE COSTOS</h4></div></div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button class="btn" type="button" (click)="mostrarPopupCentroCosto()"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                                
+                            <div *ngFor="let cuenta of listaCentroCosto; let id = index">
+                                <div class="row espacio">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6">
+                                        <input type="text" value={{cuenta.nombre}} [disabled]="varDis" class="form-control" #box (keyup)="onKey(box.value)">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="actualizaDetalleCosto($event, cuenta)">
+                                                    <button class="btn" type="submit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="eliminarDetalleCosto($event, cuenta)">
+                                                    <button  class="btn" type="submit" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    
+                                </div>
+                            </div>
+                               
+                        </div>
+                        
+                    </div>
+
 
                    
                 </div>
@@ -140,7 +183,7 @@
             <div class="row espacio">
                 <div class="col-md-4" style="text-align: left;">Nombre</div>
                 <div class="col-md-8"> <input type="text" [(ngModel)]="cuenta.nombre"
-                        name="nombre" class="form-control" placeholder="Nombre"
+                        name="nombre" class="form-control select" placeholder="Nombre"
                         required></div>
                         <br><br>
                 <div class="col-md-4" style="text-align: left;">Tipo</div>
@@ -150,6 +193,7 @@
                     [(value)]="cuenta.tipoCuenta"
                     [readOnly]="false"
                     [disabled]="false"
+                    class="form-control select"
                     (onValueChanged)="obtenerTipoCuenta($event)">
                 </dx-select-box>
             </div>
@@ -203,6 +247,33 @@
                 <div class="col-md-4"><button class="btn btn2" type="button"
                         (click)="saveNewSubCuenta()">Guardar</button></div>
                 <div class="col-md-4"></div>
+            </div>
+        </div>
+    </div>
+</dx-popup>
+
+
+<dx-popup [width]="500" [height]="250" [showTitle]="true" title="Nuevo Detalle" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleCosto">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Nombre</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="centroCosto.nombre"
+                        name="nombre" class="form-control" placeholder="Nombre"
+                        required></div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" *ngIf="isNew"><button class="btn btn2" type="button"
+                        (click)="saveNewCentroCosto()">Guardar</button></div>
+                <div class="col-md-4" *ngIf="!isNew"><button class="btn btn2" type="button"
+                        (click)="actualizarDetalleCosto()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+                 
             </div>
         </div>
     </div>

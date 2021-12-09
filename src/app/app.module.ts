@@ -87,6 +87,8 @@ import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
+import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
+import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messagge.component";
 
 @NgModule({
   declarations: [
@@ -131,7 +133,9 @@ import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancie
     CajaMenorComponent,
     ReciboCajaComponent,
     CuentaPorCobrarComponent,
-    TransaccionesFinancierasComponent
+    TransaccionesFinancierasComponent,
+    ComprobantePagoComponent,
+    LoadingMessaggeComponent
   ],
   imports: [
     BrowserModule,

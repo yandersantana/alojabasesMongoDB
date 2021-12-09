@@ -317,6 +317,10 @@ export const navigationAdmin = [
         text: "Recibos de Caja",
         path: "/recibo-caja",
       },
+       {
+        text: "Comprobante de Pago",
+        path: "/comprobante-pago",
+      },
       {
         text: "Cuentas por Cobrar",
         path: "/cuentas-porCobrar",

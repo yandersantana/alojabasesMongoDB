@@ -22,11 +22,11 @@
 
 
 <br><br>
-<div class="row" *ngIf="newRecibo">
+<div class="row" *ngIf="newComprobante">
     <div class="col-md-1"></div>
     <div class="col-md-10">
         <div class="card">
-            <h5 class="card-header text-center font-weight-bold text-uppercase ">RECIBO DE CAJA</h5>
+            <h5 class="card-header text-center font-weight-bold text-uppercase ">COMPROBANTE DE PAGO</h5>
             <div class="card-body">
                 <div class="row">
                     <div class="col-md-9">
@@ -34,39 +34,55 @@
                             <div class="col-md-6">
                                 <div class="row espacioDivs">
                                     <div class="col-md-4">Fecha:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.fecha" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.fecha" [readOnly]="isReadOnly"></dx-text-box></div>
 
-                                    <div class="col-md-4">Doc. Venta:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.docVenta" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4">Documento:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.documento" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    
+                                    <div class="col-md-4">Centro/Costo:</div>
+                                    <div class="col-md-8"><dx-autocomplete
+                                                            [dataSource]="detallesCostos"
+                                                            valueExpr="nombre"
+                                                            [(value)]= "comprobantePago.centroCosto">
+                                                        </dx-autocomplete>
+                                    </div>
 
-                                    <div class="col-md-4">Cliente:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.cliente" [readOnly]="isReadOnly"></dx-text-box></div>
-
-                                    <div class="col-md-4">RUC:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.ruc" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4">Usuario:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.usuario" [readOnly]="isReadOnly"></dx-text-box></div>
 
                                     <div class="col-md-4">Sucursal:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
                                 </div>
                             </div>
 
+
                             <div class="col-md-6">
                                 <div class="row espacioDivs">
-                                    <div class="col-md-4">Tipo Pago:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.tipoPago" [readOnly]="false"></dx-text-box></div>
+                                    <div class="col-md-4">Beneficiario:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.beneficiario" [readOnly]="false"></dx-text-box></div>
 
-                                    <div class="col-md-4">Num. Doc:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.numDocumento" [readOnly]="false"></dx-text-box></div>
+                                    <div class="col-md-4">Proveedor:</div>
+                                    <div class="col-md-8"><dx-autocomplete
+                                                            [dataSource]="proveedores"
+                                                            valueExpr="nombre_proveedor"
+                                                            [(value)]= "comprobantePago.proveedor">
+                                                        </dx-autocomplete>
+                                    </div>
+                                    
 
-                                    <div class="col-md-4">Banco:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.banco" [readOnly]="false"></dx-text-box></div>
+                                    <div class="col-md-4">RUC:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.ruc" [readOnly]="false"></dx-text-box></div>
+
+                                    <div class="col-md-4">Teléfono:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.telefono" [readOnly]="false"></dx-text-box></div>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="col-md-3">
+                        <br>
                         <div style="text-align: center;">CONSECUTIVO</div>
-                        <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">{{reciboCaja.idDocumento}}</div>
+                        <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">{{comprobantePago.idDocumento}}</div>
                     </div>
                 </div>
 
@@ -148,7 +164,7 @@
                                     <div class="row">
                                         <div class="col-md-4">Valor</div>
                                         <div class="col-md-4">
-                                        <dx-number-box [(value)]="p.valor" (onChange)="calcularTotal($event)" ></dx-number-box>
+                                        <dx-number-box [(value)]="p.valor" (onChange)="calcularTotal($event)"></dx-number-box>
                                         </div>
                                         <div class="col-md-4"><dx-button icon="clear" (onClick)="eliminarRegistro(i)" ></dx-button></div>
                                     </div>
@@ -162,36 +178,17 @@
                 <br><br>
 
                 <div class="row">
-                    <div class="col-md-6">
-                        <br><br>
+                    <div class="col-md-8">
                         Observaciones:
                         <br>
-                        <dx-text-area [height]="150" class="form-control padding-ob" [maxLength]="500" [(value)]="reciboCaja.observaciones">
+                        <dx-text-area [height]="80" class="form-control padding-ob" [maxLength]="500" [(value)]="comprobantePago.observaciones">
                         </dx-text-area>
                     </div>
-                    <div class="col-md-6">
-                        <div class="row espacioDivs align">
-                            <div class="col-md-6">Valor Factura</div>
-                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorFactura"  (onValueChanged)="calcularValores()"></dx-number-box></div>
-                            <div class="col-md-3"></div>
-
-                            <div class="col-md-6">Recargos</div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorRecargo" (onValueChanged)="calcularValores()"></dx-number-box></div>
-
-                            <div class="col-md-6">Pago Efectivo</div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorPagoEfectivo" [readOnly]="true"></dx-number-box></div>
-                           
-                            <hr width="100%">
-                            <div class="col-md-6" style="margin-top: -0.2em;margin-bottom: -0.4em;">Totales</div>
-                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal1" [readOnly]="true"></dx-number-box></div>
-                            <div class="col-md-3" style="margin-top: -0.2em;margin-bottom: -0.4em;"> <dx-number-box [(value)]="valorTotal2" [readOnly]="true"></dx-number-box></div>
-                             <hr width="100%">
-
-                            <div class="col-md-6">Saldos</div>
-                            <div class="col-md-3"></div>
-                            <div class="col-md-3"><dx-number-box [(value)]="reciboCaja.valorSaldos"></dx-number-box></div>
+                    <div class="col-md-4">
+                        <div class="row cssTotal" style="text-align: center;">
+                            <div class="col-md-12"><h5>Total</h5></div>
+                            <div class="col-md-12"> <dx-number-box [(value)]="comprobantePago.total" [readOnly]="true"></dx-number-box></div>
+                            <div class="col-md-2"></div>
 
                         </div>
                     </div>
@@ -209,9 +206,9 @@
 </div>
 
 
-<div *ngIf="!newRecibo">
+<div *ngIf="!newComprobante">
     <div class="card">
-        <h5 class="card-header text-center font-weight-bold text-uppercase ">Recibos de Caja Generados</h5>
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Comprobantes de Pago Generados</h5>
         <div class="card-body">
                 <div class="row">
                     <div class="col-md-2"></div>
@@ -238,7 +235,7 @@
 
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4 btnSearch">
-                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerRecibosCajaPorRango()">Buscar</button>
+                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerComprobantesPagoPorRango()">Buscar</button>
                                     </div>
                                     <div class="col-md-4"></div>
                                 </div>        
@@ -255,7 +252,7 @@
                         
                                 <div class="col-md-3"></div>
                                 <div class="col-md-6 btnSearch">
-                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerRecibosCaja()">Buscar Todos</button>
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerComprobantesPago()">Buscar Todos</button>
                                 </div>
                                 <div class="col-md-3"></div>
                             </div>        
@@ -272,29 +269,27 @@
     <br>
     <dx-data-grid #datag2
         id="gridContainer"
-        [dataSource]="listadoRecibosCaja"
+        [dataSource]="listadoComprobantes"
         [showBorders]="true"
         (onExporting)="onExporting($event)"
         (onExported)="onExported($event)">
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
-        <dxo-export [enabled]="true" fileName="Recibos_de_caja" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-export [enabled]="true" fileName="Comprobante_Pago" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column dataField="idDocumento" caption="RC" dataType="number" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="idDocumento" caption="CP" dataType="number" sortOrder="desc"></dxi-column>
         <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-        <dxi-column dataField="docVenta" caption="Documento" dataType="string"></dxi-column>
-        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
-        <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
-        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
-        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number"></dxi-column>
+        <dxi-column dataField="documento" caption="Documento" dataType="string"></dxi-column>
+        <dxi-column dataField="centroCosto" caption="Centro/Costo" dataType="string"></dxi-column>
+        <dxi-column dataField="beneficiario" caption="Beneficiario" dataType="string"></dxi-column>
+        <dxi-column dataField="proveedor" caption="Proveedor" dataType="string"></dxi-column>
+        <dxi-column dataField="ruc" caption="RUC /CI" dataType="string"></dxi-column>
+        <dxi-column dataField="telefono" caption="Telefono" dataType="string"></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="string"></dxi-column>
 
+        <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones" caption="Notas" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="numDocumento" caption="N Documento" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="valorRecargo" caption="Valor Recargo" dataType="number" [visible]="false"></dxi-column>
-        <dxi-column dataField="valorPagoEfectivo" caption="Valor Pago Efectivo" dataType="number" [visible]="false"></dxi-column>
-        <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number" [visible]="false"></dxi-column>
+       
 
         <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
             <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
@@ -302,8 +297,6 @@
       <!--   <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
             <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
         </dxi-column> -->
-
-        
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"

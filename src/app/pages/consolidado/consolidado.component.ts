@@ -1,10 +1,6 @@
 import { Component, OnInit } from "@angular/core";
-import { AngularFirestore } from "angularfire2/firestore";
-import { AngularFireAuth } from "angularfire2/auth";
-import { AlertsService } from "angular-alert-module";
 import { producto, productosPendientesEntrega } from "../ventas/venta";
 import { transaccion } from "../transacciones/transacciones";
-import { element } from "protractor";
 import {
   inventario,
   invFaltanteSucursal,
@@ -14,11 +10,9 @@ import {
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
 import { ProductoService } from "src/app/servicios/producto.service";
 import { ProductosPendientesService } from "src/app/servicios/productos-pendientes.service";
-import { HttpClient } from "@angular/common/http";
 import Swal from "sweetalert2";
 import { BodegaService } from "src/app/servicios/bodega.service";
 import { bodega } from "../producto/producto";
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
@@ -78,7 +72,6 @@ export class ConsolidadoComponent implements OnInit {
   ngOnInit() {
     this.cargarUsuarioLogueado();
     this.traerProductosUnitarios();
-    //this.traerTransacciones()
     this.traerProductosPendientes();
     this.traerBodegas();
   }
@@ -115,7 +108,6 @@ export class ConsolidadoComponent implements OnInit {
       Swal.fire("Error!", "El producto ya se encuentra en la lista", "error");
     }
 
-    //this.proTransaccion.nombre=this.nombreProducto
   }
 
   traerProductos() {
@@ -808,8 +800,6 @@ export class ConsolidadoComponent implements OnInit {
       this.prodActualizable.suc1 = m2s1;
       this.prodActualizable.suc2 = m2s2;
       this.prodActualizable.suc3 = m2s3;
-      //if(this.prodActualizable.producto.PRODUCTO == "Porcelanato - Denali Marfil  - 60x60")
-      //alert(JSON.stringify(this.prodActualizable))
         
       this.productoService
         .updateProductosSucursalesNuevo(this.prodActualizable)
@@ -826,10 +816,7 @@ export class ConsolidadoComponent implements OnInit {
               console.log("error aqui", this.prodActualizable);
           }
         );
-      //await this.productoService.updateProductosSucursales(element.producto,m2s1,m2s2,m2s3).subscribe( res => {contVal++,this.contadorValidaciones2(contVal),console.log("lo hice")}, err => {console.log("error aqui",element.producto,m2s1,m2s2,m2s3)});
-      // this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :m2s1,"sucursal2":m2s2 , "sucursal3":m2s3})
     });
-    //alert(this.invetarioP.length)
   }
 
   contadorValidaciones2(i: number) {

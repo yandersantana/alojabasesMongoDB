@@ -13,16 +13,15 @@ export class ReciboCaja{
     valorFactura: number
     valorRecargo: number
     valorPagoEfectivo: number
-    valorOtros: number
     valorSaldos:number
     observaciones: string
     operacionesComercialesList: Array<OperacionComercial>
     constructor(){
         this.valorFactura = 0;
-        this.valorOtros = 0;
         this.valorPagoEfectivo = 0;
         this.valorRecargo = 0;
         this.valorSaldos = 0;
+        this.observaciones = "";
     }
 }
 

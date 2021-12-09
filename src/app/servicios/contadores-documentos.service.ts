@@ -166,6 +166,13 @@ export class ContadoresDocumentosService {
       contadores
     );
   }
+
+  updateContadoresIDComprobantePago(contadores) {
+    return this.http.put(
+      this.URL + `/updateIDComprobantePago/${contadores._id}`,
+      contadores
+    );
+  }
   
   deleteContadores(contadores) {
     return this.http.delete(this.URL + `/delete/${contadores._id}`, contadores);

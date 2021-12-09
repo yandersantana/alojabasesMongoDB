@@ -5,10 +5,19 @@
     margin-top: -0.3em;
 }
 
-.imgProducto{
-    width: auto;
-    height: 50px;
-    }
+.select{
+    text-align: center;
+    background-color: white;
+}
+
+::ng-deep .dx-selectbox input {  
+    text-align: center;  
+}  
+::ng-deep .dx-selectbox-popup-wrapper .dx-list-item {  
+    text-align: center;  
+} 
+
+
     
     .centrarTD{
         vertical-align: middle;

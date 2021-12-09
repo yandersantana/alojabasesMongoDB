@@ -1,29 +1,112 @@
 <div class="transacciones">
     <div *ngIf="mostrarLoading">
-        <app-loading></app-loading>
+        <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
     </div>
    
-        <div class="row remiPro titulos">
-         <div class="col-md-8"><div class="">
-             
-         </div></div>
-         <div class="col-md-4"> <dx-select-box [items]="menu1" 
-             [value]="menu1[0]" 
-             [readOnly]="false" 
-             [disabled]="false"
-             (onValueChanged)="opcionMenu($event)"
-             ></dx-select-box></div>
+    <div class="row remiPro titulos">
+        <div class="col-md-8"></div>
+        <div class="col-md-4"> 
+            <dx-select-box [items]="menu1" 
+            [value]="menu1[0]" 
+            [readOnly]="false" 
+            class="form-control select"
+            [disabled]="false"
+            (onValueChanged)="opcionMenu($event)"
+            ></dx-select-box>
         </div>
+    </div>
         
   <br>
-    <div class="mover">
+
+  <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Transacciones</h5>
+        <div class="card-body">
+                <div class="row">
+
+                        <div class="col-md-2"  *ngIf="!isBusqGeneral"></div>
+                        <div class="col-md-2"  *ngIf="!isBusqGeneral" style="padding-top: 0.7em;">PRODUCTO</div>
+                        <div class="col-md-6"  *ngIf="!isBusqGeneral">
+                            <dx-select-box
+                                [dataSource]="productos22"
+                                displayExpr="PRODUCTO"
+                                [searchEnabled]="true"
+                                valueExpr="PRODUCTO"
+                                [(value)]="nombreProducto"
+                                hint={{nombreProducto}}
+                                itemTemplate="item">
+                                <div *dxTemplate="let data of 'item'">
+                                    <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
+                                </div>
+                            </dx-select-box>
+                        </div>
+                        <div class="col-md-2"  *ngIf="!isBusqGeneral"></div>
+                   
+                    
+                    <br><br>
+                    <div class="col-md-2"></div>
+                    <div class="col-md-4">
+                        <div class="col-md-12" style="text-align: center;font-weight: bold;" *ngIf="isBusqGeneral"><h6>Consulta Específica</h6></div>
+                        <div class="row card">
+                            <div class="col-md-12"> 
+                                <div class="row">
+                                    <div class="col-md-3"  style="margin-top: 0.5em;">Desde</div>
+                                    <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowdesde"
+                                        type="date">
+                                    </dx-date-box>
+                                    </div>
+
+                                    <div class="col-md-3" style="margin-top: 0.5em;">Hasta</div>
+                                    <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowhasta"
+                                        type="date">
+                                    </dx-date-box>
+                                    </div>
+
+                                    <div class="col-md-4"></div>
+                                    <div class="col-md-4 btnSearch">
+                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesPorRango()">Buscar</button>
+                                    </div>
+                                    <div class="col-md-4"></div>
+                                </div>        
+                            </div>
+                        </div>                
+                    </div>
+                    
+                    <div class="col-md-4 " style="margin-left: 1em;">
+                        <div class="col-md-12" style="text-align: center;font-weight: bold;" *ngIf="isBusqGeneral"><h6>Consulta General</h6></div>
+                        <div class="row card">
+                            <br><br>
+                            <div class="col-md-12"> 
+                                <div class="row">  
+                            
+                                    <div class="col-md-3"></div>
+                                    <div class="col-md-6 btnSearch">
+                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransacciones()">Buscar Todos</button>
+                                    </div>
+                                    <div class="col-md-3"></div>
+                                </div>        
+                            </div>
+                            <br>
+                        </div>         
+
+                    </div>
+                <div class="col-md-2"></div>
+            </div>   
+        </div>
+    </div>
+
+
+    <!-- <div class="mover">
         <button class="btn btn-primary colbot" (click)="mostrarpopup()" >
             <i class="fa fa-question"></i>
         </button>
-    </div>
+    </div> -->
 
-   
-        <dx-data-grid #data2
+   <br>
+    <dx-data-grid #data2
         id="gridContainer"
         [dataSource]="transacciones"
         [showBorders]="true"
@@ -39,7 +122,6 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Transacciones" [allowExportSelectedData]="true"></dxo-export>
-        <!-- <dxi-column dataField="idTransaccion" ></dxi-column> -->
         <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="true"></dxi-column>
         <dxi-column dataField="fecha_transaccion" caption="Fecha del documento" dataType="date"></dxi-column>
         <dxi-column dataField="fecha_mov" caption="Fecha de transaccion" [visible]="false"></dxi-column>

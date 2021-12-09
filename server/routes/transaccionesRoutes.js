@@ -103,8 +103,6 @@ router.delete("/delete/:id", async (req, res, next) => {
 router.post("/deletePorDocumento", async (req, res, next) => {
   var tipoDoc = req.body.tipoDocumento;
   var nroDocumento = req.body.nroDocumento;
-  console.log("tip", tipoDoc);
-  console.log("nro", nroDocumento);
   await Transacciones.deleteMany({
     documento: nroDocumento,
     tipo_transaccion: tipoDoc,
@@ -113,8 +111,6 @@ router.post("/deletePorDocumento", async (req, res, next) => {
 });
 
 router.post("/newTransaccion", async (req, res) => {
-  console.log("avance" + req.body);
-  //const { index_name, index_description, index_type,index_length } = req.body;
   const newTransaccion = new Transacciones({
     idTransaccion: req.body.idTransaccion,
     fecha_transaccion: req.body.fecha_transaccion,

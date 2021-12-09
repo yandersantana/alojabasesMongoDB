@@ -22,3 +22,10 @@ export class SubCuenta{
     constructor(){
     }
 }
+
+export class CentroCosto{
+    _id:string
+    nombre:string
+    constructor(){
+    }
+}

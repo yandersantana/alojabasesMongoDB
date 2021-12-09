@@ -12,17 +12,17 @@
                                 <div class="col-md-2"></div>
                                 <div class="col-md-10">
                                     <div class="row">
-                                         <div class="col-md-6">FECHA</div>
-                                        <div class="col-md-6">11/10/2021</div>
+                                        <div class="col-md-6 textP">Fecha</div>
+                                        <div class="col-md-6">{{cajaMenor.fecha}}</div>
 
-                                        <div class="col-md-6">ESTADO</div>
-                                        <div class="col-md-6">Cerrado</div>
+                                        <div class="col-md-6 textP">Estado</div>
+                                        <div class="col-md-6">{{cajaMenor.estado}}</div>
 
-                                        <div class="col-md-6">SUCURSAL</div>
-                                        <div class="col-md-6">Matriz</div>
+                                        <div class="col-md-6 textP">Sucursal</div>
+                                        <div class="col-md-6">{{cajaMenor.sucursal}}</div>
 
-                                        <div class="col-md-6">USUARIO</div>
-                                        <div class="col-md-6">JForero</div>
+                                        <div class="col-md-6 textP">Usuario</div>
+                                        <div class="col-md-6">{{cajaMenor.usuario}}</div>
                                     </div>
                                 </div>
                             </div>
@@ -40,8 +40,7 @@
         <br>
         <dx-data-grid
             id="gridContainer"
-            [dataSource]="orders"
-            keyExpr="ID"
+            [dataSource]="transaccionesCaja"
             [showBorders]="true">
             <dxo-selection mode="single"></dxo-selection>
 

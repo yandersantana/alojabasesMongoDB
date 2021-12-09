@@ -310,6 +310,7 @@ export class contadoresDocumentos{
     pagoProveedor_Ndocumento:number
     auditorias_Ndocumento:number
     reciboCaja_Ndocumento:number
+    comprobantePago_Ndocumento:number
     constructor(){
 
     }

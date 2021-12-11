@@ -189,6 +189,12 @@ router.put('/updateIDComprobantePago/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateIDCajaMenor/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {cajaMenor_Ndocumento:req.body.cajaMenor_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/updateIdTransacciones/:id', async (req, res,next) => {
     const { id } = req.params;
     await Contadores.findByIdAndUpdate(id, {$set: {transacciones_Ndocumento:req.body.transacciones_Ndocumento}}, {new: true});

@@ -18,7 +18,8 @@ export class DetalleCajaMenor {
   }
 }
 
-export class cajaMenor{
+export class CajaMenor{
+    idDocumento : number;
     fecha: string
     usuario: string
     sucursal: string
@@ -33,5 +34,13 @@ export class cajaMenor{
         this.totalIngresos = 0;
         this.totalSalidas = 0;
         this.totalRC = 0;
+    }
+}
+
+export class FormatoImpresion{
+    nombreCuenta : string
+    listaSubCuentas : Array<DetalleCajaMenor>
+    constructor(){
+
     }
 }

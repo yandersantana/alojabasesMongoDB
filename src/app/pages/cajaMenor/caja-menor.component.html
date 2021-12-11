@@ -1,3 +1,7 @@
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
 <br><br>
 <div class="row">
     <div class="col-md-1"></div>
@@ -31,7 +35,7 @@
                     </div>
                     <div class="col-md-4">
                         <div style="text-align: center;">CONSECUTIVO</div>
-                        <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">01</div>
+                        <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">{{cajaMenor.idDocumento}}</div>
                     </div>
                 </div>
             </div>
@@ -97,71 +101,81 @@
                 summaryItem="count"
             ></dxi-sort-by-group-summary-info>
 
+            <dxi-sort-by-group-summary-info
+            summaryItem="count"
+            ></dxi-sort-by-group-summary-info>
 
+            <dxo-summary>
+                <dxi-total-item
+                    column="SubCuenta"
+                    displayFormat="BALANCE CAJA"
+                    alignment="center">
 
-                <dxi-sort-by-group-summary-info
-      summaryItem="count"
-    ></dxi-sort-by-group-summary-info>
+                </dxi-total-item>
 
+                <dxi-total-item
+                    column="TotalIngresos"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+                    displayFormat="$ {0}"
+                    alignment="right">
+                    <dxo-format
+                        type="number"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
 
-    <dxo-summary>
-        <dxi-total-item
-            column="SubCuenta"
-            displayFormat="BALANCE CAJA"
-            alignment="center">
+                <dxi-total-item
+                    column="TotalSalidas"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
 
-        </dxi-total-item>
+                    displayFormat="$ {0}"
+                    alignment="right">
+                    <dxo-format
+                        type="number"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
 
-        <dxi-total-item
-            column="TotalIngresos"
-            dataType="number"
-            summaryType="sum"
-            showInColumn="TotalAmount"
-            displayFormat="$ {0}"
-            alignment="right">
-            <dxo-format
-                type="number"
-                [precision]="2">
-            </dxo-format>
-        </dxi-total-item>
-
-         <dxi-total-item
-            column="TotalSalidas"
-            dataType="number"
-            summaryType="sum"
-            showInColumn="TotalAmount"
-
-            displayFormat="$ {0}"
-            alignment="right">
-            <dxo-format
-                type="number"
-                [precision]="2">
-            </dxo-format>
-        </dxi-total-item>
-
-         <dxi-total-item
-            column="TotalRC"
-            dataType="number"
-            summaryType="sum"
-            showInColumn="TotalAmount"
-       
-            displayFormat="$ {0}"
-            alignment="right">
-            <dxo-format
-                type="number"
-                [precision]="2">
-            </dxo-format>
-        </dxi-total-item>
-    </dxo-summary>
+                <dxi-total-item
+                    column="TotalRC"
+                    dataType="number"
+                    summaryType="sum"
+                    showInColumn="TotalAmount"
+            
+                    displayFormat="$ {0}"
+                    alignment="right">
+                    <dxo-format
+                        type="number"
+                        [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+            </dxo-summary>
             <dxo-remote-operations [sorting]="true"></dxo-remote-operations>
-            </dx-data-grid>
-            <div class="row sectionDatos">
-                <div class="col-md-5" style="text-align: center;margin-top: 1.2em;">RESULTADO DEL EJERCICIO</div>
-                <div class="col-md-7" style="text-align: right;margin-top: 1.2em;">${{resultado}}</div>
-                <hr width="100%">
-                <div class="col-md-5" style="text-align: center;margin-bottom: 1.2em;">ESTADO DE LA CAJA</div>
-                <div class="col-md-7" style="text-align: right;margin-bottom: 1.2em;">{{estadoCuenta}}</div>
+        </dx-data-grid>
+        <div class="row sectionDatos">
+            <div class="col-md-5" style="text-align: center;margin-top: 1.2em;">RESULTADO DEL EJERCICIO</div>
+            <div class="col-md-7" style="text-align: right;margin-top: 1.2em;">${{resultado}}</div>
+            <hr width="100%">
+            <div class="col-md-5" style="text-align: center;margin-bottom: 1.2em;">ESTADO DE LA CAJA</div>
+            <div class="col-md-7" style="text-align: right;margin-bottom: 1.2em;">{{estadoCuenta}}</div>
+        </div>
+        <br>
+        <!-- <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarCajaMenor()">Cerrar Caja</button>
             </div>
+            <div class="col-md-4"></div>
+        </div> -->
+        
     </div>
     <div class="col-md-1"></div>
+
+
+
+    
 </div>

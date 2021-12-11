@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class DatosConfiguracionService {
-  private URL = 'http://localhost:3000/datosConfiguracion'; //localhost
-  //private URL = "http://104.248.14.190:3000/datosConfiguracion";
+  //private URL = 'http://localhost:3000/datosConfiguracion'; //localhost
+  private URL = "http://159.223.107.115:3000/datosConfiguracion";
   //private URL = 'http://104.131.82.174:3000/datosConfiguracion';
   constructor(public http: HttpClient, public router: Router) {}
 

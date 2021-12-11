@@ -1,16 +1,14 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
-import { factura } from "../pages/ventas/venta";
 
 @Injectable({
   providedIn: "root",
 })
 export class ContadoresDocumentosService {
-  facturas: factura[];
   //private URL = 'http://localhost:3000/contadores'; //localhost
-  //private URL = "http://104.248.14.190:3000/contadores";
-  private URL = "http://104.131.82.174:3000/contadores";
+  private URL = "http://159.223.107.115:3000/contadores";
+  //private URL = "http://104.131.82.174:3000/contadores";
 
   constructor(public http: HttpClient, public router: Router) {}
 
@@ -170,6 +168,13 @@ export class ContadoresDocumentosService {
   updateContadoresIDComprobantePago(contadores) {
     return this.http.put(
       this.URL + `/updateIDComprobantePago/${contadores._id}`,
+      contadores
+    );
+  }
+
+  updateContadoresIDCajaMenor(contadores) {
+    return this.http.put(
+      this.URL + `/updateIDCajaMenor/${contadores._id}`,
       contadores
     );
   }

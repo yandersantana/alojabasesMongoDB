@@ -21,6 +21,7 @@ import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.
 export class CajaMenorComponent implements OnInit {
   transaccionesCaja: DetalleCajaMenor[] = [];
   listaTransacciones  : TransaccionesFinancieras[] = [];
+  listadoCaja: CajaMenor[] = [];
   cajaMenorEncontradas: CajaMenor[] = [];
   contadores: contadoresDocumentos[];
   nowdesde: Date = new Date();
@@ -37,6 +38,12 @@ export class CajaMenorComponent implements OnInit {
 
   docImpresion : FormatoImpresion [] = [];
   formImpresion : FormatoImpresion
+  newCaja = true;
+
+  menu: string[] = [
+    "Caja Menor Diaria",
+    "Registros Caja Generados"
+  ];
   
   constructor(
     public _transaccionesFinancierasService : TransaccionesFinancierasService,
@@ -48,6 +55,7 @@ export class CajaMenorComponent implements OnInit {
    }
 
   ngOnInit() {
+     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerContadoresDocumentos();
     this.traerDatosConfiguracion();
     this.traerTransaccionesFinancierasPorDia();
@@ -68,6 +76,30 @@ export class CajaMenorComponent implements OnInit {
     this._configurationService.getDatosConfiguracion().subscribe((res) => {
       this.imagenLogotipo = res[0].urlImage;
     });
+  }
+
+  traerCajaPagoPorRango() {
+    this.listadoCaja = [];
+    this.mensajeLoading = "Cargando datos";
+    this.mostrarLoading = true;
+    this.obj = new objDate();
+    this.obj.fechaActual = this.nowhasta;
+    this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this._cajaMenorService.getCajaMenorPorRango(this.obj).subscribe(res => {
+      this.listadoCaja = res as CajaMenor[];
+      this.mostrarLoading = false;
+    })
+  }
+
+  traerDocumentosCaja(){
+    this.listadoCaja = [];
+    this.mensajeLoading = "Cargando datos";
+    this.mostrarLoading = true;
+    this._cajaMenorService.getCajaMenor().subscribe(res => {
+      this.listadoCaja = res as CajaMenor[];
+      this.mostrarLoading = false;
+    })
   }
 
   cargarUsuarioLogueado() {
@@ -146,6 +178,13 @@ export class CajaMenorComponent implements OnInit {
     });
   }
 
+  
+  
+  downloadFile = (e) => {
+    //this.obtenerDataRecibo(e.row.data);
+  };
+
+
 
   guardarCajaMenor(){
     this.cajaMenor.estadoCaja = "Cerrado";
@@ -214,6 +253,22 @@ export class CajaMenorComponent implements OnInit {
       })
     }
   } 
+
+
+  opcionMenu(e){
+    switch (e.value) {
+      case "Caja Menor Diaria":
+        this.newCaja = true;
+        
+       break;
+      case "Registros Caja Generados":
+        this.newCaja = false;
+        if(this.listadoCaja.length == 0)
+          this.traerCajaPagoPorRango();
+        break;
+      default:    
+    }      
+  }
 
 
    crearPDF(recibo , isNew) {

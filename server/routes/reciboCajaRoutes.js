@@ -19,6 +19,7 @@ router.post('/newReciboCaja', async (req, res) => {
         valorOtros:req.body.valorOtros,
         valorSaldos:req.body.valorSaldos,
         observaciones:req.body.observaciones,
+        estadoRecibo:req.body.estadoRecibo,
         operacionesComercialesList:req.body.operacionesComercialesList
     });
     await newReciboCaja.save();
@@ -47,6 +48,14 @@ router.post('/getReciboCajaPorId', async (req, res, next) => {
   });
   res.json(documentos);
 });
+
+
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await ReciboCaja.findByIdAndUpdate( id,{ $set: { estadoRecibo: estado } },{ new: true });
+    res.json({status: 'ReciboCaja Updated'});  
+})
  
 
 router.post("/getReciboCajaPorRango", async (req, res, next) => {
@@ -80,6 +89,7 @@ router.put('/update/:id', async (req, res,next) => {
             valorOtros:req.body.valorOtros,
             valorSaldos:req.body.valorSaldos,
             observaciones:req.body.observaciones,
+            estadoRecibo:req.body.estadoRecibo,
             operacionesComercialesList:req.body.operacionesComercialesList};
     await ReciboCaja.findByIdAndUpdate(id, {$set: newReciboCaja}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

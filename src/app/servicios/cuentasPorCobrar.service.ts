@@ -26,4 +26,8 @@ export class CuentasPorCobrarService {
   deleteCuentaPorCobrar(cuenta) {
     return this.http.delete(this.URL + `/delete/${cuenta._id}`, cuenta);
   }
+
+ 
+
+  
 }

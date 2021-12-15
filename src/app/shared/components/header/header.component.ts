@@ -30,7 +30,9 @@ export class HeaderComponent {
     }
   }];
 
-  constructor(private authService: AuthService) { }
+  constructor(private authService: AuthService) { 
+    this.title = "SOFTWARE VERSIÓN DE PRUEBAS";
+  }
 
   toggleMenu = () => {
     this.menuToggle.emit();

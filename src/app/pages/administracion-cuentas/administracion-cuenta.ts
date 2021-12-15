@@ -29,3 +29,10 @@ export class CentroCosto{
     constructor(){
     }
 }
+
+export class Beneficiario{
+    _id:string
+    nombre:string
+    constructor(){
+    }
+}

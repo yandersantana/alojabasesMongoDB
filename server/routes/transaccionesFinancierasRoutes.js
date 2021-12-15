@@ -19,6 +19,11 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
+  const transacciones = await TransaccionFinanciera.find({ rCajaId: req.body.NumDocumento});
+  res.json(transacciones);
+});
+
 
 router.delete("/delete/:id", async (req, res, next) => {
   await TransaccionFinanciera.findByIdAndRemove(req.params.id);

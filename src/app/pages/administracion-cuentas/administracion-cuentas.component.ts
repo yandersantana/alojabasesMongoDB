@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { CentroCosto, Cuenta, SubCuenta } from './administracion-cuenta';
+import { Beneficiario, CentroCosto, Cuenta, SubCuenta } from './administracion-cuenta';
 import { CuentasService } from 'src/app/servicios/cuentas.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
+import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
 
 @Component({
   selector: 'app-administracion-cuentas',
@@ -14,6 +15,7 @@ export class AdministracionCuentasComponent implements OnInit {
 
   listaCuentas : Cuenta[]=[]
   listaCentroCosto : CentroCosto[]=[]
+  listaBeneficiarios : Beneficiario[]=[]
   cuenta = {
     nombre:"",
     tipoCuenta:""
@@ -22,6 +24,9 @@ export class AdministracionCuentasComponent implements OnInit {
     nombre:""
   }
   centroCosto = {
+    nombre:""
+  }
+  beneficiario = {
     nombre:""
   }
   centroCsotos:CentroCosto[]=[]
@@ -33,13 +38,16 @@ export class AdministracionCuentasComponent implements OnInit {
   valueCuenta= "";
   cuentaPrueba:Cuenta[]=[]
   newCuenta:Cuenta
-  newCentroCosto:CentroCosto
+  newCentroCosto: CentroCosto
+  newBeneficiario: Beneficiario
   popupVisible:boolean = false
   popupVisibleSubcuenta:boolean = false
   popupVisibleCosto:boolean = false
+  popupVisibleBeneficiario:boolean = false
   sectionCuentas:boolean = true
   sectionSubCuentas:boolean = false
   sectionCostos:boolean = false
+  sectionBeneficiarios:boolean = false
 
   newSubCuenta: SubCuenta
   idCuenta:string
@@ -51,6 +59,7 @@ export class AdministracionCuentasComponent implements OnInit {
     public _cuentasService : CuentasService,
     public _subCuentasService : SubCuentasService,
     public _centroCostoService : CentroCostoService,
+    public _beneficiariosService : BeneficiarioService,
     ) {
    }
 
@@ -77,6 +86,12 @@ export class AdministracionCuentasComponent implements OnInit {
     this.popupVisibleCosto=true
     this.centroCosto.nombre = "";
   }
+
+  mostrarPopupBeneficiarios(){
+    this.popupVisibleBeneficiario=true
+    this.beneficiario.nombre = "";
+    this.isNew = true;
+  }
  
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
@@ -97,6 +112,13 @@ export class AdministracionCuentasComponent implements OnInit {
   traerCuentasCostos(){
     this._centroCostoService.getCentrosCostos().subscribe(res => {
       this.listaCentroCosto = res as CentroCosto[];
+   })
+  }
+
+
+  traerBeneficiarios(){
+    this._beneficiariosService.getBeneficiarios().subscribe(res => {
+      this.listaBeneficiarios = res as Beneficiario[];
    })
   }
 
@@ -142,6 +164,17 @@ export class AdministracionCuentasComponent implements OnInit {
     })
   }
 
+  correctoBeneficiarios(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerBeneficiarios();
+    })
+  }
+
   messaggeDelete(){
     Swal.fire({
       title: 'Correcto',
@@ -161,6 +194,17 @@ export class AdministracionCuentasComponent implements OnInit {
       confirmButtonText: 'Ok'
     }).then((result) => {
       this.traerCuentasCostos();
+    })
+  }
+
+  messaggeDeleteBeneficiario(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se ha eliminado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerBeneficiarios();
     })
   }
   
@@ -226,6 +270,25 @@ export class AdministracionCuentasComponent implements OnInit {
   } 
 
 
+  saveNewBeneficiario(){
+    var existe = this.listaBeneficiarios.find(element=> element.nombre == this.centroCosto.nombre);
+    if(!existe){
+      this.popupVisibleBeneficiario = false;
+      this.newBeneficiario = new Beneficiario();
+      this.newBeneficiario.nombre = this.beneficiario.nombre;
+      this.mensajeGuardando()
+      new Promise<any>((resolve, reject) => {
+        this._beneficiariosService.newBeneficiario(this.newBeneficiario).subscribe(
+          res => {this.correctoBeneficiarios()},
+          err => {this.mostrarMensajeGenerico(2,"Error a guardar")})
+      })
+    }else{
+      this.popupVisibleBeneficiario = false;
+      this.mostrarMensajeGenerico(2,"El nombre a crear ya existe")
+    }
+  } 
+
+
   guardar(e,cuenta){
     this.cuenta = cuenta;
     this.popupVisible = true;
@@ -235,6 +298,12 @@ export class AdministracionCuentasComponent implements OnInit {
   actualizaDetalleCosto(e,centroCosto){
     this.centroCosto = centroCosto;
     this.popupVisibleCosto = true;
+    this.isNew = false;
+  }
+
+  actualizaBeneficiario(e,beneficiario){
+    this.beneficiario = beneficiario;
+    this.popupVisibleBeneficiario = true;
     this.isNew = false;
   }
 
@@ -265,7 +334,21 @@ export class AdministracionCuentasComponent implements OnInit {
           this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
         })
     })
+  }
 
+
+  actualizarBeneficiario(){
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._beneficiariosService.updateBeneficiario(this.beneficiario).subscribe(
+        res => {
+          this.popupVisibleBeneficiario = false;
+          this.correctoBeneficiarios();
+        },
+        err => {
+          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
+        })
+    })
   }
 
 
@@ -354,6 +437,28 @@ export class AdministracionCuentasComponent implements OnInit {
   }
 
 
+  eliminarBeneficiario(e,beneficiario){
+    Swal.fire({
+      title: 'Eliminar Beneficiario',
+      text: "Esta seguro que desea eliminar "+ beneficiario.nombre,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._beneficiariosService.deleteBeneficiario(beneficiario).subscribe(
+          res => {
+           this.messaggeDeleteBeneficiario();
+          },err => {alert("error")})
+     
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.");
+      }
+    })
+  }
+
+
 
   mensajeGuardando(){
     let timerInterval
@@ -383,20 +488,32 @@ export class AdministracionCuentasComponent implements OnInit {
         this.sectionCuentas = true;
         this.sectionSubCuentas = false;
         this.sectionCostos = false;
+        this.sectionBeneficiarios = false;
         break;
   
       case 2:
         this.sectionCuentas = false;
         this.sectionSubCuentas = true;
         this.sectionCostos = false;
+        this.sectionBeneficiarios = false;
         break;
 
       case 3:
         this.sectionCuentas = false;
         this.sectionSubCuentas = false;
         this.sectionCostos = true;
+        this.sectionBeneficiarios = false;
         if(this.listaCentroCosto.length == 0)
             this.traerCuentasCostos();
+        break;
+
+      case 4:
+        this.sectionCuentas = false;
+        this.sectionSubCuentas = false;
+        this.sectionCostos = false;
+        this.sectionBeneficiarios = true;
+        if(this.listaBeneficiarios.length == 0)
+            this.traerBeneficiarios();
         break;
       default:    
     }      

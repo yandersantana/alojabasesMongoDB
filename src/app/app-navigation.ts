@@ -322,6 +322,10 @@ export const navigationAdmin = [
         path: "/comprobante-pago",
       },
       {
+        text: "C/Pago Proveedores",
+        path: "/comprobante-pago-proveedores",
+      },
+      {
         text: "Cuentas por Cobrar",
         path: "/cuentas-porCobrar",
       },

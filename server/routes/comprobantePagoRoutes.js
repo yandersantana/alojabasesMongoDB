@@ -16,6 +16,7 @@ router.post('/newComprobantePago', async (req, res) => {
         telefono:req.body.telefono,
         total:req.body.total,
         observaciones:req.body.observaciones,
+        estadoComprobante:req.body.estadoComprobante,
         operacionesComercialesList:req.body.operacionesComercialesList
     });
     await newReciboCaja.save();
@@ -59,6 +60,14 @@ router.post("/getComprobantesPorRango", async (req, res, next) => {
 });
 
 
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await ComprobantePago.findByIdAndUpdate( id,{ $set: { estadoComprobante: estado } },{ new: true });
+    res.json({status: 'ComprobantePago Updated'});  
+})
+
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const newComprobante ={ 
@@ -74,6 +83,7 @@ router.put('/update/:id', async (req, res,next) => {
                   telefono:req.body.telefono,
                   total:req.body.total,
                   observaciones:req.body.observaciones,
+                  estadoComprobante:req.body.estadoComprobante,
                   operacionesComercialesList:req.body.operacionesComercialesList};
     await ComprobantePago.findByIdAndUpdate(id, {$set: newComprobante}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 

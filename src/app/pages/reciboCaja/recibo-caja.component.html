@@ -34,7 +34,7 @@
                             <div class="col-md-6">
                                 <div class="row espacioDivs">
                                     <div class="col-md-4">Fecha:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.fecha" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-8 dateB"><dx-date-box [(value)]="reciboCaja.fecha" type="date"></dx-date-box></div>
 
                                     <div class="col-md-4">Doc. Venta:</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.docVenta" [readOnly]="isReadOnly"></dx-text-box></div>
@@ -269,6 +269,22 @@
         </div>
     </div>
 
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <div class="dx-field radio">
+                <div class="dx-field-value">
+                    <dx-radio-group
+                    [items]="estados"
+                    [value]="estados[0]"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadio($event)">
+                    </dx-radio-group>
+                </div>
+            </div>
+        </div>
+    </div>
+    
     <br>
     <dx-data-grid #datag2
         id="gridContainer"
@@ -299,9 +315,13 @@
         <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
             <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
         </dxi-column>
-      <!--   <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
-            <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
-        </dxi-column> -->
+        <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
+            <dxi-button icon="clear" [onClick]="deleteRecibo"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+            <dxi-button icon="clear" [onClick]="aprobarEliminacion"></dxi-button>   
+        </dxi-column>
+      
 
         
         <dxo-paging [pageSize]="12"></dxo-paging>

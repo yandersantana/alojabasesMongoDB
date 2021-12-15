@@ -17,6 +17,7 @@ const ReciboCajaSchema = new Schema({
     valorOtros: { type: Number, required: false},
     valorSaldos: { type: Number, required: false},
     observaciones: { type: String, required: false},
+    estadoRecibo: { type: String, required: false},
     operacionesComercialesList: { type: Array, required: false}
 },{
     timestamps:true

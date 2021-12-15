@@ -34,6 +34,7 @@ import {
   DxLoadPanelModule,
   DxListModule,
   DxTextAreaModule,
+  DxRadioGroupModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
 import { AngularFirestoreModule } from "angularfire2/firestore";
@@ -89,6 +90,7 @@ import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCob
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messagge.component";
+import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
 
 @NgModule({
   declarations: [
@@ -135,7 +137,8 @@ import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messag
     CuentaPorCobrarComponent,
     TransaccionesFinancierasComponent,
     ComprobantePagoComponent,
-    LoadingMessaggeComponent
+    LoadingMessaggeComponent,
+    ComprobantePagoProveedoresComponent
   ],
   imports: [
     BrowserModule,
@@ -172,6 +175,7 @@ import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messag
     DxTemplateModule,
     DxTextAreaModule,
     AlertsModule.forRoot(),
+    DxRadioGroupModule
   ],
   exports: [CatalogoComponent],
   providers: [

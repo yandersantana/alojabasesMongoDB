@@ -8,7 +8,7 @@ import { TransaccionesFinancierasService } from 'src/app/servicios/transacciones
 import Swal from 'sweetalert2';
 import { Cuenta, SubCuenta } from '../administracion-cuentas/administracion-cuenta';
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
-import { objDate } from '../transacciones/transacciones';
+import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
 import { contadoresDocumentos } from '../ventas/venta';
 import { OperacionComercial, ReciboCaja } from './recibo-caja';
@@ -17,6 +17,8 @@ import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.se
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import { element } from 'protractor';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 
 @Component({
@@ -45,7 +47,11 @@ export class ReciboCajaComponent implements OnInit {
   mostrarLoadingBase : boolean = false;
   newRecibo: boolean = true;
   listadoRecibosCaja: ReciboCaja [] = []
+  listadoRecibosCajaActivos: ReciboCaja [] = []
+  listadoRecibosCajaAnulados: ReciboCaja [] = []
+  listadoRecibosCajaPendientes: ReciboCaja [] = []
   parametrizaciones: parametrizacionsuc[] = [];
+  transaccionesFinancieras: TransaccionesFinancieras [] = []
   parametrizacionSucu: parametrizacionsuc;
   obj: objDate;
   nowdesde: Date = new Date();
@@ -55,8 +61,17 @@ export class ReciboCajaComponent implements OnInit {
     "Recibos Cajas Generados"
   ];
 
+  estados: string[] = [
+    'Activos',
+    'Pendientes',
+    'Anulados',
+  ];
+
   imagenLogotipo ="";
   textLoading = "";
+  busquedaTransaccion: tipoBusquedaTransaccion; 
+  mostrarDelete : boolean = true;
+  mostrarAprobacion : boolean = false;
 
 
   constructor(
@@ -68,13 +83,16 @@ export class ReciboCajaComponent implements OnInit {
     public _cuentaPorCobrar: CuentasPorCobrarService,
     public _parametrizacionService: ParametrizacionesService,
     public _configuracionService: DatosConfiguracionService,
+    public _authenService:AuthenService
     ) {
    }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.listadoOperaciones.push(new OperacionComercial());
     this.reciboCaja = new ReciboCaja();
+    this.reciboCaja.fecha = new Date();
     this.traerContadoresDocumentos();
     this.traerListaCuentas();
     this.traerParametrizaciones();
@@ -93,7 +111,6 @@ export class ReciboCajaComponent implements OnInit {
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
       this.listaCuentas = res as Cuenta[];
-      
    })
   }
 
@@ -105,13 +122,61 @@ export class ReciboCajaComponent implements OnInit {
    })
   }
 
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+      var correo = localStorage.getItem("maily");
+
+      this._authenService.getUserLogueado(correo)
+        .subscribe(
+          res => {
+            var usuario = res as user;
+            this.reciboCaja.sucursal = usuario[0].sucursal.toString();
+          }
+        )
+    });
+  }
+
 
   downloadFile = (e) => {
     this.obtenerDataRecibo(e.row.data);
   };
 
+  deleteRecibo = (e) => {  
+    this.anularRecibo(e.row.data)  
+  }
+
+  anularRecibo(e:any){ 
+    Swal.fire({
+      title: 'Anular Recibo',
+      text: "Desea anular el recibo #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._reciboCajaService.updateEstado( e._id ,"Pendiente").subscribe( res => {
+
+        Swal.fire({
+          title: 'Correcto',
+          text: 'Un administrador aprobará su anulación',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+         this.traerRecibosCajaPorRango();
+        })
+        }, err => {alert("error")})
+      
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso");
+      }
+    })
+  }
+
 
   traerRecibosCajaPorRango() {
+    this.limpiarArrays();
     this.listadoRecibosCaja = [];
     this.mostrarLoadingBase = true;
     this.obj = new objDate();
@@ -120,9 +185,23 @@ export class ReciboCajaComponent implements OnInit {
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this._reciboCajaService.getReciboCajaPorRango(this.obj).subscribe(res => {
       this.listadoRecibosCaja = res as ReciboCaja[];
-      this.mostrarLoadingBase = false;
+      this.separarRecibos();
     })
   }
+
+  separarRecibos(){
+    this.listadoRecibosCaja.forEach(element=> {
+      if(element.estadoRecibo == "Activo")
+        this.listadoRecibosCajaActivos.push(element);
+      else if(element.estadoRecibo == "Pendiente")
+        this.listadoRecibosCajaPendientes.push(element);
+      else if(element.estadoRecibo == "Anulado")
+        this.listadoRecibosCajaAnulados.push(element);
+    })
+    this.listadoRecibosCaja = this.listadoRecibosCajaActivos;
+    this.mostrarLoadingBase = false;
+  }
+  
 
   traerParametrizaciones() {
     this._parametrizacionService.getParametrizacion().subscribe((res) => {
@@ -145,6 +224,38 @@ export class ReciboCajaComponent implements OnInit {
         this.mostrarMensajeGenerico(2,"Error al traer la información")
     }); 
   }
+
+  limpiarArrays(){
+    this.listadoRecibosCaja = [];
+    this.listadoRecibosCajaActivos = [];
+    this.listadoRecibosCajaAnulados = [];
+    this.listadoRecibosCajaPendientes = [];
+  }
+
+  opcionRadio(e){
+    this.listadoRecibosCaja = [];
+    switch (e.value) {
+      case "Activos":
+        this.listadoRecibosCaja = this.listadoRecibosCajaActivos;
+        this.mostrarDelete = true;
+        this.mostrarAprobacion = false;
+        break;
+      case "Pendientes":
+        this.listadoRecibosCaja = this.listadoRecibosCajaPendientes;
+        this.mostrarDelete= false;
+        this.mostrarAprobacion = true;
+        break;
+      case "Anulados":
+        this.listadoRecibosCaja = this.listadoRecibosCajaAnulados;
+        this.mostrarDelete= false;
+        this.mostrarAprobacion = false;
+        break;
+      default:    
+    }      
+  }
+
+
+  
 
 
   buscarSubCuentas(e,i ,res){
@@ -187,6 +298,10 @@ export class ReciboCajaComponent implements OnInit {
     this.listadoOperaciones.splice(i, 1);
   }
 
+  aprobarEliminacion = (e) => {  
+    this.validarTransacciones(e.row.data)  
+  }
+
 
   addElement(){
     if(this.listadoOperaciones.length <= 2)
@@ -194,6 +309,96 @@ export class ReciboCajaComponent implements OnInit {
     else
       this.mostrarMensajeGenerico(2,"No se pueden ingresar mas operaciones");
   }
+
+
+
+  validarTransacciones(e){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = "RC"+e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = "venta-fact"
+    this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transaccionesFinancieras = res as TransaccionesFinancieras[];
+      if(this.transaccionesFinancieras.length == 0)
+        this.mostrarMensajeGenerico(2,"No se encontraron transacciones")
+      else
+        this.eliminarComp(e)
+    })
+  }
+
+
+  eliminarComp(e){
+    Swal.fire({
+      title: 'Anular Recibo Caja',
+      text: "Anular documento #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        var obs= e.observaciones + ".. Documento Anulado"  
+        e.observaciones= obs
+        this._reciboCajaService.updateEstado(e._id,"Anulado").subscribe(
+          res => { this.eliminarTransacciones()},
+          err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+  mostrarMensaje(){
+    let timerInterval
+      Swal.fire({
+        title: 'Guardando !',
+        html: 'Procesando',
+        timerProgressBar: true,
+        onBeforeOpen: () => {
+          Swal.showLoading()
+          timerInterval = setInterval(() => {
+            const content = Swal.getContent()
+            if (content) {
+              const b = content.querySelector('b')
+            }
+          }, 100)
+        },
+        onClose: () => {
+          clearInterval(timerInterval)
+        }
+      })
+  }
+
+
+  eliminarTransacciones(){
+    var cont = 0;
+    this.transaccionesFinancieras.forEach(element=>{
+      cont++;
+      this._transaccionFinancieraService.deleteTransaccionFinanciera(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})
+    })
+  }
+
+
+  eliminarCuentaPorCobrar(e){
+    var ll = new CuentaPorCobrar();
+    ll.rCajaId = e.rCajaId;
+   // this._cuentaPorCobrar.deleteCuentaPorDOC(element).subscribe( res => {}, err => {alert("error")})
+  }
+
+  contarTransacciones(cont){
+    if(cont == this.transaccionesFinancieras.length){
+      Swal.close()
+      Swal.fire({
+        title: 'Comprobante Anulado',
+        text: 'Se ha guardado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        this.traerRecibosCajaPorRango();
+      })
+    }
+  }
+
 
 
   async guardar(){
@@ -464,7 +669,6 @@ export class ReciboCajaComponent implements OnInit {
 
   traerDatosFaltantes(sucursal){
     this.parametrizacionSucu = this.parametrizaciones.find(element=> element.sucursal == sucursal);
-    console.log(this.parametrizacionSucu)
   }
 
 

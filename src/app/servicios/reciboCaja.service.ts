@@ -36,6 +36,10 @@ export class ReciboCajaService {
     return this.http.put(this.URL + `/update/${reciboCaja._id}`, reciboCaja);
   }
 
+  updateEstado(comprobante: string, estado: string) {
+    return this.http.put(this.URL + `/updateEstado/${comprobante}/${estado}`, comprobante);
+  }
+
   deleteReciboCaja(reciboCaja) {
     return this.http.delete(this.URL + `/delete/${reciboCaja._id}`, reciboCaja);
   }

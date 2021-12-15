@@ -13,6 +13,7 @@ const ComprobantePagoSchema = new Schema({
     ruc: { type: String, required: false},
     telefono: { type: String, required: false},
     total: { type: Number, required: false},
+    estadoComprobante: { type: String, required: false},
     observaciones: { type: String, required: false},
     operacionesComercialesList: { type: Array, required: false}
 },{

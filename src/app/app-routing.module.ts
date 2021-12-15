@@ -45,6 +45,7 @@ import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
+import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
 
 const routes: Routes = [
   {
@@ -208,6 +209,11 @@ const routes: Routes = [
   {
     path: "comprobante-pago",
     component: ComprobantePagoComponent,
+    canActivate: [AuthGuardService],
+  },
+   {
+    path: "comprobante-pago-proveedores",
+    component: ComprobantePagoProveedoresComponent,
     canActivate: [AuthGuardService],
   },
   {

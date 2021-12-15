@@ -24,6 +24,11 @@ router.delete("/delete/:id", async (req, res, next) => {
   res.json({ status: "Transaccion Eliminada" });
 });
 
+router.delete("/deleteDoc/:id", async (req, res, next) => {
+  await CuentaPorCobrar.findOneAndDelete( { rCajaId: req.params.id } );
+  res.json({ status: "Transaccion Eliminada" });
+});
+
 router.post("/newCuentaPorCobrar", async (req, res) => {
   const newCuenta = new CuentaPorCobrar({
     fecha: req.body.fecha,

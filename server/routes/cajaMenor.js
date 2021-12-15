@@ -53,7 +53,7 @@ router.post('/getCajasMenorPorIdConsecutivo', async (req, res, next) => {
 });
 
 
-router.post("/getCajasMenorPorRango", async (req, res, next) => {
+router.post("/getCajaMenorPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
   const cajasMenor = await CajaMenor.find({

@@ -2,7 +2,7 @@ import { SubCuenta } from "../administracion-cuentas/administracion-cuenta"
 
 export class ReciboCaja{
     idDocumento: number
-    fecha: string
+    fecha: Date
     docVenta: string
     cliente: string
     ruc: string
@@ -15,6 +15,7 @@ export class ReciboCaja{
     valorPagoEfectivo: number
     valorSaldos:number
     observaciones: string
+    estadoRecibo: string
     operacionesComercialesList: Array<OperacionComercial>
     constructor(){
         this.valorFactura = 0;
@@ -22,6 +23,8 @@ export class ReciboCaja{
         this.valorRecargo = 0;
         this.valorSaldos = 0;
         this.observaciones = "";
+        this.fecha = new Date();
+        this.estadoRecibo = "Activo";
     }
 }
 

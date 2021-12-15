@@ -25,9 +25,11 @@
   padding: 0;
 }
 
-::ng-deep .header-title .dx-item-content {
+.header-title{
   padding: 0;
   margin: 0;
+  text-align: right;
+  color: #fd7e14;
 }
 
 :host-context(.dx-theme-generic) {

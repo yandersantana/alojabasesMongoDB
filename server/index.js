@@ -62,6 +62,7 @@ app.use('/datosConfiguracion', require('./routes/datosConfiguracion'));
 app.use('/comprobantePago', require('./routes/comprobantePagoRoutes'));
 app.use('/centroCosto', require('./routes/centroCosto'));
 app.use('/cajaMenor', require('./routes/cajaMenor'));
+app.use('/beneficiario', require('./routes/beneficiario'));
 
 
 

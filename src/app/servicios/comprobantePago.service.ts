@@ -36,6 +36,13 @@ export class ComprobantePagoService {
     return this.http.put(this.URL + `/update/${comprobante._id}`, comprobante);
   }
 
+  updateEstado(comprobante: string, estado: string) {
+    return this.http.put(
+      this.URL + `/updateEstado/${comprobante}/${estado}`,
+      comprobante
+    );
+  }
+
   deleteComprobante(comprobante) {
     return this.http.delete(this.URL + `/delete/${comprobante._id}`, comprobante);
   }

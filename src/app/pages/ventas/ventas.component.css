@@ -111,27 +111,10 @@ table, th, td {
     background-color: blue; 
 }
 
-/* .prueba > .dxi-item {
-    font-size: 20px;
-    background-color: blue;
+.radio{
+    float: right;
+    display: contents;
 }
-
-::ng-deep .dx-form {  
-    font-size: 30px;
-    background-color: blue;
-}  */ 
-
-/* ::ng-deep .prueba {  
-    text-align: center;
-    align-content: center;
-    font-size: 30px;
-    background-color: blue;
-} 
-
-::ng-deep .prueba2 {  
-    color: blue;
-} */
-
 
 
 .contenedorProductos{

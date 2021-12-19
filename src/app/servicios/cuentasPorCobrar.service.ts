@@ -23,8 +23,12 @@ export class CuentasPorCobrarService {
     return this.http.post(this.URL + "/getCuentasPorRango", objFecha);
   }
 
-  deleteCuentaPorCobrar(cuenta) {
+  deleteCuenta(cuenta) {
     return this.http.delete(this.URL + `/delete/${cuenta._id}`, cuenta);
+  }
+
+  deleteCuentaPorCobrar(cuenta) {
+    return this.http.delete(this.URL + `/deleteDoc/${cuenta.rCajaId}`, cuenta);
   }
 
  

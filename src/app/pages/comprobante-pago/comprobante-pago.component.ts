@@ -282,8 +282,8 @@ export class ComprobantePagoComponent implements OnInit {
 
   validarTransaccionesFactura(e){
     this.busquedaTransaccion = new tipoBusquedaTransaccion()
-    this.busquedaTransaccion.NumDocumento = "CP"+e.idDocumento
-    this.busquedaTransaccion.tipoTransaccion = "venta-fact"
+    this.busquedaTransaccion.NumDocumento = e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = "comprobante"
     this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transaccionesFinancieras = res as TransaccionesFinancieras[];
       if(this.transaccionesFinancieras.length == 0)
@@ -487,6 +487,8 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.sucursal = this.comprobantePago.sucursal;
       transaccion.cliente = this.comprobantePago.beneficiario;
       transaccion.rCajaId = "CP"+this.comprobantePago.idDocumento.toString();
+      transaccion.id_documento = this.comprobantePago.idDocumento;
+      transaccion.tipoTransaccion = "comprobante";
       transaccion.documentoVenta = this.comprobantePago.documento;
       transaccion.numDocumento = this.comprobantePago.documento;
       transaccion.valor = element.valor;

@@ -20,7 +20,7 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
 });
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
-  const transacciones = await TransaccionFinanciera.find({ rCajaId: req.body.NumDocumento});
+  const transacciones = await TransaccionFinanciera.find({ id_documento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
   res.json(transacciones);
 });
 
@@ -46,7 +46,9 @@ router.post("/newTransaccion", async (req, res) => {
     dias: req.body.dias,
     vencimiento: req.body.vencimiento,
     notas: req.body.notas,
-    tipoCuenta: req.body.tipoCuenta
+    tipoCuenta: req.body.tipoCuenta,
+    id_documento : req.body.id_documento,
+    tipoTransaccion : req.body.tipoTransaccion
   });
   await newTransaccion.save();
   res.json({ status: "Sucursal creado" });

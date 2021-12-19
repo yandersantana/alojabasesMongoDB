@@ -27,6 +27,7 @@ export class CajaMenorComponent implements OnInit {
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   dateNow = new Date().toLocaleDateString();
+  two = 2;
 
   cajaMenor : CajaMenor;
   mostrarLoading : boolean = false;
@@ -55,7 +56,7 @@ export class CajaMenorComponent implements OnInit {
    }
 
   ngOnInit() {
-     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
+    this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerContadoresDocumentos();
     this.traerDatosConfiguracion();
     this.traerTransaccionesFinancierasPorDia();
@@ -147,8 +148,8 @@ export class CajaMenorComponent implements OnInit {
 
   traerTransaccionesFinancierasPorDia(){
     this.obj = new objDate();
-    this.obj.fechaActual = this.nowhasta;
-    this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaActual = new Date();
+    this.obj.fechaAnterior = new Date();
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this._transaccionesFinancierasService.getTransaccionesFinancierasPorRango(this.obj).subscribe(res => {
       this.listaTransacciones = res as TransaccionesFinancieras[];

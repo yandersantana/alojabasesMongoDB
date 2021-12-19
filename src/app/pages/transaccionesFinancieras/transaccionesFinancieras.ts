@@ -15,6 +15,8 @@ export class TransaccionesFinancieras{
     vencimiento: string
     notas: string
     tipoCuenta: string
+    tipoTransaccion : string
+    id_documento : number
     constructor(){
 
     }

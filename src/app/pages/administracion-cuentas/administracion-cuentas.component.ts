@@ -32,6 +32,8 @@ export class AdministracionCuentasComponent implements OnInit {
   centroCsotos:CentroCosto[]=[]
   varDis:boolean=true
   bloqueoSubCuenta:boolean=true
+  mostrarLoading : boolean = false;
+  mensajeLoading = ""
 
 
 
@@ -64,6 +66,7 @@ export class AdministracionCuentasComponent implements OnInit {
    }
 
   ngOnInit() {
+    this.mensajeLoading = "Cargando datos..."
     this.traerListaCuentas()
   }
 
@@ -94,6 +97,7 @@ export class AdministracionCuentasComponent implements OnInit {
   }
  
   traerListaCuentas(){
+    this.mostrarLoading = true;
     this._cuentasService.getCuentas().subscribe(res => {
       this.listaCuentas = res as Cuenta[];
       this.traersubCuentas();
@@ -107,18 +111,23 @@ export class AdministracionCuentasComponent implements OnInit {
       element.sub_cuentaList = res as SubCuenta[];
       })
     })
+    this.mostrarLoading = false;
   }
 
   traerCuentasCostos(){
+    this.mostrarLoading = true;
     this._centroCostoService.getCentrosCostos().subscribe(res => {
       this.listaCentroCosto = res as CentroCosto[];
+      this.mostrarLoading = false;
    })
   }
 
 
   traerBeneficiarios(){
+    this.mostrarLoading = true;
     this._beneficiariosService.getBeneficiarios().subscribe(res => {
       this.listaBeneficiarios = res as Beneficiario[];
+      this.mostrarLoading = false;
    })
   }
 

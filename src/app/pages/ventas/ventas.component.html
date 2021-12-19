@@ -1,20 +1,64 @@
-<div id="admin" style="display: none;">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-3"><h6>Sucursal</h6></div>
-            <div class="col-md-4"> <dx-select-box [items]="sucursalesDefault" 
+
+<div class="col-md-12" *ngIf="isAdmin">
+    <div class="row">
+        <div class="col-md-3"><h6>Sucursal</h6></div>
+        <div class="col-md-3"> 
+            <dx-select-box [items]="sucursalesDefault" 
                 [value]="sucursalesDefault[0]" 
                 [readOnly]="false" 
                 [disabled]="false"
-                (onValueChanged)="asignarsucursalD($event)"></dx-select-box></div>
-                <div class="col-md-5"></div>
-    </div>
+                (onValueChanged)="asignarsucursalD($event)">
+            </dx-select-box>
+        </div>
+        <div class="col-md-6"></div>
     </div>
 </div>
 <br>
 
-
 <div class="row" style="margin-bottom: 1.5em;">
+    <div class="col-md-4">
+        <h3>Ventas</h3>
+        RUC: {{RucSucursal}}
+    </div>
+    <div class="col-md-8"></div>
+
+    <div class="col-4 tdoc">
+        <div class="row">
+            <div class="col-md-6"><h6>Tipo de Venta</h6></div>
+            <div class="col-md-6"> 
+                <dx-select-box [items]="tipoDocumentos" 
+                    [value]="tipoDocumentos[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="obtenerTipoDocumento($event)">
+                </dx-select-box>
+            </div>
+        </div> 
+    </div>
+
+    <div class="col-2">
+        <div class="tdco2">
+            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2"></dx-button>
+        </div>         
+    </div>
+
+    <div class="col-md-6">
+        <div class="dx-field radio">
+            <div class="dx-field-value">
+                <dx-radio-group
+                [items]="formasPago"
+                [value]="formasPago[0]"
+                layout="horizontal"
+                (onValueChanged)="opcionRadio($event)">
+                </dx-radio-group>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+<!-- <div class="row" style="margin-bottom: 1.5em;">
     <div class="col-4">
         <h3>Ventas</h3>
         RUC: {{RucSucursal}}
@@ -22,43 +66,37 @@
     <div class="col-6 tdoc">
         <div class="row">
             <div class="col-md-6"><h6>Tipo de Venta</h6></div>
-            <div class="col-md-6"> <dx-select-box [items]="tipoDocumentos" 
-                [value]="tipoDocumentos[0]" 
-                [readOnly]="false" 
-                [disabled]="false"
-                (onValueChanged)="obtenerTipoDocumento($event)"></dx-select-box></div>
-        </div>
-        
-       
+            <div class="col-md-6"> 
+                <dx-select-box [items]="tipoDocumentos" 
+                    [value]="tipoDocumentos[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="obtenerTipoDocumento($event)">
+                </dx-select-box>
+            </div>
+        </div> 
     </div>
-    <div class="col-2 ">
-        <div class=" tdco2">
-            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2">
-            </dx-button>
-                   
+
+    <div class="col-2">
+        <div class="tdco2">
+            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2"></dx-button>
+        </div>         
+    </div>
+
+</div> -->
+
+<div *ngIf="sectionSearch" style="margin-bottom: 1em;">
+    <div class="dx-field row">
+        <div class="col-md-4">
+            <div class="dx-field-label label2">N/ Cotizacion</div>
+            <div class="dx-field-value"><dx-text-box [(value)]="Ncotizacion"></dx-text-box></div>
         </div>
-        
-               
-    </div><!--SELECT BOX SOLO PARA EL ADMINISTRADOR--> 
+        <div class="col-md-2">
+            <dx-button icon="fa fa-search" (onClick)="buscarCotizacion()"></dx-button>
+        </div>
+    </div>
 </div>
-<div id="buscar">
-    <div id="myDIV" style="display: none; margin-bottom: 1em;">
-        <div class="dx-field row">
-            <div class="col-md-4">
-                <div class="dx-field-label label2">N/ Cotizacion</div>
-                <div class="dx-field-value">
-                    <dx-text-box [(value)]="Ncotizacion"></dx-text-box>
-                    
-                </div>
-                
-            
-            </div>
-            <div class="col-md-2">
-                <dx-button icon="fa fa-search" (onClick)="buscarCotizacion()"></dx-button>
-            </div>
-        </div>
-        </div>
-</div>
+
 <!--BOTONES DE ACCION-->
 <div class="row">
     <div class="col-4">
@@ -84,8 +122,6 @@
             <dx-date-box [(value)]="now" [type]="'date'" [showClearButton]="true">
                 <dx-validator>
                     <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
-                    <!-- <dxi-validation-rule type="range" [min]="maxDate" message="No puede ser menor a 2 días antes">
-                    </dxi-validation-rule> -->
                     <dxi-validation-rule type="range" [max]="minDate" message="No puede ser mayor a la fecha actual">
                     </dxi-validation-rule>
                 </dx-validator>
@@ -101,12 +137,12 @@
             displayExpr="username"
             valueExpr="username"
             ></dx-select-box>
-           <!--  <dxo-label [visible]="false" cssClass="prueba2"></dxo-label> -->
+
         </dxi-item>
         <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
             <dxo-label
             location="left"
-            alignment="right"> <!-- or "left" | "center" -->
+            alignment="right">
         </dxo-label>
         </dxi-item>
     </dxi-item>
@@ -151,14 +187,6 @@
                     </dx-button>
         </dxi-item>
 
-       <!--  <dxi-item dataField="" [colSpan]="1" >
-            <dx-button
-                        type="normal"
-                        [width]="20"
-                        icon="fa fa-user"
-                        (onClick)="buscarCliente($event)">
-                    </dx-button>
-        </dxi-item> -->
     
     </dxi-item>
    
@@ -207,22 +235,20 @@
 
 
     <dxi-item itemType="group" [colCount]="3" [colSpan]="2">
-      
         <dxi-item dataField="coste_transporte" [editorOptions]="{ placeholder: 'Cost/Transporte'}" [colSpan]="1" onChange="calcularTotalFacturaconTransporte($event)">
             <dxo-label
-            location="left"
-            alignment="right"> <!-- or "left" | "center" -->
-        </dxo-label>
+                location="left"
+                alignment="right">
+            </dxo-label>
         </dxi-item>
         <dxi-item dataField="">
             <dx-button
-                        type="normal"
-                        [width]="80"
-                        icon="fa fa-car"
-                        (onClick)="calcularTransporte()">
-                    </dx-button>
-                    <dx-check-box [(value)]="costoTr" [readOnly]="true">
-                    </dx-check-box>
+                type="normal"
+                [width]="80"
+                icon="fa fa-car"
+                (onClick)="calcularTransporte()">
+            </dx-button>
+            <dx-check-box [(value)]="costoTr" [readOnly]="true"></dx-check-box>
         </dxi-item>
 
         <dxi-item dataField="">
@@ -308,13 +334,7 @@
         <div class="col-1">
             <h5>Dscto.(%)</h5>
         </div>
-       <!--  <div class="col-md-2">
-            <div class="row">
-            <div class="col-md-4"><h5>Cantidad (m2/uni.)</h5></div>
-            <div class="col-md-4"> <h5>Precio venta</h5></div>
-            <div class="col-md-4"> <h5>Dscto.(%)</h5></div></div>
 
-        </div> -->
         <div class="col-1">
             <h5>Total</h5>
         </div>
@@ -353,10 +373,6 @@
                 </div>
             </div>
             <div class="col-3">
-               <!--  <dx-select-box [dataSource]="productos22" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true" cssclass="sbox"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
-                    valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint={{p.producto.PRODUCTO}}>
-                </dx-select-box> -->
                 <dx-select-box
                     [dataSource]="productos22"
                     displayExpr="PRODUCTO"
@@ -373,12 +389,7 @@
                     </div>
                 </dx-select-box>
             </div>
-             <!--   <div class="col-4">
-                    <dx-select-box [items]="productos" [(value)]="p.REFERENCIA" [readOnly]="false" [disabled]="false"
-                    [searchEnabled]="true"  (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)" 
-                    valueExpr="PRODUCTO" displayExpr="PRODUCTO" hint="hh">
-                </dx-select-box>
-                </div> -->
+
             <div class="col-2">
                 <div class="row">
                     <div class="col-6" >
@@ -410,20 +421,7 @@
                 </dx-number-box>
             </div>
 
-            <!-- <div class="col-md-2">
-                <div class="row">
-                    <div class="col-md-4"><dx-number-box [(value)]="p.cantidad" [disabled]="false" [readOnly]="false"
-                        (onChange)="calcularEquivalencia($event, i)"  (onChange)="calcularDisponibilidadProducto($event, i)" (onChange)="carcularTotalProducto($event, i)"
-                        (onFocusIn)="setSelectedProducto(i)" >
-                    </dx-number-box></div>
-                    <div class="col-md-4"> <dx-number-box [(value)]="p.precio_venta" [disabled]="false" [readOnly]="false"
-                        (onChange)="carcularTotalProducto($event, i)" [min]="p.precio_min">
-                    </dx-number-box></div>
-                    <div class="col-md-4"><dx-number-box [(value)]="p.descuento" [disabled]="false" [readOnly]="false"
-                        (onChange)="calcularDescuento($event, i)">
-                        </dx-number-box></div>
-                </div>
-            </div> -->
+
             <div class="col-1">
                 <dx-number-box [value]="p.total" [disabled]="false" [readOnly]="false">
                 </dx-number-box>

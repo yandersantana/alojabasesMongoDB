@@ -19,6 +19,7 @@ import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.
 import { element } from 'protractor';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
+import { timingSafeEqual } from 'crypto';
 
 
 @Component({
@@ -314,8 +315,8 @@ export class ReciboCajaComponent implements OnInit {
 
   validarTransacciones(e){
     this.busquedaTransaccion = new tipoBusquedaTransaccion()
-    this.busquedaTransaccion.NumDocumento = "RC"+e.idDocumento
-    this.busquedaTransaccion.tipoTransaccion = "venta-fact"
+    this.busquedaTransaccion.NumDocumento = e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
     this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transaccionesFinancieras = res as TransaccionesFinancieras[];
       if(this.transaccionesFinancieras.length == 0)
@@ -340,12 +341,17 @@ export class ReciboCajaComponent implements OnInit {
         var obs= e.observaciones + ".. Documento Anulado"  
         e.observaciones= obs
         this._reciboCajaService.updateEstado(e._id,"Anulado").subscribe(
-          res => { this.eliminarTransacciones()},
+          res => { this.completarEliminacion(e)},
           err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
       }
     })
+  }
+
+  completarEliminacion(e){
+    this.eliminarTransacciones();
+    this.eliminarCuentaPorCobrar(e);
   }
 
   mostrarMensaje(){
@@ -380,16 +386,17 @@ export class ReciboCajaComponent implements OnInit {
 
 
   eliminarCuentaPorCobrar(e){
-    var ll = new CuentaPorCobrar();
-    ll.rCajaId = e.rCajaId;
-   // this._cuentaPorCobrar.deleteCuentaPorDOC(element).subscribe( res => {}, err => {alert("error")})
+    var cuenta = new CuentaPorCobrar();
+    cuenta.rCajaId = "RC"+e.idDocumento;
+    console.log(e)
+    this._cuentaPorCobrar.deleteCuentaPorCobrar(cuenta).subscribe( res => {}, err => {alert("error")})
   }
 
   contarTransacciones(cont){
     if(cont == this.transaccionesFinancieras.length){
       Swal.close()
       Swal.fire({
-        title: 'Comprobante Anulado',
+        title: 'Recibo Anulado',
         text: 'Se ha guardado con éxito',
         icon: 'success',
         confirmButtonText: 'Ok'
@@ -410,9 +417,17 @@ export class ReciboCajaComponent implements OnInit {
     });
 
     if(flag == true){
-      if(this.reciboCaja.valorFactura == 0)
-        this.mostrarMensajeGenerico(2,"Debe ingresar un valor de la factura");  
-      else
+      if(this.reciboCaja.valorFactura == 0){
+        this.mostrarMensajeGenerico(2,"Debe ingresar un valor de la factura"); 
+        flag = false;
+      }
+         
+      if(this.reciboCaja.valorSaldos != 0){
+        this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0");
+        flag = false;
+      }
+        
+      if(flag)
         this.obtenerId();
     }
     else
@@ -503,6 +518,8 @@ export class ReciboCajaComponent implements OnInit {
     transaccion.sucursal = this.reciboCaja.sucursal;
     transaccion.cliente = this.reciboCaja.cliente;
     transaccion.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
+    transaccion.tipoTransaccion = "recibo-caja";
+    transaccion.id_documento = this.reciboCaja.idDocumento;
     transaccion.documentoVenta = this.reciboCaja.docVenta;
     transaccion.numDocumento = this.reciboCaja.numDocumento;
     transaccion.valor = this.reciboCaja.valorSaldos;
@@ -529,6 +546,8 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.sucursal = this.reciboCaja.sucursal;
       transaccion.cliente = this.reciboCaja.cliente;
       transaccion.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
+      transaccion.tipoTransaccion = "recibo-caja";
+      transaccion.id_documento = this.reciboCaja.idDocumento;
       transaccion.documentoVenta = this.reciboCaja.docVenta;
       transaccion.numDocumento = this.reciboCaja.numDocumento;
       transaccion.valor = element.valor;

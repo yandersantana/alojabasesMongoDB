@@ -1,152 +1,151 @@
-import { Producto, ProductoDetalleVenta } from '../producto/producto'
+import {ProductoDetalleVenta } from '../producto/producto'
 
 
 export class producto {
-        _id:string
-        CAL: string
-        CASA: string
-        CLASIFICA: string
-        ESTADO: string
-        M2: number
-        P_CAJA: number
-        PRODUCTO: string
-        REFERENCIA: string
-        UNIDAD: string
-        APLICACION: string
-        cantidad: number
-        precio: number
-        porcentaje_ganancia: number
-        nombre_comercial:string
-        sucursal1:number
-        sucursal2:number
-        sucursal3:number
-        suc1Pendiente:number
-        suc2Pendiente:number
-        suc3Pendiente:number
-        ubicacionSuc1:string[]=[]
-        ubicacionSuc2:string[]=[]
-        ubicacionSuc3:string[]=[]
-        notas:string[]=[]
-        bodegaProveedor:number
-        ultimoPrecioCompra:number
-        ultimaFechaCompra:string
-        precio1:number
-        precio2:number
-        precio3:number
-        constructor(
-            ) {
-                this.REFERENCIA=""
+    _id:string
+    CAL: string
+    CASA: string
+    CLASIFICA: string
+    ESTADO: string
+    M2: number
+    P_CAJA: number
+    PRODUCTO: string
+    REFERENCIA: string
+    UNIDAD: string
+    APLICACION: string
+    cantidad: number
+    precio: number
+    porcentaje_ganancia: number
+    nombre_comercial:string
+    sucursal1:number
+    sucursal2:number
+    sucursal3:number
+    suc1Pendiente:number
+    suc2Pendiente:number
+    suc3Pendiente:number
+    ubicacionSuc1:string[]=[]
+    ubicacionSuc2:string[]=[]
+    ubicacionSuc3:string[]=[]
+    notas:string[]=[]
+    bodegaProveedor:number
+    ultimoPrecioCompra:number
+    ultimaFechaCompra:string
+    precio1:number
+    precio2:number
+    precio3:number
+    constructor() {
+        this.REFERENCIA=""
     }
 }
 
 export class venta {
-        cantidad: number
-        disponible: number
-        entregar: boolean
-        equivalencia: string
-        iva: boolean
-        producto: producto
-        pedir: boolean
-        seleccionado: boolean
-        precio_min: number
-        REFERENCIA:string
-        precio_venta: number
-        total: number
-        tipo_documento_emitido: string
-        factura_id : number
-        descuento: number
-        subtotal:number=0
-        tipoDocumentoVenta:string
-        subtP2:number
-        subtP1:number
-        subtIva:number
-        sucursal:string
-        productosVendidos:ProductoDetalleVenta[]=[]
-        constructor() {
-        this.pedir = false
-        this.iva = true
-        this.seleccionado = true
-        this.entregar = false
-        this.cantidad = 0 
-        this.descuento=0
-        this.total=0
-        this.producto = new producto()
+    cantidad: number
+    disponible: number
+    entregar: boolean
+    equivalencia: string
+    iva: boolean
+    producto: producto
+    pedir: boolean
+    seleccionado: boolean
+    precio_min: number
+    REFERENCIA:string
+    precio_venta: number
+    total: number
+    tipo_documento_emitido: string
+    factura_id : number
+    descuento: number
+    subtotal:number=0
+    tipoDocumentoVenta:string
+    subtP2:number
+    subtP1:number
+    subtIva:number
+    sucursal:string
+    productosVendidos:ProductoDetalleVenta[]=[]
+    constructor() {
+    this.pedir = false
+    this.iva = true
+    this.seleccionado = true
+    this.entregar = false
+    this.cantidad = 0 
+    this.descuento=0
+    this.total=0
+    this.producto = new producto()
 
     }
 }
 
 export class cliente {
-        _id:string
-        cliente_nombre: string
-        ruc: string
-        direccion: string
-        celular: string
-        tventa: string
-        telefono:string
-        correo:string
-        nombreContacto:string
-        direccionContacto:string
-        ciudad:string
-        celularContacto:string
-        fechaNacimiento:string
-        notas:string
-        //datos Tributarios
-        t_cliente: string
-        regimen:string
-        forma_pago:string
-        dias_credito:number
-        cupo_maximo:number
-        tipoCliente:string
-        estado:string
-            constructor( ) { 
-                this.telefono=""
-                this.correo=""
-                this.nombreContacto=""
-                this.direccionContacto=""
-                this.celularContacto=""
-                this.fechaNacimiento=""
-                this.notas=""
-                this.regimen=""   
-                this.forma_pago=""   
-                this.estado=""   
-                this.dias_credito=0   
-                this.cupo_maximo=0   
-            }          
+    _id:string
+    cliente_nombre: string
+    ruc: string
+    direccion: string
+    celular: string
+    tventa: string
+    telefono:string
+    correo:string
+    nombreContacto:string
+    direccionContacto:string
+    ciudad:string
+    celularContacto:string
+    fechaNacimiento:string
+    notas:string
+    t_cliente: string
+    regimen:string
+    forma_pago:string
+    dias_credito:number
+    cupo_maximo:number
+    tipoCliente:string
+    estado:string
+    constructor( ) { 
+        this.telefono=""
+        this.correo=""
+        this.nombreContacto=""
+        this.direccionContacto=""
+        this.celularContacto=""
+        this.fechaNacimiento=""
+        this.notas=""
+        this.regimen=""   
+        this.forma_pago=""   
+        this.estado=""   
+        this.dias_credito=0   
+        this.cupo_maximo=0   
+    }          
 }
+
+
 export class factura {
-        _id:string
-        documento_n : number
-        sucursal : string
-        fecha: Date
-        fecha2:string
-        total: number = 0
-        username: string
-        cliente: cliente
-        tipo_venta: string
-        tipo_cliente: string
-        observaciones: string
-        coste_transporte: number=0
-        dni_comprador:string
-        totalDescuento:number=0
-        tipoDocumento:string
-        cotizacion:number
-        subtotalF1:number
-        subtotalF2:number
-        totalIva:number
-        totalDescuentos:number
-        estado:string
-        mensaje:string
-        maestro:string
-        rucFactura:string
-        productosVendidos:venta[]=[]
-        nota:string
-        
-        constructor() { 
-                this.estado="CONTABILIZADA"
-                this.mensaje=" "
-                this.maestro=""
-                this.nota=""
-                //this.cliente = new cliente()
+    _id:string
+    documento_n : number
+    sucursal : string
+    fecha: Date
+    fecha2:string
+    total: number = 0
+    username: string
+    cliente: cliente
+    tipo_venta: string
+    tipo_cliente: string
+    observaciones: string
+    coste_transporte: number=0
+    dni_comprador:string
+    totalDescuento:number=0
+    tipoDocumento:string
+    cotizacion:number
+    subtotalF1:number
+    subtotalF2:number
+    totalIva:number
+    totalDescuentos:number
+    estado:string
+    mensaje:string
+    maestro:string
+    rucFactura:string
+    productosVendidos:venta[]=[]
+    nota:string
+    
+    constructor() { 
+        this.estado="CONTABILIZADA"
+        this.mensaje=" "
+        this.maestro=""
+        this.nota=""
     }
 }
 

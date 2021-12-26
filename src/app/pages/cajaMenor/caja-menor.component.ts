@@ -299,7 +299,7 @@ export class CajaMenorComponent implements OnInit {
 
     IdNum.then((data) => {
       if(isNew)
-      this.mostrarMensajeGenerico(1,"descarga completa")
+      this.mostrarMensajeGenerico(1,"Descarga completa")
         //this.terminarOperacion();
       else
       console.log("dd");
@@ -639,19 +639,24 @@ export class CajaMenorComponent implements OnInit {
     var ll;
     operaciones.forEach(element=>{
       ll = 
-     {
+     { 
           table: {
-            body: [
-              [
-                {
-                  text:element.nombreCuenta,
-                },
-              ],
-            ],
-          },
+                      body: [
+                        [
+                          {
+                            text:element.nombreCuenta,
+                          },
+                        
+                        ],
+                      ],
+                    },
+           
           layout: "noBorders",
-        };
-    
+
+        
+         
+     };
+    this.getListaOperaciones2(operaciones)
       
     
     }); 
@@ -690,6 +695,65 @@ export class CajaMenorComponent implements OnInit {
 
       
     };  */
+  }
+
+
+   getListaOperaciones2(operaciones: FormatoImpresion[]) {
+   /*  var ll;
+    operaciones.forEach(element=>{
+      ll = 
+     {
+          table: {
+            body: [
+              [
+                {
+                  text:element.nombreCuenta,
+                },
+               
+              ],
+            ],
+          },
+          layout: "noBorders",
+        };
+    
+      
+    
+    }); 
+
+    return ll; */
+
+      return {
+
+      table: {
+        widths: ["40%", "40%", "20%"],
+        alignment: "center",
+        fontSize: 8,
+        headerRows: 2,
+        body: [
+          [
+            {
+              text: "Cuenta",
+              style: "tableHeader2",
+              fontSize: 8,
+            },
+            {text: "",},
+            {text: "",},
+          ],
+
+          ...operaciones.map((ed) => {
+            return [
+               
+              { text: ed.nombreCuenta,alignment: "center", fontSize: 8 },
+              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
+              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
+
+            ];
+          }),
+        ],
+      },
+
+      
+    }; 
   }
 
 

@@ -31,6 +31,7 @@ export class ReciboCajaComponent implements OnInit {
 
   resultado =0;
   listaCuentas: Cuenta [] = []
+  listaCuentasGlobal: Cuenta [] = []
   listaSubCuentas: SubCuenta [] = []
   listaSubCuentas2: SubCuenta [] = []
   listaSubCuentas3: SubCuenta [] = []
@@ -111,8 +112,16 @@ export class ReciboCajaComponent implements OnInit {
 
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
-      this.listaCuentas = res as Cuenta[];
+      this.listaCuentasGlobal = res as Cuenta[];
+      this.separarcuentas();
    })
+  }
+
+  separarcuentas(){
+    this.listaCuentasGlobal.forEach(element=>{
+      if(element.tipoCuenta == "Ingresos" || element.tipoCuenta == "Reales y Transitorias")
+        this.listaCuentas.push(element);
+    })
   }
 
   traerRecibosCaja(){

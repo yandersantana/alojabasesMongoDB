@@ -40,6 +40,8 @@ import { OperacionComercial, ReciboCaja } from '../reciboCaja/recibo-caja';
 import { ReciboCajaService } from 'src/app/servicios/reciboCaja.service';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
+import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
+import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -56,7 +58,7 @@ export class VentasComponent implements OnInit {
   isContado = true;
   isSaldo = false;
   isOtros = false;
-  formaPago = "Cancelado";
+  formaPago = "Credito";
   listaOperaciones : OperacionComercial[]=[]
   recibosEncontrados : ReciboCaja[]=[]
   newRecibo = new ReciboCaja();
@@ -217,6 +219,7 @@ contadores:contadoresDocumentos[]
     public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, public userService:UserService, private alerts: AlertsService,
     public _configuracionService : DatosConfiguracionService,
     public _reciboCajaService : ReciboCajaService,
+    public _cuentaPorCobrar : CuentasPorCobrarService,
     public _transaccionFinancieraService : TransaccionesFinancierasService) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -362,10 +365,10 @@ contadores:contadoresDocumentos[]
   }
 
 
-  async traerContadoresDocumentos(){
-    await this.contadoresService.getContadores().subscribe(res => {
+  traerContadoresDocumentos(){
+    this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
-      this.numeroID= this.contadores[0].contProductosPendientes_Ndocumento+1
+      this.numeroID = this.contadores[0].contProductosPendientes_Ndocumento+1
    })
   }
 
@@ -1440,7 +1443,6 @@ cambiarestado(e,i:number){
       this.textoTipoDocumento= "NOTA DE VENTA 001"
       this.textoTipoDocumento2= "ed.producto.PRODUCTO"
       const documentDefinition = this.getDocumentDefinitionNotaVenta();
-      //pdfMake.createPdf(documentDefinition).download('Nota/Venta '+this.factura.documento_n, function() { window.location.reload() });
       pdfMake.createPdf(documentDefinition).download('Nota/Venta '+this.variab, function(response) { Swal.close(),
         Swal.fire({
           title: 'Nota de Venta guardada',
@@ -2978,13 +2980,13 @@ cambiarestado(e,i:number){
         return resultado;
     }
 
-    guardarFactura2(){
+    guardarNotaVenta(){
       this.factura.username= this.username
       this.factura.fecha= this.now
       this.factura.fecha2= new Date().toLocaleString()
       this.factura.productosVendidos=this.productosVendidos
       this.notasVentService.newNotaVenta(this.factura).subscribe(
-        res => {this.actualizarFactureroNotasVenta()},
+        res => {this.actualizarFactureroNotasVenta();this.validarFormaPago()},
         err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
     }
 
@@ -3012,18 +3014,18 @@ cambiarestado(e,i:number){
           break;
         case "sucursal1":
           this.contadores[0].facturaSucursal1_Ndocumento = this.factura.documento_n
-          /* this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {
-            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal1_Ndocumento:this.factura.documento_n })
-            .then(res => { }, err => (err));
-          },err => {this.mostrarMensajeGenerico(2,"Error al guardar")}) */
+           this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {
+            /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal1_Ndocumento:this.factura.documento_n })
+            .then(res => { }, err => (err)); */
+          },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
           break;
         case "sucursal2":
           this.contadores[0].facturaSucursal2_Ndocumento = this.factura.documento_n
        
-          /* this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {
-            this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal2_Ndocumento:this.factura.documento_n })
-            .then(res => { }, err => (err));
-          },err => {this.mostrarMensajeGenerico(2,"Error al guardar")}) */
+          this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {
+            /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal2_Ndocumento:this.factura.documento_n })
+            .then(res => { }, err => (err)); */
+          },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
           break;
         default:
           break;
@@ -3035,32 +3037,20 @@ cambiarestado(e,i:number){
       this.contadores[0].notasVenta_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDNotasVenta(this.contadores[0]).subscribe(
         res => {
-          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ notasVenta_Ndocumento:this.factura.documento_n })
-          .then(res => { }, err => (err));
+          /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ notasVenta_Ndocumento:this.factura.documento_n })
+          .then(res => { }, err => (err)); */
         },
-        err => {
-          Swal.fire({
-            title: err.error,
-            text: 'Revise e intente nuevamente',
-            icon: 'error'
-          })
-        })
+        err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
     }
 
     actualizarFactureroProformas(){
       this.contadores[0].proformas_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDProformas(this.contadores[0]).subscribe(
         res => {
-          this.db.collection("/consectivosBaseMongoDB").doc("base").update({ proformas_Ndocumento:this.factura.documento_n })
-          .then(res => { }, err => (err));
+          /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ proformas_Ndocumento:this.factura.documento_n })
+          .then(res => { }, err => (err)); */
         },
-        err => {
-          Swal.fire({
-            title: err.error,
-            text: 'Revise e intente nuevamente',
-            icon: 'error'
-          })
-        })
+        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
     }
 
 
@@ -3068,137 +3058,90 @@ cambiarestado(e,i:number){
     this.telefonoCliente= this.factura.cliente.celular
     this.factura.cliente.cliente_nombre= this.mensaje
    
-   if(this.factura.cliente!=undefined){
-    if(this.factura.cliente.cliente_nombre!=undefined){
-    this.buscarDatosSucursal()
-    this.mostrarMensaje()
-    var contVal=0
-    var contpro=0
-    var bandera:boolean=true
-    this.productosVendidos.forEach(element => {
-      contpro++     
-      if(element.total==0){ 
-        bandera=false
-      }
-    });
-    if(contpro>=1 &&bandera && this.factura.documento_n!=undefined){
-    this.factura.documento_n = this.numeroFactura2
-    this.factura.dni_comprador= this.factura.cliente.ruc
-    this.factura.cliente.cliente_nombre= this.mensaje
-    
-    this.factura.sucursal= this.factura.sucursal
-    this.guardarDatosCliente()
-    this.setearNFactura()
-    this.factura.dni_comprador= this.factura.cliente.ruc
-    if(this.ventasForm.instance.validate().isValid){
-
-      this.factura.cliente= this.factura.cliente
-      if(this.factura.cliente.nombreContacto==""||this.factura.cliente.nombreContacto==undefined){
-        this.factura.cliente.nombreContacto=this.factura.cliente.cliente_nombre
-      }
-      new Promise<any>((resolve, reject) => { 
-        this.crearCliente()
-        this.guardarFactura()
-        
-        this.traerContadoresDocumentos()
+    if(this.factura.cliente!=undefined){
+      if(this.factura.cliente.cliente_nombre!=undefined){
+        this.buscarDatosSucursal()
+        this.mostrarMensaje()
+        var contVal=0
+        var contpro=0
+        var bandera:boolean=true
         this.productosVendidos.forEach(element => {
-          this.validarExistencias(element)
-          element.factura_id = this.factura.documento_n
-          this.transaccion = new transaccion()
-          this.transaccion.fecha_mov=new Date().toLocaleString()
-         
-          this.transaccion.fecha_transaccion=this.factura.fecha
-          this.transaccion.sucursal=this.factura.sucursal
-          this.transaccion.totalsuma=element.subtotal
-          this.transaccion.bodega="12"
-          this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
-          this.transaccion.cantM2=element.cantidad
-          this.transaccion.costo_unitario=element.producto.precio
-          this.transaccion.documento=this.factura.documento_n+""
-          this.transaccion.rucSucursal = this.factura.rucFactura
-          this.transaccion.factPro=this.factura.documento_n+""
-          this.transaccion.maestro=this.factura.maestro
-          this.transaccion.producto=element.producto.PRODUCTO
-          this.transaccion.cajas=Math.trunc((element.cantidad+0.01) / element.producto.M2);
-          this.transaccion.piezas=(Math.trunc((element.cantidad+0.01) *element.producto.P_CAJA / element.producto.M2) - (Math.trunc((element.cantidad+0.01) / element.producto.M2) * element.producto.P_CAJA));
-          this.transaccion.observaciones=this.factura.observaciones
-          this.transaccion.tipo_transaccion="venta-fact"
-          this.transaccion.movimiento=-1
-          this.transaccion.usu_autorizado=this.factura.username
-          this.transaccion.usuario=this.factura.username
-          this.transaccion.idTransaccion=this.number_transaccion++
-          this.transaccion.cliente=this.factura.cliente.cliente_nombre  
-
-          this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-            res => {
-              this.contadores[0].transacciones_Ndocumento = this.number_transaccion
-              this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
-                res => {
-                  this.db.collection("/consectivosBaseMongoDB").doc("base").update({ transacciones_Ndocumento:this.number_transaccion })
-                  .then(res => { contVal++,this.contadorValidaciones(contVal) }, err => (err));
-            
-                 
-                },
-                err => {
-                  Swal.fire({
-                    title: "Error al guardar",
-                    text: 'Revise e intente nuevamente',
-                    icon: 'error'
-                  })
-                })
-            },
-            err => {
-              Swal.fire({
-                title: err.error,
-                text: 'Revise e intente nuevamente',
-                icon: 'error'
-              })
-            })
+          contpro++     
+          if(element.total==0){ 
+            bandera=false
+          }
         });
-        
-      });
-      //this.getFactureros();
-      //this.crearPDF();
-    }else{
-        Swal.fire(
-          'Error',
-          'Error al crear el documento',
-          'error'
-        )
-      }
-  }
-    else{
-      Swal.fire(
-        'Error',
-        'Error no hay productos en la lista',
-        'error'
-      )}  
-
-    }else{
-      Swal.fire(
-        'Error',
-        'Error hay campos vacios, revise e intente nuevamente',
-        'error'
-      )
-    }}else{
-      Swal.fire(
-        'Error',
-        'Error hay campos vacios, revise e intente nuevamente',
-        'error'
-      )
-    }
-    }
-
-    contadorValidaciones(i:number){
-      if(this.productosVendidos.length==i){
-        this.actualizarProductos()
-          this.crearPDF()
+        if(contpro>=1 &&bandera && this.factura.documento_n!=undefined){
+          this.factura.documento_n = this.numeroFactura2
+          this.factura.dni_comprador= this.factura.cliente.ruc
+          this.factura.cliente.cliente_nombre= this.mensaje
           
-      }else{
-        console.log("no he entrado "+i)
-      }
+          this.factura.sucursal= this.factura.sucursal
+          this.guardarDatosCliente()
+          this.setearNFactura()
+          this.factura.dni_comprador= this.factura.cliente.ruc
+          if(this.ventasForm.instance.validate().isValid){
+            this.factura.cliente= this.factura.cliente
+            if(this.factura.cliente.nombreContacto == "" || this.factura.cliente.nombreContacto == undefined)
+              this.factura.cliente.nombreContacto=this.factura.cliente.cliente_nombre
+            
+            new Promise<any>((resolve, reject) => { 
+              this.crearCliente()
+              this.guardarFactura()
+              
+              this.traerContadoresDocumentos()
+              this.productosVendidos.forEach(element => {
+                this.validarExistencias(element)
+                element.factura_id = this.factura.documento_n
+                this.transaccion = new transaccion()
+                this.transaccion.fecha_mov=new Date().toLocaleString()
+                this.transaccion.fecha_transaccion=this.factura.fecha
+                this.transaccion.sucursal=this.factura.sucursal
+                this.transaccion.totalsuma=element.subtotal
+                this.transaccion.bodega="12"
+                this.transaccion.valor=element.precio_venta-(element.precio_venta*(element.descuento/100))
+                this.transaccion.cantM2=element.cantidad
+                this.transaccion.costo_unitario=element.producto.precio
+                this.transaccion.documento=this.factura.documento_n+""
+                this.transaccion.rucSucursal = this.factura.rucFactura
+                this.transaccion.factPro=this.factura.documento_n+""
+                this.transaccion.maestro=this.factura.maestro
+                this.transaccion.producto=element.producto.PRODUCTO
+                this.transaccion.cajas=Math.trunc((element.cantidad+0.01) / element.producto.M2);
+                this.transaccion.piezas=(Math.trunc((element.cantidad+0.01) *element.producto.P_CAJA / element.producto.M2) - (Math.trunc((element.cantidad+0.01) / element.producto.M2) * element.producto.P_CAJA));
+                this.transaccion.observaciones=this.factura.observaciones
+                this.transaccion.tipo_transaccion="venta-fact"
+                this.transaccion.movimiento=-1
+                this.transaccion.usu_autorizado=this.factura.username
+                this.transaccion.usuario=this.factura.username
+                this.transaccion.idTransaccion=this.number_transaccion++
+                this.transaccion.cliente=this.factura.cliente.cliente_nombre  
 
-    }
+                this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+                  res => {
+                    this.contadores[0].transacciones_Ndocumento = this.number_transaccion
+                    this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
+                      res => {},
+                      err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
+                  },
+                  err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
+                });
+              
+            });
+          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento") }
+        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista")}  
+
+      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
+    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
+  }
+
+  contadorValidaciones(i:number){
+    if(this.productosVendidos.length==i){
+      this.actualizarProductos()
+      this.crearPDF()
+        
+    }else{console.log("no he entrado "+i)}
+  }
 
   generarCotizacion(e) {
     this.factura.cliente.cliente_nombre= this.mensaje
@@ -3288,7 +3231,7 @@ cambiarestado(e,i:number){
             new Promise<any>((resolve, reject) => {
               this.setearNFactura()
               this.crearCliente()
-              this.guardarFactura2()
+              this.guardarNotaVenta()
               this.productosVendidos.forEach(element => {
                 this.validarExistencias(element)
                 element.factura_id = this.factura.documento_n
@@ -3387,11 +3330,52 @@ cambiarestado(e,i:number){
   }
 
 
-   validarFormaPago(){
-     this.newRecibo.idDocumento = this.contadores[0].reciboCaja_Ndocumento + 1;
-      if(this.formaPago == "Cancelado")
-        this.obtenerIdRecibo();
+  validarFormaPago(){
+    if(this.formaPago == "Credito" || this.formaPago == "Cancelado"){
+      this.newRecibo.idDocumento = this.contadores[0].reciboCaja_Ndocumento + 1;
+      this.obtenerIdRecibo();
     }
+  }
+
+  generarCuentaPorCobrar(idRecibo){
+    if(this.formaPago == "Credito"){
+        var cuentaPorCobrar = new CuentaPorCobrar();
+        cuentaPorCobrar.fecha = new Date();
+        cuentaPorCobrar.sucursal = this.factura.sucursal;
+        cuentaPorCobrar.cliente = this.factura.cliente.cliente_nombre;
+        cuentaPorCobrar.rucCliente = this.factura.cliente.ruc;
+        cuentaPorCobrar.rCajaId = "RC"+idRecibo;
+        cuentaPorCobrar.documentoVenta = this.factura.documento_n.toString();
+        cuentaPorCobrar.numDocumento = "";
+        cuentaPorCobrar.valor = this.factura.total;
+        this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {},(err) => {});
+    }
+    
+  } 
+
+  generarTransaccionCuentaPorCobrar(idRecibo){
+    if(this.formaPago == "Credito"){
+      var transaccion = new TransaccionesFinancieras();
+      transaccion.fecha = new Date();
+      transaccion.sucursal = this.factura.sucursal;
+      transaccion.cliente = this.factura.cliente.cliente_nombre;
+      transaccion.rCajaId = "RC"+idRecibo;
+      transaccion.tipoTransaccion = "factura-saldo";
+      transaccion.id_documento = 0;
+      transaccion.documentoVenta = this.factura.documento_n.toString();
+      transaccion.valor = this.factura.total;
+      transaccion.cuenta = "SALDOS";
+      transaccion.subCuenta = "2. Cuentas por cobrar";
+      transaccion.tipoCuenta = "Reales y Transitorias";
+
+      try {
+        this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe((res) => {},(err) => {});
+      } catch (error) {
+        this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
+      }   
+    }
+     
+  }
 
   obtenerIdRecibo(){
     var idRecibo = 0;
@@ -3404,7 +3388,6 @@ cambiarestado(e,i:number){
             resolve("listo");
           }else{
             this.newRecibo.idDocumento = this.newRecibo.idDocumento+1
-            console.log("enre con ", this.newRecibo.idDocumento)
             this.obtenerIdRecibo();
           }
            
@@ -3414,7 +3397,6 @@ cambiarestado(e,i:number){
     })
 
     IdNum.then((data) => {
-      console.log("pase con", idRecibo)
       this.generarReciboCaja(idRecibo);
     })
   }
@@ -3428,15 +3410,26 @@ cambiarestado(e,i:number){
       recibo.cliente = this.factura.cliente.nombreContacto;
       recibo.ruc = this.factura.cliente.ruc;
       recibo.sucursal = this.factura.sucursal;
-      recibo.tipoPago = "Contado";
       recibo.numDocumento = this.factura.documento_n.toString(); 
       recibo.banco = "";
       recibo.valorFactura = this.factura.total;
       recibo.valorRecargo = 0;
-      recibo.valorPagoEfectivo = this.factura.total;
-      recibo.valorSaldos = 0;
+     
       recibo.observaciones = "Generado desde el modulo de facturación"
       recibo.estadoRecibo = "Activo";
+      switch (this.formaPago) {
+        case "":
+          recibo.tipoPago = "Credito";
+          recibo.valorPagoEfectivo = 0;
+          recibo.valorSaldos = this.factura.total;
+          break;
+        case "Cancelado":
+          recibo.tipoPago = "Contado";
+          recibo.valorPagoEfectivo = this.factura.total;
+          recibo.valorSaldos = 0;
+          break;
+      }
+
       this.listaOperaciones.push(this.generarOperacion());
       recibo.operacionesComercialesList = this.listaOperaciones;
       try {
@@ -3447,8 +3440,6 @@ cambiarestado(e,i:number){
       } catch (error) {
         this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
       } 
-
-      
     }
 
     actualizarContador(recibo){
@@ -3458,16 +3449,35 @@ cambiarestado(e,i:number){
 
     generarOperacion(){
       var operacionCC = new OperacionComercial();
-      operacionCC.tipoCuenta = "Ingresos"
-      operacionCC.nombreCuenta = "INGRESOS"
-      operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
-      operacionCC.nombreSubcuenta = "Facturacion"; 
-      operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
       operacionCC.valor = this.factura.total;
+      if(this.formaPago == "Credito")
+      {
+        operacionCC.tipoCuenta = "Reales y Transitorias"
+        operacionCC.nombreCuenta = "SALDOS"
+        operacionCC.idCuenta = "6195b036f75a418e9c2eba06"
+        operacionCC.nombreSubcuenta = "2. Cuentas por Cobrar"; 
+        operacionCC.idSubCuenta = "61c50005270abc667ec3f8f7";
+      }else if(this.formaPago == "Cancelado")
+      {
+        operacionCC.tipoCuenta = "Ingresos"
+        operacionCC.nombreCuenta = "INGRESOS"
+        operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
+        
+        if(this.tDocumento == "Factura"){
+          operacionCC.nombreSubcuenta = "Facturacion"; 
+          operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
+        }
+        else if(this.tDocumento == "Nota de Venta"){
+          operacionCC.nombreSubcuenta = "Nota_Venta"; 
+          operacionCC.idSubCuenta = "61bcef301a0afd3ac9084cce";
+        }
+
+      }
       return operacionCC;
     }
 
     generarTransaccionesFinancieras(recibo){
+      this.generarCuentaPorCobrar(recibo.idDocumento)
       recibo.operacionesComercialesList.forEach(element=>{
         var transaccion = new TransaccionesFinancieras();
         transaccion.fecha = new Date();
@@ -3488,8 +3498,7 @@ cambiarestado(e,i:number){
         transaccion.tipoCuenta = element.tipoCuenta;
 
         try {
-          this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe(
-            (res) => {},(err) => {});
+          this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe((res) => {},(err) => {});
         } catch (error) {
           this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
         }    

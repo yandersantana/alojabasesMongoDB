@@ -42,6 +42,7 @@ import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccio
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
+import { Router } from '@angular/router';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -216,11 +217,21 @@ contadores:contadoresDocumentos[]
     public productosPendientesService : ProductosPendientesService, 
     public authenService : AuthenService, 
     public proformasService : ProformasService, 
-    public transaccionesService: TransaccionesService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public facturasService:FacturasService,public preciosService:ControlPreciosService, public clienteService: ClienteService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService, public userService:UserService, private alerts: AlertsService,
+    public transaccionesService: TransaccionesService, 
+    public productosVenService:ProductosVendidosService,
+    public parametrizacionService:ParametrizacionesService, 
+    public contadoresService: ContadoresDocumentosService, 
+    public facturasService:FacturasService,
+    public preciosService:ControlPreciosService, 
+    public clienteService: ClienteService, 
+    public catalogoService: CatalogoService, public productoService:ProductoService,
+    public sucursalesService: SucursalesService, 
+    public userService: UserService,
     public _configuracionService : DatosConfiguracionService,
     public _reciboCajaService : ReciboCajaService,
     public _cuentaPorCobrar : CuentasPorCobrarService,
-    public _transaccionFinancieraService : TransaccionesFinancierasService) {
+    public _transaccionFinancieraService : TransaccionesFinancierasService,
+    public router: Router) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
     this.factura.fecha = this.now
@@ -369,6 +380,7 @@ contadores:contadoresDocumentos[]
     this.contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.numeroID = this.contadores[0].contProductosPendientes_Ndocumento+1
+      this.asignarIDdocumentos();
    })
   }
 
@@ -391,6 +403,7 @@ contadores:contadoresDocumentos[]
       case "matriz":
         this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
         this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+        console.log(this.factura.documento_n)
         break;
       case "sucursal1":
         this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
@@ -476,6 +489,7 @@ contadores:contadoresDocumentos[]
             case "matriz":
               this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
               this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+              console.log(this.factura.documento_n)
               break;
             case "sucursal1":
               this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
@@ -491,7 +505,7 @@ contadores:contadoresDocumentos[]
           break;
         case "Nota de Venta":
           this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-          this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
+          //this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
           break;
         case "Cotización":
           this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
@@ -734,148 +748,142 @@ setSelectedProducto(i:number){
       alert("Las facturas deben tener al menos un producto")
     }
   }
-        calcularTransporte(){
-          this.costoTr=true
-          this.calcularTotalFactura();
-        }
-      
-        setClienteData(e){
-         
-          this.clientes.forEach(element => {
-              if(element.cliente_nombre == e.component._changedValue){
-              this.factura.cliente = element
-              this.factura.cliente.cliente_nombre= element.cliente_nombre
-              this.factura.cliente.direccion = element.direccion
-              this.factura.cliente.celular = element.celular
-              this.factura.tipo_venta= element.tventa
-              this.factura.cliente.nombreContacto=element.nombreContacto
-              
-            }
-          }); 
-          this.calcularTipoCliente(); 
-        }
 
-        asignarMaestro(e){
-          this.factura.maestro = e.value
-        }
 
-        asignarUsuario(e){
-          this.factura.username = e.value
-        }
-      
-      
-        asignarsucursalD(e){
-          this.factura.sucursal= e.value
-          
-         if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
-          Swal.fire({
-            title: 'Cambiar de sucursal',
-            text: 'Desea cambiar de sucursal, se eliminará los productos detallados',
-            icon: 'success',
-            showCancelButton: true,
-            confirmButtonText: 'Si',
-            cancelButtonText: 'No'
-          }).then((result) => {
-            if (result.value) {
-              this.limpiarArreglo()
-              //this.asignarIDdocumentos()
-              this.asignarIDdocumentos2()
-              this.buscarDatosSucursal()
-              this.productosVendidos.push(new venta())
-            } else if (result.dismiss === Swal.DismissReason.cancel) {
-             
-            }
-           
-          })
-         }else{
-          //this.asignarIDdocumentos()
-          this.asignarIDdocumentos2()
-          this.buscarDatosSucursal()
-         }
-          
-        }
+  calcularTransporte(){
+    this.costoTr=true
+    this.calcularTotalFactura();
+  }
 
-        limpiarArreglo(){
-          var cont=0
-          this.productosVendidos.forEach(element=>{
-            cont++
-          })
-          if(cont>=0){
-            this.productosVendidos.forEach(element=>{
-              this.productosVendidos.splice(0)
-              
-            })
-          }
-        }
+  setClienteData(e){
+    this.clientes.forEach(element => {
+        if(element.cliente_nombre == e.component._changedValue){
+        this.factura.cliente = element
+        this.factura.cliente.cliente_nombre= element.cliente_nombre
+        this.factura.cliente.direccion = element.direccion
+        this.factura.cliente.celular = element.celular
+        this.factura.tipo_venta= element.tventa
+        this.factura.cliente.nombreContacto=element.nombreContacto
+        
+      }
+    }); 
+    this.calcularTipoCliente(); 
+  }
 
-        eliminarData(e){
-          this.factura.cliente = null
-          this.mensaje=null
-        }
-      
-        buscarCliente(e){
-          this.clientes.forEach(element => {
-              if( this.factura.cliente.ruc == element.ruc){
-               this.factura.cliente = element
-              this.factura.cliente.cliente_nombre = element.cliente_nombre
-              this.factura.cliente.direccion = element.direccion
-              this.factura.cliente.celular = element.celular
-              this.mensaje=element.cliente_nombre
-            }
-          });
-          this.calcularTipoCliente();  
-        }
-      
-      
-        guardarDatosCliente(){
-          this.factura.cliente.t_cliente= this.factura.tipo_cliente
-          this.factura.cliente.tventa= this.factura.tipo_venta
-        }
+  asignarMaestro(e){
+    this.factura.maestro = e.value
+  }
 
-        mostrarDivUbicaciones(){
-          var x = document.getElementById("bodegUbi");
-          if (x.style.display === "none") {
-            x.style.display = "block";
-          } else {
-            x.style.display = "none";
-          }
-        }
+  asignarUsuario(e){
+    this.factura.username = e.value
+  }
       
       
-    
+    asignarsucursalD(e){
+      this.factura.sucursal= e.value
+      if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
+        Swal.fire({
+          title: 'Cambiar de sucursal',
+          text: 'Desea cambiar de sucursal, se eliminará los productos detallados',
+          icon: 'success',
+          showCancelButton: true,
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No'
+        }).then((result) => {
+          if (result.value) {
+            this.limpiarArreglo()
+            this.asignarIDdocumentos()
+            //this.asignarIDdocumentos2()
+            this.buscarDatosSucursal()
+            this.productosVendidos.push(new venta())
+          }
+        
+        })
+      }else{
+        this.asignarIDdocumentos()
+        //this.asignarIDdocumentos2()
+        this.buscarDatosSucursal()
+      }        
+    }
+
+  limpiarArreglo(){
+    var cont=0
+    this.productosVendidos.forEach(element=>{
+      cont++
+    })
+    if(cont>=0){
+      this.productosVendidos.forEach(element=>{
+        this.productosVendidos.splice(0)
+        
+      })
+    }
+  }
+
+  eliminarData(e){
+    this.factura.cliente = null
+    this.mensaje=null
+  }
       
-        //CALCULO DE TIPO DE CLIENTE
-        calcularTipoCliente(){
+  buscarCliente(e){
+    this.clientes.forEach(element => {
+        if( this.factura.cliente.ruc == element.ruc){
+          this.factura.cliente = element
+        this.factura.cliente.cliente_nombre = element.cliente_nombre
+        this.factura.cliente.direccion = element.direccion
+        this.factura.cliente.celular = element.celular
+        this.mensaje=element.cliente_nombre
+      }
+    });
+    this.calcularTipoCliente();  
+  }
       
-          this.factura.cliente.cliente_nombre =  this.factura.cliente.cliente_nombre
-          this.factura.cliente.direccion =  this.factura.cliente.direccion
-          this.factura.cliente.celular = this.factura.cliente.celular
-          let contador=0
-          this.facturas.forEach(element => {
-            if(element.dni_comprador == this.factura.cliente.ruc){
-              this.totalcomprador=this.totalcomprador + element.total
-              contador++;
-            }
-          });
-          if(this.totalcomprador>=0 && this.totalcomprador<=100 ){
-            this.factura.tipo_cliente="C"+contador
-          }
-          else if(this.totalcomprador>=101 && this.totalcomprador<=500){
-            this.factura.tipo_cliente="B"+contador
-          }
-          else if(this.totalcomprador>=501 && this.totalcomprador<=1000){
-            this.factura.tipo_cliente="A"+contador
-          }
-          else if(this.totalcomprador>=1001 && this.totalcomprador<=3000){
-            this.factura.tipo_cliente="AA"+contador
-          }
-          else if(this.totalcomprador>=3000){
-            this.factura.tipo_cliente="AAA"+contador
-          }
-          else {
-            this.factura.tipo_cliente="C"
-          }
-        }
+      
+  guardarDatosCliente(){
+    this.factura.cliente.t_cliente= this.factura.tipo_cliente
+    this.factura.cliente.tventa= this.factura.tipo_venta
+  }
+
+  mostrarDivUbicaciones(){
+    var x = document.getElementById("bodegUbi");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+    } else {
+      x.style.display = "none";
+    }
+  }
+      
+
+  calcularTipoCliente(){
+
+    this.factura.cliente.cliente_nombre =  this.factura.cliente.cliente_nombre
+    this.factura.cliente.direccion =  this.factura.cliente.direccion
+    this.factura.cliente.celular = this.factura.cliente.celular
+    let contador=0
+    this.facturas.forEach(element => {
+      if(element.dni_comprador == this.factura.cliente.ruc){
+        this.totalcomprador=this.totalcomprador + element.total
+        contador++;
+      }
+    });
+    if(this.totalcomprador>=0 && this.totalcomprador<=100 ){
+      this.factura.tipo_cliente="C"+contador
+    }
+    else if(this.totalcomprador>=101 && this.totalcomprador<=500){
+      this.factura.tipo_cliente="B"+contador
+    }
+    else if(this.totalcomprador>=501 && this.totalcomprador<=1000){
+      this.factura.tipo_cliente="A"+contador
+    }
+    else if(this.totalcomprador>=1001 && this.totalcomprador<=3000){
+      this.factura.tipo_cliente="AA"+contador
+    }
+    else if(this.totalcomprador>=3000){
+      this.factura.tipo_cliente="AAA"+contador
+    }
+    else {
+      this.factura.tipo_cliente="C"
+    }
+  }
 
   carcularTotalProducto(e, i:number) {
     this.calcularTotalRow(i)
@@ -1326,14 +1334,14 @@ cambiarestado(e,i:number){
       }).then((result) => {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
-                Swal.fire({
-                    title: this.tDocumento+' guardada',
-                    text: 'Su '+this.tDocumento+' fue guardada con éxito',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    window.location.reload()
-                  })
+          Swal.fire({
+            title: this.tDocumento+' guardada',
+            text: 'Su '+this.tDocumento+' fue guardada con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
         }
       })
   }
@@ -1361,28 +1369,21 @@ cambiarestado(e,i:number){
       }).then((result) => {
         /* Read more about handling dismissals below */
         if (result.dismiss === Swal.DismissReason.timer) {
-                Swal.fire({
-                    title: this.tDocumento+' guardada',
-                    text: 'Su '+this.tDocumento+' fue guardada con éxito',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    window.location.reload()
-                  })
+          Swal.fire({
+            title: this.tDocumento+' guardada',
+            text: 'Su '+this.tDocumento+' fue guardada con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
         }
       })
   }
 
 
   showModal(e,i:number){
-    /* Swal.fire({
-      title: 'Cantidad no disponible!',
-      text: 'Desea hacer un pedido del producto?',
-      icon: 'warning',
-      confirmButtonText: 'Ok'
-    }) */
-    
-    
+   
     Swal.fire({
       title: 'Cantidad no disponible',
       text: "Desea hacer un pedido del producto",
@@ -1411,95 +1412,103 @@ cambiarestado(e,i:number){
   }
 
 
-  /*generarNombresProductos() {
-    this.productos.forEach(element => {
-      element.nombreComercial = element.clasificacion + " - " + element.nombre + " - " + element.dimension + " - " + element.calidad
-    });
-  }
-*/
-
-
-
   crearPDF(){
-  var tipoDoc:boolean=false
-  if(this.factura.cliente.celular==undefined || this.factura.cliente.celular==null ){
-    this.factura.cliente.celular="xxxxxxxxxx"
-  }
-  if(this.tDocumento == "Factura"){
-    
-    this.textoTipoDocumento2= "ed.producto.PRODUCTO"
+    if(this.factura.cliente.celular==undefined || this.factura.cliente.celular==null )
+      this.factura.cliente.celular="xxxxxxxxxx"
+
+    if(this.tDocumento == "Factura"){
+      this.textoTipoDocumento2= "ed.producto.PRODUCTO"
       const documentDefinition = this.getDocumentDefinition();
-      pdfMake.createPdf(documentDefinition).download('Factura '+this.variab, function(response) { Swal.close(),
-        Swal.fire({
-          title: 'Factura guardada',
-          text: 'Su factura fue guardada con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        }) });
-    
-  }else if(this.tDocumento == "Nota de Venta"){
+      var generacion = new Promise<any>((resolve, reject) => {
+        pdfMake.createPdf(documentDefinition).download('Factura '+this.variab, function(response) { Swal.close(),
+          Swal.fire({
+            title: 'Factura guardada',
+            text: 'Su factura fue guardada con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            resolve("listo");
+          });
+        });
+      })
+
+      generacion.then((data) => {
+        if(this.formaPago == "Otros medios Pago" || this.formaPago == "Abonos")
+          this.router.navigate(['/recibo-caja'], { queryParams: { id: this.factura.documento_n , tipo: 1 } });
+        else
+          window.location.reload();
+      })
+
+
+    }else if(this.tDocumento == "Nota de Venta"){
       this.textoTipoDocumento= "NOTA DE VENTA 001"
       this.textoTipoDocumento2= "ed.producto.PRODUCTO"
       const documentDefinition = this.getDocumentDefinitionNotaVenta();
-      pdfMake.createPdf(documentDefinition).download('Nota/Venta '+this.variab, function(response) { Swal.close(),
-        Swal.fire({
-          title: 'Nota de Venta guardada',
-          text: 'Su nota de Venta fue guardada con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        }) });
-      this.mostrarMensaje()
-  }else if(this.tDocumento == "Cotización"){
+      var generacion = new Promise<any>((resolve, reject) => {
+        pdfMake.createPdf(documentDefinition).download('Nota/Venta '+this.variab, function(response) { Swal.close(),
+          Swal.fire({
+            title: 'Nota de Venta guardada',
+            text: 'Su nota de Venta fue guardada con éxito',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            resolve("listo");
+          });
+        });
+      })
+
+      generacion.then((data) => {
+        if(this.formaPago == "Otros medios Pago" || this.formaPago == "Abonos")
+          this.router.navigate(['/recibo-caja'], { queryParams: { id: this.factura.documento_n , tipo: 2 } });
+        else
+          window.location.reload();
+      })
+      
+    }else if(this.tDocumento == "Cotización"){
       this.textoTipoDocumento= "PROFORMA 001-001-000"
       this.textoTipoDocumento2= "ed.producto.PRODUCTO"
       const documentDefinition = this.getDocumentDefinitionCotizacion();
       pdfMake.createPdf(documentDefinition).download('Proforma '+this.factura.documento_n, function() {  });
       this.mostrarMensaje2()
+    }
   }
+
+  setearNFactura(){
+    let nf=this.factura.documento_n
+    this.variab= this.factura.documento_n
+    let num=('' + nf).length
+    switch (num) {
+      case 1:
+          this.numeroFactura="00000"+nf
+          break;
+      case 2:
+          this.numeroFactura="0000"+nf
+          break;
+      case 3:
+          this.numeroFactura="000"+nf
+          break; 
+      case 4:
+          this.numeroFactura="00"+nf
+          break; 
+      case 5:
+          this.numeroFactura="0"+nf
+          break;
+      case 6:
+          //this.numeroFactura= nf
+          break;    
+      default:
     }
+  }
 
 
-    setearNFactura(){
-      let nf=this.factura.documento_n
-      this.variab= this.factura.documento_n
-      let num=('' + nf).length
-      switch (num) {
-        case 1:
-            this.numeroFactura="00000"+nf
-            break;
-        case 2:
-            this.numeroFactura="0000"+nf
-            break;
-        case 3:
-            this.numeroFactura="000"+nf
-            break; 
-        case 4:
-            this.numeroFactura="00"+nf
-            break; 
-        case 5:
-            this.numeroFactura="0"+nf
-            break;
-        case 6:
-            //this.numeroFactura= nf
-            break;    
-        default:
-    }
-     }
-
-
-     calcularValoresFactura(){
-      this.subtotal1=(((this.factura.total+this.factura.coste_transporte)-this.factura.coste_transporte)/1.12)+this.factura.coste_transporte
-      this.Sdescuento=this.factura.subtotalF1-this.factura.subtotalF2
-      this.subtotal2=this.subtotal1-this.Sdescuento
-      this.sIva0= this.factura.coste_transporte;
-      this.sIva12=this.subtotal2-this.sIva0
-      this.iva= this.sIva12*0.12
-
-     }
+  calcularValoresFactura(){
+    this.subtotal1=(((this.factura.total+this.factura.coste_transporte)-this.factura.coste_transporte)/1.12)+this.factura.coste_transporte
+    this.Sdescuento=this.factura.subtotalF1-this.factura.subtotalF2
+    this.subtotal2=this.subtotal1-this.Sdescuento
+    this.sIva0= this.factura.coste_transporte;
+    this.sIva12=this.subtotal2-this.sIva0
+    this.iva= this.sIva12*0.12
+  }
 
      
 
@@ -3006,7 +3015,9 @@ cambiarestado(e,i:number){
       switch (this.factura.sucursal) {
         case "matriz":
           this.contadores[0].facturaMatriz_Ndocumento = this.factura.documento_n
+          console.log(this.factura.documento_n)
           this.contadoresService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {
+            console.log(res)
 /*             this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaMatriz_Ndocumento:this.factura.documento_n })
             .then(res => { }, err => (err)); */
           },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
@@ -3121,7 +3132,7 @@ cambiarestado(e,i:number){
                   res => {
                     this.contadores[0].transacciones_Ndocumento = this.number_transaccion
                     this.contadoresService.updateContadoresIDTransacciones(this.contadores[0]).subscribe(
-                      res => {},
+                      res => {contVal++,this.contadorValidaciones(contVal)},
                       err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
                   },
                   err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
@@ -3130,7 +3141,6 @@ cambiarestado(e,i:number){
             });
           }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento") }
         }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista")}  
-
       }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
     }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
   }
@@ -3139,70 +3149,47 @@ cambiarestado(e,i:number){
     if(this.productosVendidos.length==i){
       this.actualizarProductos()
       this.crearPDF()
-        
-    }else{console.log("no he entrado "+i)}
+    }else{}
   }
 
   generarCotizacion(e) {
     this.factura.cliente.cliente_nombre= this.mensaje
     if(this.factura.cliente!=undefined){
       if(this.factura.cliente.cliente_nombre!=undefined){
-   
-    this.buscarDatosSucursal()
-    var contpro=0
-    var bandera:boolean=true
-    this.productosVendidos.forEach(element => {
-      contpro++     
-      if(element.total==0){ 
-        bandera=false
-      }
-    });
-    if(contpro>=1 &&bandera){
-    //this.factura.documento_n = this.numeroFactura2
-   
-    this.factura.dni_comprador= this.factura.cliente.ruc
-    this.factura.cliente.cliente_nombre= this.mensaje
-    this.factura.productosVendidos=this.productosVendidos
-    this.guardarDatosCliente()
-    this.factura.dni_comprador= this.factura.cliente.ruc
-    if(this.ventasForm.instance.validate().isValid){
-      this.factura.cliente= this.factura.cliente
-      new Promise<any>((resolve, reject) => {
-        this.crearCliente()
-        this.guardarCotización()
+        this.buscarDatosSucursal()
+        var contpro=0
+        var bandera:boolean=true
         this.productosVendidos.forEach(element => {
-          element.factura_id = this.factura.documento_n
-          this.productosVenService.newProductoVendido(element).subscribe(
-            res => {},
-            err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
+          contpro++     
+          if(element.total==0){ 
+            bandera=false
+          }
         });
+        if(contpro>=1 &&bandera){
+          this.factura.dni_comprador= this.factura.cliente.ruc
+          this.factura.cliente.cliente_nombre= this.mensaje
+          this.factura.productosVendidos=this.productosVendidos
+          this.guardarDatosCliente()
+          this.factura.dni_comprador= this.factura.cliente.ruc
+          if(this.ventasForm.instance.validate().isValid){
+            this.factura.cliente= this.factura.cliente
+            new Promise<any>((resolve, reject) => {
+              this.crearCliente()
+              this.guardarCotización()
+              this.productosVendidos.forEach(element => {
+                element.factura_id = this.factura.documento_n
+                this.productosVenService.newProductoVendido(element).subscribe(
+                  res => {},
+                  err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
+              });
 
-      });
-      this.crearPDF();
-    }else{
-      this.mostrarMensajeGenerico(2,"Error al crear el documento")
-    }
+            });
+            this.crearPDF();
+          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento")}
+        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista") }  
+      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") } 
+    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }  
   }
-    else{
-      Swal.fire(
-        'Error',
-        'Error no hay productos en la lista',
-        'error'
-      )}  
-    }else{
-        Swal.fire(
-          'Error',
-          'Error hay campos vacios, revise e intente nuevamente',
-          'error'
-        )
-      } }else{
-        Swal.fire(
-          'Error',
-          'Error hay campos vacios, revise e intente nuevamente',
-          'error'
-        )
-      }  
-    }
 
 
 
@@ -3275,18 +3262,10 @@ cambiarestado(e,i:number){
           
             });
 
-          }else{
-            this.mostrarMensajeGenerico(2,"Error al crear el documento");
-          }
-        }else{
-          this.mostrarMensajeGenerico(2,"Error no hay productos en la lista");
-        }   
-      }else{
-        this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");
-      }  
-    }else{
-      this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");
-    }
+          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento");}
+        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista");}   
+      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");}  
+    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");}
   }
 
   
@@ -3378,6 +3357,7 @@ cambiarestado(e,i:number){
   }
 
   obtenerIdRecibo(){
+    console.log(this.newRecibo.idDocumento)
     var idRecibo = 0;
     var IdNum = new Promise<any>((resolve, reject) => {
       try {

@@ -16,11 +16,11 @@ import pdfMake from "pdfmake/build/pdfmake";
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
-import { element } from 'protractor';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
-import { timingSafeEqual } from 'crypto';
-
+import { ActivatedRoute } from '@angular/router';
+import { FacturasService } from 'src/app/servicios/facturas.service';
+import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -74,6 +74,8 @@ export class ReciboCajaComponent implements OnInit {
   busquedaTransaccion: tipoBusquedaTransaccion; 
   mostrarDelete : boolean = true;
   mostrarAprobacion : boolean = false;
+  tipoDocumento = 0;
+  idDocumento = 0;
 
 
   constructor(
@@ -85,20 +87,42 @@ export class ReciboCajaComponent implements OnInit {
     public _cuentaPorCobrar: CuentasPorCobrarService,
     public _parametrizacionService: ParametrizacionesService,
     public _configuracionService: DatosConfiguracionService,
-    public _authenService:AuthenService
+    public _facturaService: FacturasService,
+    public _notaVentaService : NotasVentasService,
+    public _authenService:AuthenService,
+    private route: ActivatedRoute
     ) {
    }
 
   ngOnInit() {
+    this.reciboCaja = new ReciboCaja();
+    this.route.queryParams.subscribe(params => {
+      this.idDocumento = params['id'] || 0;
+      this.tipoDocumento = params['tipo'] || 0;
+    });
+
+    if(this.idDocumento != 0 && this.tipoDocumento != 0)
+      this.buscarDatosFactura();
+
     this.cargarUsuarioLogueado();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.listadoOperaciones.push(new OperacionComercial());
-    this.reciboCaja = new ReciboCaja();
+    
     this.reciboCaja.fecha = new Date();
     this.traerContadoresDocumentos();
     this.traerListaCuentas();
     this.traerParametrizaciones();
     this.traerDatosConfiguracion();
+  }
+
+  buscarDatosFactura(){
+    if(this.tipoDocumento == 1){
+      console.log("buscare fact",this.idDocumento)
+      this.reciboCaja.docVenta = this.idDocumento.toString();
+    }else if(this.tipoDocumento == 2){
+      console.log("buscare not",this.idDocumento)
+      this.reciboCaja.docVenta = this.idDocumento.toString();
+    }
   }
 
 

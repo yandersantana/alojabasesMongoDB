@@ -1,28 +1,27 @@
 <div *ngIf="mostrarLoading">
-    <app-loading></app-loading>
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
+
 <br><br>
 <div class="card mb-3">
     <div class="card-header">
-        <div id="admin" style="display: block;">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-8"> </div>
-                    <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="menuGlobal" 
-                        [value]="menuGlobal[0]" 
-                        [readOnly]="false" 
-                        [disabled]="false"
-                        (onValueChanged)="opcionMenu($event)"
-                        ></dx-select-box></div>
-                        <div class="col-md-5"></div>
-            </div>
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-8"> </div>
+                <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="menuGlobal" 
+                    [value]="menuGlobal[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    (onValueChanged)="opcionMenu($event)"
+                    ></dx-select-box></div>
+                    <div class="col-md-5"></div>
             </div>
         </div>
     </div>
     <div class="card-body">
         <div class="row">
             <div class="col-md-12 card carIn">
-                <div id="newAudGlobal"  style="display: block;">
+                <div *ngIf="newAud">
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
@@ -315,12 +314,7 @@
                                     <div class="row">
                                         <div class="col-md-4"><p class="texto">Ubicación</p></div>
                                         <div class="col-md-8">
-                                            <!-- <dx-autocomplete
-                                                [items]="ubicaciones" 
-                                                [(value)]="auditoria.ubicacion">
-                                            </dx-autocomplete> -->
-                                            
-                                             <dx-text-box [(value)]="auditoria.ubicacion" [disabled]="false" name='ubicaciones' [inputAttr]="{ autocomplete: 'on', name: 'ubicaciones' }" [readOnly]="false"></dx-text-box> </div>
+                                            <dx-text-box [(value)]="auditoria.ubicacion" [disabled]="false" name='ubicaciones' [inputAttr]="{ autocomplete: 'on', name: 'ubicaciones' }" [readOnly]="false"></dx-text-box> </div>
                                     </div>
                                     <br>
                                 </div>
@@ -512,8 +506,6 @@
                                     <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar()">Regresar</button></div>
                                     <div class="col-md-10"></div>
                                 </div>
-                                <!-- <dx-load-indicator id="medium-indicator" [(visible)]="loadIndicatorVisible" height="40" width="40"></dx-load-indicator> -->
-                                
                                 <div class="col-md-12">
                                     <dx-data-grid #datag2
                                     id="gridContainer"
@@ -563,11 +555,6 @@
                                        
                                         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
                                     </dx-data-grid>
-                                    <!-- <div class="row">
-                                        <div class="col-md-4"></div>
-                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="realizarActualizaciones()">Actualizar Productos</button></div>
-                                        <div class="col-md-4"></div>
-                                    </div> -->
 
                                     <div style="margin: 2rem;">
 
@@ -592,82 +579,7 @@
                                         <div class="col-md-4"></div>
                                     </div>
 
-                                   <!--  <div class="row">
-                                        <div class="col-md-4"></div>
-                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="revisarDuplicados()">Revisar Productos repetidos</button></div>
-                                        <div class="col-md-4"></div>
-                                    </div> -->
                                 </div>
-                                
-                                <!-- <div class="card">
-                                    <h5 class="card-header text-center font-weight-bold text-uppercase ">Auditorias 1</h5>
-                                    <div class="card-body">
-                                      <div id="table" class="table-editable">
-                                        <span class="table-add float-right mb-3 mr-2">
-                                          <a class="text-success" >
-                                          
-                                          </a>
-                                        </span>
-                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
-                                            <tr>
-                                                <th class="text-center" rowspan="2">ID</th>
-                                                
-                                                <th class="text-center" rowspan="2">Fecha</th>
-                                               
-                                                <th class="text-center" rowspan="2">Producto</th>
-                                                <th class="text-center" colspan="2">Sistema</th>
-                                                <th class="text-center" colspan="2">Fisico</th>
-                                                <th class="text-center" colspan="2">DIFF</th>
-                                                <th class="text-center" rowspan="2" >Condición</th>
-                                                <th class="text-center" rowspan="2" >Impacto</th>
-                                                <th class="text-center" colspan="2" >Acciones</th>
-                                              </tr>
-                                              <tr> 
-                                              
-                                                <th class="text-center" >Cajas </th>
-                                                <th class="text-center">Piezas </th>
-                                              
-                                                <th class="text-center" >Cajas </th>
-                                                <th class="text-center">Piezas </th>
-                                                <th class="text-center" >Cajas </th>
-                                                <th class="text-center">Piezas </th>
-
-                                                <th class="text-center">Ac </th>
-                                                <th class="text-center">El </th>
-                                                
-                                                
-                                              </tr>
-                                         
-                                          <tr *ngFor="let audit of auditoriaProductosleida; let id = index">
-                                            <td><span>{{audit.idAud}}</span></td>
-                                            <td><span>{{audit.fecha}}</span></td>
-                                            <td><span>{{audit.nombreproducto}}</span></td>
-                                            <td><span>{{audit.cajas_sistema}}</span></td>
-                                            <td><span>{{audit.piezas_sistema}}</span></td>
-                                            <td><span>{{audit.cajas_fisico}}</span></td>
-                                            <td><span>{{audit.piezas_fisico}}</span></td>
-                                            <td><span>{{audit.cajas_diferencia}}</span></td>
-                                            <td><span>{{audit.piezas_diferencia}}</span></td>
-                                            <td><span>{{audit.valoracion}}</span></td>
-                                            <td><span>{{audit.impacto}}</span></td>
-                                            
-                                           <td>
-                                               <span><button class="btnIcons5" (click)="editarAuditoriaProducto(audit.idAud)"><i class="fa fa-pencil"></i></button></span>
-                                            </td>
-                                            <td>
-                                                <span><button class="btnIcons5" (click)="eliminarAuditoriaProducto(id)"><i class="fa fa-trash-o"></i></button></span>
-                                            </td>
-                                            
-                                          </tr>
-                                        </table>
-                                        <div class="row">
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="realizarActualizaciones()">Actualizar Productos</button></div>
-                                            <div class="col-md-4"></div>
-                                        </div>
-                                      </div>
-                                    </div>
-                                </div> -->
                             </div>
                         </div>
                     </div>

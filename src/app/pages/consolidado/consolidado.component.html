@@ -15,7 +15,7 @@
 </div>
 
 <div *ngIf="mostrarLoading">
-    <app-loading></app-loading>
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
 
@@ -185,6 +185,9 @@
 
         <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Pend." width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarProductos"></dxi-button>
         </dxi-column>
         <dxi-column dataField="bodega" caption="Bodegas" dataType="string" [visible]="false"></dxi-column>
         <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
@@ -681,6 +684,75 @@
                 <div class="col-md-4"></div>
             </div>
         </div>
+    </dx-scroll-view>
+    </div>
+</dx-popup>
+
+
+
+<dx-popup [width]="600" [height]="450" [showTitle]="true" title="Pendientes:  {{nameProducto}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisiblePendientes">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table>
+                    <tr>
+                        <th class="text-center" ></th>
+                        <th class="text-center">M2</th>
+                        <th class="text-center">Cajas</th>
+                        <th class="text-center">Piezas</th>
+                    </tr>
+                    <tr>
+                        <td style="text-align: center;width: 25%;">
+                           Total
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{totalM2}}
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{totalCajas}}
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{totalPiezas}}
+                        </td>
+                        
+                    </tr>
+                </table>
+                </div>
+                <div class="col-md-1"></div>
+                <br><br><br>
+                <table style="margin-top: 1em;">
+                    <tr>
+                        <th class="text-center" >Fecha</th>
+                        <th class="text-center">Documento</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">M2</th>
+                    </tr>
+                    <tr *ngFor="let pro of productosPendientesNoEN; let id = index">
+                        <td style="text-align: center;width: 25%;">
+                            {{pro.fecha}}
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{pro.documento}}
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{pro.tipo_documento}}
+                        </td>
+                        <td style="text-align: center;width: 25%;">
+                           {{pro.cantM2}}
+                        </td>
+                        
+                    </tr>
+                </table>
+                
+            </div>
+           
+        </div>
+
+
     </dx-scroll-view>
     </div>
 </dx-popup>

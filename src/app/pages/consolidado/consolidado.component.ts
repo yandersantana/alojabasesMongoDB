@@ -16,6 +16,7 @@ import { bodega } from "../producto/producto";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
+import { timingSafeEqual } from "crypto";
 @Component({
   selector: "app-consolidado",
   templateUrl: "./consolidado.component.html",
@@ -31,6 +32,7 @@ export class ConsolidadoComponent implements OnInit {
   mostrarLoading: boolean = false;
   popupVisible: boolean = false;
   popupVisibleNotas: boolean = false;
+  popupVisiblePendientes: boolean = false;
   productos: producto[] = [];
   arregloUbicaciones1: string[] = [];
   arregloUbicaciones2: string[] = [];
@@ -58,6 +60,10 @@ export class ConsolidadoComponent implements OnInit {
   usuarioLogueado: user;
   proTransaccion: productoTransaccion;
   productos22: DataSource;
+  mensajeLoading = "Cargando los datos";
+  totalCajas =0;
+  totalPiezas = 0;
+  totalM2 = 0;
   constructor(
     public bodegasService: BodegaService,
     public authenService: AuthenService,
@@ -72,7 +78,7 @@ export class ConsolidadoComponent implements OnInit {
   ngOnInit() {
     this.cargarUsuarioLogueado();
     this.traerProductosUnitarios();
-    this.traerProductosPendientes();
+   // this.traerProductosPendientes();
     this.traerBodegas();
   }
 
@@ -98,10 +104,13 @@ export class ConsolidadoComponent implements OnInit {
       }
     });
     if (!existe) {
+      this.mensajeLoading = "Buscando transacciones";
+      this.mostrarLoading = true;
       this.transaccionesService
         .getTransaccionesPorProducto(this.proTransaccion)
         .subscribe((res) => {
           this.transacciones = res as transaccion[];
+          this.traerProductosPendientesPorNombre();
           this.cargarDatosProductoUnitario();
         });
     } else {
@@ -191,6 +200,13 @@ export class ConsolidadoComponent implements OnInit {
     });
   }
 
+  traerProductosPendientesPorNombre() {
+    this.productosPendientesService.getPendientesPorProducto(this.proTransaccion).subscribe((res) => {
+      this.productosPendientes = res as productosPendientesEntrega[];
+      this.separarEntregas();
+    });
+  }
+
   buscarProducto() {}
 
   actualizarUbicaciones() {
@@ -245,10 +261,17 @@ export class ConsolidadoComponent implements OnInit {
 
   separarEntregas() {
     this.productosPendientes.forEach((element) => {
-      if (element.estado == "PENDIENTE") {
+      if (element.estado == "PENDIENTE") 
         this.productosPendientesNoEN.push(element);
-      } else {
-      }
+    });
+    this.calcularPendientes();
+  }
+
+  calcularPendientes(){
+    this.productosPendientes.forEach((element) => {
+      this.totalCajas += element.cajas;
+      this.totalPiezas += element.piezas;
+      this.totalM2 += element.cantM2;
     });
   }
 
@@ -897,7 +920,7 @@ export class ConsolidadoComponent implements OnInit {
         (element.cantidadM2b3 * element.producto.precio).toFixed(2)
       );
     });
-    this.sumarProductosRestados();
+    //this.sumarProductosRestados();
     this.cambiarValores();
 
     this.controlarInventario();
@@ -1055,6 +1078,10 @@ export class ConsolidadoComponent implements OnInit {
     this.mostrarPopupNotas(e.row.data);
   };
 
+  mostrarProductos = (e) => {
+    this.mostrarPopupProductos(e.row.data);
+  }
+
   mostrarPopup(e: any) {
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
@@ -1075,5 +1102,15 @@ export class ConsolidadoComponent implements OnInit {
       }
     });
     this.popupVisibleNotas = true;
+  }
+
+  mostrarPopupProductos(e: any) {
+    this.nameProducto = e.producto.PRODUCTO;
+    this.productos.forEach((element) => {
+      if (element.PRODUCTO == e.producto.PRODUCTO) {
+        this.arregloNotas = element.notas;
+      }
+    });
+    this.popupVisiblePendientes = true;
   }
 }

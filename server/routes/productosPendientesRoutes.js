@@ -13,6 +13,11 @@ router.get('/getProductosPend/:documento', async (req, res) => {
     res.json(productospen); 
 })
 
+router.post("/getPendientesPorProducto", async (req, res, next) => {
+  const transacciones = await ProductosPendientes.find({ "producto.PRODUCTO": req.body.nombre });
+  res.json(transacciones);
+});
+
 router.get('/getProductosPendientesEntrega/', async (req, res) => {
     const productospen = await ProductosPendientes.find({"estado":"PENDIENTE"});
     res.json(productospen); 

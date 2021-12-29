@@ -32,23 +32,18 @@ export class ProductosPendientesService {
   }
 
   updateProductoPendienteEstado(productoPen) {
-    return this.http.put(
-      this.URL + `/updateEstado/${productoPen._id}`,
-      productoPen
-    );
+    return this.http.put( this.URL + `/updateEstado/${productoPen._id}`, productoPen);
   }
 
   actualizarNota(productoPen, nota: string) {
-    return this.http.put(
-      this.URL + `/actualizarNota/${productoPen._id}/${nota}`,
-      productoPen
-    );
+    return this.http.put(this.URL + `/actualizarNota/${productoPen._id}/${nota}`, productoPen);
   }
 
   deleteProductoPendiente(productoPen) {
-    return this.http.delete(
-      this.URL + `/delete/${productoPen._id}`,
-      productoPen
-    );
+    return this.http.delete(this.URL + `/delete/${productoPen._id}`, productoPen );
+  }
+
+  getPendientesPorProducto(producto) {
+    return this.http.post(this.URL + "/getPendientesPorProducto", producto);
   }
 }

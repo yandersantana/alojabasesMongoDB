@@ -7,7 +7,6 @@ import { Sucursal } from '../../compras/compra';
 import { producto, contadoresDocumentos } from '../../ventas/venta';
 import { auditoria, auditoriasProductos } from '.././auditorias';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
-import { element } from 'protractor';
 import { AuditoriasService } from 'src/app/servicios/auditorias.service';
 import Swal from 'sweetalert2';
 import { AuditoriaProductoService } from 'src/app/servicios/auditoria-producto.service';
@@ -18,7 +17,6 @@ import { user } from '../../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
@@ -107,14 +105,8 @@ export class Auditoria2Component implements OnInit {
     this.traerContadoresDocumentos()
     this.traerAuditorias()
     this.traerAuditoriasProductos()
-    this.traerTransacciones()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos()
-    /* var x = document.getElementById("newAudGlobal");
-    var y = document.getElementById("tabla3");
-    x.style.display= "block"
-    y.style.display= "none" */
-   
   }
 
   traerParametrizaciones(){

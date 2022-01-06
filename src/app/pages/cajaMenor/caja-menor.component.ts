@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
@@ -11,7 +11,6 @@ import { contadoresDocumentos } from '../ventas/venta';
 import { CajaMenor, DetalleCajaMenor, FormatoImpresion } from './caja-menor';
 import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
-
 
 @Component({
   selector: 'app-caja-menor',
@@ -213,9 +212,7 @@ export class CajaMenorComponent implements OnInit {
       } catch (error) {} 
     })
 
-    IdNum.then((data) => {
-      this.guardarCaja();
-    })
+    IdNum.then((data) => { this.guardarCaja() })
   }
 
 
@@ -271,10 +268,15 @@ export class CajaMenorComponent implements OnInit {
     }      
   }
 
+ 
+
+
 
    crearPDF(recibo , isNew) {
      this.formImpresion.nombreCuenta = "COSTO";
      this.formImpresion.listaSubCuentas = this.transaccionesCaja;
+     console.log(this.formImpresion)
+     this.docImpresion.push(this.formImpresion);
      this.docImpresion.push(this.formImpresion);
      this.docImpresion.push(this.formImpresion);
     
@@ -292,14 +294,16 @@ export class CajaMenorComponent implements OnInit {
     var IdNum = new Promise<any>((resolve, reject) => {
       try {
           pdfMake.createPdf(documentDefinition).download("Caja_Menor " + this.cajaMenor.idDocumento,function (response){resolve("listo")});
-      } catch (error) {
-      } 
+      } catch (error) {} 
 
     })
 
     IdNum.then((data) => {
-      if(isNew)
-      this.mostrarMensajeGenerico(1,"Descarga completa")
+      if(isNew){
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Descarga completa")
+      }
+      
         //this.terminarOperacion();
       else
       console.log("dd");
@@ -636,6 +640,37 @@ export class CajaMenorComponent implements OnInit {
   }
 
   getListaOperaciones(operaciones: FormatoImpresion[]) {
+    var dd = {
+	content: [
+	
+		{
+			style: 'tableExample',
+			table: {
+				widths: [100, '*', 200, '*'],
+				body: [
+					['width=100', 'star-sized', 'width=200', 'star-sized'],
+					['fixed-width cells have exactly the specified width', {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}]
+				]
+			}
+		},
+		{
+			style: 'tableExample',
+			table: {
+				widths: ['*', 'auto'],
+				body: [
+					['This is a star-sized column. The next column over, an auto-sized column, will wrap to accomodate all the text in this cell.', 'I am auto sized.'],
+				]
+			}
+		},
+
+
+	],
+	
+}
+
+
+
+
     var ll;
     operaciones.forEach(element=>{
       ll = 
@@ -656,49 +691,19 @@ export class CajaMenorComponent implements OnInit {
         
          
      };
-    this.getListaOperaciones2(operaciones)
+    //this.getListaOperaciones2(operaciones)
       
     
     }); 
+    console.log(this.getListaOperaciones2(operaciones[0].listaSubCuentas))
 
+    //return this.getListaOperaciones2(operaciones[0].listaSubCuentas);
     return ll;
 
-     /* return {
-
-      table: {
-        widths: ["40%", "40%", "20%"],
-        alignment: "center",
-        fontSize: 8,
-        headerRows: 2,
-        body: [
-          [
-            {
-              text: "Cuenta",
-              style: "tableHeader2",
-              fontSize: 8,
-            },
-            {text: "",},
-            {text: "",},
-          ],
-
-          ...operaciones.map((ed) => {
-            return [
-               
-              { text: ed.nombreCuenta,alignment: "center", fontSize: 8 },
-              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
-              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
-
-            ];
-          }),
-        ],
-      },
-
-      
-    };  */
   }
 
 
-   getListaOperaciones2(operaciones: FormatoImpresion[]) {
+   getListaOperaciones2(operaciones: DetalleCajaMenor[]) {
    /*  var ll;
     operaciones.forEach(element=>{
       ll = 
@@ -743,9 +748,9 @@ export class CajaMenorComponent implements OnInit {
           ...operaciones.map((ed) => {
             return [
                
-              { text: ed.nombreCuenta,alignment: "center", fontSize: 8 },
-              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
-              { text: ed.nombreCuenta, alignment: "center", fontSize: 8 },
+              { text: ed.SubCuenta,alignment: "center", fontSize: 8 },
+              { text: ed.TotalIngresos, alignment: "center", fontSize: 8 },
+              { text: ed.TotalSalidas, alignment: "center", fontSize: 8 },
 
             ];
           }),

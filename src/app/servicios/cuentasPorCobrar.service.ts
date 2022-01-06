@@ -19,8 +19,28 @@ export class CuentasPorCobrarService {
     return this.http.get(this.URL + "/getCuentasPorCobrar");
   }
 
+  getCuentasPorCobrarActivas() {
+    return this.http.get(this.URL + "/getCuentasPorCobrarActivas");
+  }
+
+  getCuentasPorCobrarPendientes() {
+    return this.http.get(this.URL + "/getCuentasPorCobrarPendientes");
+  }
+
   getCuentasPorCobrarPorRango(objFecha) {
     return this.http.post(this.URL + "/getCuentasPorRango", objFecha);
+  }
+
+  getCuentasXCobrarPorRUC(objeto) {
+    return this.http.post(this.URL + `/getCuentasPorRUC/${objeto.rucCliente}`,objeto );
+  }
+
+  getCuentasXCobrarPorNombre(objeto) {
+    return this.http.post(this.URL + `/getCuentasPorNombre/${objeto.nombreCliente}`,objeto );
+  }
+
+  updateEstadoCuenta(objeto, estado: string) {
+    return this.http.put(this.URL + `/updateEstado/${objeto._id}/${estado}`, objeto);
   }
 
   deleteCuenta(cuenta) {
@@ -30,8 +50,4 @@ export class CuentasPorCobrarService {
   deleteCuentaPorCobrar(cuenta) {
     return this.http.delete(this.URL + `/deleteDoc/${cuenta.rCajaId}`, cuenta);
   }
-
- 
-
-  
 }

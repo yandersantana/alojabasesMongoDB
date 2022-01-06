@@ -10,17 +10,18 @@ import { Cuenta, SubCuenta } from '../administracion-cuentas/administracion-cuen
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
 import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
-import { contadoresDocumentos } from '../ventas/venta';
-import { OperacionComercial, ReciboCaja } from './recibo-caja';
+import { cliente, contadoresDocumentos, factura } from '../ventas/venta';
+import { dataDocumento, OperacionComercial, ReciboCaja } from './recibo-caja';
 import pdfMake from "pdfmake/build/pdfmake";
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FacturasService } from 'src/app/servicios/facturas.service';
 import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
+import { ClienteService } from 'src/app/servicios/cliente.service';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -36,6 +37,8 @@ export class ReciboCajaComponent implements OnInit {
   listaSubCuentas2: SubCuenta [] = []
   listaSubCuentas3: SubCuenta [] = []
   isReadOnly: boolean = false;
+  isNormal: boolean = true;
+  isFacturacion: boolean = true;
   contadores:contadoresDocumentos[]
   recibosEncontrados:ReciboCaja[]
 
@@ -54,6 +57,9 @@ export class ReciboCajaComponent implements OnInit {
   listadoRecibosCajaPendientes: ReciboCaja [] = []
   parametrizaciones: parametrizacionsuc[] = [];
   transaccionesFinancieras: TransaccionesFinancieras [] = []
+  datosDocumento: dataDocumento [] = []
+  facturas:factura[] = []
+  clientes:cliente[] = []
   parametrizacionSucu: parametrizacionsuc;
   obj: objDate;
   nowdesde: Date = new Date();
@@ -63,10 +69,26 @@ export class ReciboCajaComponent implements OnInit {
     "Recibos Cajas Generados"
   ];
 
+  tipoDocumentos: string[] = [
+    "Factura",
+    "Nota de Venta"
+  ];
+
+  tiposBusqueda: string[] = [
+    "Nombre",
+    "Documento"
+  ];
+
   estados: string[] = [
     'Activos',
     'Pendientes',
     'Anulados',
+  ];
+
+  tiposRecibo: string[] = [
+    'Normal',
+    'Facturación',
+    'Cta.x Cobrar',
   ];
 
   imagenLogotipo ="";
@@ -74,8 +96,18 @@ export class ReciboCajaComponent implements OnInit {
   busquedaTransaccion: tipoBusquedaTransaccion; 
   mostrarDelete : boolean = true;
   mostrarAprobacion : boolean = false;
+  mostrarCliente : boolean = false;
+  mostrarCedula : boolean = false;
   tipoDocumento = 0;
   idDocumento = 0;
+  factura : factura;
+  textoDatosFactura = "";
+  valorTipoBusqueda = "";
+  valorDocumento = "";
+  nombre_cliente = "";
+  idCuentaPorCobrar = "";
+  tipoRecibo = "";
+
 
 
   constructor(
@@ -89,9 +121,12 @@ export class ReciboCajaComponent implements OnInit {
     public _configuracionService: DatosConfiguracionService,
     public _facturaService: FacturasService,
     public _notaVentaService : NotasVentasService,
+    public _clienteService : ClienteService,
     public _authenService:AuthenService,
-    private route: ActivatedRoute
-    ) {
+    private route: ActivatedRoute,
+    private _router: Router) {
+      this.factura = new factura()
+      this.tipoRecibo = this.tiposRecibo[0];
    }
 
   ngOnInit() {
@@ -116,12 +151,17 @@ export class ReciboCajaComponent implements OnInit {
   }
 
   buscarDatosFactura(){
+    this.isNormal = false;
+    this.isFacturacion = true;
+    this.tipoRecibo = this.tiposRecibo[1];
     if(this.tipoDocumento == 1){
-      console.log("buscare fact",this.idDocumento)
       this.reciboCaja.docVenta = this.idDocumento.toString();
+      this.reciboCaja.tipoDoc = this.tipoDocumentos[0];
+      this.traerDocumentosPorTipo(this.reciboCaja.tipoDoc,1)
     }else if(this.tipoDocumento == 2){
-      console.log("buscare not",this.idDocumento)
       this.reciboCaja.docVenta = this.idDocumento.toString();
+      this.reciboCaja.tipoDoc = this.tipoDocumentos[1];
+      this.traerDocumentosPorTipo(this.reciboCaja.tipoDoc,1)
     }
   }
 
@@ -156,6 +196,57 @@ export class ReciboCajaComponent implements OnInit {
    })
   }
 
+  traerClientes(){
+    this._clienteService.getCliente().subscribe(res => {
+      this.clientes = res as cliente[];
+   })
+  }
+
+  traerDocumentosPorTipo(e, tipo : number){
+    this.facturas = [];
+    var valor = "";
+    if(tipo == 2) valor = e.value;
+    else valor = e;
+
+    if(valor == "Factura"){
+      this.factura.documento_n = Number(this.reciboCaja.docVenta);
+      this._facturaService.getFacturasDocumentoVenta(this.factura).subscribe(res => {
+        this.facturas = res as factura[];
+        this.llenarDatosCombo(this.facturas)
+      });
+    }else if(valor == "Nota de Venta"){
+      this.factura.documento_n = Number(this.reciboCaja.docVenta);
+      this._notaVentaService.getNotasVentaXDocumento(this.factura).subscribe(res => {
+        this.facturas = res as factura[];
+        this.llenarDatosCombo(this.facturas)
+      });
+    }
+  }
+
+  asignarDatos(e){
+    this.idCuentaPorCobrar = e.value._id;
+    this.textoDatosFactura = e.value.textoCombo;
+    this.reciboCaja.cliente = e.value.nombreCliente;
+    this.reciboCaja.ruc = e.value.rucCliente;
+    this.reciboCaja.valorFactura = e.value.totalFactura;
+  }
+
+
+  llenarDatosCombo(array){
+    this.datosDocumento = [];
+    array.forEach(element => {
+      var object = new dataDocumento();
+      object._id = element._id;
+      object.nombreCliente = element.cliente.cliente_nombre;
+      object.rucCliente = element.cliente.ruc;
+      object.totalFactura = element.total.toString();
+      object.textoCombo = object.nombreCliente+" - "+object.rucCliente+" - "+object.totalFactura
+      this.datosDocumento.push(object);
+    });
+  }
+
+
+
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
       if (localStorage.getItem("maily") != '') 
@@ -171,6 +262,55 @@ export class ReciboCajaComponent implements OnInit {
     });
   }
 
+  setClienteData(e){
+    this.textLoading = "Buscando..";
+    this.mostrarLoading = true;
+    if(this.valorTipoBusqueda == "Nombre"){
+      var docData = new dataDocumento();
+      docData.nombreCliente = this.nombre_cliente;
+      this._cuentaPorCobrar.getCuentasXCobrarPorNombre(docData).subscribe(res => {
+        var cuentas = res as CuentaPorCobrar[];
+        this.llenarDatosComboCuentasCobrar(cuentas);
+        this.mostrarLoading = false;
+      });
+    }else if(this.valorTipoBusqueda == "Documento"){
+      var docData = new dataDocumento();
+      docData.rucCliente = this.valorDocumento;
+      this._cuentaPorCobrar.getCuentasXCobrarPorRUC(docData).subscribe(res => {
+        var cuentas = res as CuentaPorCobrar[];
+        this.llenarDatosComboCuentasCobrar(cuentas);
+        this.mostrarLoading = false;
+      });
+    }
+  }
+
+  llenarDatosComboCuentasCobrar(array){
+    this.datosDocumento = [];
+    array.forEach(element => {
+      var object = new dataDocumento();
+      object._id = element._id;
+      object.nombreCliente = element.cliente;
+      object.rucCliente = element.rucCliente;
+      object.totalFactura = element.valor;
+      object.textoCombo = element.rCajaId+" - "+object.totalFactura
+      this.datosDocumento.push(object);
+    });
+  }
+
+
+  asignarValorBusqueda(e){
+    if(e.value == "Nombre"){
+      if(this.clientes.length == 0)
+        this.traerClientes();
+
+      this.mostrarCliente = true;
+      this.mostrarCedula = false;
+    }else{
+      this.mostrarCliente = false;
+      this.mostrarCedula = true;
+
+    }
+  }
 
   downloadFile = (e) => {
     this.obtenerDataRecibo(e.row.data);
@@ -283,6 +423,26 @@ export class ReciboCajaComponent implements OnInit {
         this.listadoRecibosCaja = this.listadoRecibosCajaAnulados;
         this.mostrarDelete= false;
         this.mostrarAprobacion = false;
+        break;
+      default:    
+    }      
+  }
+
+
+  opcionRadioTipos(e){
+    this.tipoRecibo = e.value;
+    switch (e.value) {
+      case "Normal":
+        this.isFacturacion = true;
+        this.isNormal = true;
+        break;
+      case "Facturación":
+        this.isFacturacion = true;
+        this.isNormal = false;
+        break;
+      case "Cta.x Cobrar":
+        this.isFacturacion = false;
+        this.isNormal = false;
         break;
       default:    
     }      
@@ -421,7 +581,6 @@ export class ReciboCajaComponent implements OnInit {
   eliminarCuentaPorCobrar(e){
     var cuenta = new CuentaPorCobrar();
     cuenta.rCajaId = "RC"+e.idDocumento;
-    console.log(e)
     this._cuentaPorCobrar.deleteCuentaPorCobrar(cuenta).subscribe( res => {}, err => {alert("error")})
   }
 
@@ -499,29 +658,40 @@ export class ReciboCajaComponent implements OnInit {
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
     });
-    this.comprobarSaldo();
+    //this.comprobarSaldo();
+
+    if(this.tipoRecibo == "Cta.x Cobrar")
+      this.actualizarRecibo();
+
     this.guardarReciboCaja(); 
     
     return this.reciboCaja;
   }
 
-  comprobarSaldo(){
-    if(this.reciboCaja.valorSaldos > 0){
-      var cuentaPorCobrar = new CuentaPorCobrar();
-      cuentaPorCobrar.fecha = new Date();
-      cuentaPorCobrar.sucursal = this.reciboCaja.sucursal;
-      cuentaPorCobrar.cliente = this.reciboCaja.cliente;
-      cuentaPorCobrar.rucCliente = this.reciboCaja.ruc;
-      cuentaPorCobrar.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
-      cuentaPorCobrar.documentoVenta = this.reciboCaja.docVenta;
-      cuentaPorCobrar.numDocumento = this.reciboCaja.numDocumento;
-      cuentaPorCobrar.valor = this.reciboCaja.valorSaldos;
-      cuentaPorCobrar.tipoPago = this.reciboCaja.tipoPago;
-      cuentaPorCobrar.notas = this.reciboCaja.observaciones;
-      this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {
-      },(err) => {});
-    }
+  actualizarRecibo(){
+    var cuenta = new CuentaPorCobrar();
+    cuenta._id = this.idCuentaPorCobrar;
+    this._cuentaPorCobrar.updateEstadoCuenta(cuenta,"Cancelada").subscribe( res => {
+    },err => {})
   }
+
+
+  insertarCuentaPorCobrar(transaccion : TransaccionesFinancieras ){
+    var cuentaPorCobrar = new CuentaPorCobrar();
+    cuentaPorCobrar.fecha = new Date();
+    cuentaPorCobrar.sucursal = this.reciboCaja.sucursal;
+    cuentaPorCobrar.cliente = this.reciboCaja.cliente;
+    cuentaPorCobrar.rucCliente = this.reciboCaja.ruc;
+    cuentaPorCobrar.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
+    cuentaPorCobrar.documentoVenta = this.reciboCaja.docVenta;
+    cuentaPorCobrar.numDocumento = this.reciboCaja.numDocumento;
+    cuentaPorCobrar.valor = transaccion.valor;
+    cuentaPorCobrar.tipoPago = this.reciboCaja.tipoPago;
+    cuentaPorCobrar.notas = this.reciboCaja.observaciones;
+    this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {
+    },(err) => {});
+  }
+
 
   guardarReciboCaja(){
     try {
@@ -592,6 +762,10 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.notas = this.reciboCaja.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
+      if(element.nombreCuenta == "SALDOS" && element.nombreSubcuenta == "2. Cuentas por Cobrar"){
+        this.insertarCuentaPorCobrar(transaccion)
+      }
+
       try {
         this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe((res) => {
           cont++
@@ -617,9 +791,13 @@ export class ReciboCajaComponent implements OnInit {
         icon: 'success',
         confirmButtonText: 'Ok'
       }).then((result) => {
-        window.location.reload()
+        
+        window.location.replace('http://159.223.107.115:3000/#/recibo-caja');
+        //window.location.replace('http://localhost:4200/#/recibo-caja');
+        window.location.reload()//this._router.navigate(['/recibo-caja']);
       })
   }
+
 
   terminarDescarga(){
     this.mostrarLoading = false;

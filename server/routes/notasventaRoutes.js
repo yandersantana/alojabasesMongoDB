@@ -39,9 +39,7 @@ router.post("/getNotasVentaPorDocumento/:documento", async (req, res, next) => {
   res.json(documentos);
 });
 
-router.put(
-  "/updateObservaciones/:id/:observaciones",
-  async (req, res, next) => {
+router.put("/updateObservaciones/:id/:observaciones",async (req, res, next) => {
     const { id } = req.params;
     const { observaciones } = req.params;
     await NotasVenta.findByIdAndUpdate(
@@ -82,7 +80,6 @@ router.put(
 router.put("/updateEstadoObs/:id/:estado", async (req, res, next) => {
   const { id } = req.params;
   const { estado } = req.params;
-  //const { observaciones } = req.params;
   await NotasVenta.findByIdAndUpdate(
     id,
     { $set: { estado: estado, observaciones: req.body.observaciones } },

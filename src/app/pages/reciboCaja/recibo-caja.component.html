@@ -25,6 +25,21 @@
 <div class="row" *ngIf="newRecibo">
     <div class="col-md-1"></div>
     <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <div class="dx-field radio">
+                    <div class="dx-field-value">
+                        <dx-radio-group
+                        [items]="tiposRecibo"
+                        [(value)]="tipoRecibo"
+                        layout="horizontal"
+                        (onValueChanged)="opcionRadioTipos($event)">
+                        </dx-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="card">
             <h5 class="card-header text-center font-weight-bold text-uppercase ">RECIBO DE CAJA</h5>
             <div class="card-body">
@@ -36,14 +51,70 @@
                                     <div class="col-md-4">Fecha:</div>
                                     <div class="col-md-8 dateB"><dx-date-box [(value)]="reciboCaja.fecha" type="date"></dx-date-box></div>
 
-                                    <div class="col-md-4">Doc. Venta:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.docVenta" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4" *ngIf="!isFacturacion">Tipo Búsqueda:</div>
+                                    <div class="col-md-8" *ngIf="!isFacturacion">
+                                        <dx-select-box [items]="tiposBusqueda" 
+                                                [(value)]="valorTipoBusqueda"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                (onValueChanged)="asignarValorBusqueda($event)"
+                                                [disabled]="false">
+                                        </dx-select-box>
+                                    </div>
 
-                                    <div class="col-md-4">Cliente:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.cliente" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4" *ngIf="!isFacturacion && mostrarCliente"> Cliente :</div>
+                                    <div class="col-md-8" *ngIf="!isFacturacion && mostrarCliente">
+                                        <dx-autocomplete #data2
+                                            [dataSource]="clientes"
+                                            [(value)]="nombre_cliente"
+                                            valueExpr="cliente_nombre"
+                                            (onChange)="setClienteData($event)">
+                                        </dx-autocomplete>
+                                    </div>
 
-                                    <div class="col-md-4">RUC:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.ruc" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4" *ngIf="!isFacturacion && !mostrarCliente">Documento:</div>
+                                    <div class="col-md-8" *ngIf="!isFacturacion && !mostrarCliente"><dx-text-box [(value)]="valorDocumento" (onChange)="setClienteData($event)" [readOnly]="isReadOnly" [disabled]="isNormal"></dx-text-box></div>
+
+
+                                    <div class="col-md-4" *ngIf="!isFacturacion">Registros:</div>
+                                    <div class="col-md-8" *ngIf="!isFacturacion">
+                                        <dx-select-box [items]="datosDocumento" 
+                                                displayExpr="textoCombo"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                hint={{textoDatosFactura}}
+                                                (onValueChanged)="asignarDatos($event)"
+                                                [disabled]="isNormal">
+                                        </dx-select-box>
+                                    </div>
+
+                                    <div class="col-md-4" *ngIf="isFacturacion">Doc. Venta:</div>
+                                    <div class="col-md-8" *ngIf="isFacturacion"><dx-text-box [(value)]="reciboCaja.docVenta" [readOnly]="isReadOnly" [disabled]="isNormal"></dx-text-box></div>
+
+                                    <div class="col-md-4" *ngIf="isFacturacion">Tipo Doc:</div>
+                                    <div class="col-md-8" *ngIf="isFacturacion">
+                                        <dx-select-box [items]="tipoDocumentos" 
+                                                [(value)]="reciboCaja.tipoDoc"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                (onValueChanged)="traerDocumentosPorTipo($event,2)"
+                                                [disabled]="isNormal">
+                                        </dx-select-box>
+                                    </div>
+
+                                    <div class="col-md-4" *ngIf="isFacturacion">Relación Doc.:</div>
+                                    <div class="col-md-8" *ngIf="isFacturacion">
+                                        <dx-select-box [items]="datosDocumento" 
+                                                displayExpr="textoCombo"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                hint={{textoDatosFactura}}
+                                                (onValueChanged)="asignarDatos($event)"
+                                                [disabled]="isNormal">
+                                        </dx-select-box>
+                                    </div>
+
+                                    
 
                                     <div class="col-md-4">Sucursal:</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
@@ -52,6 +123,12 @@
 
                             <div class="col-md-6">
                                 <div class="row espacioDivs">
+                                    <div class="col-md-4">Cliente:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.cliente" [readOnly]="isReadOnly"></dx-text-box></div>
+
+                                    <div class="col-md-4">RUC:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.ruc" [readOnly]="isReadOnly"></dx-text-box></div>
+
                                     <div class="col-md-4">Tipo Pago:</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.tipoPago" [readOnly]="false"></dx-text-box></div>
 
@@ -297,7 +374,8 @@
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxi-column dataField="idDocumento" caption="RC" dataType="number" sortOrder="desc"></dxi-column>
         <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-        <dxi-column dataField="docVenta" caption="Documento" dataType="string"></dxi-column>
+<!--         <dxi-column dataField="docVenta" caption="Documento" dataType="string"></dxi-column> -->
+        <dxi-column dataField="numDocumento" caption="N Documento" dataType="string"></dxi-column>
         <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
         <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
         <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
@@ -305,7 +383,7 @@
 
         <dxi-column dataField="observaciones" caption="Notas" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="numDocumento" caption="N Documento" dataType="string" [visible]="false"></dxi-column>
+        
         <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="valorRecargo" caption="Valor Recargo" dataType="number" [visible]="false"></dxi-column>

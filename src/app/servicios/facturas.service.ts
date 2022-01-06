@@ -27,10 +27,7 @@ export class FacturasService {
   }
 
   getFacturasDocumento(documento) {
-    return this.http.post(
-      this.URL + `/getFacturasPorDocumento/${documento}`,
-      documento
-    );
+    return this.http.post( this.URL + `/getFacturasPorDocumento/${documento}`, documento);
   }
 
   getFacturasPorRango(objFecha) {
@@ -38,10 +35,7 @@ export class FacturasService {
   }
 
   getFacturasDocumentoVenta(factura) {
-    return this.http.post(
-      this.URL + `/getFacturasPorDocumentoVenta/${factura.documento_n}`,
-      factura
-    );
+    return this.http.post(this.URL + `/getFacturasPorDocumentoVenta/${factura.documento_n}`,factura );
   }
 
   updateFacturas(facturas) {
@@ -49,31 +43,19 @@ export class FacturasService {
   }
 
   updateFacturasEstado(facturas, estado: string) {
-    return this.http.put(
-      this.URL + `/updateEstado/${facturas._id}/${estado}`,
-      facturas
-    );
+    return this.http.put(this.URL + `/updateEstado/${facturas._id}/${estado}`, facturas);
   }
 
   updateFacturasEstadoAnulacion(facturas, estado: string, mensaje: string) {
-    return this.http.put(
-      this.URL + `/updateEstadoMensaje/${facturas._id}/${estado}/${mensaje}`,
-      facturas
-    );
+    return this.http.put( this.URL + `/updateEstadoMensaje/${facturas._id}/${estado}/${mensaje}`,facturas);
   }
 
   updateFacturasEstado2(facturas, estado: string) {
-    return this.http.put(
-      this.URL + `/updateEstadoOb/${facturas._id}/${estado}`,
-      facturas
-    );
+    return this.http.put( this.URL + `/updateEstadoOb/${facturas._id}/${estado}`, facturas);
   }
 
   updateFacturasObervaciones(idFact: string, observaciones: string) {
-    return this.http.put(
-      this.URL + `/update2/${idFact}/${observaciones}`,
-      idFact
-    );
+    return this.http.put( this.URL + `/update2/${idFact}/${observaciones}`, idFact);
   }
 
   deleteFacturas(facturas) {
@@ -81,9 +63,6 @@ export class FacturasService {
   }
 
   actualizarNota(facturas, nota: string) {
-    return this.http.put(
-      this.URL + `/actualizarNota/${facturas._id}/${nota}`,
-      facturas
-    );
+    return this.http.put(this.URL + `/actualizarNota/${facturas._id}/${nota}`, facturas);
   }
 }

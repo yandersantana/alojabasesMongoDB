@@ -7,7 +7,6 @@ import { factura, cliente, venta, producto, cotizacion, productosPendientesEntre
 import { PdfMakeWrapper } from 'pdfmake-wrapper';
 import pdfMake from 'pdfmake/build/pdfmake';
 import pdfFonts from "pdfmake/build/vfs_fonts";
-import { AlertsService } from 'angular-alert-module';
 import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import dxAutocomplete from 'devextreme/ui/autocomplete';
@@ -430,24 +429,24 @@ contadores:contadoresDocumentos[]
             this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
             //firebase
-            this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
-            this.numeroFactura2=this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+            //this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
+            //this.numeroFactura2=this.contadorFirebase[0].facturaMatriz_Ndocumento+1
             break;
           case "sucursal1":
             //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
             //firebase
-            this.factura.documento_n =this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
-            this.numeroFactura2=this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+            //this.factura.documento_n =this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
+            //this.numeroFactura2=this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
             break;
           case "sucursal2":
             //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
             //firebase
-            this.factura.documento_n =this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
-            this.numeroFactura2=this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+            //this.factura.documento_n =this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
+            //this.numeroFactura2=this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
             break;
           default:
             break;
@@ -455,16 +454,16 @@ contadores:contadoresDocumentos[]
         break;
       case "Nota de Venta":
         this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-        this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
+        //this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
         break;
       case "Cotización":
         this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
-        this.factura.documento_n = this.contadorFirebase[0].proformas_Ndocumento+1 
+        //this.factura.documento_n = this.contadorFirebase[0].proformas_Ndocumento+1 
         break;
       default:
         break;
     }
-
+console.log(this.factura.documento_n)
     this.numeroID= this.contadorFirebase[0].contProductosPendientes_Ndocumento+1
     this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1
   }
@@ -513,6 +512,7 @@ contadores:contadoresDocumentos[]
         default:
           break;
       }
+      console.log(this.factura.documento_n)
       
     }
 
@@ -3084,6 +3084,7 @@ cambiarestado(e,i:number){
         });
         if(contpro>=1 &&bandera && this.factura.documento_n!=undefined){
           this.factura.documento_n = this.numeroFactura2
+          console.log(this.factura.documento_n)
           this.factura.dni_comprador= this.factura.cliente.ruc
           this.factura.cliente.cliente_nombre= this.mensaje
           
@@ -3310,24 +3311,25 @@ cambiarestado(e,i:number){
 
 
   validarFormaPago(){
-    if(this.formaPago == "Credito" || this.formaPago == "Cancelado"){
+    //if(this.formaPago == "Credito" || this.formaPago == "Cancelado"){
       this.newRecibo.idDocumento = this.contadores[0].reciboCaja_Ndocumento + 1;
       this.obtenerIdRecibo();
-    }
+    //}
   }
 
   generarCuentaPorCobrar(idRecibo){
     if(this.formaPago == "Credito"){
-        var cuentaPorCobrar = new CuentaPorCobrar();
-        cuentaPorCobrar.fecha = new Date();
-        cuentaPorCobrar.sucursal = this.factura.sucursal;
-        cuentaPorCobrar.cliente = this.factura.cliente.cliente_nombre;
-        cuentaPorCobrar.rucCliente = this.factura.cliente.ruc;
-        cuentaPorCobrar.rCajaId = "RC"+idRecibo;
-        cuentaPorCobrar.documentoVenta = this.factura.documento_n.toString();
-        cuentaPorCobrar.numDocumento = "";
-        cuentaPorCobrar.valor = this.factura.total;
-        this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {},(err) => {});
+      var cuentaPorCobrar = new CuentaPorCobrar();
+      cuentaPorCobrar.fecha = new Date();
+      cuentaPorCobrar.sucursal = this.factura.sucursal;
+      cuentaPorCobrar.cliente = this.factura.cliente.cliente_nombre;
+      cuentaPorCobrar.rucCliente = this.factura.cliente.ruc;
+      cuentaPorCobrar.rCajaId = "RC"+idRecibo;
+      cuentaPorCobrar.documentoVenta = this.factura.documento_n.toString();
+      cuentaPorCobrar.numDocumento = "";
+      cuentaPorCobrar.valor = this.factura.total;
+      cuentaPorCobrar.notas = "Generado desde el módulo de facturación";
+      this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {},(err) => {});
     }
     
   } 
@@ -3357,28 +3359,24 @@ cambiarestado(e,i:number){
   }
 
   obtenerIdRecibo(){
-    console.log(this.newRecibo.idDocumento)
     var idRecibo = 0;
     var IdNum = new Promise<any>((resolve, reject) => {
       try {
-        this._reciboCajaService.getReciboCajaPorIdConsecutivo(this.newRecibo).subscribe(res => {
-         this.recibosEncontrados = res as ReciboCaja[];
-          if(this.recibosEncontrados.length == 0){
-            idRecibo = this.newRecibo.idDocumento;
-            resolve("listo");
-          }else{
-            this.newRecibo.idDocumento = this.newRecibo.idDocumento+1
-            this.obtenerIdRecibo();
-          }
-           
+        this._reciboCajaService.getReciboCajaPorIdConsecutivo(this.newRecibo).subscribe(
+          res => {
+            this.recibosEncontrados = res as ReciboCaja[];
+            if(this.recibosEncontrados.length == 0){
+              idRecibo = this.newRecibo.idDocumento;
+              resolve("listo");
+            }else{
+              this.newRecibo.idDocumento = this.newRecibo.idDocumento+1
+              this.obtenerIdRecibo();
+            }
           },(err) => {});
-      } catch (error) {
-      } 
+      } catch (error) {} 
     })
 
-    IdNum.then((data) => {
-      this.generarReciboCaja(idRecibo);
-    })
+    IdNum.then((data) => {this.generarReciboCaja(idRecibo);})
   }
 
 
@@ -3386,7 +3384,7 @@ cambiarestado(e,i:number){
       var recibo = new ReciboCaja();
       recibo.idDocumento = idRecibo;
       recibo.fecha = this.factura.fecha;
-      recibo.docVenta = "xxxxx";
+      recibo.docVenta = this.tDocumento;
       recibo.cliente = this.factura.cliente.nombreContacto;
       recibo.ruc = this.factura.cliente.ruc;
       recibo.sucursal = this.factura.sucursal;
@@ -3397,20 +3395,20 @@ cambiarestado(e,i:number){
      
       recibo.observaciones = "Generado desde el modulo de facturación"
       recibo.estadoRecibo = "Activo";
-      switch (this.formaPago) {
-        case "":
-          recibo.tipoPago = "Credito";
-          recibo.valorPagoEfectivo = 0;
-          recibo.valorSaldos = this.factura.total;
-          break;
-        case "Cancelado":
-          recibo.tipoPago = "Contado";
-          recibo.valorPagoEfectivo = this.factura.total;
-          recibo.valorSaldos = 0;
-          break;
+      if(this.formaPago == "Cancelado"){
+        recibo.tipoPago = "Contado";
+        recibo.valorPagoEfectivo = this.factura.total;
+        recibo.valorSaldos = 0;
+      }else{
+        recibo.tipoPago = "Credito";
+        recibo.valorPagoEfectivo = 0;
+        recibo.valorSaldos = this.factura.total;
       }
 
-      this.listaOperaciones.push(this.generarOperacion());
+      this.listaOperaciones.push(this.generarOperacionPrincipal());
+      if(this.formaPago == "Credito")
+        this.listaOperaciones.push(this.generarOperacionSaldo());
+
       recibo.operacionesComercialesList = this.listaOperaciones;
       try {
         this._reciboCajaService.newReciboCaja(recibo).subscribe((res) => {
@@ -3427,31 +3425,32 @@ cambiarestado(e,i:number){
       this.contadoresService.updateContadoresIDRegistroCaja(this.contadores[0]).subscribe( res => {},err => {})
     }
 
-    generarOperacion(){
+    generarOperacionSaldo(){
       var operacionCC = new OperacionComercial();
       operacionCC.valor = this.factura.total;
-      if(this.formaPago == "Credito")
-      {
-        operacionCC.tipoCuenta = "Reales y Transitorias"
-        operacionCC.nombreCuenta = "SALDOS"
-        operacionCC.idCuenta = "6195b036f75a418e9c2eba06"
-        operacionCC.nombreSubcuenta = "2. Cuentas por Cobrar"; 
-        operacionCC.idSubCuenta = "61c50005270abc667ec3f8f7";
-      }else if(this.formaPago == "Cancelado")
-      {
-        operacionCC.tipoCuenta = "Ingresos"
-        operacionCC.nombreCuenta = "INGRESOS"
-        operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
-        
-        if(this.tDocumento == "Factura"){
-          operacionCC.nombreSubcuenta = "Facturacion"; 
-          operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
-        }
-        else if(this.tDocumento == "Nota de Venta"){
-          operacionCC.nombreSubcuenta = "Nota_Venta"; 
-          operacionCC.idSubCuenta = "61bcef301a0afd3ac9084cce";
-        }
+      operacionCC.tipoCuenta = "Reales y Transitorias"
+      operacionCC.nombreCuenta = "SALDOS"
+      operacionCC.idCuenta = "6195b036f75a418e9c2eba06"
+      operacionCC.nombreSubcuenta = "2. Cuentas por Cobrar"; 
+      operacionCC.idSubCuenta = "61c50005270abc667ec3f8f7";
+      return operacionCC;
+    }
 
+    generarOperacionPrincipal(){
+      var operacionCC = new OperacionComercial();
+      operacionCC.valor = this.factura.total;
+
+      operacionCC.tipoCuenta = "Ingresos"
+      operacionCC.nombreCuenta = "INGRESOS"
+      operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
+      
+      if(this.tDocumento == "Factura"){
+        operacionCC.nombreSubcuenta = "Facturacion"; 
+        operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
+      }
+      else if(this.tDocumento == "Nota de Venta"){
+        operacionCC.nombreSubcuenta = "Nota_Venta"; 
+        operacionCC.idSubCuenta = "61bcef301a0afd3ac9084cce";
       }
       return operacionCC;
     }

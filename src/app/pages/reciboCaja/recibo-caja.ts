@@ -16,8 +16,10 @@ export class ReciboCaja{
     valorSaldos:number
     observaciones: string
     estadoRecibo: string
+    tipoDoc: string
     operacionesComercialesList: Array<OperacionComercial>
     constructor(){
+        this.docVenta = "";
         this.valorFactura = 0;
         this.valorPagoEfectivo = 0;
         this.valorRecargo = 0;
@@ -39,6 +41,15 @@ export class OperacionComercial{
     constructor(){
         this.valor = 0;
     }
+}
+
+export class dataDocumento{
+    textoCombo : string
+    nombreCliente : string
+    rucCliente : string
+    totalFactura : string
+    _id : string
+    constructor(){}
 }
 
 

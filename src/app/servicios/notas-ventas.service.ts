@@ -30,10 +30,11 @@ export class NotasVentasService {
   }
 
   getNotasVemtaDocumento(documento) {
-    return this.http.post(
-      this.URL + `/getNotasVentaPorDocumento/${documento}`,
-      documento
-    );
+    return this.http.post(this.URL + `/getNotasVentaPorDocumento/${documento}`,documento );
+  }
+
+  getNotasVentaXDocumento(notaVenta) {
+    return this.http.post(this.URL + `/getNotasVentaPorDocumento/${notaVenta.documento_n}`,notaVenta );
   }
 
   updateNotasVenta(notasVenta) {

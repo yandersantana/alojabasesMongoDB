@@ -12,6 +12,7 @@ const CuentaPorCobrarSchema = new Schema({
     numDocumento: { type: String, required: false},
     valor: { type: Number, required: false},
     tipoPago: { type: String, required: false},
+    estado: { type: String, required: false},
     notas: { type: String, required: false}
 },{
     timestamps:true

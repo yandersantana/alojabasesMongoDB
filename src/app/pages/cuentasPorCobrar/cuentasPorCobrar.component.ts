@@ -43,7 +43,7 @@ export class CuentaPorCobrarComponent implements OnInit {
   traerListaCuentas(){
     this.listaCuentas = [];
     this.mostrarLoading = true;
-    this._cuentasporCobrarService.getCuentasPorCobrar().subscribe(res => {
+    this._cuentasporCobrarService.getCuentasPorCobrarActivas().subscribe(res => {
       this.listaCuentas = res as CuentaPorCobrar[];
       this.mostrarLoading = false;
    })

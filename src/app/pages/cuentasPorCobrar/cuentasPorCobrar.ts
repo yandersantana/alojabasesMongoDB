@@ -10,8 +10,9 @@ export class CuentaPorCobrar{
     valor : number
     tipoPago: string
     notas: string
+    estado: string
     constructor(){
-
+        this.estado = "Activa"  //Cancelada cuando se establezca el pago
     }
 }
 

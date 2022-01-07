@@ -32,16 +32,20 @@
                                 <div class="col-md-10">
                                     <div class="row">
                                         <div class="col-md-6 textP">Fecha</div>
-                                        <div class="col-md-6">{{cajaMenor.fecha}}</div>
+                                        <div class="col-md-4 dateB"><dx-date-box [(value)]="cajaMenor.fecha" (onValueChanged)="buscarTransaccionesPorFecha($event)" type="date"></dx-date-box></div>
+                                        <div class="col-md-2"></div>
 
                                         <div class="col-md-6 textP">Estado</div>
-                                        <div class="col-md-6">{{cajaMenor.estado}}</div>
+                                        <div class="col-md-4">{{cajaMenor.estado}}</div>
+                                        <div class="col-md-2"></div>
 
                                         <div class="col-md-6 textP">Sucursal</div>
-                                        <div class="col-md-6">{{cajaMenor.sucursal}}</div>
+                                        <div class="col-md-4">{{cajaMenor.sucursal}}</div>
+                                        <div class="col-md-2"></div>
 
                                         <div class="col-md-6 textP">Usuario</div>
-                                        <div class="col-md-6">{{cajaMenor.usuario}}</div>
+                                        <div class="col-md-4">{{cajaMenor.usuario}}</div>
+                                        <div class="col-md-2"></div>
                                     </div>
                                 </div>
                             </div>

@@ -20,7 +20,7 @@ export class DetalleCajaMenor {
 
 export class CajaMenor{
     idDocumento : number;
-    fecha: string
+    fecha: Date;
     usuario: string
     sucursal: string
     estado: string

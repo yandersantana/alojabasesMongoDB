@@ -1,4 +1,4 @@
-import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
@@ -25,9 +25,8 @@ export class CajaMenorComponent implements OnInit {
   contadores: contadoresDocumentos[];
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
-  dateNow = new Date().toLocaleDateString();
-  two = 2;
-
+  dateNow = new Date();
+  
   cajaMenor : CajaMenor;
   mostrarLoading : boolean = false;
   obj: objDate;
@@ -92,6 +91,8 @@ export class CajaMenorComponent implements OnInit {
     })
   }
 
+  
+
   traerDocumentosCaja(){
     this.listadoCaja = [];
     this.mensajeLoading = "Cargando datos";
@@ -100,6 +101,29 @@ export class CajaMenorComponent implements OnInit {
       this.listadoCaja = res as CajaMenor[];
       this.mostrarLoading = false;
     })
+  }
+
+  buscarTransaccionesPorFecha(e){
+    this.mensajeLoading = "Buscando datos.."
+    this.mostrarLoading = true;
+    this.resetearValores();
+    this.obj = new objDate();
+    this.obj.fechaAnterior = this.cajaMenor.fecha;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this.obj.fechaActual = new Date(this.cajaMenor.fecha);
+    this.obj.fechaActual.setHours(24);
+    this._transaccionesFinancierasService.getTransaccionesFinancierasPorRango(this.obj).subscribe(res => {
+      this.listaTransacciones = res as TransaccionesFinancieras[];
+      this.crearTransaccionesCaja();
+   })
+  }
+
+
+  resetearValores(){
+    this.resultado = 0;
+    this.estadoCuenta = "";
+    this.cajaMenor.resultado = this.resultado;
+    this.cajaMenor.estadoCaja = this.estadoCuenta;
   }
 
   cargarUsuarioLogueado() {
@@ -142,6 +166,7 @@ export class CajaMenorComponent implements OnInit {
     this.cajaMenor.totalRC = totalRC;
     this.cajaMenor.resultado = this.resultado;
     this.cajaMenor.estadoCaja = this.estadoCuenta;
+    this.mostrarLoading = false;
   }
 
 
@@ -158,6 +183,10 @@ export class CajaMenorComponent implements OnInit {
 
 
   crearTransaccionesCaja(){
+    if(this.listaTransacciones.length == 0)
+      this.mostrarLoading = false;
+      
+    this.transaccionesCaja = [];
     this.listaTransacciones.forEach(element=>{
       var newCaja = new DetalleCajaMenor();
       newCaja.OrderDate = element.fecha.toLocaleString();

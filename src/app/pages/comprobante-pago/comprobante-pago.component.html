@@ -25,6 +25,22 @@
 <div class="row" *ngIf="newComprobante">
     <div class="col-md-1"></div>
     <div class="col-md-10">
+        <div class="row">
+            <div class="col-md-8"></div>
+            <div class="col-md-4">
+                <div class="dx-field radio">
+                    <div class="dx-field-value">
+                        <dx-radio-group
+                        [items]="tiposComprobantes"
+                        [(value)]="tipoComprobante"
+                        layout="horizontal"
+                        (onValueChanged)="opcionRadioTipos($event)">
+                        </dx-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
         <div class="card">
             <h5 class="card-header text-center font-weight-bold text-uppercase ">COMPROBANTE DE PAGO</h5>
             <div class="card-body">
@@ -36,20 +52,67 @@
                                     <div class="col-md-4">Fecha:</div>
                                     <div class="col-md-8 dateB"><dx-date-box [(value)]="comprobantePago.fecha" type="date"></dx-date-box></div>
 
-                                    <div class="col-md-4">Documento:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.documento" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4" *ngIf="isNormal">Documento:</div>
+                                    <div class="col-md-8" *ngIf="isNormal"><dx-text-box [(value)]="comprobantePago.documento" [readOnly]="isReadOnly"></dx-text-box></div>
                                     
-                                    <div class="col-md-4">Centro/Costo:</div>
-                                    <div class="col-md-8"><dx-autocomplete
+                                    <div class="col-md-4" *ngIf="isNormal">Centro/Costo:</div>
+                                    <div class="col-md-8" *ngIf="isNormal"><dx-autocomplete
                                                             [dataSource]="detallesCostos"
                                                             valueExpr="nombre"
                                                             [(value)]= "comprobantePago.centroCosto">
                                                         </dx-autocomplete>
                                     </div>
 
-                                    <div class="col-md-4">Usuario:</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.usuario" [readOnly]="isReadOnly"></dx-text-box></div>
+                                    <div class="col-md-4" *ngIf="!isNormal">Tipo Búsqueda:</div>
+                                    <div class="col-md-8" *ngIf="!isNormal">
+                                        <dx-select-box [items]="tiposBusqueda" 
+                                                [(value)]="valorTipoBusqueda"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                (onValueChanged)="asignarValorBusqueda($event)"
+                                                [disabled]="false">
+                                        </dx-select-box>
+                                    </div>
 
+                                    <div class="col-md-4" *ngIf="!isNormal && mostrarBeneficiario"> Beneficiario :</div>
+                                    <div class="col-md-8" *ngIf="!isNormal && mostrarBeneficiario">
+                                        <dx-autocomplete #data2
+                                            [dataSource]="beneficiarios"
+                                            [(value)]="nombre_Beneficiario"
+                                            valueExpr="nombre"
+                                            (onChange)="setClienteData($event)">
+                                        </dx-autocomplete>
+                                    </div>
+
+                                    <div class="col-md-4" *ngIf="!isNormal && mostrarProveedor"> Proveedor :</div>
+                                    <div class="col-md-8" *ngIf="!isNormal && mostrarProveedor">
+                                        <dx-autocomplete #data2
+                                            [dataSource]="proveedores"
+                                            valueExpr="nombre_proveedor"
+                                            [(value)]="nombre_Beneficiario"
+                                            (onChange)="setClienteData($event)">
+                                        </dx-autocomplete>
+                                    </div>
+
+                                    <div class="col-md-4" *ngIf="!isNormal && mostrarDocumento ">Documento:</div>
+                                    <div class="col-md-8" *ngIf="!isNormal && mostrarDocumento "><dx-text-box [(value)]="valorDocumento" (onChange)="setClienteData($event)" [readOnly]="isReadOnly" [disabled]="isNormal"></dx-text-box></div>
+
+
+                                    <div class="col-md-4" *ngIf="!isNormal">Registros:</div>
+                                    <div class="col-md-8" *ngIf="!isNormal">
+                                        <dx-select-box [items]="datosDocumento" 
+                                                displayExpr="textoCombo"
+                                                [searchEnabled]="true"
+                                                [readOnly]="false" 
+                                                hint={{textoDatosFactura}}
+                                                (onValueChanged)="asignarDatos($event)"
+                                                [disabled]="isNormal">
+                                        </dx-select-box>
+                                    </div>
+
+                                   <!--  <div class="col-md-4">Usuario:</div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.usuario" [readOnly]="isReadOnly"></dx-text-box></div>
+ -->
                                     <div class="col-md-4">Sucursal:</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="comprobantePago.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
                                 </div>
@@ -58,10 +121,11 @@
 
                             <div class="col-md-6">
                                 <div class="row espacioDivs">
-                                    <div class="col-md-4">Beneficiario:</div>
-                                    <div class="col-md-8"><dx-autocomplete
+                                    <div class="col-md-4" >Beneficiario:</div>
+                                    <div class="col-md-8" ><dx-autocomplete
                                                             [dataSource]="beneficiarios"
                                                             valueExpr="nombre"
+                                                            [readOnly]="!isNormal"
                                                             [(value)]= "comprobantePago.beneficiario">
                                                         </dx-autocomplete>
                                     </div>
@@ -70,6 +134,7 @@
                                     <div class="col-md-8"><dx-autocomplete
                                                             [dataSource]="proveedores"
                                                             valueExpr="nombre_proveedor"
+                                                            [readOnly]="!isNormal"
                                                             [(value)]= "comprobantePago.proveedor">
                                                         </dx-autocomplete>
                                     </div>

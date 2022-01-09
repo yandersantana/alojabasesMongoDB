@@ -14,13 +14,15 @@ import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.se
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import { ComprobantePago } from './comprobante-pago';
-import { OperacionComercial } from '../reciboCaja/recibo-caja';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { Proveedor } from '../compras/compra';
 import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
+import { CuentaPorPagar } from '../cuentasPorPagar/cuentasPorPagar';
+import { CuentasPorPagarService } from 'src/app/servicios/cuentasPorPagar.service';
+import { dataDocumento, OperacionComercial } from '../reciboCaja/recibo-caja';
 
 
 
@@ -38,7 +40,7 @@ export class ComprobantePagoComponent implements OnInit {
   listadoComprobantesAnulados: ComprobantePago [] = []
   listadoComprobantesPendientes: ComprobantePago [] = []
   proveedores: Proveedor [] = []
-
+  isNormal = true;
 
   listaCuentas: Cuenta [] = []
   listaCuentasGlobal: Cuenta [] = []
@@ -75,10 +77,31 @@ export class ComprobantePagoComponent implements OnInit {
       'Activos',
       'Pendientes',
       'Anulados',
-    ];
+  ];
+
+  tiposBusqueda: string[] = [
+    "Beneficiario",
+    "Proveedor",
+    "Documento"
+  ];
+
+   tiposComprobantes: string[] = [
+    'Normal',
+    'Cta.x Pagar',
+  ];
 
   imagenLogotipo ="";
   textLoading = "";
+  tipoComprobante ="";
+  valorTipoBusqueda = "";
+  nombre_Beneficiario = "";
+  mostrarBeneficiario = false;
+  mostrarProveedor = false;
+  mostrarDocumento = false;
+  datosDocumento: dataDocumento [] = []
+  textoDatosFactura = "";
+  valorDocumento = "";
+  idCuentaPorPagar = "";
 
 
   constructor(
@@ -92,8 +115,10 @@ export class ComprobantePagoComponent implements OnInit {
     public _proveedoresService: ProveedoresService,
     public _centroCostoService: CentroCostoService,
     public _beneficiarioService: BeneficiarioService,
-    public _authenService:AuthenService
+    public _authenService:AuthenService,
+    public _cuentaPorPagar: CuentasPorPagarService
     ) {
+      this.tipoComprobante = this.tiposComprobantes[0];
    }
 
   ngOnInit() {
@@ -193,6 +218,85 @@ export class ComprobantePagoComponent implements OnInit {
   }
 
 
+  opcionRadioTipos(e){
+    this.tipoComprobante = e.value;
+    switch (e.value) {
+      case "Normal":
+        this.isNormal = true;
+        break;
+      case "Cta.x Pagar":
+        this.isNormal = false;
+        break;
+      default:    
+    }      
+  }
+
+
+  asignarDatos(e){
+    this.idCuentaPorPagar = e.value._id;
+    this.textoDatosFactura = e.value.textoCombo;
+    if(this.mostrarBeneficiario || this.mostrarDocumento)
+      this.comprobantePago.beneficiario = e.value.nombreCliente;
+
+    if(this.mostrarProveedor)
+      this.comprobantePago.proveedor = e.value.nombreCliente;
+    this.comprobantePago.ruc = e.value.rucCliente;
+    this.comprobantePago.total = e.value.totalFactura;
+    this.comprobantePago.sucursal = e.value.sucursal; 
+  }
+
+
+  setClienteData(e){
+    this.textLoading = "Buscando..";
+    this.mostrarLoading = true;
+    if(this.valorTipoBusqueda == "Beneficiario" || this.valorTipoBusqueda == "Proveedor"){
+      var docData = new dataDocumento();
+      docData.nombreCliente = this.nombre_Beneficiario;
+      this._cuentaPorPagar.getCuentasXPagarPorNombre(docData).subscribe(res => {
+        var cuentas = res as CuentaPorPagar[];
+        this.llenarDatosComboCuentasPagar(cuentas);
+        this.mostrarLoading = false;
+      });
+    }else if(this.valorTipoBusqueda == "Documento"){
+      var docData = new dataDocumento();
+      docData.rucCliente = this.valorDocumento;
+      this._cuentaPorPagar.getCuentasXPagarPorRUC(docData).subscribe(res => {
+        var cuentas = res as CuentaPorPagar[];
+        this.llenarDatosComboCuentasPagar(cuentas);
+        this.mostrarLoading = false;
+      });
+    }
+  }
+
+  llenarDatosComboCuentasPagar(array){
+    this.datosDocumento = [];
+    array.forEach(element => {
+      var object = new dataDocumento();
+      object._id = element._id;
+      object.nombreCliente = element.beneficiario;
+      object.rucCliente = element.rucBeneficiario;
+      object.totalFactura = element.valor;
+      object.sucursal = element.sucursal;
+      object.textoCombo = element.comprobanteId+" - "+object.totalFactura
+      this.datosDocumento.push(object);
+    });
+  }
+
+  asignarValorBusqueda(e){
+    if(e.value == "Beneficiario"){
+      this.mostrarBeneficiario = true;
+      this.mostrarProveedor = false;
+      this.mostrarDocumento = false;
+    }else if(e.value == "Proveedor"){
+      this.mostrarBeneficiario = false;
+      this.mostrarProveedor = true;
+      this.mostrarDocumento = false;
+    }else{
+      this.mostrarBeneficiario = false;
+      this.mostrarProveedor = false;
+      this.mostrarDocumento = true;
+    }
+  }
   
 
   downloadFile = (e) => {
@@ -433,8 +537,16 @@ export class ComprobantePagoComponent implements OnInit {
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
     });
     this.guardarComprobantePago(); 
+    if(this.tipoComprobante == "Cta.x Pagar")
+    this.actualizarRecibo();
     
     return this.comprobantePago;
+  }
+
+  actualizarRecibo(){
+    var cuenta = new CuentaPorPagar();
+    cuenta._id = this.idCuentaPorPagar;
+    this._cuentaPorPagar.updateEstadoCuenta(cuenta,"Cancelada").subscribe( res => {},err => {})
   }
 
 
@@ -481,6 +593,20 @@ export class ComprobantePagoComponent implements OnInit {
     }    
   }
 
+  InsertarCuentaPorPagar(transaccion : TransaccionesFinancieras ){
+    var cuentaPorPagar = new CuentaPorPagar();
+    cuentaPorPagar.fecha = this.comprobantePago.fecha;
+    cuentaPorPagar.sucursal = this.comprobantePago.sucursal;
+    cuentaPorPagar.beneficiario = this.comprobantePago.beneficiario ?? this.comprobantePago.proveedor;
+    cuentaPorPagar.rucBeneficiario = this.comprobantePago.ruc;
+    cuentaPorPagar.comprobanteId = "CP"+this.comprobantePago.idDocumento.toString();
+    cuentaPorPagar.numDocumento = this.comprobantePago.documento;
+    cuentaPorPagar.valor = transaccion.valor;
+    cuentaPorPagar.notas = this.comprobantePago.observaciones;
+    this._cuentaPorPagar.newCuentaPorPagar(cuentaPorPagar).subscribe((res) => {
+    },(err) => {});
+  }
+
 
   actualizarContador(){
     this.contadores[0].comprobantePago_Ndocumento = this.comprobantePago.idDocumento
@@ -492,7 +618,7 @@ export class ComprobantePagoComponent implements OnInit {
     var cont=0;
     this.comprobantePago.operacionesComercialesList.forEach(element=>{
       var transaccion = new TransaccionesFinancieras();
-      transaccion.fecha = new Date();
+      transaccion.fecha = this.comprobantePago.fecha;
       transaccion.sucursal = this.comprobantePago.sucursal;
       transaccion.cliente = this.comprobantePago.beneficiario;
       transaccion.rCajaId = "CP"+this.comprobantePago.idDocumento.toString();
@@ -509,13 +635,21 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      try {
+      if(element.nombreCuenta == "10 SALDOS" && element.nombreSubcuenta == "10.1 Cuentas x Pagar"){
+        this.InsertarCuentaPorPagar(transaccion)
+        cont++
+        this.comprobarYMostrarMensaje(cont)
+      }else{
+        try {
         this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe((res) => {
           cont++
           this.comprobarYMostrarMensaje(cont)},(err) => {});
-      } catch (error) {
-        this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
-      }    
+        } catch (error) {
+          this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
+        }   
+      }
+
+       
     });
     return true;
   }

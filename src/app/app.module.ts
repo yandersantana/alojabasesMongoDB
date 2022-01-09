@@ -93,6 +93,7 @@ import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-p
 import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messagge.component";
 import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
 import { DxoToolbarModule } from "devextreme-angular/ui/nested";
+import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
 
 @NgModule({
   declarations: [
@@ -140,7 +141,8 @@ import { DxoToolbarModule } from "devextreme-angular/ui/nested";
     TransaccionesFinancierasComponent,
     ComprobantePagoComponent,
     LoadingMessaggeComponent,
-    ComprobantePagoProveedoresComponent
+    ComprobantePagoProveedoresComponent,
+    CuentaPorPagarComponent
   ],
   imports: [
     BrowserModule,

@@ -47,12 +47,12 @@
                                         <div class="row">
                                             <div class="col-md-6">
                                                 <form role="form" (submit)="guardar($event, cuenta)">
-                                                    <button class="btn" type="submit"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                                    <button class="btn" type="submit" [disabled]="cuenta.noEditable"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
                                                 </form>
                                             </div>
                                             <div class="col-md-6">
                                                 <form role="form" (submit)="eliminar($event, cuenta)">
-                                                    <button  class="btn" type="submit" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                    <button  class="btn" type="submit" [disabled]="cuenta.noEditable" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                 </form>
                                             </div>
                                         </div> 
@@ -101,12 +101,12 @@
                                                     <div class="row">
                                                         <div class="col-md-6">
                                                             <form role="form" (submit)="actualizarSubCuenta($event, subCuenta)">
-                                                                <button class="btn" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
+                                                                <button class="btn" [disabled]="subCuenta.noEditable" type="submit"><i class="fa fa-floppy-o" aria-hidden="true"></i></button>
                                                             </form>
                                                         </div>
                                                         <div class="col-md-6">
                                                             <form role="form" (submit)="eliminarSubCuenta($event, subCuenta)">
-                                                                <button  class="btn" type="submit" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                                <button  class="btn" type="submit" [disabled]="subCuenta.noEditable" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
                                                             </form>
                                                         </div>
                                                     </div> 

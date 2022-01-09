@@ -386,14 +386,14 @@ contadores:contadoresDocumentos[]
 
   async getIDDocumentos() {
     //REVISAR OPTIMIZACION
-    await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
+    /* await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
       new Promise<any>((resolve, reject) => {
         if(data != null){
           this.contadorFirebase = data
         } 
       })
       this.asignarIDdocumentos2()
-    }) 
+    })  */
   }
 
 
@@ -3101,7 +3101,7 @@ cambiarestado(e,i:number){
               this.crearCliente()
               this.guardarFactura()
               
-              this.traerContadoresDocumentos()
+              //this.traerContadoresDocumentos()
               this.productosVendidos.forEach(element => {
                 this.validarExistencias(element)
                 element.factura_id = this.factura.documento_n
@@ -3441,15 +3441,15 @@ cambiarestado(e,i:number){
       operacionCC.valor = this.factura.total;
 
       operacionCC.tipoCuenta = "Ingresos"
-      operacionCC.nombreCuenta = "INGRESOS"
+      operacionCC.nombreCuenta = "3 INGRESOS"
       operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
       
       if(this.tDocumento == "Factura"){
-        operacionCC.nombreSubcuenta = "Facturacion"; 
+        operacionCC.nombreSubcuenta = "3.0 Facturacion"; 
         operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
       }
       else if(this.tDocumento == "Nota de Venta"){
-        operacionCC.nombreSubcuenta = "Nota_Venta"; 
+        operacionCC.nombreSubcuenta = "3.1 Nota_Venta"; 
         operacionCC.idSubCuenta = "61bcef301a0afd3ac9084cce";
       }
       return operacionCC;
@@ -3459,7 +3459,7 @@ cambiarestado(e,i:number){
       this.generarCuentaPorCobrar(recibo.idDocumento)
       recibo.operacionesComercialesList.forEach(element=>{
         var transaccion = new TransaccionesFinancieras();
-        transaccion.fecha = new Date();
+        transaccion.fecha = this.factura.fecha;
         transaccion.sucursal = recibo.sucursal;
         transaccion.cliente = recibo.cliente;
         transaccion.rCajaId = "RC"+recibo.idDocumento.toString();

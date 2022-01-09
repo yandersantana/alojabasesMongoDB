@@ -17,6 +17,11 @@ export class ComprobantePago{
     operacionesComercialesList: Array<OperacionComercial>
     constructor(){
         this.total = 0;
+        this.documento = "";
+        this.centroCosto = "";
+        this.proveedor = "";
+        this.ruc = "";
+        this.telefono = "";
         this.observaciones = "";
         this.fecha = new Date();
         this.estadoComprobante = "Activo";

@@ -58,6 +58,7 @@ app.use('/preciosEspeciales', require('./routes/precioEspecialRoutes'));
 app.use('/transaccionFinanciera', require('./routes/transaccionesFinancierasRoutes'));
 app.use('/reciboCaja', require('./routes/reciboCajaRoutes'));
 app.use('/cuentaPorCobrar', require('./routes/cuentaPorCobrarRoutes'));
+app.use('/cuentaPorPagar', require('./routes/cuentaPorPagarRoutes'));
 app.use('/datosConfiguracion', require('./routes/datosConfiguracion'));
 app.use('/comprobantePago', require('./routes/comprobantePagoRoutes'));
 app.use('/centroCosto', require('./routes/centroCosto'));

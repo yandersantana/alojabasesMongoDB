@@ -310,10 +310,6 @@ export const navigationAdmin = [
         path: "/caja-menor",
       },
       {
-        text: "Registros Caja",
-        path: "",
-      },
-      {
         text: "Recibos de Caja",
         path: "/recibo-caja",
       },
@@ -331,7 +327,7 @@ export const navigationAdmin = [
       },
       {
         text: "Cuentas por Pagar",
-        path: "",
+        path: "/cuentas-porPagar",
       },
       {
         text: "Anulaciones",

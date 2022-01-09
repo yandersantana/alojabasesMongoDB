@@ -132,6 +132,7 @@ export class ReciboCajaComponent implements OnInit {
   ngOnInit() {
     this.reciboCaja = new ReciboCaja();
     this.route.queryParams.subscribe(params => {
+      this.documentoVenta = params['id'] || 0;
       this.idDocumento = params['id'] || 0;
       this.tipoDocumento = params['tipo'] || 0;
     });
@@ -232,6 +233,8 @@ export class ReciboCajaComponent implements OnInit {
     this.reciboCaja.cliente = e.value.nombreCliente;
     this.reciboCaja.ruc = e.value.rucCliente;
     this.reciboCaja.valorFactura = e.value.totalFactura;
+    this.reciboCaja.fecha = e.value.fecha;
+    this.reciboCaja.sucursal = e.value.sucursal;
   }
 
 
@@ -243,7 +246,10 @@ export class ReciboCajaComponent implements OnInit {
       object.nombreCliente = element.cliente.cliente_nombre;
       object.rucCliente = element.cliente.ruc;
       object.totalFactura = element.total.toString();
-      object.textoCombo = object.nombreCliente+" - "+object.rucCliente+" - "+object.totalFactura
+      object.textoCombo = object.nombreCliente+" - "+object.rucCliente+" - "+object.totalFactura;
+      object.fecha = element.fecha;
+      object.sucursal = element.sucursal;
+      console.log(object)
       this.datosDocumento.push(object);
     });
   }
@@ -489,6 +495,8 @@ export class ReciboCajaComponent implements OnInit {
     this.valorTotal1 = this.reciboCaja.valorFactura;
     this.valorTotal2 = this.reciboCaja.valorPagoEfectivo ;
     this.reciboCaja.valorSaldos = this.valorTotal1 - this.valorTotal2 + this.reciboCaja.valorRecargo;
+    if(this.reciboCaja.valorSaldos < 0)
+      this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura");
   }
 
   eliminarRegistro(i: number) {
@@ -616,11 +624,15 @@ export class ReciboCajaComponent implements OnInit {
         this.mostrarMensajeGenerico(2,"Debe ingresar un valor de la factura"); 
         flag = false;
       }
-         
-      if(this.reciboCaja.valorSaldos != 0){
-        this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0");
+
+      if(this.reciboCaja.valorSaldos < 0){
+        this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente"); 
         flag = false;
       }
+      /* if(this.reciboCaja.valorSaldos != 0){
+        this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0");
+        flag = false;
+      } */
         
       if(flag)
         this.obtenerId();
@@ -661,7 +673,6 @@ export class ReciboCajaComponent implements OnInit {
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
     });
-    //this.comprobarSaldo();
 
     if(this.tipoRecibo == "Cta.x Cobrar")
       this.actualizarRecibo();
@@ -674,14 +685,13 @@ export class ReciboCajaComponent implements OnInit {
   actualizarRecibo(){
     var cuenta = new CuentaPorCobrar();
     cuenta._id = this.idCuentaPorCobrar;
-    this._cuentaPorCobrar.updateEstadoCuenta(cuenta,"Cancelada").subscribe( res => {
-    },err => {})
+    this._cuentaPorCobrar.updateEstadoCuenta(cuenta,"Cancelada").subscribe( res => {},err => {})
   }
 
 
-  insertarCuentaPorCobrar(transaccion : TransaccionesFinancieras ){
+  InsertarCuentaPorCobrar(transaccion : TransaccionesFinancieras ){
     var cuentaPorCobrar = new CuentaPorCobrar();
-    cuentaPorCobrar.fecha = new Date();
+    cuentaPorCobrar.fecha = this.reciboCaja.fecha;
     cuentaPorCobrar.sucursal = this.reciboCaja.sucursal;
     cuentaPorCobrar.cliente = this.reciboCaja.cliente;
     cuentaPorCobrar.rucCliente = this.reciboCaja.ruc;
@@ -701,8 +711,8 @@ export class ReciboCajaComponent implements OnInit {
       this._reciboCajaService.newReciboCaja(this.reciboCaja).subscribe((res) => {
         this.actualizarContador();
         this.generarTransaccionesFinancieras();
-        if(this.reciboCaja.valorSaldos>0)
-          this.generarTransaccionSaldo();
+        //if(this.reciboCaja.valorSaldos>0)
+          //this.generarTransaccionSaldo();
 
       },(err) => {});
     } catch (error) {
@@ -720,7 +730,7 @@ export class ReciboCajaComponent implements OnInit {
 
   generarTransaccionSaldo(){
     var transaccion = new TransaccionesFinancieras();
-    transaccion.fecha = new Date();
+    transaccion.fecha = this.reciboCaja.fecha;
     transaccion.sucursal = this.reciboCaja.sucursal;
     transaccion.cliente = this.reciboCaja.cliente;
     transaccion.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
@@ -732,8 +742,8 @@ export class ReciboCajaComponent implements OnInit {
     transaccion.tipoPago = "";
     transaccion.soporte = "";
     transaccion.dias = 0;
-    transaccion.cuenta = "SALDOS";
-    transaccion.subCuenta = "Cuentas por cobrar";
+    transaccion.cuenta = "10 SALDOS";
+    transaccion.subCuenta = "10.0 Cuentas x Cobrar";
     transaccion.notas = this.reciboCaja.observaciones;
     transaccion.tipoCuenta = "Reales y Transitorias";
 
@@ -748,7 +758,7 @@ export class ReciboCajaComponent implements OnInit {
     var cont=0;
     this.reciboCaja.operacionesComercialesList.forEach(element=>{
       var transaccion = new TransaccionesFinancieras();
-      transaccion.fecha = new Date();
+      transaccion.fecha = this.reciboCaja.fecha;
       transaccion.sucursal = this.reciboCaja.sucursal;
       transaccion.cliente = this.reciboCaja.cliente;
       transaccion.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
@@ -765,8 +775,8 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.notas = this.reciboCaja.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      if(element.nombreCuenta == "SALDOS" && element.nombreSubcuenta == "2. Cuentas por Cobrar"){
-        this.insertarCuentaPorCobrar(transaccion)
+      if(element.nombreCuenta == "10 SALDOS" && element.nombreSubcuenta == "10.0 Cuentas x Cobrar"){
+        this.InsertarCuentaPorCobrar(transaccion)
       }
 
       try {

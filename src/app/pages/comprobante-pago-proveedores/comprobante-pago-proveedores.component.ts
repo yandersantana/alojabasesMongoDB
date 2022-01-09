@@ -337,7 +337,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     var cont=0;
     this.comprobantePago.operacionesComercialesList.forEach(element=>{
       var transaccion = new TransaccionesFinancieras();
-      transaccion.fecha = new Date();
+      transaccion.fecha = this.comprobantePago.fecha;
       transaccion.sucursal = this.comprobantePago.sucursal;
       transaccion.cliente = this.comprobantePago.beneficiario;
       transaccion.rCajaId = "CP"+this.comprobantePago.idDocumento.toString();

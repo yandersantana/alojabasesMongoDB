@@ -7,13 +7,27 @@ router.get("/getTransacciones", async (req, res) => {
   res.send(transacciones);
 });
 
+/* router.post("/getTransaccionesPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  var sucursal = req.body.sucursal;
+  const transacciones = await TransaccionFinanciera.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+    sucursal:sucursal
+  });
+  res.json(transacciones);
+});
+ */
+
 router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
   var sucursal = req.body.sucursal;
-  console.log(sucursal)
   const transacciones = await TransaccionFinanciera.find({
-    createdAt: {
+    fecha: {
       $gte: start,
       $lt: end,
     },

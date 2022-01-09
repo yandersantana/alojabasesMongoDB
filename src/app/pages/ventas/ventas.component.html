@@ -121,8 +121,8 @@
             <dx-date-box [(value)]="now" [type]="'date'" [showClearButton]="true">
                 <dx-validator>
                     <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
-                    <dxi-validation-rule type="range" [max]="minDate" message="No puede ser mayor a la fecha actual">
-                    </dxi-validation-rule>
+                   <!--  <dxi-validation-rule type="range" [max]="minDate" message="No puede ser mayor a la fecha actual">
+                    </dxi-validation-rule> -->
                 </dx-validator>
             </dx-date-box>
             <dxo-label [visible]="false"></dxo-label>

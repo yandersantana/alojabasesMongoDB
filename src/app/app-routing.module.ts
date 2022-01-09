@@ -46,6 +46,7 @@ import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCob
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
+import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
 
 const routes: Routes = [
   {
@@ -219,6 +220,11 @@ const routes: Routes = [
   {
     path: "cuentas-porCobrar",
     component: CuentaPorCobrarComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "cuentas-porPagar",
+    component: CuentaPorPagarComponent,
     canActivate: [AuthGuardService],
   },
   {

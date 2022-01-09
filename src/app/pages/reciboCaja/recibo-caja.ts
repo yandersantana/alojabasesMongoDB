@@ -49,6 +49,8 @@ export class dataDocumento{
     rucCliente : string
     totalFactura : string
     _id : string
+    fecha : Date
+    sucursal : string
     constructor(){}
 }
 

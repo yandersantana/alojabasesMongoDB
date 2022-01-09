@@ -31,7 +31,6 @@ export class CuentaPorCobrarComponent implements OnInit {
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _reciboCajaService : ReciboCajaService,
     public _contadoresService: ContadoresDocumentosService,
-    public _cuentaPorCobrar: CuentasPorCobrarService
     ) {
    }
 
@@ -56,7 +55,7 @@ export class CuentaPorCobrarComponent implements OnInit {
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
-    this._cuentaPorCobrar.getCuentasPorCobrarPorRango(this.obj).subscribe(
+    this._cuentasporCobrarService.getCuentasPorCobrarPorRango(this.obj).subscribe(
       (res) => {
         this.listaCuentas = res as CuentaPorCobrar[];
         this.mostrarLoading = false;

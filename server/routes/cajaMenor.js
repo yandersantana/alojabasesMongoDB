@@ -35,6 +35,10 @@ router.post('/getCajaMenorPorIdConsecutivo', async (req, res, next) => {
 });
 
 
+router.post('/getCajaMenorPorFecha', async (req, res, next) => {
+  const documentos = await CajaMenor.find({ fecha: req.body.fecha});
+  res.json(documentos);
+});
 
 
 router.post('/getCajasMenorPorId', async (req, res, next) => {

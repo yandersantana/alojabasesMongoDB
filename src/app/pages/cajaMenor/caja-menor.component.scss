@@ -15,8 +15,13 @@ input .cons {
 .textP{
     font-weight: bold;
     font-size: 11pt;
+    //margin-top: 0.5em;
 }
 
+ .textP2{
+    margin-top: 0.3em;
+}
+ 
 .sectionDatos{
     background-color: white;
     margin-left: 0.1em;
@@ -46,6 +51,10 @@ input .cons {
     margin-bottom: 0.4em;
 }
 
-.dateB dx-date-box{
+.dateB dx-date-box, dx-select-bo{
     margin-top: -0.8em;
+}
+
+.centrar{
+    text-align: center;
 }

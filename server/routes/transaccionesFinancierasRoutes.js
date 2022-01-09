@@ -10,11 +10,14 @@ router.get("/getTransacciones", async (req, res) => {
 router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
+  var sucursal = req.body.sucursal;
+  console.log(sucursal)
   const transacciones = await TransaccionFinanciera.find({
     createdAt: {
       $gte: start,
       $lt: end,
     },
+    sucursal:sucursal
   });
   res.json(transacciones);
 });

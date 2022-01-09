@@ -12,6 +12,9 @@ import { CajaMenor, DetalleCajaMenor, FormatoImpresion } from './caja-menor';
 import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 
+import 'jspdf-autotable';
+
+
 @Component({
   selector: 'app-caja-menor',
   templateUrl: './caja-menor.component.html',
@@ -26,6 +29,9 @@ export class CajaMenorComponent implements OnInit {
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   dateNow = new Date();
+  totalSuma = 0;
+  totalResta = 0;
+  totalRC = 0;
   
   cajaMenor : CajaMenor;
   mostrarLoading : boolean = false;
@@ -34,14 +40,24 @@ export class CajaMenorComponent implements OnInit {
   estadoCuenta = "";
   mensajeLoading = "";
   imagenLogotipo ="";
+  existeCaja = false;
 
   docImpresion : FormatoImpresion [] = [];
   formImpresion : FormatoImpresion
   newCaja = true;
 
+  tipoUsuario = "";
+  isAdmin = true;
+
   menu: string[] = [
     "Caja Menor Diaria",
     "Registros Caja Generados"
+  ];
+
+  arraySucursales: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
   ];
   
   constructor(
@@ -51,17 +67,29 @@ export class CajaMenorComponent implements OnInit {
     public _contadoresService : ContadoresDocumentosService,
     public _configurationService : DatosConfiguracionService
     ) {
+        this.cajaMenor = new CajaMenor();
+        this.cajaMenor.fecha = new Date();
    }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerContadoresDocumentos();
     this.traerDatosConfiguracion();
-    this.traerTransaccionesFinancierasPorDia();
-    this.cargarUsuarioLogueado();
-    this.cajaMenor = new CajaMenor();
-    this.cajaMenor.fecha = this.dateNow;
+    this.validarEstadoCaja();
     this.formImpresion = new FormatoImpresion();
+  }
+
+  validarEstadoCaja(){
+    this.cajaMenor.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.cajaMenor).subscribe(
+      res => {
+        this.cajaMenorEncontradas = res as CajaMenor[];
+        if(this.cajaMenorEncontradas.length != 0)
+          this.existeCaja = true;
+        else 
+          this.existeCaja = false;
+        },(err) => {});
   }
 
   traerContadoresDocumentos(){
@@ -108,6 +136,7 @@ export class CajaMenorComponent implements OnInit {
     this.mostrarLoading = true;
     this.resetearValores();
     this.obj = new objDate();
+    this.obj.sucursal = this.cajaMenor.sucursal;
     this.obj.fechaAnterior = this.cajaMenor.fecha;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this.obj.fechaActual = new Date(this.cajaMenor.fecha);
@@ -115,7 +144,8 @@ export class CajaMenorComponent implements OnInit {
     this._transaccionesFinancierasService.getTransaccionesFinancierasPorRango(this.obj).subscribe(res => {
       this.listaTransacciones = res as TransaccionesFinancieras[];
       this.crearTransaccionesCaja();
-   })
+    })
+    this.validarEstadoCaja();
   }
 
 
@@ -137,6 +167,13 @@ export class CajaMenorComponent implements OnInit {
             var usuario = res as user;
             this.cajaMenor.usuario = usuario[0].username.toString();
             this.cajaMenor.sucursal = usuario[0].sucursal.toString();
+            this.traerTransaccionesFinancierasPorDia();
+
+            if(usuario[0].rol == "Administrador")
+              this.isAdmin = true;
+            else
+              this.isAdmin = false;
+            
           }
         )
     });
@@ -144,16 +181,18 @@ export class CajaMenorComponent implements OnInit {
 
 
   calcular(){
-    var totalSuma = 0;
-    var totalResta = 0;
-    var totalRC = 0;
+    this.resultado = 0;
+    this.totalSuma = 0;
+    this.totalResta = 0;
+    this.totalRC = 0;
+
     this.transaccionesCaja.forEach(element=>{
-      totalSuma += element.TotalIngresos ?? 0 ;
-      totalResta += element.TotalSalidas ?? 0;
-      totalRC += element.TotalRC ?? 0;
+      this.totalSuma += element.TotalIngresos ?? 0 ;
+      this.totalResta += element.TotalSalidas ?? 0;
+      this.totalRC += element.TotalRC ?? 0;
     });
 
-    this.resultado = totalSuma - totalResta - totalRC;
+    this.resultado = this.totalSuma - this.totalResta - this.totalRC;
     if(this.resultado == 0)
       this.estadoCuenta = "OK"
     else if(this.resultado > 0)
@@ -161,10 +200,10 @@ export class CajaMenorComponent implements OnInit {
     else if(this.resultado < 0)
       this.estadoCuenta = "FALTANTE"
     
-    this.cajaMenor.totalIngresos = totalSuma;
-    this.cajaMenor.totalSalidas = totalResta;
-    this.cajaMenor.totalRC = totalRC;
-    this.cajaMenor.resultado = this.resultado;
+    this.cajaMenor.totalIngresos = Number(this.totalSuma.toFixed(2));
+    this.cajaMenor.totalSalidas = Number(this.totalResta.toFixed(2));
+    this.cajaMenor.totalRC = Number(this.totalRC.toFixed(2));
+    this.cajaMenor.resultado = Number(this.resultado.toFixed(2));
     this.cajaMenor.estadoCaja = this.estadoCuenta;
     this.mostrarLoading = false;
   }
@@ -172,20 +211,23 @@ export class CajaMenorComponent implements OnInit {
 
   traerTransaccionesFinancierasPorDia(){
     this.obj = new objDate();
-    this.obj.fechaActual = new Date();
-    this.obj.fechaAnterior = new Date();
+    this.obj.sucursal = this.cajaMenor.sucursal;
+    this.obj.fechaAnterior = this.cajaMenor.fecha;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this.obj.fechaActual = new Date(this.cajaMenor.fecha);
+    this.obj.fechaActual.setHours(24);
     this._transaccionesFinancierasService.getTransaccionesFinancierasPorRango(this.obj).subscribe(res => {
       this.listaTransacciones = res as TransaccionesFinancieras[];
       this.crearTransaccionesCaja();
-   })
+    })
+    this.validarEstadoCaja();
   }
 
 
   crearTransaccionesCaja(){
     if(this.listaTransacciones.length == 0)
       this.mostrarLoading = false;
-      
+
     this.transaccionesCaja = [];
     this.listaTransacciones.forEach(element=>{
       var newCaja = new DetalleCajaMenor();
@@ -203,8 +245,9 @@ export class CajaMenorComponent implements OnInit {
 
 
       this.transaccionesCaja.push(newCaja);
-      this.calcular();
+      
     });
+    this.calcular();
   }
 
   
@@ -216,7 +259,6 @@ export class CajaMenorComponent implements OnInit {
 
 
   guardarCajaMenor(){
-    this.cajaMenor.estadoCaja = "Cerrado";
     if(this.transaccionesCaja.length == 0)
       this.mostrarMensajeGenerico(2,"No hay transacciones efectuadas");  
     else 
@@ -229,15 +271,15 @@ export class CajaMenorComponent implements OnInit {
 
     var IdNum = new Promise<any>((resolve, reject) => {
       try {
-        this._cajaMenorService.getCajaMenorPorIdConsecutivo(this.cajaMenor).subscribe(res => {
-         this.cajaMenorEncontradas = res as CajaMenor[];
-          if(this.cajaMenorEncontradas.length == 0)
-            resolve("listo");
-          else{
-            this.cajaMenor.idDocumento = this.cajaMenor.idDocumento + 1
-            this.obtenerId();
-          }
-          },(err) => {});
+        this._cajaMenorService.getCajaMenorPorIdConsecutivo(this.cajaMenor).subscribe(
+          res => {
+          this.cajaMenorEncontradas = res as CajaMenor[];
+            if(this.cajaMenorEncontradas.length == 0)
+              resolve("listo");
+            else{
+              this.cajaMenor.idDocumento = this.cajaMenor.idDocumento + 1
+              this.obtenerId();
+            }},(err) => {});
       } catch (error) {} 
     })
 
@@ -247,6 +289,7 @@ export class CajaMenorComponent implements OnInit {
 
   guardarCaja(){
     try {
+      this.cajaMenor.estado = "Cerrada";
       this._cajaMenorService.newCajaMenor(this.cajaMenor).subscribe((res) => {
         this.actualizarContador();
       },(err) => {});
@@ -262,6 +305,19 @@ export class CajaMenorComponent implements OnInit {
       this.crearPDF(null,true);
       //this.mostrarMensajeGenerico(1,"Documento Guardado con éxito");
     },err => {})
+  }
+
+
+  terminarOperacion(){
+    this.mostrarLoading = false;
+      Swal.fire({
+        title:'Correcto',
+        text: 'Se ha guardado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        window.location.reload()
+      })
   }
 
 
@@ -300,16 +356,29 @@ export class CajaMenorComponent implements OnInit {
  
 
 
+  convertirDatos(){
+    this.formImpresion.nombreCuenta = "COSTO";
+    this.formImpresion.listaSubCuentas = this.transaccionesCaja;
+    console.log(this.formImpresion)
+    this.docImpresion.push(this.formImpresion);
+    this.docImpresion.push(this.formImpresion);
+    this.docImpresion.push(this.formImpresion);
 
-   crearPDF(recibo , isNew) {
-     this.formImpresion.nombreCuenta = "COSTO";
-     this.formImpresion.listaSubCuentas = this.transaccionesCaja;
-     console.log(this.formImpresion)
-     this.docImpresion.push(this.formImpresion);
-     this.docImpresion.push(this.formImpresion);
-     this.docImpresion.push(this.formImpresion);
-    
+  }
 
+   /* exportGrid() {
+    const doc = new jsPDF();
+    exportDataGridToPdf({
+      jsPDFDocument: doc,
+      component: this.dataGrid.instance,
+    }).then(() => {
+      doc.save('Customers.pdf');
+    });
+  } */
+
+
+
+  crearPDF(recibo , isNew) {
     if(isNew)
       this.mensajeLoading = "Guardando";
     else
@@ -330,13 +399,8 @@ export class CajaMenorComponent implements OnInit {
     IdNum.then((data) => {
       if(isNew){
         this.mostrarLoading = false;
-        this.mostrarMensajeGenerico(1,"Descarga completa")
+        this.terminarOperacion();
       }
-      
-        //this.terminarOperacion();
-      else
-      console.log("dd");
-        //this.terminarDescarga();
     });
 
   }
@@ -447,131 +511,34 @@ export class CajaMenorComponent implements OnInit {
           ],
         },
 
-        {
-          style: "tableExample",
-          table: {
-            widths: [78, 100, 56, 56, 56, 56, 56],
-            body: [
-              [
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      bold: true,
-                      fontSize: 8,
-                      ul: [
-                        "CUENTA",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      fontSize: 8,
-                      ul: [
-                        "SUBCUENTA",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      bold: true,
-                      fontSize: 8,
-                      ul: [
-                        "DOC",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      fontSize: 8,
-                      ul: [
-                        "CC",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      fontSize: 8,
-                      ul: [
-                        "CC",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      fontSize: 8,
-                      ul: [
-                        "CC",
-                      ],
-                    },
-                  ],
-                },
-                {
-                  stack: [
-                    {
-                      type: "none",
-                      fontSize: 8,
-                      ul: [
-                        "CC",
-                      ],
-                    },
-                  ],
-                },
-               
-              ],
-            ],
-          },
-        },
+        
 
 
-        this.getListaOperaciones(this.docImpresion),
-        { text: " " },
+        this.getListaOperaciones(this.transaccionesCaja),
+
         {
-          columns: [{
-            type: 'none',
-            ul: [
-                  {
-                    style: 'tableExample2',
-                    table: {
-                      widths: [250],
-                      heights:53,
-                      fontSize: 8,
-                      body: [
-                        [
-                          {text: 'Observaciones: ' , style:"sizeText"},
-                        ]
-                      ]
-                    },
-                  }
-            ]
-        },
-        {
-          style: 'tableExample',
-          fontSize: 12,
+          style: 'tableExample2',
+          fontSize: 7,
           table: {
-            widths: [125,100],
+            widths: [343,46,46,43],
             body: [
-              [ { text: 'Total', bold: true ,style: "detalleTotales"}, {text: "", style:"totales" }],
+              [ { text: 'Balance Caja', bold: true ,style: "detalleTotales"}, {text: this.totalSuma.toFixed(2), style:"totales" }, {text: this.totalResta.toFixed(2), style:"totales" }, {text: this.totalRC.toFixed(2), style:"totales" }],
+             
             ]
           }
-          },
-        ]
         },
+        {
+          style: 'tableExample2',
+          fontSize: 7,
+          table: {
+            widths: [315,180],
+            body: [
+              [ { text: 'Resultado del Ejercicio', bold: true ,style: "detalleTotales"}, {text: this.resultado.toFixed(2), style:"totales" }],
+              [ { text: 'Estado de la Caja', bold: true ,style: "detalleTotales"}, {text: this.estadoCuenta, style:"totales" }],
+            ]
+          }
+        },
+
       ],
       footer: function () {
         return {
@@ -611,13 +578,7 @@ export class CajaMenorComponent implements OnInit {
           margin: [0, 5, 0, 15],
         },
         tableExample2: {
-          margin: [-13, 5, 10, 15],
-        },
-        tableExample3: {
-          margin: [-13, -10, 10, 15],
-        },
-        tableExample4: {
-          margin: [10, -5, 0, 15],
+          margin: [0, 2, 0, 0],
         },
         texto6: {
           fontSize: 14,
@@ -668,118 +629,36 @@ export class CajaMenorComponent implements OnInit {
     };
   }
 
-  getListaOperaciones(operaciones: FormatoImpresion[]) {
-    var dd = {
-	content: [
-	
-		{
-			style: 'tableExample',
-			table: {
-				widths: [100, '*', 200, '*'],
-				body: [
-					['width=100', 'star-sized', 'width=200', 'star-sized'],
-					['fixed-width cells have exactly the specified width', {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}, {text: 'nothing interesting here', italics: true, color: 'gray'}]
-				]
-			}
-		},
-		{
-			style: 'tableExample',
-			table: {
-				widths: ['*', 'auto'],
-				body: [
-					['This is a star-sized column. The next column over, an auto-sized column, will wrap to accomodate all the text in this cell.', 'I am auto sized.'],
-				]
-			}
-		},
 
-
-	],
-	
-}
-
-
-
-
-    var ll;
-    operaciones.forEach(element=>{
-      ll = 
-     { 
-          table: {
-                      body: [
-                        [
-                          {
-                            text:element.nombreCuenta,
-                          },
-                        
-                        ],
-                      ],
-                    },
-           
-          layout: "noBorders",
-
-        
-         
-     };
-    //this.getListaOperaciones2(operaciones)
-      
-    
-    }); 
-    console.log(this.getListaOperaciones2(operaciones[0].listaSubCuentas))
-
-    //return this.getListaOperaciones2(operaciones[0].listaSubCuentas);
-    return ll;
-
-  }
-
-
-   getListaOperaciones2(operaciones: DetalleCajaMenor[]) {
-   /*  var ll;
-    operaciones.forEach(element=>{
-      ll = 
-     {
-          table: {
-            body: [
-              [
-                {
-                  text:element.nombreCuenta,
-                },
-               
-              ],
-            ],
-          },
-          layout: "noBorders",
-        };
-    
-      
-    
-    }); 
-
-    return ll; */
-
+   getListaOperaciones(operaciones: DetalleCajaMenor[]) {
       return {
 
       table: {
-        widths: ["40%", "40%", "20%"],
+        widths: ["25%", "25%", "10%", "10%", "10%", "10%", "10%"],
         alignment: "center",
-        fontSize: 8,
+        fontSize: 7,
         headerRows: 2,
         body: [
           [
-            {
-              text: "Cuenta",
-              style: "tableHeader2",
-              fontSize: 8,
-            },
-            {text: "",},
-            {text: "",},
+            { text: "Cuenta", style: "tableHeader2", fontSize: 7,},
+            { text: "SubCuenta", style: "tableHeader2", fontSize: 7,},
+            { text: "Doc", style: "tableHeader2", fontSize: 7,},
+            { text: "CC", style: "tableHeader2", fontSize: 7,},
+            { text: "Ingresos", style: "tableHeader2", fontSize: 7,},
+            { text: "Salidas", style: "tableHeader2", fontSize: 7,},
+            { text: "RyT", style: "tableHeader2", fontSize: 7,},
           ],
 
           ...operaciones.map((ed) => {
             return [
                
-              { text: ed.SubCuenta,alignment: "center", fontSize: 8 },
-              { text: ed.TotalIngresos, alignment: "center", fontSize: 8 },
-              { text: ed.TotalSalidas, alignment: "center", fontSize: 8 },
+              { text: ed.Cuenta,alignment: "center", fontSize: 7 },
+              { text: ed.SubCuenta, alignment: "center", fontSize: 7 },
+              { text: ed.Sub1, alignment: "center", fontSize: 7 },
+              { text: ed.Sub2, alignment: "center", fontSize: 7 },
+              { text: ed.TotalIngresos, alignment: "center", fontSize: 7 },
+              { text: ed.TotalSalidas, alignment: "center", fontSize: 7 },
+              { text: ed.TotalRC, alignment: "center", fontSize: 7 },
 
             ];
           }),

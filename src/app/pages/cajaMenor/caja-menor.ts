@@ -30,7 +30,7 @@ export class CajaMenor{
     resultado: number;
     estadoCaja: string;
     constructor(){    
-        this.estado = "Abierto"   
+        this.estado = "Abierto"   //Cerrada
         this.totalIngresos = 0;
         this.totalSalidas = 0;
         this.totalRC = 0;

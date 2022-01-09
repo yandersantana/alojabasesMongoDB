@@ -1,7 +1,6 @@
 
 import { Component, OnInit } from '@angular/core';
-
-import { factura, nota_venta, cotizacion, venta } from '../ventas/venta';
+import { factura, venta } from '../ventas/venta';
 import pdfMake from 'pdfmake/build/pdfmake';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
@@ -58,12 +57,9 @@ export class RegistrosVentasComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.setearFechaMensual()
     this.cargarUsuarioLogueado()
+    this.setearFechaMensual()
     this.traerParametrizaciones()
-    this.traerFacturasMensuales()
-    this.traerProformasMensuales()
-    this.traerNotasVentaMensuales()
   }
 
   traerParametrizaciones(){
@@ -140,17 +136,19 @@ export class RegistrosVentasComponent implements OnInit {
 
 
   cargarUsuarioLogueado() {
-    const promesaUser = new Promise((res, err) => {
-      if (localStorage.getItem("maily") != '') {
+    new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '')
         this.correo = localStorage.getItem("maily");
-      }
+
       this.authenService.getUserLogueado(this.correo)
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
+            this.traerFacturasMensuales()
+            this.traerProformasMensuales()
+            this.traerNotasVentaMensuales()
           },
-          err => {
-          }
+          err => {}
         )
     });
   }
@@ -391,13 +389,9 @@ export class RegistrosVentasComponent implements OnInit {
      }
    })
    this.parametrizaciones.forEach(element=>{
-     console.log("las facturas es "+this.factura.sucursal)
-    if(element.sucursal == this.factura.sucursal){
-      console.log("sii encontreee")
+    if(element.sucursal == this.factura.sucursal)
       this.parametrizacionSucu= element
-    }else{
-      console.log("no encontre")
-    }
+
   })
    this.tDocumento="Factura"
    this.crearPDF(e)
@@ -414,11 +408,6 @@ export class RegistrosVentasComponent implements OnInit {
       }
     })
     
-   /*  this.productosVendidos.forEach(element=>{
-      if(element.factura_id== e.documento_n && element.tipoDocumentoVenta=="Nota de Venta"){
-       this.productosVendidos2.push(element)
-      }
-    }) */
     this.parametrizaciones.forEach(element=>{
       if(element.sucursal == this.factura.sucursal){
         this.parametrizacionSucu= element
@@ -482,16 +471,16 @@ export class RegistrosVentasComponent implements OnInit {
 
   crearPDF(e){
     var tipoDoc:boolean=false
-      if(this.tDocumento == "Factura"){
-          const documentDefinition = this.getDocumentDefinition();
-          pdfMake.createPdf(documentDefinition).download('Factura '+e.documento_n, function(response) { });
-      }else if(this.tDocumento == "NOTA DE VENTA 001"){
-        const documentDefinition = this.getDocumentDefinitionNotaVenta();
-        pdfMake.createPdf(documentDefinition).download('Nota de Venta '+e.documento_n, function(response) { });
+    if(this.tDocumento == "Factura"){
+      const documentDefinition = this.getDocumentDefinition();
+      pdfMake.createPdf(documentDefinition).download('Factura '+e.documento_n, function(response) { });
+    }else if(this.tDocumento == "NOTA DE VENTA 001"){
+      const documentDefinition = this.getDocumentDefinitionNotaVenta();
+      pdfMake.createPdf(documentDefinition).download('Nota de Venta '+e.documento_n, function(response) { });
     }else if(this.tDocumento == "PROFORMA 000 001"){
       const documentDefinition = this.getDocumentDefinitionCotizacion();
       pdfMake.createPdf(documentDefinition).download('Proforma '+e.documento_n, function(response) { });
-  }
+    }
   }
 
   limpiarArregloPFact(){
@@ -544,10 +533,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   setearNFactura(){
     let nf=this.factura.documento_n
-    //this.variab= this.factura.documento_n
-    //alert("escogi el "+nf)
     let num=('' + nf).length
-    console.log("el numero es"+num)
     switch (num) {
       case 1:
           this.numeroFactura="00000"+nf
@@ -573,8 +559,6 @@ export class RegistrosVentasComponent implements OnInit {
 
 
    getDocumentDefinitionCotizacion() {
-    //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
-  //console.log("holaaaa"+fecha2); 
     this.setearNFactura()
     this.calcularValoresFactura()
     sessionStorage.setItem('resume', JSON.stringify("jj"));

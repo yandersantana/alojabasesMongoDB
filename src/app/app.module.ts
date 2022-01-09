@@ -35,6 +35,7 @@ import {
   DxListModule,
   DxTextAreaModule,
   DxRadioGroupModule,
+  DxToolbarModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
 import { AngularFirestoreModule } from "angularfire2/firestore";
@@ -91,6 +92,7 @@ import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancie
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messagge.component";
 import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
+import { DxoToolbarModule } from "devextreme-angular/ui/nested";
 
 @NgModule({
   declarations: [
@@ -174,6 +176,7 @@ import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-pr
     DxValidatorModule,
     DxTemplateModule,
     DxTextAreaModule,
+    DxoToolbarModule,
     AlertsModule.forRoot(),
     DxRadioGroupModule
   ],

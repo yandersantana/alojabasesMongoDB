@@ -28,6 +28,10 @@ export class CajaMenorService {
     return this.http.post(this.URL + "/getCajaMenorPorIdConsecutivo", idCajaMenor);
   }
 
+  getCajaMenorPorFecha(idCajaMenor) {
+    return this.http.post(this.URL + "/getCajaMenorPorFecha", idCajaMenor);
+  }
+
   getCajaMenorPorRango(objFecha) {
     return this.http.post(this.URL + "/getCajaMenorPorRango", objFecha);
   }

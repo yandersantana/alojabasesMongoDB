@@ -32,19 +32,26 @@
                                 <div class="col-md-10">
                                     <div class="row">
                                         <div class="col-md-6 textP">Fecha</div>
-                                        <div class="col-md-4 dateB"><dx-date-box [(value)]="cajaMenor.fecha" (onValueChanged)="buscarTransaccionesPorFecha($event)" type="date"></dx-date-box></div>
-                                        <div class="col-md-2"></div>
-
-                                        <div class="col-md-6 textP">Estado</div>
-                                        <div class="col-md-4">{{cajaMenor.estado}}</div>
+                                        <div class="col-md-4 dateB"><dx-date-box [(value)]="cajaMenor.fecha"  [(readOnly)]="!isAdmin"  (onValueChanged)="buscarTransaccionesPorFecha($event)" type="date"></dx-date-box></div>
                                         <div class="col-md-2"></div>
 
                                         <div class="col-md-6 textP">Sucursal</div>
-                                        <div class="col-md-4">{{cajaMenor.sucursal}}</div>
+                                        <div class="col-md-4 dateB">
+                                            <dx-select-box [items]="arraySucursales" 
+                                                [(value)]="cajaMenor.sucursal" 
+                                                [(readOnly)]="!isAdmin" 
+                                                [disabled]="false"
+                                                (onValueChanged)="traerTransaccionesFinancierasPorDia()">
+                                            </dx-select-box>
+                                        </div>
                                         <div class="col-md-2"></div>
 
-                                        <div class="col-md-6 textP">Usuario</div>
-                                        <div class="col-md-4">{{cajaMenor.usuario}}</div>
+                                        <div class="col-md-6 textP textP2">Estado</div>
+                                        <div class="col-md-4 centrar textP2">{{cajaMenor.estado}}</div>
+                                        <div class="col-md-2"></div>
+
+                                        <div class="col-md-6 textP textP2">Usuario</div>
+                                        <div class="col-md-4 centrar textP2">{{cajaMenor.usuario}}</div>
                                         <div class="col-md-2"></div>
                                     </div>
                                 </div>
@@ -156,7 +163,7 @@
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarCajaMenor()">Cerrar Caja</button>
+                <button class="btn btn-block btn-success" [disabled]="existeCaja" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarCajaMenor()">Cerrar Caja</button>
             </div>
             <div class="col-md-4"></div>
         </div>
@@ -236,17 +243,17 @@
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxi-column dataField="idDocumento" caption="ID" dataType="number" sortOrder="desc"></dxi-column>
         <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-        <dxi-column dataField="usuario" caption="Usuario" dataType="string" ></dxi-column>
+        <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="sucursal" caption="Sucursal" dataType="string" ></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
-        <dxi-column dataField="totalIngresos" caption="Total Ingresos" dataType="number"></dxi-column>
-        <dxi-column dataField="totalSalidas" caption="Total Salidas" dataType="number"></dxi-column>
-        <dxi-column dataField="totalRC" caption="Total RC" dataType="number"></dxi-column>
-        <dxi-column dataField="resultado" caption="Resultado" dataType="number"></dxi-column>
+        <dxi-column dataField="totalIngresos" caption="Total Ingresos" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 2 }"></dxi-column>
+        <dxi-column dataField="totalSalidas" caption="Total Salidas" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 2 }"></dxi-column>
+        <dxi-column dataField="totalRC" caption="Total RC" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 3 }"></dxi-column>
+        <dxi-column dataField="resultado" caption="Resultado" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 3 }"></dxi-column>
         <dxi-column dataField="estadoCaja" caption="Estado Caja" dataType="string"></dxi-column>
-        <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
+<!--         <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
             <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
-        </dxi-column>
+        </dxi-column> -->
 
       <!--   <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
             <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   

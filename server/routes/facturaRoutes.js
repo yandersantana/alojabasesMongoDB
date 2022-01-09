@@ -57,11 +57,7 @@ router.post("/getFacturasPorRango", async (req, res, next) => {
 router.put("/update2/:id/:observaciones", async (req, res, next) => {
   const { id } = req.params;
   const { observaciones } = req.params;
-  await Factura.findByIdAndUpdate(
-    id,
-    { $set: { observaciones: observaciones } },
-    { new: true }
-  );
+  await Factura.findByIdAndUpdate( id,{ $set: { observaciones: observaciones } }, { new: true });
   res.json({ status: "factura Updated" });
 });
 
@@ -76,9 +72,7 @@ router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   res.json({ status: "factura Updated" });
 });
 
-router.put(
-  "/updateEstadoMensaje/:id/:estado/:mensaje",
-  async (req, res, next) => {
+router.put("/updateEstadoMensaje/:id/:estado/:mensaje",async (req, res, next) => {
     const { id } = req.params;
     const { estado } = req.params;
     const { mensaje } = req.params;
@@ -175,7 +169,6 @@ router.post("/newFactura", async (req, res) => {
     mensaje: req.body.mensaje,
     productosVendidos: req.body.productosVendidos,
   });
-  console.log("llegue hasta aqui");
   await Newfacturas.save();
   res.json({ status: "Factura CREADA" });
 });

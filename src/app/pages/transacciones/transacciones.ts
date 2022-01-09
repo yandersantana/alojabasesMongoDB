@@ -32,7 +32,10 @@ export class transaccion {
 export class objDate {
   fechaActual: Date;
   fechaAnterior: Date;
-  constructor() {}
+  sucursal : string
+  constructor() {
+    this.sucursal = "";
+  }
 }
 
 

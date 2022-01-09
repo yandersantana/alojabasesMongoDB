@@ -31,7 +31,7 @@
     "connect-busboy": "0.0.2",
     "connect-multiparty": "^2.2.0",
     "devextreme": "^19.2.7",
-    "devextreme-angular": "^19.2.7",
+    "devextreme-angular": "19.2.13",
     "devextreme-schematics": "^1.1.13",
     "express-fileupload": "^1.1.7-alpha.3",
     "firebase": "^7.14.2",

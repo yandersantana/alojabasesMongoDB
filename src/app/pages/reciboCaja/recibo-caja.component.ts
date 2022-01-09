@@ -41,7 +41,7 @@ export class ReciboCajaComponent implements OnInit {
   isFacturacion: boolean = true;
   contadores:contadoresDocumentos[]
   recibosEncontrados:ReciboCaja[]
-
+  documentoVenta = "";
   listadoOperaciones: OperacionComercial [] = []
   operacionComercial: OperacionComercial
   reciboCaja : ReciboCaja
@@ -208,14 +208,17 @@ export class ReciboCajaComponent implements OnInit {
     if(tipo == 2) valor = e.value;
     else valor = e;
 
+    this.reciboCaja.docVenta = valor;
+    this.reciboCaja.numDocumento = this.documentoVenta;
+
     if(valor == "Factura"){
-      this.factura.documento_n = Number(this.reciboCaja.docVenta);
+      this.factura.documento_n = Number(this.reciboCaja.numDocumento);
       this._facturaService.getFacturasDocumentoVenta(this.factura).subscribe(res => {
         this.facturas = res as factura[];
         this.llenarDatosCombo(this.facturas)
       });
     }else if(valor == "Nota de Venta"){
-      this.factura.documento_n = Number(this.reciboCaja.docVenta);
+      this.factura.documento_n = Number(this.reciboCaja.numDocumento);
       this._notaVentaService.getNotasVentaXDocumento(this.factura).subscribe(res => {
         this.facturas = res as factura[];
         this.llenarDatosCombo(this.facturas)

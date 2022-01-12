@@ -254,19 +254,28 @@
                         <dx-text-area [height]="80" class="form-control padding-ob" [maxLength]="500" [(value)]="comprobantePago.observaciones">
                         </dx-text-area>
                     </div>
-                    <div class="col-md-4">
+                    <div class="col-md-4" *ngIf="isNormal">
                         <div class="row cssTotal" style="text-align: center;">
                             <div class="col-md-12"><h5>Total</h5></div>
                             <div class="col-md-12"> <dx-number-box [(value)]="comprobantePago.total" [readOnly]="true"></dx-number-box></div>
                             <div class="col-md-2"></div>
-
+                        </div>
+                    </div>
+                    <div class="col-md-4" *ngIf="!isNormal">
+                        <br>
+                        <div class="row cssTotal" style="text-align: center;">
+                            <div class="col-md-6"><h5>Deuda Total</h5></div>
+                            <div class="col-md-6"> <dx-number-box [(value)]="totalDeuda" [readOnly]="true"></dx-number-box></div>
+                            
+                            <div class="col-md-6"><h5>Total CP</h5></div>
+                            <div class="col-md-6"> <dx-number-box [(value)]="comprobantePago.total" [readOnly]="true"></dx-number-box></div>
                         </div>
                     </div>
                 </div>
 
                 <div style="text-align: center;">
                     <br><br>
-                    <dx-button [text]="'Guardar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                    <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
                 </div>
 
             </div>

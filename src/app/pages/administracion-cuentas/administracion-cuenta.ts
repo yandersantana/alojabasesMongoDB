@@ -19,6 +19,7 @@ export class SubCuenta{
     _id:string
     nombre:string
     idCuenta:string
+    tipoCuenta:string
     constructor(){
     }
 }

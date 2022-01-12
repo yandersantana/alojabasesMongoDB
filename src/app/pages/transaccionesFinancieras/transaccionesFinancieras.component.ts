@@ -18,10 +18,7 @@ export class TransaccionesFinancierasComponent implements OnInit {
   obj: objDate;
   mostrarLoading: boolean = false;
 
-
-
-  constructor(public _transaccionFinancieraService : TransaccionesFinancierasService) {
-   }
+  constructor(public _transaccionFinancieraService : TransaccionesFinancierasService) {}
 
   ngOnInit() {
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
@@ -41,8 +38,10 @@ export class TransaccionesFinancierasComponent implements OnInit {
     this.listaTransacciones = [];
     this.mostrarLoading = true;
     this.obj = new objDate();
-    this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this.obj.fechaActual = this.nowhasta;
+    this.obj.fechaActual.setHours(24);
     this._transaccionFinancieraService.getTransaccionesFinancierasPorRango(this.obj).subscribe(
       (res) => {
         this.listaTransacciones = res as TransaccionesFinancieras[];

@@ -41,6 +41,8 @@ export class ComprobantePagoComponent implements OnInit {
   listadoComprobantesPendientes: ComprobantePago [] = []
   proveedores: Proveedor [] = []
   isNormal = true;
+  totalDeuda = 0;
+  bloquearBoton = false;
 
   listaCuentas: Cuenta [] = []
   listaCuentasGlobal: Cuenta [] = []
@@ -241,8 +243,13 @@ export class ComprobantePagoComponent implements OnInit {
     if(this.mostrarProveedor)
       this.comprobantePago.proveedor = e.value.nombreCliente;
     this.comprobantePago.ruc = e.value.rucCliente;
-    this.comprobantePago.total = e.value.totalFactura;
+    //this.comprobantePago.total = e.value.totalFactura;
+    this.totalDeuda = e.value.totalFactura;
     this.comprobantePago.sucursal = e.value.sucursal; 
+    this.comprobantePago.documento = e.value.num_documento; 
+
+    if(this.tipoComprobante == "Cta.x Pagar")
+      this.comprobantePago.beneficiario = e.value.nombreCliente;
   }
 
 
@@ -278,6 +285,7 @@ export class ComprobantePagoComponent implements OnInit {
       object.totalFactura = element.valor;
       object.sucursal = element.sucursal;
       object.textoCombo = element.comprobanteId+" - "+object.totalFactura
+      object.num_documento = element.numDocumento
       this.datosDocumento.push(object);
     });
   }
@@ -319,6 +327,9 @@ export class ComprobantePagoComponent implements OnInit {
     this.listadoOperaciones.forEach(element =>{
       this.comprobantePago.total +=element.valor;
     })
+
+    if( this.comprobantePago.total > this.totalDeuda)
+      this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
   }
 
 
@@ -376,11 +387,20 @@ export class ComprobantePagoComponent implements OnInit {
 
 
   traersubCuentas(e,i){
+    var arrayCuentas = [];
     this.listaCuentas.forEach(element =>{
       if(element._id == e.value){
         this._subCuentasService.getSubCuentasPorId(e.value).subscribe(res => {
           element.sub_cuentaList = res as SubCuenta[];
-          this.buscarSubCuentas(e,i , res);
+          if(element._id == "6195b036f75a418e9c2eba06"){
+            element.sub_cuentaList.forEach(element2 =>{
+              if(element2.tipoCuenta == "SALIDA")
+              arrayCuentas.push(element2)
+            })
+            this.buscarSubCuentas(e,i , arrayCuentas);
+          }else{
+            this.buscarSubCuentas(e, i , res);
+          }
         })
       }
     })
@@ -464,20 +484,47 @@ export class ComprobantePagoComponent implements OnInit {
 
   async guardar(){
     var flag = true;
+    this.bloquearBoton = true;
     this.listadoOperaciones.forEach(element=>{
       if(element.idCuenta == null || element.idSubCuenta == null || element.valor == 0){
         flag = false;
+        
       }
     });
 
+
     if(flag == true){
-      if(this.comprobantePago.total == 0)
-        this.mostrarMensajeGenerico(2,"El total debe ser superior a 0");  
-      else 
+      if(this.comprobantePago.total == 0){
+        flag = false;
+        this.bloquearBoton = false;
+        this.mostrarMensajeGenerico(2,"El total debe ser superior a 0");
+      }
+          
+
+      if(this.tipoComprobante == "Cta.x Pagar"){
+        if( this.comprobantePago.total > this.totalDeuda){
+          flag = false;
+          this.bloquearBoton = false;
+          this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
+        }
+
+        if( this.comprobantePago.total < this.totalDeuda){
+          flag = false;
+          this.bloquearBoton = false;
+          this.mostrarMensajeGenerico(2,"El total del comprobante no puede ser menor al total de la deuda, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Pagar");
+        }
+      }
+      
+      
+     if(flag)
         this.obtenerId();
+
     }
-    else
+    else{
+      this.bloquearBoton = false;
       this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
+    }
+    
   }
 
 

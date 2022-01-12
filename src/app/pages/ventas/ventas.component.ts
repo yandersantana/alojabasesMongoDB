@@ -3345,8 +3345,8 @@ cambiarestado(e,i:number){
       transaccion.id_documento = 0;
       transaccion.documentoVenta = this.factura.documento_n.toString();
       transaccion.valor = this.factura.total;
-      transaccion.cuenta = "SALDOS";
-      transaccion.subCuenta = "2. Cuentas por cobrar";
+      transaccion.cuenta = "10 SALDOS";
+      transaccion.subCuenta = "10.0 Cuentas x Cobrar";
       transaccion.tipoCuenta = "Reales y Transitorias";
 
       try {
@@ -3429,9 +3429,9 @@ cambiarestado(e,i:number){
       var operacionCC = new OperacionComercial();
       operacionCC.valor = this.factura.total;
       operacionCC.tipoCuenta = "Reales y Transitorias"
-      operacionCC.nombreCuenta = "SALDOS"
+      operacionCC.nombreCuenta = "10 SALDOS"
       operacionCC.idCuenta = "6195b036f75a418e9c2eba06"
-      operacionCC.nombreSubcuenta = "2. Cuentas por Cobrar"; 
+      operacionCC.nombreSubcuenta = "10.0 Cuentas x Cobrar"; 
       operacionCC.idSubCuenta = "61c50005270abc667ec3f8f7";
       return operacionCC;
     }

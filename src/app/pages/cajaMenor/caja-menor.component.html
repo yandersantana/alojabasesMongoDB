@@ -67,11 +67,16 @@
             </div>
         </div>
 
+
         <br>
         <dx-data-grid
             id="gridContainer"
             [dataSource]="transaccionesCaja"
             [showBorders]="true">
+
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-export [enabled]="true" fileName="Caja_Menor" [allowExportSelectedData]="true"></dxo-export>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
             <dxo-selection mode="single"></dxo-selection>
 
             <dxi-column caption="" width="4%"></dxi-column> 

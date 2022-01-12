@@ -51,6 +51,7 @@ export class dataDocumento{
     _id : string
     fecha : Date
     sucursal : string
+    num_documento : string
     constructor(){}
 }
 

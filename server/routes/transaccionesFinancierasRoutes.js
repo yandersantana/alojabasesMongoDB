@@ -26,13 +26,24 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
   var sucursal = req.body.sucursal;
-  const transacciones = await TransaccionFinanciera.find({
-    fecha: {
-      $gte: start,
-      $lt: end,
-    },
-    sucursal:sucursal
-  });
+  var transacciones = [];
+  if(sucursal == ""){
+     transacciones = await TransaccionFinanciera.find({
+      fecha: {
+        $gte: start,
+        $lt: end,
+      },
+    });
+  }else{
+     transacciones = await TransaccionFinanciera.find({
+      fecha: {
+        $gte: start,
+        $lt: end,
+      },
+      sucursal:sucursal
+    });
+  }
+  
   res.json(transacciones);
 });
 

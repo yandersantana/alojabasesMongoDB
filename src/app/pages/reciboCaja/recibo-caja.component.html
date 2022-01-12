@@ -249,7 +249,7 @@
                     <div class="col-md-6">
                         <div class="row espacioDivs align">
                             <div class="col-md-6">Valor Factura</div>
-                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorFactura" [readOnly]="isFacturacion"  (onValueChanged)="calcularValores()"></dx-number-box></div>
+                            <div class="col-md-3"> <dx-number-box [(value)]="reciboCaja.valorFactura" [readOnly]="bloquearValor"  (onValueChanged)="calcularValores()"></dx-number-box></div>
                             <div class="col-md-3"></div>
 
                             <div class="col-md-6">Recargos</div>
@@ -276,7 +276,7 @@
 
                 <div style="text-align: center;">
                     <br><br>
-                    <dx-button [text]="'Guardar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                    <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
                 </div>
 
             </div>

@@ -94,6 +94,14 @@ router.delete('/delete/:id', async (req, res,next) => {
     res.json({status: 'Comprobante Eliminado'});
 })
 
+router.put("/updateEstado/:id/:estado", async (req, res, next) => {
+  const { id } = req.params;
+  const { estado } = req.params;
+  await CajaMenor.findByIdAndUpdate( id,{ $set: { estado: estado } },{ new: true } );
+  res.json({ status: "caja Updated" });
+});
+
+
 
 module.exports = router;
 

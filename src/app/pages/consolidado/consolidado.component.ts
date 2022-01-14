@@ -546,10 +546,7 @@ export class ConsolidadoComponent implements OnInit {
       const element2 = this.productos[index];
 
       this.transacciones.forEach((element) => {
-        if (
-          element2.PRODUCTO == element.producto &&
-          element.sucursal == "matriz"
-        ) {
+        if (element2.PRODUCTO == element.producto && element.sucursal == "matriz") {
           switch (element.tipo_transaccion) {
             case "devolucion":
               contCajas = Number(element.cajas) + contCajas;
@@ -726,7 +723,7 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
-      //console.log(this.invetarioProd);
+      console.log(this.invetarioProd);
       this.invetarioP.push(this.invetarioProd);
 
       contCajas = 0;
@@ -737,7 +734,7 @@ export class ConsolidadoComponent implements OnInit {
       contPiezas3 = 0;
     }
     this.transformarM2();
-    //this.sumarProductosRestados()
+    this.sumarProductosRestados()
   }
 
   sumarProductosRestados() {

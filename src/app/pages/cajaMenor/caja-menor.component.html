@@ -80,7 +80,7 @@
             <dxo-selection mode="single"></dxo-selection>
 
             <dxi-column caption="" width="4%"></dxi-column> 
-            <dxi-column dataField="Orden" caption="" width="7%" sortOrder="desc" [visible]="false" ></dxi-column> 
+            <dxi-column dataField="Orden" dataType="number" caption="" width="7%" sortOrder="asc" [visible]="true"></dxi-column> 
             <dxi-column dataField="SubCuenta" caption="SUBCUENTA" width="25%"></dxi-column>
             <dxi-column dataField="Sub1" caption="DOC"></dxi-column>
             <dxi-column dataField="Sub2" caption="CC"></dxi-column>
@@ -256,9 +256,14 @@
         <dxi-column dataField="totalRC" caption="Total RC" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 3 }"></dxi-column>
         <dxi-column dataField="resultado" caption="Resultado" [format]="{ style: 'currency', currency: 'USD', useGrouping: true, minimumSignificantDigits: 3 }"></dxi-column>
         <dxi-column dataField="estadoCaja" caption="Estado Caja" dataType="string"></dxi-column>
-<!--         <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
+        <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
             <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
-        </dxi-column> -->
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Validar" width="10%">
+            <dxi-button icon="fa fa-check-square-o"  [onClick]="validateCaja"></dxi-button>   
+        </dxi-column>
+
+        
 
       <!--   <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
             <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   

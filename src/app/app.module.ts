@@ -36,6 +36,7 @@ import {
   DxTextAreaModule,
   DxRadioGroupModule,
   DxToolbarModule,
+  DxMenuModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
 import { AngularFirestoreModule } from "angularfire2/firestore";
@@ -180,7 +181,8 @@ import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar
     DxTextAreaModule,
     DxoToolbarModule,
     AlertsModule.forRoot(),
-    DxRadioGroupModule
+    DxRadioGroupModule,
+    DxMenuModule
   ],
   exports: [CatalogoComponent],
   providers: [

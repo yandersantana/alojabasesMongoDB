@@ -1626,6 +1626,7 @@ cambiarestado(e,i:number){
                         bold: true,
                         fontSize:6,
                         ul: [
+                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -1756,6 +1757,7 @@ cambiarestado(e,i:number){
                           bold: true,
                           fontSize:6,
                           ul: [
+                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -2260,6 +2262,7 @@ cambiarestado(e,i:number){
                         bold: true,
                         fontSize:6,
                         ul: [
+                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -2390,6 +2393,7 @@ cambiarestado(e,i:number){
                           bold: true,
                           fontSize:6,
                           ul: [
+                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]

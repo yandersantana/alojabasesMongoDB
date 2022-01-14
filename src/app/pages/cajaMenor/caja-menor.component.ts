@@ -32,6 +32,7 @@ export class CajaMenorComponent implements OnInit {
   totalSuma = 0;
   totalResta = 0;
   totalRC = 0;
+  isDescarga = false;
   
   cajaMenor : CajaMenor;
   mostrarLoading : boolean = false;
@@ -149,6 +150,23 @@ export class CajaMenorComponent implements OnInit {
   }
 
 
+  buscarTransaccionesPorFechaDescarga(e){
+    this.mensajeLoading = "Buscando datos.."
+    this.mostrarLoading = true;
+    this.resetearValores();
+    this.obj = new objDate();
+    this.obj.sucursal = this.cajaMenor.sucursal;
+    this.obj.fechaAnterior = this.cajaMenor.fecha;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this.obj.fechaActual = new Date(this.cajaMenor.fecha);
+    this.obj.fechaActual.setHours(24);
+    this._transaccionesFinancierasService.getTransaccionesFinancierasPorRango(this.obj).subscribe(res => {
+      this.listaTransacciones = res as TransaccionesFinancieras[];
+      this.crearTransaccionesCaja();
+    })
+  }
+
+
   resetearValores(){
     this.resultado = 0;
     this.estadoCuenta = "";
@@ -236,25 +254,95 @@ export class CajaMenorComponent implements OnInit {
       newCaja.Sub2 = element.documentoVenta;
       newCaja.SubCuenta = element.subCuenta;
       newCaja.Cuenta = element.cuenta;
-      if(element.tipoCuenta == "Ingresos")
+      var cadena = element.cuenta.split(" ");
+      newCaja.Orden = Number(cadena[0]);
+
+
+      /* if(newCaja.Orden == 1)
+        newCaja.Cuenta = "A. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 2)
+        newCaja.Cuenta = "B. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 3)
+        newCaja.Cuenta = "C. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 4)
+        newCaja.Cuenta = "D. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 5)
+        newCaja.Cuenta = "E. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 6)
+        newCaja.Cuenta = "F. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 7)
+        newCaja.Cuenta = "G. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 8)
+        newCaja.Cuenta = "H. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 9)
+        newCaja.Cuenta = "I. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 10)
+        newCaja.Cuenta = "J. "+newCaja.Cuenta;
+      else if(newCaja.Orden == 11)
+        newCaja.Cuenta = "K. "+newCaja.Cuenta; */
+
+
+      if(element.tipoCuenta == "Ingresos") 
         newCaja.TotalIngresos = element.valor;
+
       if(element.tipoCuenta == "Salidas")
-        newCaja.TotalSalidas = element.valor;
+         newCaja.TotalSalidas = element.valor;
+
+       
       if(element.tipoCuenta == "Reales y Transitorias")
         newCaja.TotalRC = element.valor;
-
 
       this.transaccionesCaja.push(newCaja);
       
     });
     this.calcular();
+
+    if(this.isDescarga)
+        this.crearPDF(null, false);
   }
 
   
   
   downloadFile = (e) => {
-    //this.obtenerDataRecibo(e.row.data);
+    this.obtenerDatosTransacciones(e.row.data);
   };
+
+  validateCaja = (e) => {
+    this.validarCaja(e.row.data);
+  };
+
+  validarCaja(e){
+    Swal.fire({
+      title: 'Validar Caja',
+      text: "Desea validar la caja #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) { 
+        this._cajaMenorService.updateEstado(e,"VALIDADO").subscribe(res => {
+          this.mostrarMensajeGenerico(1,"Caja actualizada");
+          this.traerCajaPagoPorRango();
+        })
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelado!','Se ha cancelado su proceso.','error')
+      }
+    })
+    
+  }
+
+
+  obtenerDatosTransacciones(e){
+    this.isDescarga = true;
+    this.cajaMenor = e;
+    this.cajaMenor.sucursal = e.sucursal;
+    this.cajaMenor.fecha = new Date(e.fecha);
+    console.log(this.cajaMenor)
+    this.buscarTransaccionesPorFechaDescarga(e);
+    
+
+  }
 
 
 
@@ -264,6 +352,8 @@ export class CajaMenorComponent implements OnInit {
     else 
       this.obtenerId();
   }
+
+
 
   obtenerId(){
     this.mensajeLoading = "Guardando";
@@ -309,15 +399,16 @@ export class CajaMenorComponent implements OnInit {
 
 
   terminarOperacion(){
+    //alert("efddf")
     this.mostrarLoading = false;
-      Swal.fire({
-        title:'Correcto',
-        text: 'Se ha guardado con éxito',
-        icon: 'success',
-        confirmButtonText: 'Ok'
-      }).then((result) => {
-        window.location.reload()
-      })
+    Swal.fire({
+      title:'Correcto',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      window.location.reload()
+    })
   }
 
 
@@ -385,8 +476,6 @@ export class CajaMenorComponent implements OnInit {
       this.mensajeLoading = "Descargando";
 
     this.mostrarLoading = true;
-    //this.comprobantePagoDescarga = recibo;
-    //this.traerDatosFaltantes(this.comprobantePagoDescarga.sucursal);
     const documentDefinition = this.getDocumentDefinition();
 
     var IdNum = new Promise<any>((resolve, reject) => {
@@ -397,10 +486,12 @@ export class CajaMenorComponent implements OnInit {
     })
 
     IdNum.then((data) => {
-      if(isNew){
-        this.mostrarLoading = false;
+      this.mostrarLoading = false;
+      if(isNew)
         this.terminarOperacion();
-      }
+      else
+        this.mostrarMensajeGenerico(1,"Descarga completa")
+      
     });
 
   }

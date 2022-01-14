@@ -39,6 +39,7 @@ export class ComprobantePagoComponent implements OnInit {
   listadoComprobantesActivos: ComprobantePago [] = []
   listadoComprobantesAnulados: ComprobantePago [] = []
   listadoComprobantesPendientes: ComprobantePago [] = []
+  arrayCuentasPorPagar: CuentaPorPagar [] = []
   proveedores: Proveedor [] = []
   isNormal = true;
   totalDeuda = 0;
@@ -84,7 +85,7 @@ export class ComprobantePagoComponent implements OnInit {
   tiposBusqueda: string[] = [
     "Beneficiario",
     "Proveedor",
-    "Documento"
+    "RUC"
   ];
 
    tiposComprobantes: string[] = [
@@ -104,6 +105,9 @@ export class ComprobantePagoComponent implements OnInit {
   textoDatosFactura = "";
   valorDocumento = "";
   idCuentaPorPagar = "";
+
+    
+        
 
 
   constructor(
@@ -153,6 +157,8 @@ export class ComprobantePagoComponent implements OnInit {
       this.separarcuentas();
    })
   }
+
+ 
 
    separarcuentas(){
     this.listaCuentasGlobal.forEach(element=>{
@@ -248,8 +254,17 @@ export class ComprobantePagoComponent implements OnInit {
     this.comprobantePago.sucursal = e.value.sucursal; 
     this.comprobantePago.documento = e.value.num_documento; 
 
-    if(this.tipoComprobante == "Cta.x Pagar")
+    
+
+    if(this.tipoComprobante == "Cta.x Pagar"){
       this.comprobantePago.beneficiario = e.value.nombreCliente;
+
+      /* var registro = this.arrayCuentasPorPagar.find(element=> element.valor == this.totalDeuda);
+      if(registro){
+        this.comprobantePago.telefono = registro.
+      } */
+    }
+      
   }
 
 
@@ -264,7 +279,7 @@ export class ComprobantePagoComponent implements OnInit {
         this.llenarDatosComboCuentasPagar(cuentas);
         this.mostrarLoading = false;
       });
-    }else if(this.valorTipoBusqueda == "Documento"){
+    }else if(this.valorTipoBusqueda == "RUC"){
       var docData = new dataDocumento();
       docData.rucCliente = this.valorDocumento;
       this._cuentaPorPagar.getCuentasXPagarPorRUC(docData).subscribe(res => {
@@ -276,6 +291,7 @@ export class ComprobantePagoComponent implements OnInit {
   }
 
   llenarDatosComboCuentasPagar(array){
+    this.arrayCuentasPorPagar = array;
     this.datosDocumento = [];
     array.forEach(element => {
       var object = new dataDocumento();
@@ -328,7 +344,7 @@ export class ComprobantePagoComponent implements OnInit {
       this.comprobantePago.total +=element.valor;
     })
 
-    if( this.comprobantePago.total > this.totalDeuda)
+    if( this.comprobantePago.total > this.totalDeuda && this.tipoComprobante == "Cta.x Pagar")
       this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
   }
 
@@ -631,6 +647,7 @@ export class ComprobantePagoComponent implements OnInit {
 
   guardarComprobantePago(){
     try {
+      this.comprobantePago.beneficiario = this.comprobantePago.beneficiario ?? this.comprobantePago.proveedor;
       this._comprobantePagoService.newComprobantePago(this.comprobantePago).subscribe((res) => {
         this.actualizarContador();
         this.generarTransaccionesFinancieras();

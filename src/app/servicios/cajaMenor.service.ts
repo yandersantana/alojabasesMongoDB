@@ -43,4 +43,8 @@ export class CajaMenorService {
   deleteCajaMenor(cajaMenor) {
     return this.http.delete(this.URL + `/delete/${cajaMenor._id}`, cajaMenor);
   }
+
+  updateEstado(cajaMenor, estado: string) {
+    return this.http.put(this.URL + `/updateEstado/${cajaMenor._id}/${estado}`, cajaMenor);
+  }
 }

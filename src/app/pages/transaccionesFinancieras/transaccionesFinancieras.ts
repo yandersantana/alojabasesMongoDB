@@ -17,7 +17,8 @@ export class TransaccionesFinancieras{
     tipoCuenta: string
     tipoTransaccion : string
     id_documento : number
+    isContabilizada : boolean
     constructor(){
-
+        this.isContabilizada = true;
     }
 }

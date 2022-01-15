@@ -1513,11 +1513,15 @@ cambiarestado(e,i:number){
      
 
     getDocumentDefinition() {
+      //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
+      if(this.formaPago == "Credito")
+        this.formaPago = "Pendiente de Pago";
       this.calcularValoresFactura()
       sessionStorage.setItem('resume', JSON.stringify("jj"));
       let tipoDocumento="Factura";
       return {
         pageSize: 'A4',
+        
         content: [
           {
             columns: [ 
@@ -1626,7 +1630,7 @@ cambiarestado(e,i:number){
                         bold: true,
                         fontSize:6,
                         ul: [
-                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
+                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -1757,7 +1761,7 @@ cambiarestado(e,i:number){
                           bold: true,
                           fontSize:6,
                           ul: [
-                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
+                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -2262,7 +2266,7 @@ cambiarestado(e,i:number){
                         bold: true,
                         fontSize:6,
                         ul: [
-                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
+                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -2393,7 +2397,7 @@ cambiarestado(e,i:number){
                           bold: true,
                           fontSize:6,
                           ul: [
-                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:9 },
+                            {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -3347,6 +3351,7 @@ cambiarestado(e,i:number){
       transaccion.rCajaId = "RC"+idRecibo;
       transaccion.tipoTransaccion = "factura-saldo";
       transaccion.id_documento = 0;
+      transaccion.isContabilizada = true;
       transaccion.documentoVenta = this.factura.documento_n.toString();
       transaccion.valor = this.factura.total;
       transaccion.cuenta = "10 SALDOS";
@@ -3466,6 +3471,7 @@ cambiarestado(e,i:number){
         transaccion.fecha = this.factura.fecha;
         transaccion.sucursal = recibo.sucursal;
         transaccion.cliente = recibo.cliente;
+        transaccion.isContabilizada = true;
         transaccion.rCajaId = "RC"+recibo.idDocumento.toString();
         transaccion.tipoTransaccion = "recibo-caja";
         transaccion.id_documento = recibo.idDocumento;

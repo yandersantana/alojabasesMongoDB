@@ -292,7 +292,8 @@ export class CajaMenorComponent implements OnInit {
       if(element.tipoCuenta == "Reales y Transitorias")
         newCaja.TotalRC = element.valor;
 
-      this.transaccionesCaja.push(newCaja);
+      if(element.isContabilizada == true)
+        this.transaccionesCaja.push(newCaja);
       
     });
     this.calcular();

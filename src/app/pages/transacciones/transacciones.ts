@@ -42,6 +42,7 @@ export class objDate {
 export class tipoBusquedaTransaccion {
   NumDocumento: string;
   tipoTransaccion: string;
+  rCajaId: string;
   constructor(){
 
   }

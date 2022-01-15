@@ -39,6 +39,7 @@ export class ReciboCajaComponent implements OnInit {
   isReadOnly: boolean = false;
   isNormal: boolean = true;
   isFacturacion: boolean = true;
+  numReciboCajaTraido = "";
   contadores:contadoresDocumentos[]
   recibosEncontrados:ReciboCaja[]
   documentoVenta = "";
@@ -65,6 +66,7 @@ export class ReciboCajaComponent implements OnInit {
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   bloquearValor = false;
+  existeCuentaPorCobrar=false;
   menu: string[] = [
     "Nuevo Recibo",
     "Recibos Cajas Generados"
@@ -109,6 +111,7 @@ export class ReciboCajaComponent implements OnInit {
   idCuentaPorCobrar = "";
   tipoRecibo = "";
   bloquearBoton = false;
+  fechaDocumentoPendiente = new Date();
 
 
 
@@ -238,8 +241,13 @@ export class ReciboCajaComponent implements OnInit {
     if(this.tipoRecibo == "Facturacion")
       this.reciboCaja.fecha = e.value.fecha;
 
-    if(this.tipoRecibo == "Cta.x Cobrar")
+    if(this.tipoRecibo == "Cta.x Cobrar"){
+      this.fechaDocumentoPendiente = e.value.fecha;
+      console.log(e.value.fecha);
+      console.log(this.fechaDocumentoPendiente);
       this.reciboCaja.numDocumento = e.value.num_documento;
+    }
+      
    
   }
 
@@ -308,8 +316,10 @@ export class ReciboCajaComponent implements OnInit {
       object.rucCliente = element.rucCliente;
       object.totalFactura = element.valor;
       object.sucursal = element.sucursal;
+      object.fecha = element.fecha;
       object.num_documento = element.documentoVenta;
-      object.textoCombo = element.rCajaId+" - "+object.totalFactura
+      object.textoCombo = element.rCajaId+" - "+object.totalFactura;
+      this.numReciboCajaTraido = element.rCajaId;
       this.datosDocumento.push(object);
     });
   }
@@ -516,7 +526,13 @@ export class ReciboCajaComponent implements OnInit {
     this.valorTotal2 = this.reciboCaja.valorPagoEfectivo ;
     this.reciboCaja.valorSaldos = this.valorTotal1 - this.valorTotal2 + this.reciboCaja.valorRecargo;
     if(this.reciboCaja.valorSaldos < 0)
-      this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura");
+/*     Swal.fire({
+        title: "Atención",
+        text: texto,
+        icon: 'success'
+      }) */
+       Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la factura",'warning')
+      //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura");
   }
 
   eliminarRegistro(i: number) {
@@ -648,13 +664,15 @@ export class ReciboCajaComponent implements OnInit {
       }
 
       if(this.reciboCaja.valorSaldos < 0){
-        this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente"); 
+        Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente",'warning')
+        //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente"); 
         flag = false;
         this.bloquearBoton = false;
       }
 
       if(this.tipoRecibo == "Cta.x Cobrar" && this.reciboCaja.valorSaldos != 0){
-        this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Cobrar");
+        Swal.fire( "Atención","El saldo del recibo debe ser igual a 0, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Cobrar",'warning')
+        //this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Cobrar");
         flag = false;
         this.bloquearBoton = false;
       } 
@@ -731,11 +749,12 @@ export class ReciboCajaComponent implements OnInit {
   }
 
 
-  guardarReciboCaja(){
+  async guardarReciboCaja(){
     try {
-      this._reciboCajaService.newReciboCaja(this.reciboCaja).subscribe((res) => {
+      this._reciboCajaService.newReciboCaja(this.reciboCaja).subscribe(async (res) => {
         this.actualizarContador();
         this.generarTransaccionesFinancieras();
+        await this.actualizarEstadoTransacciones();
         //if(this.reciboCaja.valorSaldos>0)
           //this.generarTransaccionSaldo();
 
@@ -743,6 +762,33 @@ export class ReciboCajaComponent implements OnInit {
     } catch (error) {
       this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
     }    
+  }
+
+  async actualizarEstadoTransacciones(){
+    var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
+    var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
+    if(fechaRecibo == fecha2 && this.tipoRecibo == "Cta.x Cobrar" && this.existeCuentaPorCobrar){
+      this.busquedaTransaccion = new tipoBusquedaTransaccion()
+      this.busquedaTransaccion.NumDocumento = this.reciboCaja.numDocumento
+      this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
+      this.busquedaTransaccion.rCajaId = this.numReciboCajaTraido;
+      console.log(this.busquedaTransaccion)
+      this._transaccionFinancieraService.obtenerTransaccionesPorDocumentoYRecibo(this.busquedaTransaccion).subscribe(
+        async (res) => {
+          var transacciones = res as TransaccionesFinancieras[];
+          await this.actualizarTransacciones(transacciones);},
+        (err) => {});
+    }    
+  }
+
+  async actualizarTransacciones(transacciones : TransaccionesFinancieras[]){
+    transacciones.forEach(element=>{
+      if(element.subCuenta == "10.0 Cuentas x Cobrar"){
+        console.log("actualizare ",element)
+        this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});
+      }
+          
+    });
   }
 
 
@@ -767,6 +813,7 @@ export class ReciboCajaComponent implements OnInit {
     transaccion.tipoPago = "";
     transaccion.soporte = "";
     transaccion.dias = 0;
+    transaccion.isContabilizada = true;
     transaccion.cuenta = "10 SALDOS";
     transaccion.subCuenta = "10.0 Cuentas x Cobrar";
     transaccion.notas = this.reciboCaja.observaciones;
@@ -779,8 +826,24 @@ export class ReciboCajaComponent implements OnInit {
     }    
   }
 
+  validar(){
+    var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
+    var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
+    //console.log("fecha1",fechaRecibo.toLocaleDateString());
+    //console.log("fecha2",fecha2.toLocaleDateString());
+    if(fechaRecibo == fecha2)
+      console.log("son iguales")
+
+  }
+
   generarTransaccionesFinancieras(){
     var cont=0;
+    var isContabilizada = true;
+    var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
+    var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
+    if(fechaRecibo == fecha2 && this.tipoRecibo == "Cta.x Cobrar")
+      isContabilizada = false;
+
     this.reciboCaja.operacionesComercialesList.forEach(element=>{
       var transaccion = new TransaccionesFinancieras();
       transaccion.fecha = this.reciboCaja.fecha;
@@ -792,6 +855,19 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.documentoVenta = this.reciboCaja.docVenta;
       transaccion.numDocumento = this.reciboCaja.numDocumento;
       transaccion.valor = element.valor;
+      transaccion.isContabilizada = isContabilizada;
+      if(this.tipoRecibo != "Cta.x Cobrar"){
+        if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
+          transaccion.isContabilizada = true;
+        else
+          transaccion.isContabilizada = false;
+      }
+      
+      if(this.tipoRecibo == "Cta.x Cobrar"){
+        if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
+          transaccion.isContabilizada = true;
+      }
+
       transaccion.tipoPago = "";
       transaccion.soporte = "";
       transaccion.dias = 0;
@@ -802,6 +878,7 @@ export class ReciboCajaComponent implements OnInit {
 
       if(element.nombreCuenta == "10 SALDOS" && element.nombreSubcuenta == "10.0 Cuentas x Cobrar"){
         this.InsertarCuentaPorCobrar(transaccion)
+        this.existeCuentaPorCobrar = true;
       }
 
       try {
@@ -944,6 +1021,7 @@ export class ReciboCajaComponent implements OnInit {
   getDocumentDefinition() {
     return {
       pageSize: "A4",
+     
       pageOrientation: "portrait",
       content: [
         {

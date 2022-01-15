@@ -19,6 +19,7 @@ const TransaccionesFinancierasSchema = new Schema({
     vencimiento: { type: String, required: false},
     id_documento : { type: Number, required: false},
     tipoTransaccion : { type: String, required: false},
+    isContabilizada : { type: Boolean, required: false},
     notas: { type: String, required: false}
 },{
     timestamps:true

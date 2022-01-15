@@ -27,6 +27,14 @@ export class TransaccionesFinancierasService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }
 
+  obtenerTransaccionesPorDocumentoYRecibo(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);
+  }
+
+  updateEstado(transaccion, estado: boolean) {
+    return this.http.put(this.URL + `/updateEstado/${transaccion._id}/${estado}`, transaccion);
+  }
+
   deleteTransaccionFinanciera(transaccion) {
     return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
   }

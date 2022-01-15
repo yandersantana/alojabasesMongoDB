@@ -345,7 +345,8 @@ export class ComprobantePagoComponent implements OnInit {
     })
 
     if( this.comprobantePago.total > this.totalDeuda && this.tipoComprobante == "Cta.x Pagar")
-      this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
+      Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la deuda",'warning')
+      //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
   }
 
 
@@ -521,13 +522,15 @@ export class ComprobantePagoComponent implements OnInit {
         if( this.comprobantePago.total > this.totalDeuda){
           flag = false;
           this.bloquearBoton = false;
-          this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
+          Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la deuda",'warning')
+          //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la deuda");
         }
 
         if( this.comprobantePago.total < this.totalDeuda){
           flag = false;
           this.bloquearBoton = false;
-          this.mostrarMensajeGenerico(2,"El total del comprobante no puede ser menor al total de la deuda, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Pagar");
+          Swal.fire( "Atención","El total del comprobante no puede ser menor al total de la deuda, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Pagar",'warning')
+          //this.mostrarMensajeGenerico(2,"El total del comprobante no puede ser menor al total de la deuda, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Pagar");
         }
       }
       
@@ -694,6 +697,7 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.tipoPago = "";
       transaccion.soporte = "";
       transaccion.dias = 0;
+      transaccion.isContabilizada = true;
       transaccion.cuenta = element.nombreCuenta;
       transaccion.subCuenta = element.nombreSubcuenta;
       transaccion.notas = this.comprobantePago.observaciones;

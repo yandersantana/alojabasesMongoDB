@@ -58,7 +58,7 @@ export class VentasComponent implements OnInit {
   isContado = true;
   isSaldo = false;
   isOtros = false;
-  formaPago = "Credito";
+  formaPago = "Pendiente de Pago";
   listaOperaciones : OperacionComercial[]=[]
   recibosEncontrados : ReciboCaja[]=[]
   newRecibo = new ReciboCaja();
@@ -115,13 +115,11 @@ export class VentasComponent implements OnInit {
   sucursales:sucursal[]
   nCotizacionFact:string
 
-  //tipoDocumentos:string[]
   productosSolicitados:number
   flag:boolean
   dateToday: number = Date.now();
   datePipe:DatePipe
   mensaje:string
-  //p.producto.REFERENCIA= string
   numeroFactura:string
   totalcomprador=0
   cliente3: cliente
@@ -137,13 +135,9 @@ export class VentasComponent implements OnInit {
   iva=0;
   tDocumento: string
   textoTipoDocumento: string        //se especifica si es proforma o nota de venta
-  textoTipoDocumento2: string         //para detalle de nombre comercial
-  
+  textoTipoDocumento2: string         //para detalle de nombre comercial 
   Ncotizacion: number
-
   contadoProductos=0
-
-
 
   
   foo:string
@@ -169,40 +163,40 @@ export class VentasComponent implements OnInit {
     "Factura",
     "Cotización",
     "Nota de Venta"
-];
+  ];
 
 
-sucursalesDefault: string[] = [
-  "matriz",
-  "sucursal1",
-  "sucursal2"
-];
+  sucursalesDefault: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
+  ];
 
-tipoConversiones: string[] = [
-  "De cajas a m2",
-  "De m2 a cajas"
-];
+  tipoConversiones: string[] = [
+    "De cajas a m2",
+    "De m2 a cajas"
+  ];
 
-imagenLogotipo ="";
+  imagenLogotipo ="";
 
-contadorFirebase:contadoresDocumentos[]=[]
-popupvisible:boolean=false
-productosCatalogo:catalogo[]=[]
-calp:number=0
-selectAct:boolean=false
-imagenes:string[]
-correo:string=""
-calmetros:number=0
-caltotal:number=0
-numeroID:number=0
-precios:precios[]=[]
-maestroConstructor:string
-contR=this.numeroID
-disponibilidadProducto:string=""
-parametrizaciones:parametrizacionsuc[]=[]
-usuarios: user[] = []
-parametrizacionSucu:parametrizacionsuc
-contadores:contadoresDocumentos[]
+  contadorFirebase:contadoresDocumentos[]=[]
+  popupvisible:boolean=false
+  productosCatalogo:catalogo[]=[]
+  calp:number=0
+  selectAct:boolean=false
+  imagenes:string[]
+  correo:string=""
+  calmetros:number=0
+  caltotal:number=0
+  numeroID:number=0
+  precios:precios[]=[]
+  maestroConstructor:string
+  contR=this.numeroID
+  disponibilidadProducto:string=""
+  parametrizaciones:parametrizacionsuc[]=[]
+  usuarios: user[] = []
+  parametrizacionSucu:parametrizacionsuc
+  contadores:contadoresDocumentos[]
   mySimpleFormat = this.pipe.transform(this.now2, 'MM/dd/yyyy');
   fechaMaxima2 = new Date(this.now3.setDate(this.now.getDate() + 7));
   mySimpleFormat2 = this.pipe.transform(this.fechaMaxima2, 'MMM / d / y');
@@ -240,9 +234,6 @@ contadores:contadoresDocumentos[]
     this.factura.coste_transporte= 0
     this.factura.fecha2= this.now.toLocaleString()
     this.factura.tipoDocumento = "Factura"
- 
-    
-   
   }
 
   ngOnInit() {
@@ -1514,8 +1505,8 @@ cambiarestado(e,i:number){
 
     getDocumentDefinition() {
       //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
-      if(this.formaPago == "Credito")
-        this.formaPago = "Pendiente de Pago";
+      /* if(this.formaPago == "Pendiente de Pago")
+        this.formaPago = "Pendiente de Pago"; */
       this.calcularValoresFactura()
       sessionStorage.setItem('resume', JSON.stringify("jj"));
       let tipoDocumento="Factura";
@@ -3108,8 +3099,6 @@ cambiarestado(e,i:number){
             new Promise<any>((resolve, reject) => { 
               this.crearCliente()
               this.guardarFactura()
-              
-              //this.traerContadoresDocumentos()
               this.productosVendidos.forEach(element => {
                 this.validarExistencias(element)
                 element.factura_id = this.factura.documento_n
@@ -3319,14 +3308,12 @@ cambiarestado(e,i:number){
 
 
   validarFormaPago(){
-    //if(this.formaPago == "Credito" || this.formaPago == "Cancelado"){
-      this.newRecibo.idDocumento = this.contadores[0].reciboCaja_Ndocumento + 1;
-      this.obtenerIdRecibo();
-    //}
+    this.newRecibo.idDocumento = this.contadores[0].reciboCaja_Ndocumento + 1;
+    this.obtenerIdRecibo();
   }
 
   generarCuentaPorCobrar(idRecibo){
-    if(this.formaPago == "Credito"){
+    if(this.formaPago == "Pendiente de Pago"){
       var cuentaPorCobrar = new CuentaPorCobrar();
       cuentaPorCobrar.fecha = new Date();
       cuentaPorCobrar.sucursal = this.factura.sucursal;
@@ -3336,6 +3323,9 @@ cambiarestado(e,i:number){
       cuentaPorCobrar.documentoVenta = this.factura.documento_n.toString();
       cuentaPorCobrar.numDocumento = "";
       cuentaPorCobrar.valor = this.factura.total;
+      cuentaPorCobrar.valorFactura = this.factura.total;
+      cuentaPorCobrar.tipo_doc = this.factura.tipoDocumento;
+      cuentaPorCobrar.fecha_deuda = this.factura.fecha;
       cuentaPorCobrar.notas = "Generado desde el módulo de facturación";
       this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {},(err) => {});
     }
@@ -3343,7 +3333,7 @@ cambiarestado(e,i:number){
   } 
 
   generarTransaccionCuentaPorCobrar(idRecibo){
-    if(this.formaPago == "Credito"){
+    if(this.formaPago == "Pendiente de Pago"){
       var transaccion = new TransaccionesFinancieras();
       transaccion.fecha = new Date();
       transaccion.sucursal = this.factura.sucursal;
@@ -3353,6 +3343,7 @@ cambiarestado(e,i:number){
       transaccion.id_documento = 0;
       transaccion.isContabilizada = true;
       transaccion.documentoVenta = this.factura.documento_n.toString();
+      transaccion.cedula = this.factura.cliente.ruc;
       transaccion.valor = this.factura.total;
       transaccion.cuenta = "10 SALDOS";
       transaccion.subCuenta = "10.0 Cuentas x Cobrar";
@@ -3409,13 +3400,13 @@ cambiarestado(e,i:number){
         recibo.valorPagoEfectivo = this.factura.total;
         recibo.valorSaldos = 0;
       }else{
-        recibo.tipoPago = "Credito";
+        recibo.tipoPago = "Pendiente de Pago";
         recibo.valorPagoEfectivo = 0;
         recibo.valorSaldos = this.factura.total;
       }
 
       this.listaOperaciones.push(this.generarOperacionPrincipal());
-      if(this.formaPago == "Credito")
+      if(this.formaPago == "Pendiente de Pago")
         this.listaOperaciones.push(this.generarOperacionSaldo());
 
       recibo.operacionesComercialesList = this.listaOperaciones;
@@ -3476,6 +3467,7 @@ cambiarestado(e,i:number){
         transaccion.tipoTransaccion = "recibo-caja";
         transaccion.id_documento = recibo.idDocumento;
         transaccion.documentoVenta = recibo.docVenta;
+        transaccion.cedula = this.factura.cliente.ruc;
         transaccion.numDocumento = recibo.numDocumento;
         transaccion.valor = element.valor;
         transaccion.tipoPago = "";

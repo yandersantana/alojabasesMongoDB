@@ -74,9 +74,11 @@
     <dxo-export [enabled]="true" fileName="Cuentas por Cobrar" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
     <dxi-column dataField="rCajaId" caption="RC" dataType="string" sortOrder="desc"></dxi-column>
-    <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-    <dxi-column dataField="documentoVenta" caption="Fact" dataType="string"></dxi-column>
-    <dxi-column dataField="valor" caption="Valor" dataType="string" [visible]="true"></dxi-column>
+    <dxi-column dataField="fecha_deuda" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
+    <dxi-column dataField="documentoVenta" caption="Documento" dataType="string"></dxi-column>
+    <dxi-column dataField="tipo_doc" caption="Tipo" dataType="string"></dxi-column>
+    <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="string" [visible]="true"></dxi-column>
+    <dxi-column dataField="valor" caption="Valor Deuda" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
     <dxi-column dataField="rucCliente" caption="RUC / CI" dataType="string"></dxi-column>
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>

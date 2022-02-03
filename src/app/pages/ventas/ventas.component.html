@@ -118,7 +118,7 @@
 <dx-form id="form" #ventasForm [(formData)]="factura" [readOnly]="false" [colCount]="3" [width]="1000">
     <dxi-item itemType="group" [colCount]="3" [colSpan]="3">
         <dxi-item dataField="fecha" [editorOptions]="{ placeholder: 'Fecha'}">
-            <dx-date-box [(value)]="now" [type]="'date'" [showClearButton]="true">
+            <dx-date-box [(value)]="now" [type]="'date'" [readOnly]="!isAdmin" [showClearButton]="true">
                 <dx-validator>
                     <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
                    <!--  <dxi-validation-rule type="range" [max]="minDate" message="No puede ser mayor a la fecha actual">

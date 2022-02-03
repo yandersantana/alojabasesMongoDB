@@ -48,10 +48,13 @@ export class dataDocumento{
     nombreCliente : string
     rucCliente : string
     totalFactura : string
+    valorInicialFactura : string
     _id : string
     fecha : Date
+    fecha_deuda : Date
     sucursal : string
     num_documento : string
+    tipo_documento : string
     constructor(){}
 }
 

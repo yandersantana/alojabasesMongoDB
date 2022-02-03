@@ -22,6 +22,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FacturasService } from 'src/app/servicios/facturas.service';
 import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 import { ClienteService } from 'src/app/servicios/cliente.service';
+import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
+import { CajaMenor } from '../cajaMenor/caja-menor';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -112,6 +114,10 @@ export class ReciboCajaComponent implements OnInit {
   tipoRecibo = "";
   bloquearBoton = false;
   fechaDocumentoPendiente = new Date();
+  existeCaja = false
+  valorTotalInicioFactura = 0
+  tipoDocumentoCuenta = ""
+  fechaDeuda = new Date()
 
 
 
@@ -128,6 +134,7 @@ export class ReciboCajaComponent implements OnInit {
     public _notaVentaService : NotasVentasService,
     public _clienteService : ClienteService,
     public _authenService:AuthenService,
+    public _cajaMenorService : CajaMenorService,
     private route: ActivatedRoute,
     private _router: Router) {
       this.factura = new factura()
@@ -238,6 +245,9 @@ export class ReciboCajaComponent implements OnInit {
     this.reciboCaja.ruc = e.value.rucCliente;
     this.reciboCaja.valorFactura = e.value.totalFactura;
     this.reciboCaja.sucursal = e.value.sucursal;
+    this.valorTotalInicioFactura = e.value.valorInicialFactura
+    this.tipoDocumentoCuenta = e.value.tipo_documento
+    this.fechaDeuda = e.value.fecha_deuda
     if(this.tipoRecibo == "Facturacion")
       this.reciboCaja.fecha = e.value.fecha;
 
@@ -260,8 +270,11 @@ export class ReciboCajaComponent implements OnInit {
       object.nombreCliente = element.cliente.cliente_nombre;
       object.rucCliente = element.cliente.ruc;
       object.totalFactura = element.total.toString();
+      object.valorInicialFactura = element.total.toString();
+      object.tipo_documento = element.tipoDocumento;
       object.textoCombo = object.nombreCliente+" - "+object.rucCliente+" - "+object.totalFactura;
       object.fecha = element.fecha;
+      object.fecha_deuda = element.fecha;
       object.sucursal = element.sucursal;
       console.log(object)
       this.datosDocumento.push(object);
@@ -315,9 +328,12 @@ export class ReciboCajaComponent implements OnInit {
       object.nombreCliente = element.cliente;
       object.rucCliente = element.rucCliente;
       object.totalFactura = element.valor;
+      object.valorInicialFactura = element.valorFactura;
       object.sucursal = element.sucursal;
       object.fecha = element.fecha;
+      object.fecha_deuda = element.fecha_deuda;
       object.num_documento = element.documentoVenta;
+      object.tipo_documento = element.tipo_doc;
       object.textoCombo = element.rCajaId+" - "+object.totalFactura;
       this.numReciboCajaTraido = element.rCajaId;
       this.datosDocumento.push(object);
@@ -483,12 +499,31 @@ export class ReciboCajaComponent implements OnInit {
 
 
   buscarSubCuentas(e,i ,res){
-    if(i==0)
-      this.listaSubCuentas = res;
-    if(i==1)
-      this.listaSubCuentas2 = res;
-    if(i==2)
-      this.listaSubCuentas3 = res;
+    var array = []
+    if(this.tipoRecibo == "Facturación" || this.tipoRecibo == "Cta.x Cobrar"){
+      res.forEach(element => {
+        if(element.nombre == "3.0 Facturacion" || element.nombre == "3.1 Nota_Venta"){
+        }else{
+          array.push(element)
+        }
+      });
+
+      if(i==0)
+        this.listaSubCuentas = array;
+      if(i==1)
+        this.listaSubCuentas2 = array;
+      if(i==2)
+        this.listaSubCuentas3 = array;
+    }else{
+      if(i==0)
+        this.listaSubCuentas = res;
+      if(i==1)
+        this.listaSubCuentas2 = res;
+      if(i==2)
+        this.listaSubCuentas3 = res;
+    }
+
+    
   }
 
 
@@ -665,23 +700,37 @@ export class ReciboCajaComponent implements OnInit {
 
       if(this.reciboCaja.valorSaldos < 0){
         Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente",'warning')
-        //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura, por favor actulice los valores e intente nuevamente"); 
         flag = false;
         this.bloquearBoton = false;
       }
 
       if(this.tipoRecibo == "Cta.x Cobrar" && this.reciboCaja.valorSaldos != 0){
         Swal.fire( "Atención","El saldo del recibo debe ser igual a 0, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Cobrar",'warning')
-        //this.mostrarMensajeGenerico(2,"El saldo del recibo debe ser igual a 0, si el valor a pagar es menor al valor total de la deuda por favor genere una nueva cuenta por Cobrar");
         flag = false;
         this.bloquearBoton = false;
       } 
-        
+            
       if(flag)
         this.obtenerId();
     }
     else
       this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
+  }
+
+  validarEstadoCaja(){
+    this.reciboCaja.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.reciboCaja).subscribe(
+      res => {
+       var listaCaja = res as CajaMenor[];
+        if(listaCaja.length != 0 ){
+          if(listaCaja[0].sucursal == this.reciboCaja.sucursal && listaCaja[0].estado == "Cerrada")
+            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+          else
+            this.guardar()
+        }else
+          this.guardar()
+      },
+      (err) => {});
   }
 
   obtenerId(){
@@ -741,7 +790,10 @@ export class ReciboCajaComponent implements OnInit {
     cuentaPorCobrar.rCajaId = "RC"+this.reciboCaja.idDocumento.toString();
     cuentaPorCobrar.documentoVenta = this.reciboCaja.numDocumento;
     cuentaPorCobrar.numDocumento = this.reciboCaja.numDocumento;
+    cuentaPorCobrar.tipo_doc = this.tipoDocumentoCuenta == "" ? this.reciboCaja.tipoDoc : this.tipoDocumentoCuenta;
     cuentaPorCobrar.valor = transaccion.valor;
+    cuentaPorCobrar.valorFactura = this.valorTotalInicioFactura;
+    cuentaPorCobrar.fecha_deuda = this.fechaDeuda;
     cuentaPorCobrar.tipoPago = this.reciboCaja.tipoPago;
     cuentaPorCobrar.notas = this.reciboCaja.observaciones;
     this._cuentaPorCobrar.newCuentaPorCobrar(cuentaPorCobrar).subscribe((res) => {
@@ -808,6 +860,7 @@ export class ReciboCajaComponent implements OnInit {
     transaccion.tipoTransaccion = "recibo-caja";
     transaccion.id_documento = this.reciboCaja.idDocumento;
     transaccion.documentoVenta = this.reciboCaja.docVenta;
+    transaccion.cedula = this.reciboCaja.ruc;
     transaccion.numDocumento = this.reciboCaja.numDocumento;
     transaccion.valor = this.reciboCaja.valorSaldos;
     transaccion.tipoPago = "";
@@ -853,6 +906,7 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.tipoTransaccion = "recibo-caja";
       transaccion.id_documento = this.reciboCaja.idDocumento;
       transaccion.documentoVenta = this.reciboCaja.docVenta;
+      transaccion.cedula = this.reciboCaja.ruc;
       transaccion.numDocumento = this.reciboCaja.numDocumento;
       transaccion.valor = element.valor;
       transaccion.isContabilizada = isContabilizada;
@@ -1165,7 +1219,7 @@ export class ReciboCajaComponent implements OnInit {
                     style: 'tableExample2',
                     table: {
                       widths: [250],
-                      heights:53,
+                      heights:53,//53
                       fontSize: 8,
                       body: [
                         [
@@ -1184,8 +1238,8 @@ export class ReciboCajaComponent implements OnInit {
             body: [
               [ { text: 'Valor Factura', bold: true ,style: "detalleTotales"}, {text: this.reciboCajaDescarga.valorFactura, style:"totales" }],
               [ { text: 'Recargos', bold: true ,style: "detalleTotales"}, {text:this.reciboCajaDescarga.valorRecargo, style:"totales" } ],
-              [ { text: 'Pago Efectivo', bold: true, style: "detalleTotales" }, {text: this.reciboCajaDescarga.valorPagoEfectivo, style:"totales" } ],
-              [ { text: 'Saldos', bold: true ,style: "detalleTotales"}, {text: this.reciboCajaDescarga.valorSaldos, style:"totales" }],
+              [ { text: 'Total Recibo', bold: true, style: "detalleTotales" }, {text: this.reciboCajaDescarga.valorPagoEfectivo, style:"totales" } ],
+              [ { text: 'Saldos Valores No Ingresados', bold: true ,style: "detalleTotales"}, {text: this.reciboCajaDescarga.valorSaldos, style:"totales" }],
             ]
           }
           },

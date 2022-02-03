@@ -8,9 +8,12 @@ export class CuentaPorCobrar{
     documentoVenta: string
     numDocumento: string
     valor : number
+    valorFactura : number
+    tipo_doc : string
     tipoPago: string
     notas: string
     estado: string
+    fecha_deuda : Date
     constructor(){
         this.estado = "Activa"  //Cancelada cuando se establezca el pago
     }

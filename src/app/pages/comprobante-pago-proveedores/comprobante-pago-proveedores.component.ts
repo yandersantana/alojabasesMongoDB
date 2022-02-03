@@ -343,6 +343,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       transaccion.rCajaId = "CP"+this.comprobantePago.idDocumento.toString();
       transaccion.documentoVenta = this.comprobantePago.documento;
       transaccion.numDocumento = this.comprobantePago.documento;
+      transaccion.cedula = this.comprobantePago.ruc;
       transaccion.valor = element.valor;
       transaccion.tipoPago = "";
       transaccion.soporte = "";

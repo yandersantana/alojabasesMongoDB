@@ -23,6 +23,9 @@ import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
 import { CuentaPorPagar } from '../cuentasPorPagar/cuentasPorPagar';
 import { CuentasPorPagarService } from 'src/app/servicios/cuentasPorPagar.service';
 import { dataDocumento, OperacionComercial } from '../reciboCaja/recibo-caja';
+import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
+import { CajaMenor } from '../cajaMenor/caja-menor';
+import { element } from 'protractor';
 
 
 
@@ -121,7 +124,8 @@ export class ComprobantePagoComponent implements OnInit {
     public _proveedoresService: ProveedoresService,
     public _centroCostoService: CentroCostoService,
     public _beneficiarioService: BeneficiarioService,
-    public _authenService:AuthenService,
+    public _authenService: AuthenService,
+    public _cajaMenorService: CajaMenorService,
     public _cuentaPorPagar: CuentasPorPagarService
     ) {
       this.tipoComprobante = this.tiposComprobantes[0];
@@ -162,8 +166,13 @@ export class ComprobantePagoComponent implements OnInit {
 
    separarcuentas(){
     this.listaCuentasGlobal.forEach(element=>{
-      if(element.tipoCuenta == "Salidas" || element.tipoCuenta == "Reales y Transitorias")
-        this.listaCuentas.push(element);
+      if(element.tipoCuenta == "Salidas" || element.tipoCuenta == "Reales y Transitorias"){
+        if(element._id == "6195af58f75a418e9c2eba00" || element._id == "6195b02af75a418e9c2eba05"){
+
+        }else
+          this.listaCuentas.push(element);
+      }
+        
     })
   }
 
@@ -279,6 +288,12 @@ export class ComprobantePagoComponent implements OnInit {
         this.llenarDatosComboCuentasPagar(cuentas);
         this.mostrarLoading = false;
       });
+      if(this.valorTipoBusqueda == "Proveedor"){
+        var datos = this.proveedores.find(element=> element.nombre_proveedor == this.nombre_Beneficiario)
+        this.comprobantePago.ruc = datos?.ruc
+        this.comprobantePago.telefono = datos?.celular
+      }
+
     }else if(this.valorTipoBusqueda == "RUC"){
       var docData = new dataDocumento();
       docData.rucCliente = this.valorDocumento;
@@ -289,6 +304,12 @@ export class ComprobantePagoComponent implements OnInit {
       });
     }
   }
+
+  asignarDatosProveedor(e){
+    var datos = this.proveedores.find(element=> element.nombre_proveedor == e.value)
+    this.comprobantePago.ruc = datos?.ruc
+    this.comprobantePago.telefono = datos?.celular
+  } 
 
   llenarDatosComboCuentasPagar(array){
     this.arrayCuentasPorPagar = array;
@@ -547,6 +568,23 @@ export class ComprobantePagoComponent implements OnInit {
   }
 
 
+  validarEstadoCaja(){
+    this.comprobantePago.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.comprobantePago).subscribe(
+      res => {
+       var listaCaja = res as CajaMenor[];
+        if(listaCaja.length != 0 ){
+          if(listaCaja[0].sucursal == this.comprobantePago.sucursal && listaCaja[0].estado == "Cerrada" )
+            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+          else
+            this.guardar()
+        }else
+          this.guardar()
+      },
+      (err) => {});
+  }
+
+
   mostrarMensaje(){
     let timerInterval
       Swal.fire({
@@ -691,8 +729,9 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.rCajaId = "CP"+this.comprobantePago.idDocumento.toString();
       transaccion.id_documento = this.comprobantePago.idDocumento;
       transaccion.tipoTransaccion = "comprobante";
-      transaccion.documentoVenta = this.comprobantePago.documento;
+      transaccion.documentoVenta = element.idCuenta == "6195b03cf75a418e9c2eba07" ? this.comprobantePago.ruc : this.comprobantePago.documento;
       transaccion.numDocumento = this.comprobantePago.documento;
+      transaccion.cedula = this.comprobantePago.ruc;
       transaccion.valor = element.valor;
       transaccion.tipoPago = "";
       transaccion.soporte = "";

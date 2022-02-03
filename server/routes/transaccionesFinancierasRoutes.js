@@ -85,6 +85,7 @@ router.post("/newTransaccion", async (req, res) => {
     dias: req.body.dias,
     vencimiento: req.body.vencimiento,
     notas: req.body.notas,
+    cedula: req.body.cedula,
     tipoCuenta: req.body.tipoCuenta,
     id_documento : req.body.id_documento,
     tipoTransaccion : req.body.tipoTransaccion,

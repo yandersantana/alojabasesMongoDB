@@ -62,6 +62,7 @@ router.delete("/deleteDoc/:id", async (req, res, next) => {
 router.post("/newCuentaPorCobrar", async (req, res) => {
   const newCuenta = new CuentaPorCobrar({
     fecha: req.body.fecha,
+    fecha_deuda : req.body.fecha_deuda,
     sucursal: req.body.sucursal,
     cliente: req.body.cliente,
     rucCliente: req.body.rucCliente,
@@ -69,6 +70,8 @@ router.post("/newCuentaPorCobrar", async (req, res) => {
     documentoVenta: req.body.documentoVenta,
     numDocumento: req.body.numDocumento,
     valor: req.body.valor,
+    tipo_doc: req.body.tipo_doc,
+    valorFactura: req.body.valorFactura,
     tipoPago: req.body.tipoPago,
     cuenta: req.body.cuenta,
     estado: req.body.estado,

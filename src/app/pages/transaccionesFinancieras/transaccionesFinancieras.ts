@@ -6,6 +6,7 @@ export class TransaccionesFinancieras{
     rCajaId: string
     documentoVenta: string
     numDocumento: string
+    cedula: string
     valor : number
     tipoPago: string
     cuenta: string

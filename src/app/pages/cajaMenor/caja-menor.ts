@@ -11,10 +11,12 @@ export class DetalleCajaMenor {
   SubCuenta: string;
   Cuenta: string;
   Orden: number;
+  Notas: string;
   constructor(){
       this.TotalIngresos = 0;
       this.TotalSalidas = 0;
       this.TotalRC = 0;
+      this.Notas = ""
   }
 }
 

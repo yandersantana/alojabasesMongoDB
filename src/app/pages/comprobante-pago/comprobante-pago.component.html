@@ -138,6 +138,7 @@
                                                             [dataSource]="proveedores"
                                                             valueExpr="nombre_proveedor"
                                                             [readOnly]="!isNormal"
+                                                            (onValueChanged)="asignarDatosProveedor($event)"
                                                             [(value)]= "comprobantePago.proveedor">
                                                         </dx-autocomplete>
                                     </div>
@@ -278,7 +279,7 @@
 
                 <div style="text-align: center;">
                     <br><br>
-                    <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                    <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="validarEstadoCaja()"></dx-button>
                 </div>
 
             </div>

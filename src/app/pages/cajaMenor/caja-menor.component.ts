@@ -49,6 +49,8 @@ export class CajaMenorComponent implements OnInit {
 
   tipoUsuario = "";
   isAdmin = true;
+  notas = ""
+  popupVisibleNotas = false;
 
   menu: string[] = [
     "Caja Menor Diaria",
@@ -86,11 +88,19 @@ export class CajaMenorComponent implements OnInit {
     this._cajaMenorService.getCajaMenorPorFecha(this.cajaMenor).subscribe(
       res => {
         this.cajaMenorEncontradas = res as CajaMenor[];
-        if(this.cajaMenorEncontradas.length != 0)
-          this.existeCaja = true;
-        else 
+        if(this.cajaMenorEncontradas.length != 0 ){
+          if(this.cajaMenorEncontradas[0].sucursal == this.cajaMenor.sucursal){
+            this.existeCaja = true;
+            this.cajaMenor.estado = this.cajaMenorEncontradas[0].estado;
+          }else{
+            this.existeCaja = false
+            this.cajaMenor.estado = "Abierta";
+          }
+        }else{
           this.existeCaja = false;
-        },(err) => {});
+          this.cajaMenor.estado = "Abierta";
+        } },
+      (err) => {});
   }
 
   traerContadoresDocumentos(){
@@ -251,7 +261,12 @@ export class CajaMenorComponent implements OnInit {
       var newCaja = new DetalleCajaMenor();
       newCaja.OrderDate = element.fecha.toLocaleString();
       newCaja.Sub1 = element.numDocumento;
-      newCaja.Sub2 = element.documentoVenta;
+      newCaja.Notas = element.notas;
+      console.log(newCaja.Notas)
+      if(element.cuenta == "11 PRÉSTAMOS")
+        newCaja.Sub2 = element.cliente;
+      else
+        newCaja.Sub2 = element.documentoVenta;
       newCaja.SubCuenta = element.subCuenta;
       newCaja.Cuenta = element.cuenta;
       var cadena = element.cuenta.split(" ");
@@ -308,21 +323,55 @@ export class CajaMenorComponent implements OnInit {
     this.obtenerDatosTransacciones(e.row.data);
   };
 
+  mostrarNotas = (e) => {
+    this.asignarValornota(e.row.data);
+  };
+
+  asignarValornota(e){
+    this.notas = e.Notas == "" ? "S/N" : e.Notas
+    this.popupVisibleNotas = true;
+  }
+
   validateCaja = (e) => {
     this.validarCaja(e.row.data);
   };
 
+  openCaja = (e) => {
+    this.abrirCaja(e.row.data);
+  };
+
   validarCaja(e){
     Swal.fire({
-      title: 'Validar Caja',
-      text: "Desea validar la caja #"+e.idDocumento,
+      title: 'Validar caja',
+      text: "Desea marcar la caja como validada?",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) { 
-        this._cajaMenorService.updateEstado(e,"VALIDADO").subscribe(res => {
+        this._cajaMenorService.updateEstado(e,"Validada").subscribe(res => {
+          this.mostrarMensajeGenerico(1,"Caja actualizada");
+          this.traerCajaPagoPorRango();
+        })
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelado!','Se ha cancelado su proceso.','error')
+      }
+    })
+    
+  }
+
+  abrirCaja(e){
+    Swal.fire({
+      title: 'Abrir caja',
+      text: "Está seguro que desea abrir nuevamente la caja",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) { 
+        this._cajaMenorService.updateEstado(e,"Abierta").subscribe(res => {
           this.mostrarMensajeGenerico(1,"Caja actualizada");
           this.traerCajaPagoPorRango();
         })

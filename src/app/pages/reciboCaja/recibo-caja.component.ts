@@ -807,8 +807,6 @@ export class ReciboCajaComponent implements OnInit {
         this.actualizarContador();
         this.generarTransaccionesFinancieras();
         await this.actualizarEstadoTransacciones();
-        //if(this.reciboCaja.valorSaldos>0)
-          //this.generarTransaccionSaldo();
 
       },(err) => {});
     } catch (error) {
@@ -819,7 +817,7 @@ export class ReciboCajaComponent implements OnInit {
   async actualizarEstadoTransacciones(){
     var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
     var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
-    if(fechaRecibo == fecha2 && this.tipoRecibo == "Cta.x Cobrar" && this.existeCuentaPorCobrar){
+    if(fechaRecibo == fecha2 && this.tipoRecibo == "Cta.x Cobrar"){
       this.busquedaTransaccion = new tipoBusquedaTransaccion()
       this.busquedaTransaccion.NumDocumento = this.reciboCaja.numDocumento
       this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
@@ -830,7 +828,7 @@ export class ReciboCajaComponent implements OnInit {
           var transacciones = res as TransaccionesFinancieras[];
           await this.actualizarTransacciones(transacciones);},
         (err) => {});
-    }    
+    } 
   }
 
   async actualizarTransacciones(transacciones : TransaccionesFinancieras[]){
@@ -838,8 +836,7 @@ export class ReciboCajaComponent implements OnInit {
       if(element.subCuenta == "10.0 Cuentas x Cobrar"){
         console.log("actualizare ",element)
         this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});
-      }
-          
+      }    
     });
   }
 

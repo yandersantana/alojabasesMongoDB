@@ -1,7 +1,6 @@
 import { Component, OnInit } from "@angular/core";
 import { AngularFirestore } from "angularfire2/firestore";
 import { AngularFireAuth } from "angularfire2/auth";
-import { AlertsService } from "angular-alert-module";
 import {
   devolucion,
   productosDevueltos,
@@ -13,16 +12,10 @@ import {
   factura,
   producto,
   contadoresDocumentos,
-  sucursal,
   productosPendientesEntrega,
 } from "../ventas/venta";
-import { element } from "protractor";
-import { ProductoDetalleVenta } from "../producto/producto";
 import Swal from "sweetalert2";
-import { CloneVisitor } from "@angular/compiler/src/i18n/i18n_ast";
-import { Observable } from "rxjs";
 import { transaccion } from "../transacciones/transacciones";
-import { ThrowStmt } from "@angular/compiler";
 import { OrdenDeCompra, Sucursal } from "../compras/compra";
 import { parametrizacionsuc } from "../parametrizacion/parametrizacion";
 import { ParametrizacionesService } from "src/app/servicios/parametrizaciones.service";
@@ -38,7 +31,8 @@ import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
 import { ProductosPendientesService } from "src/app/servicios/productos-pendientes.service";
-import { timeStamp } from "console";
+import { TransaccionesFinancieras } from "../transaccionesFinancieras/transaccionesFinancieras";
+import { TransaccionesFinancierasService } from "src/app/servicios/transaccionesFinancieras.service";
 
 @Component({
   selector: "app-devoluciones",
@@ -124,6 +118,7 @@ export class DevolucionesComponent implements OnInit {
     public productosPendientesService: ProductosPendientesService,
     public ordenesService: OrdenesCompraService,
     public sucursalesService: SucursalesService,
+    public _transaccionFinancieraService : TransaccionesFinancierasService,
     public productoService: ProductoService
   ) {
     this.devolucion = new devolucion();
@@ -133,27 +128,12 @@ export class DevolucionesComponent implements OnInit {
   }
 
   ngOnInit() {
-    /*  this.getIDDevolciones()
-    this.getFacturas()
-    this.getnotasVenta()
-    this.getProductosVendidos()
-    this.getProductos()
-    this.getDevoluciones()
-    this.getProductosDevueltos()
-    this.getIDTransacciones()
-    this.getOrdenCompra()
-    this.getParametrizaciones() */
-
     this.traerDevoluciones();
-    //this.traerFacturas();
-    //this.traerNotasVenta();
     this.traerContadoresDocumentos();
     this.traerProductos();
     this.traerOrdenesCompra();
     this.traerParametrizaciones();
-
     this.getIDDocumentos();
-
     this.traerProductosPendientesEntrega();
     this.traerSucursales();
   }
@@ -356,18 +336,6 @@ export class DevolucionesComponent implements OnInit {
           this.sucursal = arrayFacturas[0].sucursal;
           bandera = false;
         });
-      /* this.facturas.forEach((element) => {
-        if (element.documento_n == this.idDocumento) {
-          this.facturaTraida = element;
-          this.productosVendidos2 = element.productosVendidos;
-          this.cliente = element.cliente.cliente_nombre;
-          //alert(JSON.stringify(element.fecha2))
-          this.fecha_transaccion = element.fecha2;
-          this.sucursal = element.sucursal;
-          bandera = false;
-          // this.obtenerDetalleProductosFact()
-        }
-      }); */
       if (bandera) {
         this.cliente = "";
         this.fecha_transaccion = "";
@@ -620,10 +588,7 @@ export class DevolucionesComponent implements OnInit {
     var contV = 0;
     var text = "";
 
-    text =
-      this.facturaTraida.observaciones +
-      "/ Documento Devolucion " +
-      this.id_devolucion;
+    text = this.facturaTraida.observaciones + "/ Documento Devolucion " + this.id_devolucion;
     if (
       this.devolucion.cliente != undefined &&
       this.devolucion.fecha != undefined &&
@@ -789,14 +754,9 @@ export class DevolucionesComponent implements OnInit {
         new Promise<any>((resolve, reject) => {
           this.mostrarMensaje();
           this.devolucionesService.updateEstado(e, "Aprobado").subscribe(
-            (res) => {
-              this.realizarTransacciones(e);
-            },
-            (err) => {
-              alert("error");
-            }
+            (res) => {this.realizarTransacciones(e);},
+            (err) => {alert("error");}
           );
-          //this.db.collection('/devoluciones').doc(e.id_devolucion+"").update({"estado":"Aprobado"}).then(res => {  }, err => alert(err));
         });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
@@ -873,11 +833,9 @@ export class DevolucionesComponent implements OnInit {
       }
     });
 
-    // this.productosDevueltosCarga.forEach(element=>{
-
     new Promise<any>((resolve, reject) => {
       this.productosDevueltosCarga.forEach((element) => {
-        //this.buscarProductosPendientes(element,contVal++)
+        this.generarTransaccionFinanciera(element)
         this.transaccion = new transaccion();
         this.transaccion.fecha_mov = new Date().toLocaleString();
         this.transaccion.fecha_transaccion = this.devolucioLeida.fecha;
@@ -899,35 +857,42 @@ export class DevolucionesComponent implements OnInit {
         this.transaccion.factPro = this.devolucioLeida.num_documento + "";
         this.transaccion.idTransaccion = this.number_transaccion++;
         this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-          (res) => {
-            this.contadores[0].transacciones_Ndocumento = this
-              .number_transaccion++;
-            this.contadoresService
-              .updateContadoresIDTransacciones(this.contadores[0])
-              .subscribe(
-                (res) => {
-                  this.db
-                    .collection("/consectivosBaseMongoDB")
-                    .doc("base")
-                    .update({
-                      transacciones_Ndocumento: this.number_transaccion,
-                    })
-                    .then(
-                      (res) => {
-                        contVal++, this.contadorValidaciones(contVal);
-                      },
-                      (err) => err
-                    );
-                },
-                (err) => {
-                  alert("error");
-                }
-              );
-          },
+          (res) => { contVal++, this.contadorValidaciones(contVal);},
           (err) => {}
         );
       });
     });
+  }
+
+
+  generarTransaccionFinanciera(producto : productosDevueltos){
+    var nombreSubCuenta = ""
+    if(this.devolucioLeida.tipo_documento == "Factura")
+      nombreSubCuenta = "4.0 Factura"
+    else if(this.devolucioLeida.tipo_documento == "Nota de Venta")
+      nombreSubCuenta = "4.1 Nota_Venta"
+    var transaccion = new TransaccionesFinancieras();
+    transaccion.fecha = this.devolucioLeida.fecha;
+    transaccion.sucursal = this.devolucioLeida.sucursal.nombre;
+    transaccion.cliente = this.devolucioLeida.cliente;
+    transaccion.rCajaId = "DV"+this.devolucioLeida.id_devolucion;
+    transaccion.tipoTransaccion = "devolucion";
+    transaccion.id_documento = this.devolucioLeida.id_devolucion;
+    transaccion.documentoVenta = this.devolucioLeida.num_documento.toString();
+    transaccion.cedula = "xxxxx";
+    transaccion.numDocumento = this.devolucioLeida.num_documento.toString();
+    transaccion.valor = producto.total;
+    transaccion.isContabilizada = true;
+    transaccion.cuenta = "4 DEVOLUCIONES";
+    transaccion.subCuenta = nombreSubCuenta;
+    transaccion.notas = this.devolucioLeida.observaciones;
+    transaccion.tipoCuenta = "Salidas";
+
+    try {
+      this._transaccionFinancieraService.newTransaccionFinanciera(transaccion).subscribe((res) => {},(err) => {});
+    } catch (error) {
+      Swal.fire("Error","Error al guardar la transaccion","error"); 
+    }    
   }
 
   contadorValidaciones(i: number) {

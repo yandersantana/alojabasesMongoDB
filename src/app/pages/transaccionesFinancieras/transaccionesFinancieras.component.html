@@ -74,7 +74,8 @@
     <dxo-filter-row [visible]="true" ></dxo-filter-row>
     <dxo-export [enabled]="true" fileName="Transacciones Financieras" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-    <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" sortOrder="desc" ></dxi-column>
+     <dxi-column dataField="createdAt" caption="Fecha de creación"  format="dd/MM/yyyy" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
+    <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha"></dxi-column>
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
     <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
     <dxi-column dataField="rCajaId" caption="RC" dataType="string" ></dxi-column>

@@ -339,21 +339,11 @@
     >
     </dxi-column>
     <dxi-column type="buttons" dataField="bt1" caption="Ver" width="10%">
-      <dxi-button
-        icon="fa fa-arrow-down"
-        [onClick]="getCourseFile"
-      ></dxi-button>
+      <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>
     </dxi-column>
-    <dxi-column
-      type="buttons"
-      dataField="bt2"
-      caption="Acciones"
-      width="20%"
-      [visible]="true"
-    >
+    <dxi-column type="buttons" dataField="bt2" caption="Acciones" width="20%" [visible]="true">
       <dxi-button text="Aprobar" [onClick]="getCourseFile2"></dxi-button>
       <dxi-button text="Rechazar" [onClick]="getCourseFile3"></dxi-button>
-      <!-- <dxi-button text="Rechazar" [onClick]="rechazarOrden"></dxi-button> -->
     </dxi-column>
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

@@ -1,6 +1,8 @@
 <div *ngIf="mostrarLoading">
   <app-loading></app-loading>
 </div>
+
+
 <div class="row remiPro titulos">
   <div class="col-md-8"></div>
   <div class="col-md-4">
@@ -9,12 +11,292 @@
       [value]="menuPrincipalRoles[0]"
       [readOnly]="false"
       [disabled]="false"
+      class="form-control select"
       (onValueChanged)="opcionMenu($event)"
     ></dx-select-box>
   </div>
 </div>
 <div id="devolucion" style="display: block">
-  <div class="row remiPro">
+
+  <div class="card">
+      <h5 class="card-header text-center font-weight-bold text-uppercase ">DEVOLUCIONES DE PRODUCTOS</h5>
+      <div class="card-body" >
+        <div class="row">
+          <div class="col-md-9">
+            <div class="row espacioDivs" style="margin-bottom: 1em;">
+              <div class="col-md-6">
+                <div class="row">
+                  <div class="col-md-6"><p>ID Documento</p></div>
+                  <div class="col-md-6"><dx-text-box [(value)]="idDocumento" [readOnly]="false"></dx-text-box></div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6"><p>Tipo Documento</p></div>
+                  <div class="col-md-6">
+                    <dx-select-box
+                      #selectId
+                      [items]="menuDocumento"
+                      [value]="menuDocumento"
+                      [readOnly]="false"
+                      [disabled]="false"
+                      [searchEnabled]="true"
+                      (onValueChanged)="obtenerDocumento($event)">
+                    </dx-select-box>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6"><p>Relación Doc.:</p></div>
+                  <div class="col-md-6">
+                    <dx-select-box [items]="datosDocumento" 
+                      displayExpr="textoCombo"
+                      [searchEnabled]="true"
+                      [readOnly]="false" 
+                      hint={{textoDatosFactura}}
+                      (onValueChanged)="asignarDatos($event)">
+                    </dx-select-box>
+                   
+                  </div>
+                </div>
+                
+                
+                <div class="row">
+                  <div class="col-md-6"><p>Cliente</p></div>
+                  <div class="col-md-6"><dx-text-box [(value)]="cliente" [readOnly]="false"></dx-text-box> </div>
+                </div>
+               
+              </div>
+
+              <div class="col-md-6">
+
+                <div *ngIf="isUsuario">
+                  <div class="row">
+                    <div class="col-md-6"><p>Sucursal</p></div>
+                    <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="true"></dx-text-box> </div>
+                  </div>
+                </div>
+                <div *ngIf="!isUsuario">
+                  <div class="row">
+                    <div class="col-md-6"><p>Sucursal</p></div>
+                    <div class="col-md-6">
+                      <dx-select-box
+                        [items]="sucursalesDefault"
+                        [(value)]="sucursal"
+                        [readOnly]="false"
+                        [disabled]="false"
+                        (onValueChanged)="asignarsucursalD($event)"
+                      ></dx-select-box>
+                    </div>
+                  </div>
+                </div>
+
+                <div class="row">
+                  <div class="col-md-6"><p>Fecha</p></div>
+                  <div class="col-md-6">
+                    <dx-date-box
+                      [(value)]="fecha"
+                      [type]="'date'"
+                      [showClearButton]="true">
+                      <dx-validator>
+                        <dxi-validation-rule
+                          type="required"
+                          message="La fecha es requerida"
+                        ></dxi-validation-rule>
+                      </dx-validator>
+                    </dx-date-box>
+                  </div>
+                </div>
+                <div class="row">
+                  <div class="col-md-6"><p>Fecha Transacción</p></div>
+                  <div class="col-md-6">
+                    <dx-text-box
+                      [(value)]="fecha_transaccion"
+                      [disabled]="false"
+                      [readOnly]="false"
+                    ></dx-text-box>
+                  </div>
+                </div>
+                 <div class="row">
+                  <div class="col-md-6"><p>Usuario</p></div>
+                  <div class="col-md-6"><dx-text-box [(value)]="usuario" [readOnly]="true"></dx-text-box></div>
+                </div>
+              </div>
+
+              <div class="col-md-12">
+                <div class="row">
+                  <div class="col-md-3"><p>Observaciones</p></div>
+                  <div class="col-md-9">
+                    <dx-text-box
+                      [(value)]="observaciones"
+                      [disabled]="false"
+                      [readOnly]="false"
+                    ></dx-text-box>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div style="text-align: center;">ID-DEVOLUCION</div>
+            <div style="text-align: center;font-size: 4rem;margin-top: -1rem;">{{id_devolucion}}</div>
+          </div>
+        </div>
+        
+
+        <div class="remiPro">
+          <div class="detalle">
+            <div class="titcent row">
+              <div class="alinearBoton col-md-4">
+                <dx-button
+                  icon="plus"
+                  [type]="'success'"
+                  [disabled]="false"
+                  (onClick)="anadirProducto($event)"
+                >
+                </dx-button>
+              </div>
+              <div class="col-md-4" style="text-align: center">
+                <h6>DETALLE PRODUCTOS</h6>
+              </div>
+              <div class="col-md-4"></div>
+            </div>
+
+            <div class="row titulosT">
+              <div class="col-3">
+                <h5>Producto</h5>
+              </div>
+              <div class="col-1">
+                <h5>Cajas</h5>
+              </div>
+              <div class="col-1">
+                <h5>Piezas</h5>
+              </div>
+              <div class="col-1">
+                <h5>Cajas</h5>
+              </div>
+              <div class="col-1">
+                <h5>Piezas</h5>
+              </div>
+              <div class="col-2">
+                <h5>Motivo</h5>
+              </div>
+              <div class="col-2">
+                <h5>Justificación</h5>
+              </div>
+              <div class="col-1">
+                <div class="row">
+                  <div class="col-md-12"><h5>Eliminar</h5></div>
+                </div>
+              </div>
+            </div>
+            <div
+              *ngFor="let p of productosDevueltos; let i = index"
+              style="text-align: center; margin-top: 1em"
+            >
+              <div class="row altura">
+                <div class="col-3" style="margin-top: 1em;">
+                  <dx-select-box
+                    [items]="productosVendidos2"
+                    [(value)]="p.REFERENCIA"
+                    [readOnly]="false"
+                    [disabled]="false"
+                    [searchEnabled]="true"
+                    valueExpr="producto.PRODUCTO"
+                    displayExpr="producto.PRODUCTO"
+                    (onValueChanged)="obtenerDetallesDoc($event, i)"
+                  >
+                  </dx-select-box>
+                </div>
+                <div class="col-1">
+                  <dx-number-box
+                    [(value)]="p.cantFactCajas"
+                    [disabled]="false"
+                    [readOnly]="true"
+                  ></dx-number-box>
+                </div>
+                <div class="col-1">
+                  <dx-number-box
+                    [(value)]="p.cantFactPiezas"
+                    [disabled]="false"
+                    [readOnly]="true"
+                  ></dx-number-box>
+                </div>
+                <div class="col-1">
+                  <dx-number-box
+                    [(value)]="p.cantDevueltaCajas"
+                    [disabled]="false"
+                    [readOnly]="false"
+                    (onValueChanged)="transformarM2($event, i)"
+                  ></dx-number-box>
+                </div>
+                <div class="col-1">
+                  <dx-number-box
+                    [(value)]="p.cantDevueltaPiezas"
+                    [disabled]="false"
+                    [readOnly]="false"
+                    (onValueChanged)="transformarM2($event, i)"
+                  ></dx-number-box>
+                </div>
+                <div class="col-2" style="margin-top: 1em;">
+                  <dx-select-box
+                    [items]="menuMotivo"
+                    [(value)]="p.motivo"
+                    [readOnly]="false"
+                    [disabled]="false"
+                    [searchEnabled]="true"
+                  >
+                  </dx-select-box>
+                </div>
+                <div class="col-2">
+                  <dx-text-box
+                    [(value)]="p.justificacion"
+                    [disabled]="false"
+                    [readOnly]="false"
+                  ></dx-text-box>
+                </div>
+                <div class="col-1">
+                  <dx-button
+                    icon="clear"
+                    color="white"
+                    class="bt"
+                    (onClick)="deleteProducto($event, i)"
+                  ></dx-button>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="remiPro">
+            <div class="row">
+              <div class="col-md-8"></div>
+              <div class="col-md-4">
+                <div class="row">
+                  <div class="col-md-3"><p>Total</p></div>
+                  <div class="col-md-9 total">
+                    <dx-text-box
+                      [(value)]="total"
+                      [disabled]="false"
+                      [readOnly]="true"
+                    ></dx-text-box>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div style="text-align: center">
+              <dx-button
+                [text]="'Guardar'" [type]="'success'"
+                style="background-color: #ff5722;"
+                [disabled]="false"
+                (onClick)="buscarProductosPendientes()"
+                ><!-- // guardarDevolucion -->
+              </dx-button>
+            </div>
+          </div>
+        </div>
+      </div>
+  </div>
+    
+   
+
+  <!-- <div class="row remiPro">
     <div class="col-md-12 titulo"><h4>Devoluciones de Productos</h4></div>
     <div class="col-md-6">
       <div class="row">
@@ -63,25 +345,15 @@
           ></dx-number-box>
         </div>
       </div>
-      <div id="admin1" style="display: none">
+      <div *ngIf="isUsuario">
         <div class="row">
           <div class="col-md-6"><p>Sucursal</p></div>
-          <div class="col-md-6">
-            <dx-text-box [(value)]="sucursal" [readOnly]="true"></dx-text-box>
-          </div>
-          <!--  <div class="col-md-6">
-                        <dx-select-box [items]="sucursalesDefault" 
-                    [value]="sucursalesDefault" 
-                    [readOnly]="false" 
-                    [disabled]="false"
-                    (onValueChanged)="asignarsucursalD($event)"></dx-select-box>
-                    </div> -->
+          <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="true"></dx-text-box> </div>
         </div>
       </div>
-      <div id="admin2" style="display: none">
+      <div *ngIf="!isUsuario">
         <div class="row">
           <div class="col-md-6"><p>Sucursal</p></div>
-          <!-- <div class="col-md-6"><dx-text-box [(value)]="sucursal" [readOnly]="false" ></dx-text-box></div> -->
           <div class="col-md-6">
             <dx-select-box
               [items]="sucursalesDefault"
@@ -100,8 +372,7 @@
           <dx-date-box
             [(value)]="fecha"
             [type]="'date'"
-            [showClearButton]="true"
-          >
+            [showClearButton]="true">
             <dx-validator>
               <dxi-validation-rule
                 type="required"
@@ -135,157 +406,9 @@
         </div>
       </div>
     </div>
-  </div>
+  </div> -->
 
-  <div class="remiPro">
-    <div class="detalle">
-      <div class="titcent row">
-        <div class="alinearBoton col-md-4">
-          <dx-button
-            icon="plus"
-            [type]="'success'"
-            [disabled]="false"
-            (onClick)="anadirProducto($event)"
-          >
-          </dx-button>
-        </div>
-        <div class="col-md-4" style="text-align: center">
-          <h6>Detalle Productos</h6>
-        </div>
-        <div class="col-md-4"></div>
-      </div>
-
-      <div class="row titulosT">
-        <div class="col-3">
-          <h5>Producto</h5>
-        </div>
-        <div class="col-1">
-          <h5>Cajas</h5>
-        </div>
-        <div class="col-1">
-          <h5>Piezas</h5>
-        </div>
-        <div class="col-1">
-          <h5>Cajas</h5>
-        </div>
-        <div class="col-1">
-          <h5>Piezas</h5>
-        </div>
-        <div class="col-2">
-          <h5>Motivo</h5>
-        </div>
-        <div class="col-2">
-          <h5>Justificación</h5>
-        </div>
-        <div class="col-1">
-          <div class="row">
-            <div class="col-md-12"><h5>Eliminar</h5></div>
-          </div>
-        </div>
-      </div>
-      <div
-        *ngFor="let p of productosDevueltos; let i = index"
-        style="text-align: center; margin-top: 1em"
-      >
-        <div class="row altura">
-          <div class="col-3">
-            <dx-select-box
-              [items]="productosVendidos2"
-              [(value)]="p.REFERENCIA"
-              [readOnly]="false"
-              [disabled]="false"
-              [searchEnabled]="true"
-              valueExpr="producto.PRODUCTO"
-              displayExpr="producto.PRODUCTO"
-              (onValueChanged)="obtenerDetallesDoc($event, i)"
-            >
-            </dx-select-box>
-          </div>
-          <div class="col-1">
-            <dx-number-box
-              [(value)]="p.cantFactCajas"
-              [disabled]="false"
-              [readOnly]="true"
-            ></dx-number-box>
-          </div>
-          <div class="col-1">
-            <dx-number-box
-              [(value)]="p.cantFactPiezas"
-              [disabled]="false"
-              [readOnly]="true"
-            ></dx-number-box>
-          </div>
-          <div class="col-1">
-            <dx-number-box
-              [(value)]="p.cantDevueltaCajas"
-              [disabled]="false"
-              [readOnly]="false"
-              (onValueChanged)="transformarM2($event, i)"
-            ></dx-number-box>
-          </div>
-          <div class="col-1">
-            <dx-number-box
-              [(value)]="p.cantDevueltaPiezas"
-              [disabled]="false"
-              [readOnly]="false"
-              (onValueChanged)="transformarM2($event, i)"
-            ></dx-number-box>
-          </div>
-          <div class="col-2">
-            <dx-select-box
-              [items]="menuMotivo"
-              [(value)]="p.motivo"
-              [readOnly]="false"
-              [disabled]="false"
-              [searchEnabled]="true"
-            >
-            </dx-select-box>
-          </div>
-          <div class="col-2">
-            <dx-text-box
-              [(value)]="p.justificacion"
-              [disabled]="false"
-              [readOnly]="false"
-            ></dx-text-box>
-          </div>
-          <div class="col-1">
-            <dx-button
-              icon="clear"
-              color="white"
-              class="bt"
-              (onClick)="deleteProducto($event, i)"
-            ></dx-button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="remiPro">
-      <div class="row">
-        <div class="col-md-8"></div>
-        <div class="col-md-4">
-          <div class="row">
-            <div class="col-md-3"><p>Total</p></div>
-            <div class="col-md-9 total">
-              <dx-text-box
-                [(value)]="total"
-                [disabled]="false"
-                [readOnly]="true"
-              ></dx-text-box>
-            </div>
-          </div>
-        </div>
-      </div>
-      <div style="text-align: center">
-        <dx-button
-          class="button-info bt2"
-          text="Guardar"
-          [disabled]="false"
-          (onClick)="buscarProductosPendientes()"
-          ><!-- // guardarDevolucion -->
-        </dx-button>
-      </div>
-    </div>
-  </div>
+  
 </div>
 
 <div id="admin" class="remiPro" style="display: none">

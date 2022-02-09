@@ -26,10 +26,7 @@ export class DevolucionesService {
   }
 
   updateEstado(devolucion, estado: string) {
-    return this.http.put(
-      this.URL + `/updateEstado/${devolucion._id}/${estado}`,
-      devolucion
-    );
+    return this.http.put(this.URL + `/updateEstado/${devolucion._id}/${estado}`, devolucion);
   }
 
   deleteDevolucion(devolucion) {

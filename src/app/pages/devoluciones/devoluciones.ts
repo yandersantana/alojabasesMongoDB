@@ -1,4 +1,4 @@
-import { producto, sucursal } from "../ventas/venta";
+import { producto } from "../ventas/venta";
 import { Sucursal } from "../compras/compra";
 
 export class devolucion {
@@ -13,6 +13,7 @@ export class devolucion {
   num_documento: number;
   tipo_documento: string;
   estado: string;
+  ruc: string;
   productosDevueltos: productosDevueltos[] = [];
   constructor() {
     this.usuario = "";

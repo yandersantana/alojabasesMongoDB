@@ -13,6 +13,7 @@ import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 
 import 'jspdf-autotable';
+import { reporteDetallado } from '../reportes/reporte-detallado/reporte';
 
 
 @Component({
@@ -507,16 +508,6 @@ export class CajaMenorComponent implements OnInit {
 
   }
 
-   /* exportGrid() {
-    const doc = new jsPDF();
-    exportDataGridToPdf({
-      jsPDFDocument: doc,
-      component: this.dataGrid.instance,
-    }).then(() => {
-      doc.save('Customers.pdf');
-    });
-  } */
-
 
 
   crearPDF(recibo , isNew) {
@@ -717,6 +708,7 @@ export class CajaMenorComponent implements OnInit {
         },
         tableExample: {
           margin: [0, 5, 0, 15],
+          hLineColor :'#ff0000',
         },
         tableExample2: {
           margin: [0, 2, 0, 0],
@@ -747,6 +739,7 @@ export class CajaMenorComponent implements OnInit {
         tableHeader2: {
           bold: true,
           fontSize: 10,
+          alignment: "center",
         },
         fondoFooter: {
           fontSize: 8,
@@ -792,7 +785,6 @@ export class CajaMenorComponent implements OnInit {
 
           ...operaciones.map((ed) => {
             return [
-               
               { text: ed.Cuenta,alignment: "center", fontSize: 7 },
               { text: ed.SubCuenta, alignment: "center", fontSize: 7 },
               { text: ed.Sub1, alignment: "center", fontSize: 7 },
@@ -800,12 +792,11 @@ export class CajaMenorComponent implements OnInit {
               { text: ed.TotalIngresos, alignment: "center", fontSize: 7 },
               { text: ed.TotalSalidas, alignment: "center", fontSize: 7 },
               { text: ed.TotalRC, alignment: "center", fontSize: 7 },
-
             ];
           }),
         ],
       },
-
+      layout: 'lightHorizontalLines'
       
     }; 
   }

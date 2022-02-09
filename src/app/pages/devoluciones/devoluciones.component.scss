@@ -17,9 +17,9 @@
     text-align: center;
     
 }
-h5{
+/* h5{
     font-size: 0.8em;
-}
+} */
 
 .alinearBoton{
     text-align: left;
@@ -55,6 +55,7 @@ h5{
 .titulosT h5{
     text-align: center;
     font-weight: bold;
+    font-size: 1em;
 }
 
 ::ng-deep  .dx-texteditor-input{
@@ -82,4 +83,22 @@ h5{
     background-color: red;
     border: red;
     text-align: right;
+}
+
+
+.espacioDivs dx-text-box,dx-select-box,dx-autocomplete,dx-date-box{
+    margin-top: -1em;
+}
+
+.espacioDivs dx-number-box{
+    text-align: right;
+}
+
+::ng-deep .espacioDivs .dx-texteditor-input{
+    text-align: center;
+}
+
+.select{
+    text-align: center;
+    background-color: white;
 }

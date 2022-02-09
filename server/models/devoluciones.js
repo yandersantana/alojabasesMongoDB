@@ -15,6 +15,7 @@
         num_documento: { type: Number, required: false},
         tipo_documento: { type: String, required: false},
         estado: { type: String, required: false},
+        ruc: { type: String, required: false},
         productosDevueltos: { type: Array, required: false}
     },{
         timestamps:true

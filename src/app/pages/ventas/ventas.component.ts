@@ -42,6 +42,8 @@ import { TransaccionesFinancierasService } from 'src/app/servicios/transacciones
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
 import { Router } from '@angular/router';
+import { CajaMenor } from '../cajaMenor/caja-menor';
+import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -224,6 +226,7 @@ export class VentasComponent implements OnInit {
     public _reciboCajaService : ReciboCajaService,
     public _cuentaPorCobrar : CuentasPorCobrarService,
     public _transaccionFinancieraService : TransaccionesFinancierasService,
+    public _cajaMenorService : CajaMenorService,
     public router: Router) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -931,16 +934,14 @@ setSelectedProducto(i:number){
     var cant=0
     this.productosSolicitados=this.productosVendidos[i].disponible-this.productosVendidos[i].cantidad
     this.calcularTotalFactura()
-    if(this.productosVendidos[i].producto.CLASIFICA!="MANO DE OBRA"){
+    if(this.productosVendidos[i].producto.CLASIFICA != "MANO DE OBRA"){
       if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
         cant= this.productosVendidos[i].cantidad - this.productosVendidos[i].disponible
         this.showModal(e,i)
         this.calcularEquivalencia(e, i)
         this.calcularTotalFactura()
-        
         this.productosVendidos[i].pedir= true
-      
-     }
+      }
     }
     
    this.productosVendidos[i].entregar= true
@@ -3063,6 +3064,46 @@ cambiarestado(e,i:number){
         err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
     }
 
+  registrarFactura(){
+    this.validarEstadoCajaFactura()
+  }
+
+  registrarNotaVenta(){
+    this.validarEstadoCajaNotaVenta()
+  }
+
+  validarEstadoCajaFactura(){
+    this.factura.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
+      res => {
+       var listaCaja = res as CajaMenor[];
+        if(listaCaja.length != 0 ){
+          if(listaCaja[0].sucursal == this.factura.sucursal && listaCaja[0].estado == "Cerrada" )
+            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+          else
+            this.generarFactura()
+        }else
+          this.generarFactura()
+      },
+      (err) => {});
+  }
+
+  validarEstadoCajaNotaVenta(){
+    this.factura.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
+      res => {
+       var listaCaja = res as CajaMenor[];
+        if(listaCaja.length != 0 ){
+          if(listaCaja[0].sucursal == this.factura.sucursal && listaCaja[0].estado == "Cerrada" )
+            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+          else
+            this.generarNotaDeVenta()
+        }else
+          this.generarNotaDeVenta()
+      },
+      (err) => {});
+  }
+
 
   generarFactura() {
     this.telefonoCliente= this.factura.cliente.celular
@@ -3191,7 +3232,7 @@ cambiarestado(e,i:number){
 
 
 
-  generarNotaDeVenta(e) {
+  generarNotaDeVenta() {
     this.factura.cliente.cliente_nombre= this.mensaje
     if(this.factura.cliente!=undefined){
       if(this.factura.cliente.cliente_nombre != undefined){

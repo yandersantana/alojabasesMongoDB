@@ -1,18 +1,13 @@
 import { Component, OnInit, Pipe, PipeTransform ,ViewChild} from '@angular/core';
-import { DxFormModule, DxDataGridComponent } from 'devextreme-angular';
-
-import {  OrdenDeCompra, Producto } from '../compras/compra';
-import { DxDataGridModule } from "devextreme-angular";
+import { DxDataGridComponent } from 'devextreme-angular';
+import { OrdenDeCompra } from '../compras/compra';
 import pdfMake from 'pdfmake/build/pdfmake';
-
-import {  ProductoDetalleVenta ,ProductoDetalleCompra } from '../producto/producto';
+import { ProductoDetalleCompra } from '../producto/producto';
 import { FacturaProveedor, PagoProveedor,DetallePagoProveedor }  from './ordencompra';
 import { Proveedor }  from '../compras/compra';
-
 import Swal from 'sweetalert2';
-import { DxSelectBoxModule, DxListModule ,DxListComponent} from 'devextreme-angular';
+import { DxListComponent} from 'devextreme-angular';
 import { DatePipe } from '@angular/common';
-
 import { objDate, transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
@@ -29,9 +24,6 @@ import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
-
-
-//import { ConsoleReporter } from 'jasmine';
 
 
 @Component({
@@ -708,15 +700,12 @@ contadorFirebase:contadoresDocumentos[]=[]
 
   rechazarOrden = (e) => {  
     this.actualizarOrdenRec(e.row.data) 
-    //this.popupVisible2 = true;
-    //console.log("ddddd "+e.documento + " texto"+this,this.textoArea)
   }
 
   confirmarM(e,ord:number){
     this.contadores[0].ordenesCompraAprobadas_Ndocumento=ord
     this.contadoresService.updateContadoresIDOrdenesAprobadas(this.contadores[0]).subscribe( res => {}, err => {this.errorMensaje()})
     if(e.tipo == "Entregado"){
-     // this.db.collection('/ordenesDeCompra').doc(e.documento+"").update({"estadoOrden":"COMPLETO"})
       this.actualizarProductos(e , ord)
       
     }else{

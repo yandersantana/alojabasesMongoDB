@@ -42,11 +42,13 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
 import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
 import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
-import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
+
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
 import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
+import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
+import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 
 const routes: Routes = [
   {
@@ -235,6 +237,11 @@ const routes: Routes = [
   {
     path: "bajas",
     component: BajasComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "prestamos",
+    component: PrestamosComponent,
     canActivate: [AuthGuardService],
   },
   {

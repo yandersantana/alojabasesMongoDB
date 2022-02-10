@@ -73,10 +73,6 @@ router.post("/getCajaMenorPorRango", async (req, res, next) => {
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const newCajaMenor ={ 
-                  idDocumento:req.body.idDocumento,
-                  fecha:req.body.fecha,
-                  usuario:req.body.usuario,
-                  sucursal:req.body.sucursal,
                   estado:req.body.estado,
                   totalIngresos:req.body.totalIngresos,
                   totalSalidas:req.body.totalSalidas,

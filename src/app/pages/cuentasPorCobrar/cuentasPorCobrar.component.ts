@@ -8,13 +8,12 @@ import Swal from 'sweetalert2';
 import { objDate } from '../transacciones/transacciones';
 import { CuentaPorCobrar } from './cuentasPorCobrar';
 
-
-
 @Component({
   selector: 'app-cuentasPorCobrar',
   templateUrl: './cuentasPorCobrar.component.html',
   styleUrls: ['./cuentasPorCobrar.component.scss']
 })
+
 export class CuentaPorCobrarComponent implements OnInit {
   listaCuentas: CuentaPorCobrar [] = []
   nowdesde: Date = new Date();

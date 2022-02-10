@@ -502,7 +502,7 @@ export class ReciboCajaComponent implements OnInit {
     var array = []
     if(this.tipoRecibo == "Facturación" || this.tipoRecibo == "Cta.x Cobrar"){
       res.forEach(element => {
-        if(element.nombre == "3.0 Facturacion" || element.nombre == "3.1 Nota_Venta"){
+        if(element.nombre == "1.3.0 Facturacion" || element.nombre == "1.3.1 Nota_Venta"){
         }else{
           array.push(element)
         }
@@ -723,9 +723,13 @@ export class ReciboCajaComponent implements OnInit {
       res => {
        var listaCaja = res as CajaMenor[];
         if(listaCaja.length != 0 ){
-          if(listaCaja[0].sucursal == this.reciboCaja.sucursal && listaCaja[0].estado == "Cerrada")
-            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-          else
+          var caja = listaCaja.find(element=>element.sucursal == this.reciboCaja.sucursal) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.reciboCaja.sucursal && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.guardar()
+          }else
             this.guardar()
         }else
           this.guardar()
@@ -833,8 +837,7 @@ export class ReciboCajaComponent implements OnInit {
 
   async actualizarTransacciones(transacciones : TransaccionesFinancieras[]){
     transacciones.forEach(element=>{
-      if(element.subCuenta == "10.0 Cuentas x Cobrar"){
-        console.log("actualizare ",element)
+      if(element.subCuenta == "2.0.0 Cuentas x Cobrar"){
         this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});
       }    
     });
@@ -864,8 +867,8 @@ export class ReciboCajaComponent implements OnInit {
     transaccion.soporte = "";
     transaccion.dias = 0;
     transaccion.isContabilizada = true;
-    transaccion.cuenta = "10 SALDOS";
-    transaccion.subCuenta = "10.0 Cuentas x Cobrar";
+    transaccion.cuenta = "2.0 SALDOS";
+    transaccion.subCuenta = "2.0.0 Cuentas x Cobrar";
     transaccion.notas = this.reciboCaja.observaciones;
     transaccion.tipoCuenta = "Reales y Transitorias";
 
@@ -927,7 +930,7 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.notas = this.reciboCaja.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      if(element.nombreCuenta == "10 SALDOS" && element.nombreSubcuenta == "10.0 Cuentas x Cobrar"){
+      if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.0 Cuentas x Cobrar"){
         this.InsertarCuentaPorCobrar(transaccion)
         this.existeCuentaPorCobrar = true;
       }

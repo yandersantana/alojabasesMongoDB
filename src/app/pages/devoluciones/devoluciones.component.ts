@@ -625,15 +625,20 @@ export class DevolucionesComponent implements OnInit {
       res => {
        var listaCaja = res as CajaMenor[];
         if(listaCaja.length != 0 ){
-          if(listaCaja[0].sucursal == this.devolucion.sucursal.nombre && listaCaja[0].estado == "Cerrada" )
-            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-          else
+          var caja = listaCaja.find(element=>element.sucursal == this.devolucion.sucursal.nombre) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.devolucion.sucursal.nombre && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.guardarDevolucion()
+          }else
             this.guardarDevolucion()
         }else
           this.guardarDevolucion()
       },
       (err) => {});
   }
+
 
   guardarDevolucion() {
     this.devolucion.cliente = this.cliente;
@@ -928,9 +933,9 @@ export class DevolucionesComponent implements OnInit {
   generarTransaccionFinanciera(producto : productosDevueltos){
     var nombreSubCuenta = ""
     if(this.devolucioLeida.tipo_documento == "Factura")
-      nombreSubCuenta = "4.0 Factura"
+      nombreSubCuenta = "1.4.0 Factura"
     else if(this.devolucioLeida.tipo_documento == "Nota de Venta")
-      nombreSubCuenta = "4.1 Nota_Venta"
+      nombreSubCuenta = "1.4.1 Nota_Venta"
     var transaccion = new TransaccionesFinancieras();
     transaccion.fecha = this.devolucioLeida.fecha;
     transaccion.sucursal = this.devolucioLeida.sucursal.nombre;
@@ -943,7 +948,7 @@ export class DevolucionesComponent implements OnInit {
     transaccion.numDocumento = this.devolucioLeida.num_documento.toString();
     transaccion.valor = producto.total;
     transaccion.isContabilizada = true;
-    transaccion.cuenta = "4 DEVOLUCIONES";
+    transaccion.cuenta = "1.4 DEVOLUCIONES";
     transaccion.subCuenta = nombreSubCuenta;
     transaccion.notas = this.devolucioLeida.observaciones;
     transaccion.tipoCuenta = "Salidas";

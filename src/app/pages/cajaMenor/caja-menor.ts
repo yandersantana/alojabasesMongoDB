@@ -21,6 +21,7 @@ export class DetalleCajaMenor {
 }
 
 export class CajaMenor{
+    _id : string
     idDocumento : number;
     fecha: Date;
     usuario: string

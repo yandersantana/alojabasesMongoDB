@@ -14,6 +14,7 @@ import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.
 
 import 'jspdf-autotable';
 import { reporteDetallado } from '../reportes/reporte-detallado/reporte';
+import { element } from 'protractor';
 
 
 @Component({
@@ -52,6 +53,7 @@ export class CajaMenorComponent implements OnInit {
   isAdmin = true;
   notas = ""
   popupVisibleNotas = false;
+  existeRegistro = false
 
   menu: string[] = [
     "Caja Menor Diaria",
@@ -89,14 +91,13 @@ export class CajaMenorComponent implements OnInit {
     this._cajaMenorService.getCajaMenorPorFecha(this.cajaMenor).subscribe(
       res => {
         this.cajaMenorEncontradas = res as CajaMenor[];
+        console.log(this.cajaMenorEncontradas)
         if(this.cajaMenorEncontradas.length != 0 ){
-          if(this.cajaMenorEncontradas[0].sucursal == this.cajaMenor.sucursal){
-            this.existeCaja = true;
-            this.cajaMenor.estado = this.cajaMenorEncontradas[0].estado;
-          }else{
-            this.existeCaja = false
-            this.cajaMenor.estado = "Abierta";
-          }
+          var existeRegistro = this.cajaMenorEncontradas.find(element=>element.sucursal == this.cajaMenor.sucursal);
+          this.existeRegistro = existeRegistro ? true : false;
+          var existe = this.cajaMenorEncontradas.find(element=>element.sucursal == this.cajaMenor.sucursal && element.estado == "Cerrada") ;
+          this.existeCaja = existe != undefined ? true : false;
+          this.cajaMenor.estado = existe?.estado ?? "Abierta";
         }else{
           this.existeCaja = false;
           this.cajaMenor.estado = "Abierta";
@@ -392,7 +393,26 @@ export class CajaMenorComponent implements OnInit {
     console.log(this.cajaMenor)
     this.buscarTransaccionesPorFechaDescarga(e);
     
+  }
 
+
+  actualizarCaja(){
+    var idCaja = this.cajaMenorEncontradas.find(element=>element.sucursal == this.cajaMenor.sucursal);
+    console.log(idCaja._id)
+    this.cajaMenor._id = idCaja._id;
+    this.cajaMenor.estado = "Cerrada";
+    this.cajaMenor.idDocumento = idCaja.idDocumento;
+      this._cajaMenorService.updateCajaMenor(this.cajaMenor).subscribe((res) => {
+        Swal.fire({
+          title:'Correcto',
+          text: 'Se ha actualizado con éxito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })
+        //this.mostrarMensajeGenerico(1,"Caja actualizada y cerrada");
+      },(err) => {});
   }
 
 
@@ -765,6 +785,7 @@ export class CajaMenorComponent implements OnInit {
 
 
    getListaOperaciones(operaciones: DetalleCajaMenor[]) {
+     operaciones.sort((a,b) => (a.Cuenta > b.Cuenta ? 1 : -1));
       return {
 
       table: {

@@ -934,7 +934,7 @@ setSelectedProducto(i:number){
     var cant=0
     this.productosSolicitados=this.productosVendidos[i].disponible-this.productosVendidos[i].cantidad
     this.calcularTotalFactura()
-    if(this.productosVendidos[i].producto.CLASIFICA != "MANO DE OBRA"){
+    if(this.productosVendidos[i].producto.CLASIFICA != "OTR"){
       if(this.productosVendidos[i].cantidad > this.productosVendidos[i].disponible ){
         cant= this.productosVendidos[i].cantidad - this.productosVendidos[i].disponible
         this.showModal(e,i)
@@ -1505,9 +1505,6 @@ cambiarestado(e,i:number){
      
 
     getDocumentDefinition() {
-      //watermark: { text: 'test watermark', color: 'blue', opacity: 0.3, bold: true, italics: false },
-      /* if(this.formaPago == "Pendiente de Pago")
-        this.formaPago = "Pendiente de Pago"; */
       this.calcularValoresFactura()
       sessionStorage.setItem('resume', JSON.stringify("jj"));
       let tipoDocumento="Factura";
@@ -2852,7 +2849,7 @@ cambiarestado(e,i:number){
       var resta=0
       var sumad=0
       
-      if(element.cantidad>element.disponible ){
+      if(element.cantidad>element.disponible && element.producto.CLASIFICA != "OTR" ){
         resta=element.cantidad-element.disponible
         this.productoPendienteE = new productosPendientesEntrega
         this.productoPendienteE.cantM2=resta
@@ -3078,9 +3075,13 @@ cambiarestado(e,i:number){
       res => {
        var listaCaja = res as CajaMenor[];
         if(listaCaja.length != 0 ){
-          if(listaCaja[0].sucursal == this.factura.sucursal && listaCaja[0].estado == "Cerrada" )
-            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-          else
+          var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.generarFactura()
+          }else 
             this.generarFactura()
         }else
           this.generarFactura()
@@ -3094,9 +3095,13 @@ cambiarestado(e,i:number){
       res => {
        var listaCaja = res as CajaMenor[];
         if(listaCaja.length != 0 ){
-          if(listaCaja[0].sucursal == this.factura.sucursal && listaCaja[0].estado == "Cerrada" )
-            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-          else
+          var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.generarNotaDeVenta()
+          }else 
             this.generarNotaDeVenta()
         }else
           this.generarNotaDeVenta()
@@ -3386,8 +3391,8 @@ cambiarestado(e,i:number){
       transaccion.documentoVenta = this.factura.documento_n.toString();
       transaccion.cedula = this.factura.cliente.ruc;
       transaccion.valor = this.factura.total;
-      transaccion.cuenta = "10 SALDOS";
-      transaccion.subCuenta = "10.0 Cuentas x Cobrar";
+      transaccion.cuenta = "2.0 SALDOS";
+      transaccion.subCuenta = "2.0.0 Cuentas x Cobrar";
       transaccion.tipoCuenta = "Reales y Transitorias";
 
       try {
@@ -3470,9 +3475,9 @@ cambiarestado(e,i:number){
       var operacionCC = new OperacionComercial();
       operacionCC.valor = this.factura.total;
       operacionCC.tipoCuenta = "Reales y Transitorias"
-      operacionCC.nombreCuenta = "10 SALDOS"
+      operacionCC.nombreCuenta = "2.0 SALDOS"
       operacionCC.idCuenta = "6195b036f75a418e9c2eba06"
-      operacionCC.nombreSubcuenta = "10.0 Cuentas x Cobrar"; 
+      operacionCC.nombreSubcuenta = "2.0.0 Cuentas x Cobrar"; 
       operacionCC.idSubCuenta = "61c50005270abc667ec3f8f7";
       return operacionCC;
     }
@@ -3482,15 +3487,15 @@ cambiarestado(e,i:number){
       operacionCC.valor = this.factura.total;
 
       operacionCC.tipoCuenta = "Ingresos"
-      operacionCC.nombreCuenta = "3 INGRESOS"
+      operacionCC.nombreCuenta = "1.3 INGRESOS"
       operacionCC.idCuenta = "61bcef301a0afd3ac9084cce"
       
       if(this.tDocumento == "Factura"){
-        operacionCC.nombreSubcuenta = "3.0 Facturacion"; 
+        operacionCC.nombreSubcuenta = "1.3.0 Facturacion"; 
         operacionCC.idSubCuenta = "61bcef4e1a0afd3ac9084ccf";
       }
       else if(this.tDocumento == "Nota de Venta"){
-        operacionCC.nombreSubcuenta = "3.1 Nota_Venta"; 
+        operacionCC.nombreSubcuenta = "1.3.1 Nota_Venta"; 
         operacionCC.idSubCuenta = "61bcef301a0afd3ac9084cce";
       }
       return operacionCC;

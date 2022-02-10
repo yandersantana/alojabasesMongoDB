@@ -88,13 +88,14 @@ import { IngresoDiarioComponent } from "./pages/reportes/ingreso-diario/ingreso-
 import { AdministracionCuentasComponent } from "./pages/administracion-cuentas/administracion-cuentas.component";
 import { CajaMenorComponent } from "./pages/cajaMenor/caja-menor.component";
 import { ReciboCajaComponent } from "./pages/reciboCaja/recibo-caja.component";
-import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { TransaccionesFinancierasComponent } from "./pages/transaccionesFinancieras/transaccionesFinancieras.component";
 import { ComprobantePagoComponent } from "./pages/comprobante-pago/comprobante-pago.component";
 import { LoadingMessaggeComponent } from "./pages/loading-message/loading-messagge.component";
 import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-proveedores/comprobante-pago-proveedores.component";
 import { DxoToolbarModule } from "devextreme-angular/ui/nested";
 import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
+import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
+import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 
 @NgModule({
   declarations: [
@@ -143,7 +144,8 @@ import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar
     ComprobantePagoComponent,
     LoadingMessaggeComponent,
     ComprobantePagoProveedoresComponent,
-    CuentaPorPagarComponent
+    CuentaPorPagarComponent,
+    PrestamosComponent
   ],
   imports: [
     BrowserModule,

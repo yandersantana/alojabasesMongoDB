@@ -574,9 +574,13 @@ export class ComprobantePagoComponent implements OnInit {
       res => {
        var listaCaja = res as CajaMenor[];
         if(listaCaja.length != 0 ){
-          if(listaCaja[0].sucursal == this.comprobantePago.sucursal && listaCaja[0].estado == "Cerrada" )
-            Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-          else
+          var caja = listaCaja.find(element=>element.sucursal == this.comprobantePago.sucursal) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.comprobantePago.sucursal && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.guardar()
+          }else
             this.guardar()
         }else
           this.guardar()
@@ -675,9 +679,6 @@ export class ComprobantePagoComponent implements OnInit {
          this.traerComprobantesPagoPorRango();
         })
         }, err => {alert("error")})
-      
-        
-      
       }else if (result.dismiss === Swal.DismissReason.cancel) {
         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso");
       }
@@ -742,7 +743,7 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      if(element.nombreCuenta == "10 SALDOS" && element.nombreSubcuenta == "10.1 Cuentas x Pagar"){
+      if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.1 Cuentas x Pagar"){
         this.InsertarCuentaPorPagar(transaccion)
         cont++
         this.comprobarYMostrarMensaje(cont)

@@ -175,7 +175,8 @@
         <div class="row">
             <div class="col-md-4"></div>
             <div class="col-md-4">
-                <button class="btn btn-block btn-success" [disabled]="existeCaja" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarCajaMenor()">Cerrar Caja</button>
+                <button class="btn btn-block btn-success" [disabled]="existeCaja" style="background-color: #ff5722;border-color: #ff5722;" *ngIf="!existeRegistro" (click)="guardarCajaMenor()">Cerrar Caja</button>
+                <button class="btn btn-block btn-success" [disabled]="existeCaja" style="background-color: #ff5722;border-color: #ff5722;" *ngIf="existeRegistro" (click)="actualizarCaja()">Actualizar Caja</button>
             </div>
             <div class="col-md-4"></div>
         </div>

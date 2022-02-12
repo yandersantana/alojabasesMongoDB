@@ -1,12 +1,13 @@
+import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { Component, OnInit } from '@angular/core';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
-import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
+import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { ReciboCajaService } from 'src/app/servicios/reciboCaja.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';
 import { objDate } from '../transacciones/transacciones';
-import { CuentaPorCobrar } from './prestamos';
+import { Prestamos } from './prestamos';
 
 @Component({
   selector: 'app-prestamos',
@@ -15,17 +16,22 @@ import { CuentaPorCobrar } from './prestamos';
 })
 
 export class PrestamosComponent implements OnInit {
-  listaCuentas: CuentaPorCobrar [] = []
+  listaPrestamosTmp: Prestamos [] = []
+  listaPrestamos: Prestamos [] = []
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   fechaAnteriorDesde: Date = new Date();
   obj: objDate;
   mostrarLoading: boolean = false;
+  tiposRecibo: string[] = [
+    'Activas',
+    'Canceladas'
+  ];
 
-
+  tipoRecibo = ""
 
   constructor(
-    public _cuentasporCobrarService : CuentasPorCobrarService,
+    public _prestamosService : PrestamosService,
     public _subCuentasService : SubCuentasService,
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _reciboCajaService : ReciboCajaService,
@@ -38,29 +44,61 @@ export class PrestamosComponent implements OnInit {
     this.traerCuentasPorRango();
   }
 
-  traerListaCuentas(){
-    this.listaCuentas = [];
+  traerlistaPrestamos(){
+    this.listaPrestamosTmp = [];
     this.mostrarLoading = true;
-    this._cuentasporCobrarService.getCuentasPorCobrarActivas().subscribe(res => {
-      this.listaCuentas = res as CuentaPorCobrar[];
+    this._prestamosService.getPrestamos().subscribe(res => {
+      this.listaPrestamosTmp = res as Prestamos[];
+      this.separarCuentas(1)
       this.mostrarLoading = false;
    })
   }
 
   traerCuentasPorRango() {
-    this.listaCuentas = [];
+    this.listaPrestamosTmp = [];
     this.mostrarLoading = true;
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
-    this._cuentasporCobrarService.getCuentasPorCobrarPorRango(this.obj).subscribe(
+    this._prestamosService.getPrestamosPorRango(this.obj).subscribe(
       (res) => {
-        this.listaCuentas = res as CuentaPorCobrar[];
+        this.listaPrestamosTmp = res as Prestamos[];
+        this.separarCuentas(1)
         this.mostrarLoading = false;
       },
       () => {}
     );
+  }
+
+  opcionRadioTipos(e){
+    this.tipoRecibo = e.value;
+    switch (e.value) {
+      case "Activas":
+        this.separarCuentas(1)
+
+        break;
+      case "Canceladas":
+        this.separarCuentas(2)
+        break;
+      default:    
+    }      
+  }
+
+  separarCuentas(numero){
+    this.listaPrestamos = []
+    if(numero == 1){
+      this.listaPrestamosTmp.forEach(element=>{
+      if(element.estado == "Activa")
+        this.listaPrestamos.push(element)
+      })
+    }else if(numero == 2){
+      this.listaPrestamosTmp.forEach(element=>{
+      if(element.estado == "Cancelado")
+        this.listaPrestamos.push(element)
+      })
+    }
+    
   }
 
   onExporting (e) {

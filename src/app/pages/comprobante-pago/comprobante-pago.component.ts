@@ -26,6 +26,8 @@ import { dataDocumento, OperacionComercial } from '../reciboCaja/recibo-caja';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
 import { element } from 'protractor';
+import { Prestamos } from '../prestamos/prestamos';
+import { PrestamosService } from 'src/app/servicios/prestamos.service';
 
 
 
@@ -126,7 +128,8 @@ export class ComprobantePagoComponent implements OnInit {
     public _beneficiarioService: BeneficiarioService,
     public _authenService: AuthenService,
     public _cajaMenorService: CajaMenorService,
-    public _cuentaPorPagar: CuentasPorPagarService
+    public _cuentaPorPagar: CuentasPorPagarService,
+    public _prestamoService: PrestamosService
     ) {
       this.tipoComprobante = this.tiposComprobantes[0];
    }
@@ -526,7 +529,6 @@ export class ComprobantePagoComponent implements OnInit {
     this.listadoOperaciones.forEach(element=>{
       if(element.idCuenta == null || element.idSubCuenta == null || element.valor == 0){
         flag = false;
-        
       }
     });
 
@@ -713,6 +715,22 @@ export class ComprobantePagoComponent implements OnInit {
     },(err) => {});
   }
 
+  InsertarPrestamo(transaccion : TransaccionesFinancieras ){
+    var prestamo = new Prestamos();
+    prestamo.fecha = this.comprobantePago.fecha;
+    prestamo.sucursal = this.comprobantePago.sucursal;
+    prestamo.beneficiario = this.comprobantePago.beneficiario ?? this.comprobantePago.proveedor;
+    prestamo.ruc = this.comprobantePago.ruc;
+    prestamo.comprobanteId = "CP"+this.comprobantePago.idDocumento.toString();
+    prestamo.numDocumento = this.comprobantePago.documento;
+    prestamo.valor = transaccion.valor;
+    prestamo.valorDeuda = transaccion.valor;
+    prestamo.notas = this.comprobantePago.observaciones;
+    console.log("inserterk")
+    this._prestamoService.newPrestamo(prestamo).subscribe((res) => {
+    },(err) => {});
+  }
+
 
   actualizarContador(){
     this.contadores[0].comprobantePago_Ndocumento = this.comprobantePago.idDocumento
@@ -742,6 +760,9 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.subCuenta = element.nombreSubcuenta;
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
+
+      if(element.nombreCuenta == "2.1 PRÉSTAMOS")
+        this.InsertarPrestamo(transaccion)
 
       if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.1 Cuentas x Pagar"){
         this.InsertarCuentaPorPagar(transaccion)

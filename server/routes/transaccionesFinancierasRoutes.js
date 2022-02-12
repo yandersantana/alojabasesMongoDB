@@ -57,12 +57,24 @@ router.post("/getTransaccionesPorTipoDocumentoYRecibo", async (req, res, next) =
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorTipoDocumentoYRecibo2", async (req, res, next) => {
+  const transacciones = await TransaccionFinanciera.find({ numDocumento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
+  res.json(transacciones);
+});
+
 router.delete("/delete/:id", async (req, res, next) => {
   await TransaccionFinanciera.findByIdAndRemove(req.params.id);
   res.json({ status: "Transaccion Eliminada" });
 });
 
 router.put("/updateEstado/:id/:estado", async (req, res, next) => {
+  const { id } = req.params;
+  const { estado } = req.params;
+  await TransaccionFinanciera.findByIdAndUpdate( id,{ $set: { isContabilizada: estado } },{ new: true } );
+  res.json({ status: "Transaccion Updated" });
+});
+
+router.put("/updateContabilizada/:id/:estado", async (req, res, next) => {
   const { id } = req.params;
   const { estado } = req.params;
   await TransaccionFinanciera.findByIdAndUpdate( id,{ $set: { isContabilizada: estado } },{ new: true } );

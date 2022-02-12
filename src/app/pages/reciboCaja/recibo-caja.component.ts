@@ -54,7 +54,10 @@ export class ReciboCajaComponent implements OnInit {
   mostrarLoading : boolean = false;
   mostrarLoadingBase : boolean = false;
   newRecibo: boolean = true;
+  registroRecibos: boolean = false;
+  autorizaciones: boolean = false;
   listadoRecibosCaja: ReciboCaja [] = []
+  listadoRecibosCajaNoAutorizados: ReciboCaja [] = []
   listadoRecibosCajaActivos: ReciboCaja [] = []
   listadoRecibosCajaAnulados: ReciboCaja [] = []
   listadoRecibosCajaPendientes: ReciboCaja [] = []
@@ -69,8 +72,11 @@ export class ReciboCajaComponent implements OnInit {
   nowhasta: Date = new Date();
   bloquearValor = false;
   existeCuentaPorCobrar=false;
+  seccionPrestamo : boolean = false;
+  isTipoCierre = false;
   menu: string[] = [
     "Nuevo Recibo",
+    "Autorizaciones",
     "Recibos Cajas Generados"
   ];
 
@@ -92,8 +98,10 @@ export class ReciboCajaComponent implements OnInit {
 
   tiposRecibo: string[] = [
     'Normal',
+    'Cierre',
     'Facturación',
     'Cta.x Cobrar',
+    'Préstamos',
   ];
 
   imagenLogotipo ="";
@@ -200,10 +208,26 @@ export class ReciboCajaComponent implements OnInit {
     })
   }
 
+  cargarCuentasCierre(){
+    this.listaCuentas = []
+    this.listaCuentasGlobal.forEach(element=>{
+      if(element._id == "6195b01ef75a418e9c2eba04" || element._id == "6195af71f75a418e9c2eba03")
+        this.listaCuentas.push(element);
+    })
+  }
+
   traerRecibosCaja(){
     this.mostrarLoadingBase = true;
     this._reciboCajaService.getRecibos().subscribe(res => {
       this.listadoRecibosCaja = res as ReciboCaja[];
+      this.mostrarLoadingBase = false;
+   })
+  }
+
+  traerRecibosCajaNoAutorizados(){
+    this.mostrarLoadingBase = true;
+    this._reciboCajaService.getRecibosNoAutorizados().subscribe(res => {
+      this.listadoRecibosCajaNoAutorizados = res as ReciboCaja[];
       this.mostrarLoadingBase = false;
    })
   }
@@ -479,16 +503,33 @@ export class ReciboCajaComponent implements OnInit {
         this.bloquearValor = false;
         this.isFacturacion = true;
         this.isNormal = true;
+        this.isTipoCierre = false;
+        this.seccionPrestamo = false;
         break;
       case "Facturación":
         this.bloquearValor = true;
         this.isFacturacion = true;
         this.isNormal = false;
+        this.isTipoCierre = false;
+        this.seccionPrestamo = false;
         break;
       case "Cta.x Cobrar":
         this.bloquearValor = false;
         this.isFacturacion = false;
         this.isNormal = false;
+        this.isTipoCierre = false;
+        this.seccionPrestamo = false;
+        break;
+      case "Cierre":
+        this.bloquearValor = false;
+        this.isFacturacion = true;
+        this.isNormal = true;
+        this.isTipoCierre = true;
+        this.seccionPrestamo = false;
+        this.cargarCuentasCierre();
+        break;
+      case "Préstamos":
+        this.seccionPrestamo = true;
         break;
       default:    
     }      
@@ -578,6 +619,14 @@ export class ReciboCajaComponent implements OnInit {
     this.validarTransacciones(e.row.data)  
   }
 
+  autorizarReciboAdmin = (e) => {  
+    this.autorizarRecibo(e.row.data)  
+  }
+
+  rechazarReciboAdmin = (e) => {  
+    this.recRecibo(e.row.data)  
+  }
+
 
   addElement(){
     if(this.listadoOperaciones.length <= 2)
@@ -601,6 +650,61 @@ export class ReciboCajaComponent implements OnInit {
     })
   }
 
+  traerTransaccionesYActualizar(e){
+    this.textLoading = "Actualizando"
+    this.mostrarLoading = true;
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
+    this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transaccionesFinancieras = res as TransaccionesFinancieras[];
+      if(this.transaccionesFinancieras.length == 0){
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(2,"No se encontraron transacciones")
+      }
+      else{
+         this.updateEstadoRecibo(e)
+      }
+       
+    })
+  }
+
+  updateEstadoRecibo(e){
+    e.isAutorizado = true
+    e.isRechazado = false
+    this._reciboCajaService.updateReciboCajaCierre(e).subscribe(
+      res => { this.actualizarTransaccionesAutorizadas(e)},
+      err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado recibo")})
+  }
+
+  actualizarTransaccionesAutorizadas(e){
+    var cont = 0
+    this.transaccionesFinancieras.forEach(element=>{
+      element.isContabilizada = true;
+      this._transaccionFinancieraService.updateIsContabilizada(element,true).subscribe((res) => {cont++,this.terminarOperacionActualizaciones(cont)},(err) => {});
+    });
+  }
+
+  terminarOperacionActualizaciones(num){
+    if(this.transaccionesFinancieras.length == num){
+      this.mostrarLoading = false;
+      Swal.fire({
+        title:'Correcto',
+        text: 'Se ha actualizado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        window.location.reload()
+      })
+    }
+    
+  }
+
+
+
+  
+
+
 
   eliminarComp(e){
     Swal.fire({
@@ -618,6 +722,55 @@ export class ReciboCajaComponent implements OnInit {
         this._reciboCajaService.updateEstado(e._id,"Anulado").subscribe(
           res => { this.completarEliminacion(e)},
           err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+  autorizarRecibo(e){
+    Swal.fire({
+      title: 'Autorizar Recibo',
+      text: "Desea autorizar el recibo #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.traerTransaccionesYActualizar(e)
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+
+  recRecibo(e){
+    Swal.fire({
+      title: 'Rechazar Autorizacion',
+      text: "Rechazar la autorizacion del recibo #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarLoading = true
+        e.isAutorizado = true
+        e.isRechazado = true
+        this._reciboCajaService.updateReciboCajaCierre(e).subscribe(
+          res => { 
+            Swal.fire({
+              title:'Correcto',
+              text: 'Se ha actualizado con éxito',
+              icon: 'success',
+              confirmButtonText: 'Ok'
+            }).then((result) => {
+              window.location.reload()
+            })
+          },
+          err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado recibo")})
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
       }
@@ -713,8 +866,11 @@ export class ReciboCajaComponent implements OnInit {
       if(flag)
         this.obtenerId();
     }
-    else
+    else{
       this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
+      this.bloquearBoton = false;
+    }
+      
   }
 
   validarEstadoCaja(){
@@ -735,6 +891,44 @@ export class ReciboCajaComponent implements OnInit {
           this.guardar()
       },
       (err) => {});
+  }
+
+  validarEstadoCajaCierre(){
+    this.reciboCaja.fecha.setHours(0,0,0,0);
+    this._cajaMenorService.getCajaMenorPorFecha(this.reciboCaja).subscribe(
+      res => {
+       var listaCaja = res as CajaMenor[];
+        if(listaCaja.length != 0 ){
+          var caja = listaCaja.find(element=>element.sucursal == this.reciboCaja.sucursal) ;
+          if(caja != undefined){
+            if(caja.sucursal == this.reciboCaja.sucursal && caja.estado == "Cerrada" )
+              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            else
+              this.generarCierre()
+          }else
+            this.generarCierre()
+        }else
+          this.generarCierre()
+      },
+      (err) => {});
+  }
+
+  generarCierre(){
+    Swal.fire({
+      title: 'Cierre Caja',
+      text: "Estimado usuario esta realizando un recibo de caja tipo Cierre, recuerde que debe ser aprobado previamente por un administrador. Desea continuar?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.reciboCaja.isAutorizado = false;
+        this.guardar()
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Genere un recibo de caja de otro tipo");
+      }
+    })
   }
 
   obtenerId(){
@@ -882,8 +1076,6 @@ export class ReciboCajaComponent implements OnInit {
   validar(){
     var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
     var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
-    //console.log("fecha1",fechaRecibo.toLocaleDateString());
-    //console.log("fecha2",fecha2.toLocaleDateString());
     if(fechaRecibo == fecha2)
       console.log("son iguales")
 
@@ -984,10 +1176,21 @@ export class ReciboCajaComponent implements OnInit {
   opcionMenu(e){
     switch (e.value) {
       case "Nuevo Recibo":
+        this.registroRecibos = false;
         this.newRecibo = true;
+        this.autorizaciones = false;
+       break;
+      case "Autorizaciones":
+        this.registroRecibos = false;
+        this.newRecibo = false;
+        this.autorizaciones = true;
+        if(this.listadoRecibosCajaNoAutorizados.length == 0)
+          this.traerRecibosCajaNoAutorizados()
        break;
       case "Recibos Cajas Generados":
+        this.registroRecibos = true;
         this.newRecibo = false;
+        this.autorizaciones = false;
         this.traerRecibosCajaPorRango();
         break;
       default:    

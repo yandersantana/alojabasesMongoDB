@@ -20,6 +20,8 @@ router.post('/newReciboCaja', async (req, res) => {
         valorSaldos:req.body.valorSaldos,
         observaciones:req.body.observaciones,
         estadoRecibo:req.body.estadoRecibo,
+        isAutorizado:req.body.isAutorizado,
+        isRechazado:req.body.isRechazado,
         operacionesComercialesList:req.body.operacionesComercialesList
     });
     await newReciboCaja.save();
@@ -29,6 +31,11 @@ router.post('/newReciboCaja', async (req, res) => {
 
 router.get('/getRecibosCaja', async (req, res) => {
     const recibo = await ReciboCaja.find();
+    res.send(recibo)      
+});
+
+router.get('/getRecibosCajaNoAutorizados', async (req, res) => {
+    const recibo = await ReciboCaja.find({ isAutorizado: false});
     res.send(recibo)      
 });
 
@@ -91,6 +98,15 @@ router.put('/update/:id', async (req, res,next) => {
             observaciones:req.body.observaciones,
             estadoRecibo:req.body.estadoRecibo,
             operacionesComercialesList:req.body.operacionesComercialesList};
+    await ReciboCaja.findByIdAndUpdate(id, {$set: newReciboCaja}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateCierre/:id', async (req, res,next) => {
+    const { id } = req.params;
+    const newReciboCaja ={ 
+            isAutorizado:req.body.isAutorizado,
+            isRechazado:req.body.isRechazado,};
     await ReciboCaja.findByIdAndUpdate(id, {$set: newReciboCaja}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

@@ -93,9 +93,15 @@
             <dxi-column dataField="Sub2" caption="CC"></dxi-column>
             <dxi-column dataField="Cuenta" caption="" [groupIndex]="0" [autoExpandGroup]="false" sortOrder="asc"></dxi-column>
 
-            <dxi-column dataField="TotalIngresos" caption="INGRESOS" alignment="right"></dxi-column>
-            <dxi-column dataField="TotalSalidas" caption="SALIDAS" alignment="right"></dxi-column>
-            <dxi-column dataField="TotalRC" caption="RyT" alignment="right"></dxi-column>
+            <dxi-column dataField="TotalIngresos" caption="INGRESOS" alignment="right">
+                <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="TotalSalidas" caption="SALIDAS" alignment="right">
+                 <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+            </dxi-column>
+            <dxi-column dataField="TotalRC" caption="RyT" alignment="right">
+                <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+            </dxi-column>
 
             <dxo-summary>
                 <dxi-group-item

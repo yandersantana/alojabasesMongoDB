@@ -26,8 +26,8 @@
     <div class="col-md-1"></div>
     <div class="col-md-10">
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+            <div class="col-md-3"></div>
+            <div class="col-md-12">
                 <div class="dx-field radio">
                     <div class="dx-field-value">
                         <dx-radio-group
@@ -40,7 +40,10 @@
                 </div>
             </div>
         </div>
-        <div class="card">
+        <div *ngIf="seccionPrestamo">
+            <app-recibo-caja-prestamos></app-recibo-caja-prestamos>
+        </div>
+        <div class="card" *ngIf="!seccionPrestamo">
             <h5 class="card-header text-center font-weight-bold text-uppercase ">RECIBO DE CAJA</h5>
             <div class="card-body">
                 <div class="row">
@@ -276,7 +279,8 @@
 
                 <div style="text-align: center;">
                     <br><br>
-                    <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="validarEstadoCaja()"></dx-button>
+                    <dx-button *ngIf="!isTipoCierre" [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="validarEstadoCaja()"></dx-button>
+                    <dx-button *ngIf="isTipoCierre" [text]="'Registrar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="validarEstadoCajaCierre()"></dx-button>
                 </div>
 
             </div>
@@ -286,7 +290,7 @@
 </div>
 
 
-<div *ngIf="!newRecibo">
+<div *ngIf="registroRecibos">
     <div class="card">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">Recibos de Caja Generados</h5>
         <div class="card-body">
@@ -398,6 +402,59 @@
         </dxi-column>
         <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
             <dxi-button icon="clear" [onClick]="aprobarEliminacion"></dxi-button>   
+        </dxi-column>
+      
+
+        
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>
+
+
+
+<div *ngIf="autorizaciones">
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Autorizaciones Recibos</h5>
+    </div>
+    <br>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="listadoRecibosCajaNoAutorizados"
+        [showBorders]="true"
+        (onExporting)="onExporting($event)"
+        (onExported)="onExported($event)">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="Recibos_de_caja_no_autorizados" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="idDocumento" caption="RC" dataType="number" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
+        <dxi-column dataField="numDocumento" caption="N Documento" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number"></dxi-column>
+
+        <dxi-column dataField="observaciones" caption="Notas" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
+        
+        <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="tipoPago" caption="Tipo Pago" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorRecargo" caption="Valor Recargo" dataType="number" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorPagoEfectivo" caption="Valor Pago Efectivo" dataType="number" [visible]="false"></dxi-column>
+        <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number" [visible]="false"></dxi-column>
+
+        <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
+            <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="rechazarReciboAdmin"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Autorizar" width="6%" [visible]="true" >
+            <dxi-button icon="fa fa-check-square-o" [onClick]="autorizarReciboAdmin"></dxi-button>   
         </dxi-column>
       
 

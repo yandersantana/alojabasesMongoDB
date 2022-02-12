@@ -17,6 +17,8 @@ export class ReciboCaja{
     observaciones: string
     estadoRecibo: string
     tipoDoc: string
+    isAutorizado: boolean
+    isRechazado : boolean
     operacionesComercialesList: Array<OperacionComercial>
     constructor(){
         this.docVenta = "";
@@ -27,6 +29,8 @@ export class ReciboCaja{
         this.observaciones = "";
         this.fecha = new Date();
         this.estadoRecibo = "Activo";
+        this.isAutorizado = true
+        this.isRechazado = false
     }
 }
 

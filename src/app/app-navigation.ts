@@ -330,6 +330,10 @@ export const navigationAdmin = [
         path: "/cuentas-porPagar",
       },
       {
+        text: "Préstamos",
+        path: "/prestamos",
+      },
+      {
         text: "Anulaciones",
         path: "/anulaciones",
       }, 

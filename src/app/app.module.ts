@@ -96,6 +96,7 @@ import { DxoToolbarModule } from "devextreme-angular/ui/nested";
 import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
+import { ReciboCajaPrestamosComponent } from "./pages/reciboCaja/reciboCaja-prestamos/recibo-caja-prestamos.component";
 
 @NgModule({
   declarations: [
@@ -145,7 +146,9 @@ import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
     LoadingMessaggeComponent,
     ComprobantePagoProveedoresComponent,
     CuentaPorPagarComponent,
-    PrestamosComponent
+    PrestamosComponent,
+    ReciboCajaPrestamosComponent,
+    ReciboCajaPrestamosComponent
   ],
   imports: [
     BrowserModule,

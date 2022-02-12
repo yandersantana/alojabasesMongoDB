@@ -31,8 +31,16 @@ export class TransaccionesFinancierasService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);
   }
 
+  obtenerTransaccionesPorDocumentoYRecibo2(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo2", tipobusqueda);
+  }
+
   updateEstado(transaccion, estado: boolean) {
     return this.http.put(this.URL + `/updateEstado/${transaccion._id}/${estado}`, transaccion);
+  }
+
+  updateIsContabilizada(transaccion, estado: boolean) {
+    return this.http.put(this.URL + `/updateContabilizada/${transaccion._id}/${estado}`, transaccion);
   }
 
   deleteTransaccionFinanciera(transaccion) {

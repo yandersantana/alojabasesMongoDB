@@ -20,6 +20,10 @@ export class ReciboCajaService {
     return this.http.get(this.URL + "/getRecibosCaja");
   }
 
+  getRecibosNoAutorizados() {
+    return this.http.get(this.URL + "/getRecibosCajaNoAutorizados");
+  }
+
   getReciboCajaPorId(idRecibo) {
     return this.http.post(this.URL + "/getReciboCajaPorId", idRecibo);
   }
@@ -34,6 +38,10 @@ export class ReciboCajaService {
 
   updateReciboCaja(reciboCaja) {
     return this.http.put(this.URL + `/update/${reciboCaja._id}`, reciboCaja);
+  }
+
+  updateReciboCajaCierre(reciboCaja) {
+    return this.http.put(this.URL + `/updateCierre/${reciboCaja._id}`, reciboCaja);
   }
 
   updateEstado(comprobante: string, estado: string) {

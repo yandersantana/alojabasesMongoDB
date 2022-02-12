@@ -453,10 +453,28 @@ export class CajaMenorComponent implements OnInit {
       this.cajaMenor.estado = "Cerrada";
       this._cajaMenorService.newCajaMenor(this.cajaMenor).subscribe((res) => {
         this.actualizarContador();
+        this.revisarTransacciones();
       },(err) => {});
     } catch (error) {
       this.mostrarMensajeGenerico(2,"Error al guardar"); 
     }    
+  }
+
+  revisarTransacciones(){
+    console.log("dd",this.listaTransacciones)
+    this.listaTransacciones.forEach(element =>{
+      if(element.cuenta == "1.8 EFECTIVO LÍQUIDO"){
+        var fechaNueva = new Date(element.fecha)
+        fechaNueva.setDate(fechaNueva.getDate()+1);
+
+        element.fecha = fechaNueva
+        console.log("dd",element)
+        this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {
+
+        })
+      }
+
+    })
   }
 
   actualizarContador(){

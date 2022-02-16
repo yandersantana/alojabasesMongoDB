@@ -31,6 +31,10 @@ export class TransaccionesFinancierasService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);
   }
 
+  obtenerTransaccionesPrestamos(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPrestamos", tipobusqueda);
+  }
+
   obtenerTransaccionesPorDocumentoYRecibo2(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo2", tipobusqueda);
   }

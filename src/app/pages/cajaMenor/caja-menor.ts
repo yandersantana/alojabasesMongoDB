@@ -32,11 +32,13 @@ export class CajaMenor{
     totalRC: number;
     resultado: number;
     estadoCaja: string;
+    validada : string;
     constructor(){    
         this.estado = "Abierto"   //Cerrada
         this.totalIngresos = 0;
         this.totalSalidas = 0;
         this.totalRC = 0;
+        this.validada = "NO"
     }
 }
 

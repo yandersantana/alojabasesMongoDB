@@ -21,7 +21,8 @@ const TransaccionesFinancierasSchema = new Schema({
     id_documento : { type: Number, required: false},
     tipoTransaccion : { type: String, required: false},
     isContabilizada : { type: Boolean, required: false},
-    notas: { type: String, required: false}
+    notas: { type: String, required: false},
+    referenciaPrestamo: { type: String, required: false}
 },{
     timestamps:true
 });

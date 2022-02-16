@@ -47,4 +47,8 @@ export class CajaMenorService {
   updateEstado(cajaMenor, estado: string) {
     return this.http.put(this.URL + `/updateEstado/${cajaMenor._id}/${estado}`, cajaMenor);
   }
+
+  updateValidacion(cajaMenor, estado: string) {
+    return this.http.put(this.URL + `/updateValidacion/${cajaMenor._id}/${estado}`, cajaMenor);
+  }
 }

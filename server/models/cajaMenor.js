@@ -12,6 +12,7 @@ const CajaMenorSchema = new Schema({
     totalRC: { type: Number, required: false},
     resultado: { type: Number, required: false},
     estadoCaja: { type: String, required: false},
+    validada: { type: String, required: false},
 },{
     timestamps:true
 });

@@ -96,6 +96,12 @@ export class ReciboCajaComponent implements OnInit {
     'Anulados',
   ];
 
+  arraySucursales: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
+  ];
+
   tiposRecibo: string[] = [
     'Normal',
     'Cierre',
@@ -157,8 +163,11 @@ export class ReciboCajaComponent implements OnInit {
       this.tipoDocumento = params['tipo'] || 0;
     });
 
-    if(this.idDocumento != 0 && this.tipoDocumento != 0)
+    if(this.idDocumento != 0 && this.tipoDocumento != 0){
       this.buscarDatosFactura();
+      //this.cargarCuentasFacturacion();
+    }
+      
 
     this.cargarUsuarioLogueado();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
@@ -197,7 +206,7 @@ export class ReciboCajaComponent implements OnInit {
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
       this.listaCuentasGlobal = res as Cuenta[];
-      this.separarcuentas();
+      this.cargarCuentasNormales();
    })
   }
 
@@ -208,10 +217,34 @@ export class ReciboCajaComponent implements OnInit {
     })
   }
 
+  cargarCuentasNormales(){
+    this.listaCuentas = []
+    this.listaCuentasGlobal.forEach(element=>{
+      if(element._id == "6195af3ef75a418e9c2eb9fd" || element._id == "6195af47f75a418e9c2eb9fe"  || element._id == "6195b02af75a418e9c2eba05")
+        this.listaCuentas.push(element);
+    })
+  }
+
   cargarCuentasCierre(){
     this.listaCuentas = []
     this.listaCuentasGlobal.forEach(element=>{
-      if(element._id == "6195b01ef75a418e9c2eba04" || element._id == "6195af71f75a418e9c2eba03")
+      if(element._id == "6195b01ef75a418e9c2eba04" || element._id == "6195af71f75a418e9c2eba03"  || element._id == "6195b02af75a418e9c2eba05")
+        this.listaCuentas.push(element);
+    })
+  }
+
+  cargarlistaCuentasPorCobrar(){
+    this.listaCuentas = []
+    this.listaCuentasGlobal.forEach(element=>{
+      if(element._id == "61bcef301a0afd3ac9084cce" || element._id == "6195b02af75a418e9c2eba05"  || element._id == "6195b036f75a418e9c2eba06")
+        this.listaCuentas.push(element);
+    })
+  }
+
+  cargarCuentasFacturacion(){
+    this.listaCuentas = []
+    this.listaCuentasGlobal.forEach(element=>{
+      if(element._id == "61bcef301a0afd3ac9084cce" || element._id == "6195b02af75a418e9c2eba05"  || element._id == "6195b036f75a418e9c2eba06")
         this.listaCuentas.push(element);
     })
   }
@@ -311,7 +344,6 @@ export class ReciboCajaComponent implements OnInit {
     const promesaUser = new Promise((res, err) => {
       if (localStorage.getItem("maily") != '') 
       var correo = localStorage.getItem("maily");
-
       this._authenService.getUserLogueado(correo)
         .subscribe(
           res => {
@@ -505,6 +537,7 @@ export class ReciboCajaComponent implements OnInit {
         this.isNormal = true;
         this.isTipoCierre = false;
         this.seccionPrestamo = false;
+        this.cargarCuentasNormales();
         break;
       case "Facturación":
         this.bloquearValor = true;
@@ -512,6 +545,7 @@ export class ReciboCajaComponent implements OnInit {
         this.isNormal = false;
         this.isTipoCierre = false;
         this.seccionPrestamo = false;
+        this.cargarCuentasFacturacion();
         break;
       case "Cta.x Cobrar":
         this.bloquearValor = false;
@@ -519,6 +553,7 @@ export class ReciboCajaComponent implements OnInit {
         this.isNormal = false;
         this.isTipoCierre = false;
         this.seccionPrestamo = false;
+        this.cargarlistaCuentasPorCobrar();
         break;
       case "Cierre":
         this.bloquearValor = false;
@@ -574,13 +609,48 @@ export class ReciboCajaComponent implements OnInit {
       if(element._id == e.value){
         this._subCuentasService.getSubCuentasPorId(e.value).subscribe(res => {
           element.sub_cuentaList = res as SubCuenta[];
-          if(element._id == "6195b036f75a418e9c2eba06"){
+          if(this.tipoRecibo == "Facturación"){
+            if(element._id == "61bcef301a0afd3ac9084cce"){
             element.sub_cuentaList.forEach(element2 =>{
-              if(element2.tipoCuenta == "INGRESO")
-              arrayCuentas.push(element2)
+              if(element2._id == "61e07c6e8ec6ee3b9fb7ef7a")
+                arrayCuentas.push(element2)
+              })
+              this.buscarSubCuentas(e,i , arrayCuentas);
+            }else if(element._id == "6195b036f75a418e9c2eba06"){
+              element.sub_cuentaList.forEach(element2 =>{
+                if(element2._id == "61c50005270abc667ec3f8f7")
+                  arrayCuentas.push(element2)
+              })
+              this.buscarSubCuentas(e,i , arrayCuentas);
+            }else{
+              this.buscarSubCuentas(e, i , res);
+            }
+          }
+          
+
+          if(this.tipoRecibo == "Cta.x Cobrar"){
+            if(element._id == "61bcef301a0afd3ac9084cce"){
+            element.sub_cuentaList.forEach(element2 =>{
+              if(element2._id == "61e07c6e8ec6ee3b9fb7ef7a")
+                arrayCuentas.push(element2)
             })
             this.buscarSubCuentas(e,i , arrayCuentas);
-          }else{
+            }else if(element._id == "6195b036f75a418e9c2eba06"){
+            element.sub_cuentaList.forEach(element2 =>{
+              if(element2._id == "61c50005270abc667ec3f8f7")
+                arrayCuentas.push(element2)
+            })
+            this.buscarSubCuentas(e,i , arrayCuentas);
+            }else{
+              this.buscarSubCuentas(e, i , res);
+            }
+          }
+
+          if(this.tipoRecibo == "Cierre"){
+            this.buscarSubCuentas(e, i , res);
+          }
+
+          if(this.tipoRecibo == "Normal"){
             this.buscarSubCuentas(e, i , res);
           }
         })

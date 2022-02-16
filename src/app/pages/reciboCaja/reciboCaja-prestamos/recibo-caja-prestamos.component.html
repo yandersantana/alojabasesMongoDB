@@ -80,7 +80,11 @@
                             
 
                             <div class="col-md-4">Sucursal:</div>
-                            <div class="col-md-8"><dx-text-box [(value)]="reciboCaja.sucursal" [readOnly]="isReadOnly"></dx-text-box></div>
+                            <div class="col-md-8"><dx-select-box [items]="arraySucursales" 
+                                            [(value)]="reciboCaja.sucursal" 
+                                            [readOnly]="isReadOnly"
+                                            [disabled]="false">
+                                        </dx-select-box></div>
                         </div>
                     </div>
 

@@ -57,6 +57,11 @@ router.post("/getTransaccionesPorTipoDocumentoYRecibo", async (req, res, next) =
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPrestamos", async (req, res, next) => {
+  const transacciones = await TransaccionFinanciera.find({ numDocumento: req.body.NumDocumento ,referenciaPrestamo : req.body.rCajaId});
+  res.json(transacciones);
+});
+
 router.post("/getTransaccionesPorTipoDocumentoYRecibo2", async (req, res, next) => {
   const transacciones = await TransaccionFinanciera.find({ numDocumento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
   res.json(transacciones);
@@ -101,7 +106,8 @@ router.post("/newTransaccion", async (req, res) => {
     tipoCuenta: req.body.tipoCuenta,
     id_documento : req.body.id_documento,
     tipoTransaccion : req.body.tipoTransaccion,
-    isContabilizada : req.body.isContabilizada
+    isContabilizada : req.body.isContabilizada,
+    referenciaPrestamo : req.body.referenciaPrestamo
   });
   await newTransaccion.save();
   res.json({ status: "Sucursal creado" });

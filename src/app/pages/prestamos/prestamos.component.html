@@ -94,22 +94,12 @@
     <!-- <dxi-column dataField="documentoVenta" caption="Documento" dataType="string"></dxi-column> -->
    
     <dxi-column dataField="valorDeuda" caption="Valor Deuda" dataType="string" [visible]="true"></dxi-column>
-    <dxi-column dataField="valor" caption="Valor Cancelado" dataType="string" [visible]="true"></dxi-column>
+    <dxi-column dataField="valor" caption="Valor Pendiente" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="beneficiario" caption="Beneficiario" dataType="string"></dxi-column>
     <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
-    
-  <!--   <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
-        <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
-        <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
-        <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
-    </dxi-column> -->
-    
+
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager
         [showPageSizeSelector]="true"

@@ -25,7 +25,6 @@ import { CuentasPorPagarService } from 'src/app/servicios/cuentasPorPagar.servic
 import { dataDocumento, OperacionComercial } from '../reciboCaja/recibo-caja';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
-import { element } from 'protractor';
 import { Prestamos } from '../prestamos/prestamos';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';
 
@@ -85,6 +84,12 @@ export class ComprobantePagoComponent implements OnInit {
       'Activos',
       'Pendientes',
       'Anulados',
+  ];
+
+  arraySucursales: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
   ];
 
   tiposBusqueda: string[] = [
@@ -170,7 +175,7 @@ export class ComprobantePagoComponent implements OnInit {
    separarcuentas(){
     this.listaCuentasGlobal.forEach(element=>{
       if(element.tipoCuenta == "Salidas" || element.tipoCuenta == "Reales y Transitorias"){
-        if(element._id == "6195af58f75a418e9c2eba00" || element._id == "6195b02af75a418e9c2eba05"){
+        if(element._id == "6195af58f75a418e9c2eba00" || element._id == "6195b02af75a418e9c2eba05" || element._id == "6195af71f75a418e9c2eba03"){
 
         }else
           this.listaCuentas.push(element);
@@ -270,11 +275,6 @@ export class ComprobantePagoComponent implements OnInit {
 
     if(this.tipoComprobante == "Cta.x Pagar"){
       this.comprobantePago.beneficiario = e.value.nombreCliente;
-
-      /* var registro = this.arrayCuentasPorPagar.find(element=> element.valor == this.totalDeuda);
-      if(registro){
-        this.comprobantePago.telefono = registro.
-      } */
     }
       
   }
@@ -437,6 +437,12 @@ export class ComprobantePagoComponent implements OnInit {
             element.sub_cuentaList.forEach(element2 =>{
               if(element2.tipoCuenta == "SALIDA")
               arrayCuentas.push(element2)
+            })
+            this.buscarSubCuentas(e,i , arrayCuentas);
+          }else if(element._id == "6195b03cf75a418e9c2eba07"){
+            element.sub_cuentaList.forEach(element2 =>{
+              if(element2._id != "62072de14b08c5ff14ef9fe0")
+                arrayCuentas.push(element2)
             })
             this.buscarSubCuentas(e,i , arrayCuentas);
           }else{
@@ -761,8 +767,11 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      if(element.nombreCuenta == "2.1 PRÉSTAMOS")
+      if(element.nombreCuenta == "2.1 PRÉSTAMOS"){
+        transaccion.referenciaPrestamo = "CP"+this.comprobantePago.idDocumento.toString();
         this.InsertarPrestamo(transaccion)
+      }
+        
 
       if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.1 Cuentas x Pagar"){
         this.InsertarCuentaPorPagar(transaccion)

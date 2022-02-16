@@ -91,7 +91,6 @@ export class CajaMenorComponent implements OnInit {
     this._cajaMenorService.getCajaMenorPorFecha(this.cajaMenor).subscribe(
       res => {
         this.cajaMenorEncontradas = res as CajaMenor[];
-        console.log(this.cajaMenorEncontradas)
         if(this.cajaMenorEncontradas.length != 0 ){
           var existeRegistro = this.cajaMenorEncontradas.find(element=>element.sucursal == this.cajaMenor.sucursal);
           this.existeRegistro = existeRegistro ? true : false;
@@ -265,8 +264,8 @@ export class CajaMenorComponent implements OnInit {
       newCaja.Sub1 = element.numDocumento;
       newCaja.Notas = element.notas;
       console.log(newCaja.Notas)
-      if(element.cuenta == "11 PRÉSTAMOS")
-        newCaja.Sub2 = element.cliente;
+      if(element.cuenta == "2.1 PRÉSTAMOS")
+        newCaja.Sub2 = element.cedula;
       else
         newCaja.Sub2 = element.documentoVenta;
       newCaja.SubCuenta = element.subCuenta;
@@ -352,7 +351,7 @@ export class CajaMenorComponent implements OnInit {
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) { 
-        this._cajaMenorService.updateEstado(e,"Validada").subscribe(res => {
+        this._cajaMenorService.updateValidacion(e,"SI").subscribe(res => {
           this.mostrarMensajeGenerico(1,"Caja actualizada");
           this.traerCajaPagoPorRango();
         })

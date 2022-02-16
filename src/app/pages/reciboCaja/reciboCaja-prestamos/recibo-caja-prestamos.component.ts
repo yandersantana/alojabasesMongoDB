@@ -108,6 +108,12 @@ export class ReciboCajaPrestamosComponent implements OnInit {
     'Cta.x Cobrar',
   ];
 
+  arraySucursales: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
+  ];
+
   imagenLogotipo ="";
   textLoading = "";
   busquedaTransaccion: tipoBusquedaTransaccion; 
@@ -210,7 +216,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
 
   separarcuentas(){
     this.listaCuentasGlobal.forEach(element=>{
-      if(element.nombre == "2.1 PRÉSTAMOS" || element.nombre == "1.3 INGRESOS")
+      if(element.nombre == "2.1 PRÉSTAMOS" || element.nombre == "1.3 INGRESOS" || element.nombre == "1.9 EFECTIVO NO LIQUIDO")
         this.listaCuentas.push(element);
     })
   }
@@ -218,7 +224,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
   cargarCuentasCierre(){
     this.listaCuentas = []
     this.listaCuentasGlobal.forEach(element=>{
-      if(element._id == "6195b01ef75a418e9c2eba04" || element._id == "6195af71f75a418e9c2eba03")
+      if(element._id == "6195b01ef75a418e9c2eba04" || element._id == "6195af71f75a418e9c2eba03" || element._id == "6195b02af75a418e9c2eba05")
         this.listaCuentas.push(element);
     })
   }
@@ -277,9 +283,6 @@ export class ReciboCajaPrestamosComponent implements OnInit {
     if(this.tipoRecibo == "Facturacion")
       this.reciboCaja.fecha = e.value.fecha;
 
-
-      
-   
   }
 
   traerBeneficiarios(){
@@ -568,10 +571,16 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       if(element._id == e.value){
         this._subCuentasService.getSubCuentasPorId(e.value).subscribe(res => {
           element.sub_cuentaList = res as SubCuenta[];
-          if(element._id == "6195b036f75a418e9c2eba06"){
+          if(element._id == "61bcef301a0afd3ac9084cce"){
             element.sub_cuentaList.forEach(element2 =>{
-              if(element2.tipoCuenta == "INGRESO")
-              arrayCuentas.push(element2)
+              if(element2._id == "62072fd64b08c5ff14ef9fe1")
+                arrayCuentas.push(element2)
+            })
+            this.buscarSubCuentas(e,i , arrayCuentas);
+          }else if(element._id == "6195b03cf75a418e9c2eba07"){
+            element.sub_cuentaList.forEach(element2 =>{
+              if(element2._id == "62072de14b08c5ff14ef9fe0")
+                arrayCuentas.push(element2)
             })
             this.buscarSubCuentas(e,i , arrayCuentas);
           }else{
@@ -655,7 +664,6 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
     this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transaccionesFinancieras = res as TransaccionesFinancieras[];
-      console.log("ggg",this.transaccionesFinancieras)
       if(this.transaccionesFinancieras.length == 0){
         this.mostrarLoading = false;
         this.mostrarMensajeGenerico(2,"No se encontraron transacciones")
@@ -999,9 +1007,10 @@ export class ReciboCajaPrestamosComponent implements OnInit {
   async guardarReciboCaja(){
     try {
       this._reciboCajaService.newReciboCaja(this.reciboCaja).subscribe(async (res) => {
+        await this.actualizarEstadoTransacciones();
         this.actualizarContador();
         this.generarTransaccionesFinancieras();
-        await this.actualizarEstadoTransacciones();
+        
 
       },(err) => {});
     } catch (error) {
@@ -1021,8 +1030,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
        this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
 
       this.busquedaTransaccion.rCajaId = this.numReciboCajaTraido;
-      console.log(this.busquedaTransaccion)
-      this._transaccionFinancieraService.obtenerTransaccionesPorDocumentoYRecibo(this.busquedaTransaccion).subscribe(
+      this._transaccionFinancieraService.obtenerTransaccionesPrestamos(this.busquedaTransaccion).subscribe(
         async (res) => {
           var transacciones = res as TransaccionesFinancieras[];
           console.log("dd",transacciones)
@@ -1089,6 +1097,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
     var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
     var fecha2  = new Date(this.fechaDocumentoPendiente).toLocaleDateString();
 
+    
     this.reciboCaja.operacionesComercialesList.forEach(element=>{
       var transaccion = new TransaccionesFinancieras();
       transaccion.fecha = this.reciboCaja.fecha;
@@ -1110,8 +1119,13 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       transaccion.notas = this.reciboCaja.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
 
-      if(element.nombreCuenta == "2.1 PRÉSTAMOS" && element.nombreSubcuenta == "2.2.4 Saldos")
+      if(element.nombreCuenta == "2.1 PRÉSTAMOS" && element.nombreSubcuenta == "2.2.4 Saldos"){
+        transaccion.referenciaPrestamo = this.numReciboCajaTraido
+        if(fechaRecibo != fecha2)
+          transaccion.isContabilizada = false;
         this.InsertarPrestamo(transaccion)
+      }
+        
       
 
       try {

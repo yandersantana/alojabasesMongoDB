@@ -14,7 +14,8 @@ router.post('/newCajaMenor', async (req, res) => {
         totalRC:req.body.totalRC,
         total:req.body.total,
         resultado:req.body.resultado,
-        estadoCaja:req.body.estadoCaja
+        estadoCaja:req.body.estadoCaja,
+        validada:req.body.validada
     });
     await newCajaMenor.save();
     res.json({status: 'Cuenta creada'});
@@ -94,6 +95,13 @@ router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   const { id } = req.params;
   const { estado } = req.params;
   await CajaMenor.findByIdAndUpdate( id,{ $set: { estado: estado } },{ new: true } );
+  res.json({ status: "caja Updated" });
+});
+
+router.put("/updateValidacion/:id/:estado", async (req, res, next) => {
+  const { id } = req.params;
+  const { estado } = req.params;
+  await CajaMenor.findByIdAndUpdate( id,{ $set: { validada: estado } },{ new: true } );
   res.json({ status: "caja Updated" });
 });
 

@@ -163,10 +163,9 @@ export class ReciboCajaComponent implements OnInit {
       this.tipoDocumento = params['tipo'] || 0;
     });
 
-    if(this.idDocumento != 0 && this.tipoDocumento != 0){
+    if(this.idDocumento != 0 && this.tipoDocumento != 0)
       this.buscarDatosFactura();
-      //this.cargarCuentasFacturacion();
-    }
+    
       
 
     this.cargarUsuarioLogueado();
@@ -206,7 +205,8 @@ export class ReciboCajaComponent implements OnInit {
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
       this.listaCuentasGlobal = res as Cuenta[];
-      this.cargarCuentasNormales();
+      this.separarcuentas();
+      //this.cargarCuentasNormales();
    })
   }
 
@@ -537,7 +537,7 @@ export class ReciboCajaComponent implements OnInit {
         this.isNormal = true;
         this.isTipoCierre = false;
         this.seccionPrestamo = false;
-        this.cargarCuentasNormales();
+        this.separarcuentas();
         break;
       case "Facturación":
         this.bloquearValor = true;
@@ -831,6 +831,7 @@ export class ReciboCajaComponent implements OnInit {
         e.isRechazado = true
         this._reciboCajaService.updateReciboCajaCierre(e).subscribe(
           res => { 
+            this.mostrarLoading = false;
             Swal.fire({
               title:'Correcto',
               text: 'Se ha actualizado con éxito',
@@ -1195,6 +1196,10 @@ export class ReciboCajaComponent implements OnInit {
       if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.0 Cuentas x Cobrar"){
         this.InsertarCuentaPorCobrar(transaccion)
         this.existeCuentaPorCobrar = true;
+      }
+
+      if(this.tipoRecibo == "Normal"){
+        transaccion.isContabilizada = true;
       }
 
       try {

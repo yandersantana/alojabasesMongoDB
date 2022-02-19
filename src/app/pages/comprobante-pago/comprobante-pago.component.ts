@@ -115,6 +115,7 @@ export class ComprobantePagoComponent implements OnInit {
   textoDatosFactura = "";
   valorDocumento = "";
   idCuentaPorPagar = "";
+  isUser = false
 
     
         
@@ -237,6 +238,10 @@ export class ComprobantePagoComponent implements OnInit {
             var usuario = res as user;
             this.comprobantePago.usuario = usuario[0].username.toString();
             this.comprobantePago.sucursal = usuario[0].sucursal.toString();
+             if(usuario[0].rol == "Usuario")
+              this.isUser = true;
+            else
+              this.isUser = false;
           }
         )
     });

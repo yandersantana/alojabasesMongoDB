@@ -51,6 +51,7 @@ export class CajaMenorComponent implements OnInit {
 
   tipoUsuario = "";
   isAdmin = true;
+  isUser = false;
   notas = ""
   popupVisibleNotas = false;
   existeRegistro = false
@@ -200,6 +201,8 @@ export class CajaMenorComponent implements OnInit {
 
             if(usuario[0].rol == "Administrador")
               this.isAdmin = true;
+            else if(usuario[0].rol == "Usuario")
+              this.isUser = true;
             else
               this.isAdmin = false;
             

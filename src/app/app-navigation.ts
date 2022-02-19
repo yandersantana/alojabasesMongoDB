@@ -77,6 +77,36 @@ export const navigation = [
     ],
   },
   {
+    text: "Contable",
+    icon: "fa fa-bar-chart",
+    items: [
+      {
+        text: "Caja Menor",
+        path: "/caja-menor",
+      },
+      {
+        text: "Recibos de Caja",
+        path: "/recibo-caja",
+      },
+       {
+        text: "Comprobante de Pago",
+        path: "/comprobante-pago",
+      },
+      {
+        text: "Cuentas por Cobrar",
+        path: "/cuentas-porCobrar",
+      },
+      {
+        text: "Cuentas por Pagar",
+        path: "/cuentas-porPagar",
+      },
+      {
+        text: "Transacciones Financieras",
+        path: "/transacciones-financieras",
+      },
+    ],
+  },
+  {
     text: "Profile",
     path: "/profile",
     icon: "home",
@@ -85,6 +115,16 @@ export const navigation = [
     text: "Tutoriales",
     path: "",
     icon: "home",
+  },
+  {
+    text: "Business Inteligence",
+    icon: "fa fa-bar-chart",
+    items: [
+      {
+        text: "Reporte Detallado",
+        path: "reporte-detallado",
+      },
+    ],
   },
 ];
 
@@ -281,10 +321,6 @@ export const navigationAdmin = [
         text: "Bodegas",
         path: "/bodegas",
       },
-      /* {
-        text: 'Control Precios',
-        path: '/precios',
-      }, */
     ],
   },
   {
@@ -561,16 +597,20 @@ export const navigationSupervisor = [
     icon: "fa fa-bar-chart",
     items: [
       {
-        text: "Caja menos",
-        path: "",
-      },
-      {
-        text: "Registros Caja",
-        path: "",
+        text: "Caja Menor",
+        path: "/caja-menor",
       },
       {
         text: "Recibos de Caja",
-        path: "",
+        path: "/recibo-caja",
+      },
+       {
+        text: "Comprobante de Pago",
+        path: "/comprobante-pago",
+      },
+      {
+        text: "C/Pago Proveedores",
+        path: "/comprobante-pago-proveedores",
       },
       {
         text: "Cuentas por Cobrar",
@@ -578,15 +618,19 @@ export const navigationSupervisor = [
       },
       {
         text: "Cuentas por Pagar",
-        path: "",
+        path: "/cuentas-porPagar",
+      },
+      {
+        text: "Préstamos",
+        path: "/prestamos",
       },
       {
         text: "Anulaciones",
         path: "/anulaciones",
-      },
+      }, 
       {
-        text: "Activos Fijos",
-        path: "",
+        text: "Transacciones Financieras",
+        path: "/transacciones-financieras",
       },
     ],
   },

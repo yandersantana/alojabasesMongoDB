@@ -3359,11 +3359,16 @@ cambiarestado(e,i:number){
   }
 
   generarCuentaPorCobrar(idRecibo){
+    var cliente = this.factura.cliente.cliente_nombre
     if(this.formaPago == "Pendiente de Pago"){
       var cuentaPorCobrar = new CuentaPorCobrar();
       cuentaPorCobrar.fecha = new Date();
       cuentaPorCobrar.sucursal = this.factura.sucursal;
-      cuentaPorCobrar.cliente = this.factura.cliente.cliente_nombre;
+      
+      var ultimo = cliente.slice(-1);
+      if(ultimo == " ")
+        cliente = cliente.substring(0, cliente.length-1);
+      cuentaPorCobrar.cliente = cliente;
       cuentaPorCobrar.rucCliente = this.factura.cliente.ruc;
       cuentaPorCobrar.rCajaId = "RC"+idRecibo;
       cuentaPorCobrar.documentoVenta = this.factura.documento_n.toString();

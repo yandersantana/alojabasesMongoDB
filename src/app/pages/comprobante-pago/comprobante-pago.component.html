@@ -3,7 +3,7 @@
 
 <br><br>
 
-<div class="row remiPro">
+<div class="row remiPro" *ngIf="!isUser">
     <div class="col-md-8"></div>
     <div class="col-md-4"> 
         <dx-select-box [items]="menu" 

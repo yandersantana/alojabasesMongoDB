@@ -131,6 +131,7 @@ export class ReciboCajaComponent implements OnInit {
   existeCaja = false
   valorTotalInicioFactura = 0
   tipoDocumentoCuenta = ""
+  isUser = false
   fechaDeuda = new Date()
 
 
@@ -181,7 +182,8 @@ export class ReciboCajaComponent implements OnInit {
   buscarDatosFactura(){
     this.isNormal = false;
     this.isFacturacion = true;
-    this.tipoRecibo = this.tiposRecibo[1];
+    this.tipoRecibo = this.tiposRecibo[2];
+    this.cargarCuentasFacturacion();
     if(this.tipoDocumento == 1){
       this.reciboCaja.docVenta = this.idDocumento.toString();
       this.reciboCaja.tipoDoc = this.tipoDocumentos[0];
@@ -205,8 +207,10 @@ export class ReciboCajaComponent implements OnInit {
   traerListaCuentas(){
     this._cuentasService.getCuentas().subscribe(res => {
       this.listaCuentasGlobal = res as Cuenta[];
-      this.separarcuentas();
-      //this.cargarCuentasNormales();
+      if(this.tipoRecibo != "Facturación")
+        this.separarcuentas();
+      else  
+        this.cargarCuentasFacturacion();
    })
   }
 
@@ -349,6 +353,11 @@ export class ReciboCajaComponent implements OnInit {
           res => {
             var usuario = res as user;
             this.reciboCaja.sucursal = usuario[0].sucursal.toString();
+
+            if(usuario[0].rol == "Usuario")
+              this.isUser = true;
+            else
+              this.isUser = false;
           }
         )
     });
@@ -672,13 +681,7 @@ export class ReciboCajaComponent implements OnInit {
     this.valorTotal2 = this.reciboCaja.valorPagoEfectivo ;
     this.reciboCaja.valorSaldos = this.valorTotal1 - this.valorTotal2 + this.reciboCaja.valorRecargo;
     if(this.reciboCaja.valorSaldos < 0)
-/*     Swal.fire({
-        title: "Atención",
-        text: texto,
-        icon: 'success'
-      }) */
        Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la factura",'warning')
-      //this.mostrarMensajeGenerico(2,"La suma de los valores no puede ser mayor al valor de la factura");
   }
 
   eliminarRegistro(i: number) {
@@ -1178,6 +1181,11 @@ export class ReciboCajaComponent implements OnInit {
           transaccion.isContabilizada = true;
         else
           transaccion.isContabilizada = false;
+      }
+
+      if( fechaRecibo != fecha2 && this.tipoRecibo == "Facturación"){
+          transaccion.isContabilizada = true;
+       
       }
       
       if(this.tipoRecibo == "Cta.x Cobrar"){

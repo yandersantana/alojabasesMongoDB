@@ -12,9 +12,6 @@ router.post('/register', async (req, res) => {
     const newUser = new User({ email, password, name, lastname , status});
     console.log(newUser);
     await newUser.save();
-    /*const token = await jwt.sign({_id: newUser._id}, 'secretkey');
-    res.status(200).json({token});  esto guarda el id de un nuevo usuario si fuera el caso de que
-    el usuario haga su registro y quiere mantener la sesion iniciada*/
     res.send("Registrado");
 
 });
@@ -78,7 +75,6 @@ router.get('/getUsers/:id', async (req, res) => {
 router.get('/getUsers1/:correo', async (req, res) => {
     const { correo } = req.params;
     const grupos = await User.find({"email":correo});
-   // console.log("sss "+grupos)
     res.json(grupos); 
 })
 
@@ -94,8 +90,6 @@ router.post('/newUser', async (req, res) => {
     else{
         const { email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status } = req.body;
         const newUser = new User({ email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status});
-        
-        console.log(newUser);
         await newUser.save();
         res.json({status: 'user creado'});
     }
@@ -103,21 +97,18 @@ router.post('/newUser', async (req, res) => {
 });
 
 router.post('/signIn', async (req, res) => {
-    console.log("llegie aquiii")
     const { email, password } = req.body;
-    console.log("dd "+email + password)
     const user = await User.findOne({ email });
     if (!user) return res.status(401).send('La cuenta no existe');
+    console.log(user)
     if (user.password !== password) return res.status(401).send('Contraseña Incorrecta');
+    if (user.status !== "Activo") return res.status(404).send('Usuario bloqueado');
     const token = jwt.sign({ _id: user._id }, 'secretkey');
     return res.status(200).json({ token });
 });
 
 
-//actualizar un solo usuario
-
 router.put('/updateUser/:id', async (req, res,next) => {
-  
     const { id } = req.params;
     const user = {
         name: req.body.name,

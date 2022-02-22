@@ -463,17 +463,16 @@ export class CajaMenorComponent implements OnInit {
   }
 
   revisarTransacciones(){
-    console.log("dd",this.listaTransacciones)
     this.listaTransacciones.forEach(element =>{
       if(element.cuenta == "1.8 EFECTIVO LÍQUIDO"){
         var fechaNueva = new Date(element.fecha)
         fechaNueva.setDate(fechaNueva.getDate()+1);
-
         element.fecha = fechaNueva
+        element.cuenta = "1.1 VIENEN"
+        element.subCuenta = "1.1.0 De ejercicio anterior"
+        element.tipoCuenta = "Ingresos"
         console.log("dd",element)
-        this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {
-
-        })
+        this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {})
       }
 
     })

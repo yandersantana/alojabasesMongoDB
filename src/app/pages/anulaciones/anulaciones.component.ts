@@ -1851,7 +1851,6 @@ subtotal:number=0
     this.busquedaTransaccion.tipoTransaccion = "venta-fact"
     this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transacciones = res as transaccion[];
-      console.log("transacciones",this.transacciones)
       if(this.transacciones.length == 0){
           Swal.fire({
             title: 'Error',

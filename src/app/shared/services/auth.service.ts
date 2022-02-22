@@ -1,11 +1,8 @@
 import { Injectable } from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot } from '@angular/router';
-import { auth } from  'firebase/app';
 import { AngularFireAuth } from  "@angular/fire/auth";
 import { User } from  'firebase';
-import { Session } from 'protractor';
 import { AuthenService } from 'src/app/servicios/authen.service';
-import { user } from 'src/app/pages/user/user';
 
 @Injectable()
 export class AuthService {
@@ -13,23 +10,8 @@ export class AuthService {
   loggedIn:boolean;
   user2 = { email: '',
   password: ''
-
   }
-  /* constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
-    if(sessionStorage.getItem("logged") == undefined){
-      sessionStorage.setItem("logged", false.toString())
-    }
-    this.loggedIn = JSON.parse(sessionStorage.getItem("logged"));
-    
-    this.afAuth.auth.onAuthStateChanged(user => {
-      if (user){
-        this.user = user;
-        sessionStorage.setItem('user', JSON.stringify(this.user.email));
-      } else {
-        sessionStorage.setItem('user', null);
-      }
-    })
-  } */
+
 
   constructor(private router: Router,public authenService: AuthenService, public  afAuth:  AngularFireAuth) {
     if(localStorage.getItem("logged") == undefined){
@@ -57,35 +39,25 @@ export class AuthService {
             localStorage.setItem('token', res.token);
             this.loggedIn = true;
             localStorage.setItem("logged", this.loggedIn.toString())
-            
             this.router.navigate(['/']);
-
           },
           error => {
+           if(error.status == 401)
             alert("Credenciales incorrectas")
+           else if(error.status == 404)
+            alert("El usuario se encuentra bloqueado")
           }
-        );
-     
-    }catch(e){
-      
-    }
+        ); 
+    }catch(e){}
     
   }
 
 
   async loginIn(){
-    
-
     try{
-      if("token" in localStorage){ 
+      if("token" in localStorage)
         this.router.navigate(['/home']);
-      }else{
-        console.log("no")
-      }
-     
-    }catch(e){
-      
-    }
+    }catch(e){}
   }
 
   async logOut() {

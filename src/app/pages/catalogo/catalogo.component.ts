@@ -1,8 +1,5 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { catalogo, opcionesCatalogo, productosCombo, comboProducto } from './catalogo';
-import { element } from 'protractor';
-import { on, trigger, off } from "devextreme/events";
 import Swal from 'sweetalert2';
 import { producto } from '../ventas/venta';
 import { DxGalleryComponent } from 'devextreme-angular';
@@ -15,7 +12,6 @@ import { ControlPreciosService } from 'src/app/servicios/control-precios.service
 import { precios } from '../control-precios/controlPrecios';
 import { Observable } from 'rxjs';
 import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 
@@ -46,8 +42,6 @@ export class CatalogoComponent implements OnInit {
     "Combos de Productos",
   "Administrar Productos"
   ];
-
-  //"Combos de Productos",
 
   menuOrigen: string[] = [
     "Nacional",
@@ -165,7 +159,6 @@ export class CatalogoComponent implements OnInit {
     this.traerProductosCatalogo()
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
-    
     this.cargarUsuarioLogueado()
   }
 
@@ -275,7 +268,6 @@ export class CatalogoComponent implements OnInit {
       this.comboProductos.precioVenta = element.precioVenta +this.comboProductos.precioVenta
     })
     this.precioVentaCombo= this.comboProductos.precioVenta
-    
   }
   
   anadirProducto(e){
@@ -403,9 +395,6 @@ export class CatalogoComponent implements OnInit {
           this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
         } else if (event instanceof HttpResponse) {
           this.fileInfos = this.uploadService.getFiles();
-          console.log("ssss "+event.body)
-          console.log("sdd "+file.name)
-          
           this.catalogo2.IMAGEN.push(event.body)
           this.contadorImagenes++
           this.validarContador2(this.contadorImagenes)
@@ -419,8 +408,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   validarContador2(cont:number){
-    console.log("sssssss "+this.contadorArchivos)
-    console.log("sssssss2222 "+cont)
     if(cont == this.contadorArchivos){
       this.continuarGuardando()
     }else{
@@ -438,9 +425,6 @@ export class CatalogoComponent implements OnInit {
           this.progressInfos[idx].value = Math.round(100 * event.loaded / event.total);
         } else if (event instanceof HttpResponse) {
           this.fileInfos = this.uploadService.getFiles();
-          console.log("ssss "+event.body)
-          console.log("sdd "+file.name)
-          
           this.catalogo2.IMAGEN.push(event.body)
           this.contadorImagenes++
           this.validarContador(this.contadorImagenes)
@@ -455,8 +439,6 @@ export class CatalogoComponent implements OnInit {
 
 
   validarContador(cont:number){
-    console.log("sssssss "+this.contadorArchivos)
-    console.log("sssssss2222 "+cont)
     if(cont == this.contadorArchivos){
       this.newProducto()
     }else{
@@ -496,22 +478,17 @@ export class CatalogoComponent implements OnInit {
   }
 
   administrarPrecios(){
-    console.log(this.productosCatalogoUso.length)
-    console.log(this.productosActivos.length)
     this.productosCatalogoUso.forEach(element=>{
       this.productosActivos.forEach(element2=>{
         if(element.PRODUCTO == element2.PRODUCTO){
           element.precio = element2.precio
-          console.log(element)
         }
       })
     })
-    console.log("ya pase")
   }
 
 
   llenarCombos(){
-    console.log("entre qii")
     this.opcionesCatalogo.forEach(element=>{
          this.arrayUnid= element.arrayUnidades
          this.arrayClasif= element.arrayClasificación
@@ -628,7 +605,6 @@ export class CatalogoComponent implements OnInit {
   }
 
   newProducto(){
-    //this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
     this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
     this.catalogo2.PRODUCTO= this.catalogo2.CLASIFICA+" - "+this.catalogo2.NOMBRE_PRODUCTO +" - "+this.catalogo2.DIM
     this.comparardatos()
@@ -671,10 +647,9 @@ export class CatalogoComponent implements OnInit {
             text: 'El producto ya existe',
             icon: 'error'
           })
-          //contador=0
         }
         
-        //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).set({ ...this.catalogo2 }).then(res => { this.crearNuevoProducto()}, err =>{reject(err) , this.mensajeError()} );
+        
       }) 
 
     }else{
@@ -764,33 +739,14 @@ export class CatalogoComponent implements OnInit {
 
 
   upload(){
-    //this.mensajeGuardando()
     this.formData = new FormData();
     this.formData.append("uploads[]", this.uploadedFiles[0], this.uploadedFiles[0].name);
-
     var options = { content: this.formData };
-    console.log(options)
-    this.serviceUpload.uploadFile(this.formData).subscribe(
-      (res) => {
-        
-        this.tempUrl = res.url
-        //alert(this.tempUrl)
-        //this.newProducto()
-      },
-      err => {alert("errrrrorrr")}
-      )
+    this.serviceUpload.uploadFile(this.formData).subscribe( (res) => {this.tempUrl = res.url }, err => {alert("errrrrorrr")})
   }
 
   uploadNew(){
-    this.serviceUpload.uploadFile(this.uploadedFiles).subscribe(
-      (res) => {
-        alert("sdsd "+res)
-        //this.tempUrl = res.url
-        //alert(this.tempUrl)
-        //this.newProducto()
-      },
-      err => {alert("errrrrorrr")}
-      )
+    this.serviceUpload.uploadFile(this.uploadedFiles).subscribe((res) => {}, err => {} )
   }
 
   upload3(){
@@ -799,10 +755,6 @@ export class CatalogoComponent implements OnInit {
 
   fileChange(element) {
     this.uploadedFiles = element.target.files
-      
-
-    console.log('Name of the file',  this.uploadedFiles);
-    //console.log('Size of the file',  this.uploadedFiles.size);
   }
 
   
@@ -951,14 +903,9 @@ _handleReaderLoaded(readerEvt) {
         if(this.catalogo2.APLICACION ==null || this.catalogo2.APLICACION==""){
           this.catalogo2.APLICACION="Default"
         }
-       // this.actualizarEstado()
+
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
-            ///updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
-            /*this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
-              res => { this.mostrarMensaje()},
-              err => { console.log(err); this.mensajeError() }
-            )*/
             var nuevoProducto = new producto()
             nuevoProducto._id = idProducto
             nuevoProducto.PRODUCTO = this.catalogo2.PRODUCTO
@@ -970,10 +917,6 @@ _handleReaderLoaded(readerEvt) {
             nuevoProducto.porcentaje_ganancia = this.catalogo2.porcentaje_ganancia
             nuevoProducto.precio = this.catalogo2.precio
             nuevoProducto.ESTADO = this.catalogo2.ESTADO
-            /*this.productoService.updateProductoCatalogo(this.catalogo2.PRODUCTO,this.catalogo2.REFERENCIA,this.catalogo2.NOMBRE_COMERCIAL,this.catalogo2.APLICACION, this.catalogo2.M2,this.catalogo2.P_CAJA,this.catalogo2.porcentaje_ganancia,this.catalogo2.precio,this.catalogo2.ESTADO).subscribe(
-              res => { this.mostrarMensaje()},
-              err => { console.log(err); this.mensajeError() }
-            )*/
 
             this.productoService.updateNuevoProductoCatalogo(nuevoProducto).subscribe(
               res => { this.mostrarMensaje()},
@@ -1108,12 +1051,6 @@ _handleReaderLoaded(readerEvt) {
     })
   }
 
-  transformar(e){
-    console.log("dddd")
-   // this._currentScale = this._currentScale ? this._currentScale * args.deltaScale : args.scale;  
-                            //  var currentscale = this._currentScale; 
-  }
-
   verGaleria(imagenes:string[]){
     console.log("viendo galerIA")
     this.popupvisible=false
@@ -1165,7 +1102,6 @@ _handleReaderLoaded(readerEvt) {
     this.productosActivos.forEach(element=>{
       if(element.PRODUCTO == producto){
         this.productoElim = element
-       //alert(element)
       }
     })
     Swal.fire({
@@ -1204,33 +1140,19 @@ _handleReaderLoaded(readerEvt) {
 
   mostrarPopup(producto:string){
     this.titulo=producto
-console.log("eneee")
-console.log("sss "+producto)
     this.productosCatalogo.forEach(element=>{
       if(element.PRODUCTO == producto){
         this.catalogoLeido= element
         this.imagenes=element.IMAGEN
       }
     })
-   /*  this.imagenes = [
-      "https://archivosproductos.000webhostapp.com/ceramica2.png",
-      "https://archivosproductos.000webhostapp.com/ceramica1.jpg"]; */
-     // this.imagenes=images
-
     this.popupvisible= true
-   /*  var var1 
-    var inputElement = <HTMLInputElement>document.getElementById('greet');
-    inputElement.on('dxpinch', function(args) {  
-      this._currentScale = this._currentScale ? this._currentScale * args.deltaScale : args.scale;  
-     
-  }) */
+
   }
 
 
   mostrarPopup2(producto:string){
     this.titulo=producto
-    console.log("eneee")
-    console.log("sss "+producto)
     this.productosCatalogo.forEach(element=>{
       if(element.PRODUCTO == producto){
         this.catalogoLeido= element
@@ -1239,23 +1161,4 @@ console.log("sss "+producto)
     })
     this.popupvisible2= true
   }
-/* 
-  ingresar(){
-    this.db.collection('/catalogo').doc("Porcelanatos- 600 - Ref - 60x60").set({"CALIDAD" :" ","CASA":" ",
-"CLASIFICA":"Porcelanatos","DIM":"60x60","ESTADO":"ACTIVO","M2":1.44,"PRODUCTO":"Porcelanatos- 600 - Ref - 60x60",
-"P_CAJA":4,"REFERENCIA":"600 - Ref","UNIDAD":"m2","cantidad":150,"nombre_comercial":"Porcelanatos","porcentaje_ganancia":15,"precio":15.2})
-
-this.db.collection('/catalogo').doc("Porcelanatos- 5000 Beige - 50x50").set({"CALIDAD" :" ","CASA":" ",
-"CLASIFICA":"Porcelanatos","DIM":"50x50","ESTADO":"ACTIVO","M2":1.75,"PRODUCTO":"Porcelanatos- 5000 Beige - 50x50",
-"P_CAJA":7,"REFERENCIA":"5000 Beige","UNIDAD":"m2","cantidad":150,"nombre_comercial":"Porcelanatos","porcentaje_ganancia":10,"precio":8.7})
-
-this.db.collection('/catalogo').doc("Ceramicas- Castaño duela - 43x43").set({"CALIDAD" :" ","CASA":" ",
-"CLASIFICA":"Ceramicas","DIM":"43x43","ESTADO":"ACTIVO","M2":1.5,"PRODUCTO":"Ceramicas- Castaño duela - 43x43",
-"P_CAJA":8,"REFERENCIA":"Castaño duela","UNIDAD":"m2","cantidad":200,"nombre_comercial":"Ceramica Piso","porcentaje_ganancia":25,"precio":6.5})
-
-this.db.collection('/catalogo').doc("Ceramicas- Cassiani beige - 42.5x42.5").set({"CALIDAD" :" ","CASA":" ",
-"CLASIFICA":"Ceramicas","DIM":"42.5x42.5","ESTADO":"ACTIVO","M2":1,"PRODUCTO":"TCeramicas- Cassiani beige - 42.5x42.5",
-"P_CAJA":11,"REFERENCIA":"Cassiani beige","UNIDAD":"m2","cantidad":50,"nombre_comercial":"Ceramica Piso","porcentaje_ganancia":20,"precio":6.2})
-  }
- */
 }

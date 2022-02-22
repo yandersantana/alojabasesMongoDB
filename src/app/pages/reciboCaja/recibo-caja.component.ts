@@ -1185,13 +1185,16 @@ export class ReciboCajaComponent implements OnInit {
 
       if( fechaRecibo != fecha2 && this.tipoRecibo == "Facturación"){
           transaccion.isContabilizada = true;
-       
       }
       
       if(this.tipoRecibo == "Cta.x Cobrar"){
         if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
           transaccion.isContabilizada = true;
       }
+
+      if( element.nombreSubcuenta == "1.3.2 Abono o pago Documento Venta" && this.tipoRecibo == "Facturación")
+          transaccion.isContabilizada = true;
+      
 
       transaccion.tipoPago = "";
       transaccion.soporte = "";
@@ -1208,6 +1211,10 @@ export class ReciboCajaComponent implements OnInit {
 
       if(this.tipoRecibo == "Normal"){
         transaccion.isContabilizada = true;
+      }
+
+      if(this.tipoRecibo == "Cierre"){
+        transaccion.isContabilizada = false;
       }
 
       try {

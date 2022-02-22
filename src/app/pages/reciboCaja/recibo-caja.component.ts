@@ -1192,10 +1192,10 @@ export class ReciboCajaComponent implements OnInit {
           transaccion.isContabilizada = true;
       }
 
-      if( element.nombreSubcuenta == "1.3.2 Abono o pago Documento Venta" && this.tipoRecibo == "Facturación")
+  /*     if( element.nombreSubcuenta == "1.3.2 Abono o pago Documento Venta" && this.tipoRecibo == "Facturación")
           transaccion.isContabilizada = true;
       
-
+ */
       transaccion.tipoPago = "";
       transaccion.soporte = "";
       transaccion.dias = 0;

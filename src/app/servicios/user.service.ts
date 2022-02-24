@@ -21,7 +21,6 @@ export class UserService {
   ) {}
 
   newUser(user) {
-    console.log("el usuario " + JSON.stringify(user));
     return this.http.post<any>(this.URL + "/newUser", user);
   }
 
@@ -41,8 +40,6 @@ export class UserService {
     console.log("aqui es " + this.URL + `/update/${user._id}`);
     return this.http.put(this.URL + `/updateUser/${user._id}`, user);
   }
-
-  //autenticacion
 
   signup(user) {
     return this.http.post<any>(this.URL + "/register", user);

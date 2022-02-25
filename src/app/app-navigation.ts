@@ -73,19 +73,7 @@ export const navigation = [
       {
         text: "Generar OC",
         path: "/compras",
-      },
-      {
-        text: "Ordenes de compra",
-        path: "/OrdenCompra",
-      },
-      {
-        text: "Fact. Proveedor",
-        path: "/proveedores",
-      },
-      {
-        text: "Remisiones",
-        path: "/productos",
-      },
+      }
     ],
   },
   {

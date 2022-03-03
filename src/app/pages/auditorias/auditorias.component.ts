@@ -102,6 +102,7 @@ export class AuditoriasComponent implements OnInit {
   menuGlobal:string[]
   ubicaciones:string[]
   proTransaccion: productoTransaccion;
+  mostrarTablaAuditoria : boolean = false;
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -338,7 +339,7 @@ export class AuditoriasComponent implements OnInit {
     var z0 = document.getElementById("tabla4");
     var z1 = document.getElementById("newAud");
     var z2 = document.getElementById("editAud");
-    var z3 = document.getElementById("tablaAuditoria");
+    //var z3 = document.getElementById("tablaAuditoria");
 
     switch (e.value) {
       case  "Nueva Auditoria":
@@ -348,7 +349,7 @@ export class AuditoriasComponent implements OnInit {
         z1.style.display="none";
         z0.style.display="none";
         z2.style.display="none";
-        z3.style.display="none";
+        this.mostrarTablaAuditoria = false;
         //z4.style.display="none";
 
         this.newAud = true;
@@ -464,13 +465,12 @@ export class AuditoriasComponent implements OnInit {
   
 
   regresar(){
-    var x = document.getElementById("tablaAuditoria");
-    var y = document.getElementById("newAudGlobal");
-      x.style.display = "none";
-      y.style.display = "block";
+    this.mostrarTablaAuditoria = false;
+    this.newAud = true;
   }
 
   regresar2(){
+    alert("aqui 2")
     var x = document.getElementById("tabla4");
     var z = document.getElementById("tabla2");
     var y = document.getElementById("tabla3");
@@ -481,10 +481,11 @@ export class AuditoriasComponent implements OnInit {
 
    verLista(id:number){
     this.mostrarLoading = true;
-    var x = document.getElementById("tablaAuditoria");
+    this.mostrarTablaAuditoria = true;
+    //var x = document.getElementById("tablaAuditoria");
     //var y = document.getElementById("newAudGlobal");
     var z = document.getElementById("tabla3");
-      x.style.display = "block";
+     // x.style.display = "block";
       //y.style.display = "none";
       z.style.display = "none";
       this.newAud = false;
@@ -498,9 +499,8 @@ export class AuditoriasComponent implements OnInit {
       })
     }
     this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == id){
+      if(element.idPrincipal == id)
          this.auditoriaProductosleida.push(element)
-      }
     })
     this.mostrarLoading = false;
      
@@ -797,6 +797,7 @@ export class AuditoriasComponent implements OnInit {
   guardarAuditoriaProducto(){
   this.auditoria.fecha= new Date().toLocaleString()
    if( this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null && this.auditoria.m2diferencia!=null ){
+   //alert("aqui estoy")
     this.actualizarUbicacion()
       this.mostrarMensaje()
      new Promise<any>((resolve, reject) => {
@@ -1032,9 +1033,10 @@ export class AuditoriasComponent implements OnInit {
         this.editAuditoria.idAud = element.idAud
         this.productoEntregado= element.nombreproducto
         this.nombreSucursal= element.sucursal.nombre
-        var x = document.getElementById("editAud");
+        this.mostrarTablaAuditoria = true;
+       // var x = document.getElementById("editAud");
           var y = document.getElementById("tablaAuditoria");
-          x.style.display = "block";
+          //x.style.display = "block";
           y.style.display = "none";
       }
     })
@@ -1650,9 +1652,12 @@ export class AuditoriasComponent implements OnInit {
       this.invetarioP.forEach((element2) => {
         if (!element2.execute) {
           if (element.PRODUCTO == element2.producto.PRODUCTO) {
-            element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-            element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
-            element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
+            //element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
+            //element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
+            //element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
+            element2.cantidadM2 = element2.cantidadM2;
+            element2.cantidadM2b2 = element2.cantidadM2b2;
+            element2.cantidadM2b3 = element2.cantidadM2b3;
             element2.execute = true;
           }
         }

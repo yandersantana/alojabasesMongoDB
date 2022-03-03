@@ -2,12 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { productosBajas, baja } from './bajas';
 import { AngularFirestore } from 'angularfire2/firestore';
 import { AngularFireAuth } from 'angularfire2/auth';
-import { AlertsService } from 'angular-alert-module';
 import Swal from 'sweetalert2';
 import pdfMake from 'pdfmake/build/pdfmake';
 import { producto, contadoresDocumentos } from '../ventas/venta';
 import { Sucursal } from '../compras/compra';
-import { element } from 'protractor';
 import { transaccion } from '../transacciones/transacciones';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
@@ -82,13 +80,6 @@ export class BajasComponent implements OnInit {
   }
 
   ngOnInit() {
-    //this.getIDBjas()
-    //this.getProductos()
-    //this.getLocales()
-    //this.getBajas()
-    //this.getProductosBajas()
-    //this.getIDTransacciones()
-    //this.getParametrizaciones()
     this.traerParametrizaciones()
     this.traerBajas()
     this.traerSucursales()
@@ -164,72 +155,6 @@ export class BajasComponent implements OnInit {
     this.number_transaccion =this.contadorFirebase[0].transacciones_Ndocumento+1
   }
 
-  /* async getIDBjas() {
-    await this.db.collection('/bajas_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.id_baja = contador.payload.data()['documento_n']+1;  
-    });;
-  }
- */
-  /* async getBajas() {
-    await this.db.collection('bajas').snapshotChanges().subscribe((bajas) => {
-      new Promise<any>((resolve, reject) => {
-        bajas.forEach((nt: any) => {
-          this.bajas.push(nt.payload.doc.data());
-        })
-      }).then(res => {}, err => alert(err));  
-     
-    });;
-  } */
-
-
-  /* async getIDTransacciones() {
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  } */
-
-  /* async getProductosBajas() {    
-    await this.db.collection('productosBaja').snapshotChanges().subscribe((productos) => {   
-      productos.forEach((nt: any) => {
-        this.productosBajaBase.push(nt.payload.doc.data());
-      })
-    });;
-  } */
-
- /*  getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  } */
-
- /*  getLocales(){
-    new Promise<any>((resolve, reject) => {
-    this.db.collection('/locales').valueChanges().subscribe((data:Sucursal[]) => {
-      if(data != null)
-        this.locales = data
-    })
-    console.log("hayyy"+this.locales.length)
-  })
-    
-  } */
-
-  /* async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      new Promise<any>((resolve, reject) => {
-        productos.forEach((nt: any) => {
-          this.productosActivos.push(nt.payload.doc.data());
-        })
-      })
-      this.llenarComboProductos()
-    });;
-  } */
-
   llenarComboProductos(){
     this.productosActivos.forEach(element=>{
       if(element.ESTADO == "ACTIVO"){
@@ -296,16 +221,6 @@ export class BajasComponent implements OnInit {
           }).then((result) => {
             window.location.reload()
           })}, err => {alert("error")})
-       
-       
-         /*  this.db.collection('/bajas').doc(e.id_baja+"").update({"estado":"Rechazado"}).then(res => {  Swal.fire({
-          title: 'Correcto',
-          text: 'Se guardó con éxito',
-          icon: 'success',
-          confirmButtonText: 'Ok'
-        }).then((result) => {
-          window.location.reload()
-        })}, err => alert(err));   */
        
       })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -375,11 +290,6 @@ export class BajasComponent implements OnInit {
         this.transaccion.usuario=this.usuarioLogueado[0].username
         this.transaccion.factPro=""
         this.transaccion.idTransaccion=this.number_transaccion++
-       /*  this.db.collection("/transacciones")
-        .add({ ...this.transaccion })
-        .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => reject(err));
-        this.db.collection("/transacciones_ID").doc("matriz").set({ documento_n:this.number_transaccion })
-          .then(res => { }, err => reject(err)); */
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
             res => {
               this.contadores[0].transacciones_Ndocumento = this.number_transaccion++
@@ -569,7 +479,6 @@ export class BajasComponent implements OnInit {
 
 
   crearPDF(){
-    console.log("entre  a creaar PDF")
     const documentDefinition = this.getDocumentDefinition();
     pdfMake.createPdf(documentDefinition).download('Baja '+this.bajaLeida.id_baja, function() {  });
   }
@@ -1019,14 +928,6 @@ export class BajasComponent implements OnInit {
           this.contadores[0].contBajas_Ndocumento=this.id_baja
           this.contadoresService.updateContadoresIDBajas(this.contadores[0]).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
         }, err => {alert("error")})
-
-        //this.db.collection('/bajas').doc(this.baja.id_baja+"").set({...Object.assign({},this.baja )}) ;
-        //this.db.collection('/bajas_ID').doc("matriz").update({"documento_n" :this.id_baja});
-        /* this.productosBaja.forEach(element => {
-          element.baja_id=this.id_baja
-          this.db.collection("/productosBaja").add({ ...Object.assign({}, element)})
-          .then(resolve => {contV++,this.contadorValidaciones3(contV)}, err => reject(err));   
-          }) */
       })
     }else{
       alert("hay campos vacios")

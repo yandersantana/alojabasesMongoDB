@@ -16,7 +16,7 @@ import { bodega } from "../producto/producto";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
-import { timingSafeEqual } from "crypto";
+
 @Component({
   selector: "app-consolidado",
   templateUrl: "./consolidado.component.html",
@@ -45,6 +45,7 @@ export class ConsolidadoComponent implements OnInit {
   invetarioProd: inventario;
   productosPendientes: productosPendientesEntrega[] = [];
   productosPendientesNoEN: productosPendientesEntrega[] = [];
+  productosPendientesNoENLista: productosPendientesEntrega[] = [];
   bodegas: bodega[] = [];
   bodegasMatriz: string = "";
   bodegasSucursal1: string = "";
@@ -743,11 +744,13 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioP.forEach((element2) => {
         if (!element2.execute) {
           if (element.PRODUCTO == element2.producto.PRODUCTO) {
-            element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-            element2.cantidadM2b2 =
-              element2.cantidadM2b2 + element.suc2Pendiente;
-            element2.cantidadM2b3 =
-              element2.cantidadM2b3 + element.suc3Pendiente;
+            //element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
+            //element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
+            //element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
+
+            element2.cantidadM2 = element2.cantidadM2;
+            element2.cantidadM2b2 = element2.cantidadM2b2;
+            element2.cantidadM2b3 = element2.cantidadM2b3;
             element2.execute = true;
           }
         }
@@ -1102,10 +1105,18 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   mostrarPopupProductos(e: any) {
+    this.arregloNotas = [];
+    this.productosPendientesNoENLista = [];
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
       if (element.PRODUCTO == e.producto.PRODUCTO) {
         this.arregloNotas = element.notas;
+      }
+    });
+
+    this.productosPendientesNoEN.forEach((element) => {
+      if (element.producto.PRODUCTO == e.producto.PRODUCTO) {
+        this.productosPendientesNoENLista.push(element);
       }
     });
     this.popupVisiblePendientes = true;

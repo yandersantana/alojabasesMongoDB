@@ -11,11 +11,7 @@ import { contadoresDocumentos } from '../ventas/venta';
 import { CajaMenor, DetalleCajaMenor, FormatoImpresion } from './caja-menor';
 import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
-
 import 'jspdf-autotable';
-import { reporteDetallado } from '../reportes/reporte-detallado/reporte';
-import { element } from 'protractor';
-
 
 @Component({
   selector: 'app-caja-menor',
@@ -471,7 +467,6 @@ export class CajaMenorComponent implements OnInit {
         element.cuenta = "1.1 VIENEN"
         element.subCuenta = "1.1.0 De ejercicio anterior"
         element.tipoCuenta = "Ingresos"
-        console.log("dd",element)
         this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {})
       }
 
@@ -483,7 +478,6 @@ export class CajaMenorComponent implements OnInit {
     this._contadoresService.updateContadoresIDCajaMenor(this.contadores[0]).subscribe( res => {
       this.mostrarLoading = false;
       this.crearPDF(null,true);
-      //this.mostrarMensajeGenerico(1,"Documento Guardado con éxito");
     },err => {})
   }
 

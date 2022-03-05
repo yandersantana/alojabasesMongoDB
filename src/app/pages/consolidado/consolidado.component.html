@@ -176,6 +176,7 @@
             [visible]="false"
             width="10%">
         </dxi-column>
+        
 
         <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Ubic." width="7%">
@@ -339,7 +340,12 @@
             caption="Notas"
             [visible]="false">
         </dxi-column>
-
+        <dxi-column
+            dataField="requiereActualizacion"
+            caption="Req.Actualizacion"
+            [visible]="true"
+            width="5%">
+        </dxi-column>
          
          <dxi-column type="buttons" dataField="bt1" caption="Ubic." width="7%">
             <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
@@ -534,6 +540,12 @@
             dataField="notas"
             caption="Notas"
             [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="requiereActualizacion"
+            caption="Req.Actualizacion"
+            [visible]="true"
+            width="5%">
         </dxi-column>
             <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
             <dxo-paging [pageSize]="12"></dxo-paging>

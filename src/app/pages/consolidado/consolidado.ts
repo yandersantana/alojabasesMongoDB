@@ -20,6 +20,7 @@ export class inventario {
   ultimaFechaCompra: string;
   notas: string[];
   execute: boolean;
+  requiereActualizacion : string;
   constructor() {}
 }
 

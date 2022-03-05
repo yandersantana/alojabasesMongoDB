@@ -1753,6 +1753,7 @@ guardarAuditoriaProducto(){
           break;
       }
     });
+    this.calcularTotalM2();
     this.mostrarLoading = false;
   }
 

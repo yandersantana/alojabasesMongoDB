@@ -1110,6 +1110,21 @@ export class ConsolidadoComponent implements OnInit {
     });
     this.mostrarLoading = false;
     console.log(this.invetarioP);
+    this.invetarioP.forEach((element) => {
+      var requiere = false;
+      this.productos.forEach(element2 =>{
+        if(element.producto.PRODUCTO == element2.PRODUCTO){
+          if(element.cantidadM2 != element2.sucursal1)
+            requiere = true;
+          else if(element.cantidadM2b2 != element2.sucursal2)
+            requiere = true;
+          else if(element.cantidadM2b3 != element2.sucursal3)
+            requiere = true;
+        }
+      })
+      console.log(requiere,)
+      element.requiereActualizacion = requiere ? "SI":"NO"
+    });
     // this.actualizarInventario()
   }
 

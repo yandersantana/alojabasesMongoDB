@@ -582,6 +582,7 @@ export class ComprobantePagoComponent implements OnInit {
 
 
   validarEstadoCaja(){
+    this.bloquearBoton = true;
     this.comprobantePago.fecha.setHours(0,0,0,0);
     this._cajaMenorService.getCajaMenorPorFecha(this.comprobantePago).subscribe(
       res => {
@@ -589,8 +590,10 @@ export class ComprobantePagoComponent implements OnInit {
         if(listaCaja.length != 0 ){
           var caja = listaCaja.find(element=>element.sucursal == this.comprobantePago.sucursal) ;
           if(caja != undefined){
-            if(caja.sucursal == this.comprobantePago.sucursal && caja.estado == "Cerrada" )
+            if(caja.sucursal == this.comprobantePago.sucursal && caja.estado == "Cerrada" ){
+              this.bloquearBoton = false;
               Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            }
             else
               this.guardar()
           }else
@@ -771,6 +774,10 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.subCuenta = element.nombreSubcuenta;
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
+
+      transaccion.beneficiario = this.comprobantePago.beneficiario;
+      transaccion.centroCosto = this.comprobantePago.centroCosto;
+      transaccion.proveedor = this.comprobantePago.proveedor;
 
       if(element.nombreCuenta == "2.1 PRÉSTAMOS"){
         transaccion.referenciaPrestamo = "CP"+this.comprobantePago.idDocumento.toString();

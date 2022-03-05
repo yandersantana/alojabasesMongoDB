@@ -794,19 +794,23 @@ export class AuditoriasComponent implements OnInit {
     } 
   }
 
-  guardarAuditoriaProducto(){
+guardarAuditoriaProducto(){
+  if(this.auditoria.m2fisico == null)
+    this.auditoria.m2fisico = 0;
+  if(this.auditoria.piezas_fisico == null)
+    this.auditoria.piezas_fisico = 0
+    
   this.auditoria.fecha= new Date().toLocaleString()
-   if( this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null && this.auditoria.m2diferencia!=null ){
+   //if( this.auditoria.valoracion!= undefined && this.auditoria.m2fisico!=null && this.auditoria.piezas_fisico!=null && this.auditoria.m2diferencia!=null ){
+   if( this.auditoria.valoracion!= undefined && this.auditoria.m2diferencia!=null ){
    //alert("aqui estoy")
     this.actualizarUbicacion()
-      this.mostrarMensaje()
-     new Promise<any>((resolve, reject) => {
-        this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
-          this.auditoriasService.updateAuditoriaProductos(this.idAuditorialeida ,this.numProductos).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
-        }, err => {alert("error")})
-  
-  
-     }) 
+    this.mostrarMensaje()
+    new Promise<any>((resolve, reject) => {
+      this.auditoriaProductoService.newAuditoriaProducto(this.auditoria).subscribe( res => {
+        this.auditoriasService.updateAuditoriaProductos(this.idAuditorialeida ,this.numProductos).subscribe( res => {this.mensajeCorrecto()}, err => {alert("error")})
+      }, err => {alert("error")})
+    }) 
    }else{
      Swal.fire({
        title: 'Error al guardar',
@@ -814,7 +818,7 @@ export class AuditoriasComponent implements OnInit {
        icon: 'error'
      })
    }
- }
+}
 
  guardarEditAuditoriaProducto(){
   this.editAuditoria.fecha= new Date().toLocaleString()

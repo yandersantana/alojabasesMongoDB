@@ -20,6 +20,9 @@ export class TransaccionesFinancieras{
     id_documento : number
     isContabilizada : boolean
     referenciaPrestamo : string
+    beneficiario : string
+    proveedor : string
+    centroCosto : string
     constructor(){
         this.isContabilizada = true;
     }

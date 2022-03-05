@@ -47,3 +47,12 @@ export class productoActualizable {
   suc3: number;
   constructor() {}
 }
+
+
+export class clasificacionActualizacion{
+  nombreClasificacion : string;
+  cantidadProductos : number;
+  constructor(){
+
+  }
+}

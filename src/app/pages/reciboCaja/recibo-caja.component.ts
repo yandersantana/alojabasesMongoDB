@@ -1215,6 +1215,8 @@ export class ReciboCajaComponent implements OnInit {
 
       if(this.tipoRecibo == "Cierre"){
         transaccion.isContabilizada = false;
+        if(transaccion.cuenta == "1.8 EFECTIVO LÍQUIDO" && transaccion.subCuenta == "1.8.0 Queda en caja")
+          transaccion.isContabilizada = true;
       }
 
       try {

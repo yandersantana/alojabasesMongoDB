@@ -107,7 +107,10 @@ router.post("/newTransaccion", async (req, res) => {
     id_documento : req.body.id_documento,
     tipoTransaccion : req.body.tipoTransaccion,
     isContabilizada : req.body.isContabilizada,
-    referenciaPrestamo : req.body.referenciaPrestamo
+    referenciaPrestamo : req.body.referenciaPrestamo,
+    beneficiario : req.body.beneficiario,
+    proveedor : req.body.proveedor,
+    centroCosto : req.body.centroCosto
   });
   await newTransaccion.save();
   res.json({ status: "Sucursal creado" });

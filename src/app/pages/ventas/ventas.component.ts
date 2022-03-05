@@ -3062,10 +3062,12 @@ cambiarestado(e,i:number){
     }
 
   registrarFactura(){
+    this.botonFactura = true;
     this.validarEstadoCajaFactura()
   }
 
   registrarNotaVenta(){
+    this.botonNotaVenta = true;
     this.validarEstadoCajaNotaVenta()
   }
 
@@ -3077,8 +3079,10 @@ cambiarestado(e,i:number){
         if(listaCaja.length != 0 ){
           var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
           if(caja != undefined){
-            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" )
+            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
+              this.botonFactura = false
               Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            }
             else
               this.generarFactura()
           }else 
@@ -3097,8 +3101,10 @@ cambiarestado(e,i:number){
         if(listaCaja.length != 0 ){
           var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
           if(caja != undefined){
-            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" )
+            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
+              this.botonNotaVenta = false;
               Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+            }
             else
               this.generarNotaDeVenta()
           }else 
@@ -3183,10 +3189,10 @@ cambiarestado(e,i:number){
                 });
               
             });
-          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento") }
-        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista")}  
-      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
-    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }
+          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento"),this.botonFactura = false }
+        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista"),this.botonFactura = false}  
+      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente"),this.botonFactura = false }
+    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente"),this.botonFactura = false }
   }
 
   contadorValidaciones(i:number){
@@ -3306,10 +3312,10 @@ cambiarestado(e,i:number){
           
             });
 
-          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento");}
-        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista");}   
-      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");}  
-    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");}
+          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento");this.botonNotaVenta = false;}
+        }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista");this.botonNotaVenta = false;}   
+      }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");this.botonNotaVenta = false;}  
+    }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");this.botonNotaVenta = false;}
   }
 
   

@@ -464,9 +464,9 @@ export class CajaMenorComponent implements OnInit {
         var fechaNueva = new Date(element.fecha)
         fechaNueva.setDate(fechaNueva.getDate()+1);
         element.fecha = fechaNueva
-        element.cuenta = "1.1 VIENEN"
-        element.subCuenta = "1.1.0 De ejercicio anterior"
-        element.tipoCuenta = "Ingresos"
+        //element.cuenta = "1.8 EFECTIVO LÍQUIDO"
+        //element.subCuenta = "1.8.0 Queda en caja"
+        //element.tipoCuenta = "Ingresos"
         this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {})
       }
 

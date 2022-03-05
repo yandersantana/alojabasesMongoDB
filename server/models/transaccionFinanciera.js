@@ -22,7 +22,10 @@ const TransaccionesFinancierasSchema = new Schema({
     tipoTransaccion : { type: String, required: false},
     isContabilizada : { type: Boolean, required: false},
     notas: { type: String, required: false},
-    referenciaPrestamo: { type: String, required: false}
+    referenciaPrestamo: { type: String, required: false},
+    beneficiario : { type: String, required: false},
+    proveedor : { type: String, required: false},
+    centroCosto : { type: String, required: false}
 },{
     timestamps:true
 });

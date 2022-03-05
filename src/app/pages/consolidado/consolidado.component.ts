@@ -2,6 +2,7 @@ import { Component, OnInit } from "@angular/core";
 import { producto, productosPendientesEntrega } from "../ventas/venta";
 import { transaccion } from "../transacciones/transacciones";
 import {
+  clasificacionActualizacion,
   inventario,
   invFaltanteSucursal,
   productoActualizable,
@@ -16,6 +17,9 @@ import { bodega } from "../producto/producto";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
+import { OpcionesCatalogoService } from "src/app/servicios/opciones-catalogo.service";
+import { opcionesCatalogo } from "../catalogo/catalogo";
+import { elementEventFullName } from "@angular/compiler/src/view_compiler/view_compiler";
 
 @Component({
   selector: "app-consolidado",
@@ -27,6 +31,7 @@ export class ConsolidadoComponent implements OnInit {
     "Busqueda Individual",
     "Inventario General",
     "Inventario Valorizado",
+    "Actualizacion Productos",
   ];
 
   mostrarLoading: boolean = false;
@@ -46,6 +51,7 @@ export class ConsolidadoComponent implements OnInit {
   productosPendientes: productosPendientesEntrega[] = [];
   productosPendientesNoEN: productosPendientesEntrega[] = [];
   productosPendientesNoENLista: productosPendientesEntrega[] = [];
+  listaClasificacion: clasificacionActualizacion[] = [];
   bodegas: bodega[] = [];
   bodegasMatriz: string = "";
   bodegasSucursal1: string = "";
@@ -65,12 +71,18 @@ export class ConsolidadoComponent implements OnInit {
   totalCajas =0;
   totalPiezas = 0;
   totalM2 = 0;
+  mostrarUser = false;
+  mostrarAdmin = false;
+  mostrarBusquedaIndividual = true;
+  mostrarActualizacion = false;
+  opcionesCatalogo: opcionesCatalogo[]=[]
   constructor(
     public bodegasService: BodegaService,
     public authenService: AuthenService,
     public transaccionesService: TransaccionesService,
     public productosPendientesService: ProductosPendientesService,
-    public productoService: ProductoService
+    public productoService: ProductoService,
+    public opcionesService : OpcionesCatalogoService
   ) {
     this.proTransaccion = new productoTransaccion();
     this.prodActualizable = new productoActualizable();
@@ -79,8 +91,25 @@ export class ConsolidadoComponent implements OnInit {
   ngOnInit() {
     this.cargarUsuarioLogueado();
     this.traerProductosUnitarios();
-   // this.traerProductosPendientes();
+    this.traerOpcionesCatalogo();
     this.traerBodegas();
+  }
+
+  traerOpcionesCatalogo(){
+    this.opcionesService.getOpciones().subscribe(res => {
+      this.opcionesCatalogo = res as opcionesCatalogo[];
+      this.llenarCombos()
+   })
+  }
+
+  llenarCombos(){
+    this.opcionesCatalogo.forEach(element=>{
+         element.arrayClasificación.forEach(element=>{
+           var clasi = new clasificacionActualizacion()
+           clasi.nombreClasificacion = element
+           this.listaClasificacion.push(clasi)
+         })
+    })
   }
 
   traerTransacciones() {
@@ -124,7 +153,19 @@ export class ConsolidadoComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe((res) => {
       this.productos = res as producto[];
       this.cargarDatos();
+      this.cargarClasificacion();
     });
+  }
+
+  cargarClasificacion(){
+    this.listaClasificacion.forEach(element=>{
+      var cont = 0;
+      this.productos.forEach(element2=>{
+        if(element.nombreClasificacion == element2.CLASIFICA)
+          cont++
+      })
+      element.cantidadProductos = cont;
+    })
   }
 
   traerProductosUnitarios() {
@@ -783,8 +824,7 @@ export class ConsolidadoComponent implements OnInit {
   mensajeActualizar() {
     Swal.fire({
       title: "Alerta",
-      text:
-        "Está seguro de realizar la actualización, este proceso actualizará los productos existentes ",
+      text: "Está seguro de realizar la actualización, este proceso actualizará los productos existentes ",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Si",
@@ -842,6 +882,59 @@ export class ConsolidadoComponent implements OnInit {
     });
   }
 
+
+  async actualizarInventarioPorClasificacion(e) {
+    console.log(e.nombreClasificacion)
+    var m2s1 = 0;
+    var m2s2 = 0;
+    var m2s3 = 0;
+    var contVal = 0;
+    this.mensajeActualizando();
+    var contador = 0;
+    this.productos.forEach(element => {
+      if(element.CLASIFICA == e.nombreClasificacion)
+        contador++
+    })
+    console.log(contador)
+    var cont2=0
+    this.invetarioP.forEach(async (element) => {
+      if(element.producto.CLASIFICA == e.nombreClasificacion){
+        console.log("actualizare",element)
+        cont2++
+        m2s1 = parseFloat(element.cantidadM2.toFixed(2));
+        m2s2 = parseFloat(element.cantidadM2b2.toFixed(2));
+        m2s3 = parseFloat(element.cantidadM2b3.toFixed(2));
+        element.producto.sucursal1 = m2s1;
+        element.producto.sucursal2 = m2s2;
+        element.producto.sucursal3 = m2s3;
+        
+        if (element.producto.ultimoPrecioCompra != undefined || element.producto.ultimoPrecioCompra != null) {
+          element.producto.precio = element.producto.ultimoPrecioCompra;
+        }else{
+        element.producto.precio = element.producto.precio;
+        }
+        this.prodActualizable = new productoActualizable();
+        this.prodActualizable.producto = element.producto;
+        this.prodActualizable.suc1 = m2s1;
+        this.prodActualizable.suc2 = m2s2;
+        this.prodActualizable.suc3 = m2s3;
+          
+        this.productoService.updateProductosSucursalesNuevo(this.prodActualizable).subscribe(
+          (res) => {
+            contVal++,
+            this.contadorValidacionesClasificacion(contVal,contador),
+            console.log("lo hice");
+          },
+          (err) => {
+            contVal++,
+            this.contadorValidacionesClasificacion(contVal,contador),
+            console.log("error aqui", this.prodActualizable);
+          });
+        }
+      }); 
+      console.log("ttal fueron",cont2)
+  }
+
   contadorValidaciones2(i: number) {
     if (this.invetarioP.length == i) {
       Swal.close();
@@ -858,31 +951,63 @@ export class ConsolidadoComponent implements OnInit {
     }
   }
 
-  opcionMenu(e) {
-    var x = document.getElementById("user");
-    var y = document.getElementById("admin");
-    var z = document.getElementById("busquedaProducto");
+  contadorValidacionesClasificacion(i: number, total:number) {
+    if (total == i) {
+      Swal.close();
+      Swal.fire({
+        title: "Correcto",
+        text: "Se ha realizado con exito su actualizacion",
+        icon: "success",
+        confirmButtonText: "Ok",
+      }).then((result) => {
+        //window.location.reload();
+      });
+    } else {
+      //console.log("no he entrado " + i);
+    }
+  }
 
+  opcionMenu(e) {
     switch (e.value) {
       case "Inventario General":
         this.traerTransacciones();
-        x.style.display = "block";
+        this.traerProductosPendientes();
+        this.mostrarUser = true;
+        this.mostrarAdmin = false;
+        this.mostrarBusquedaIndividual = false;
+        this.mostrarActualizacion = false;
+       /*  x.style.display = "block";
         y.style.display = "none";
-        z.style.display = "none";
+        z.style.display = "none"; */
         break;
       case "Inventario Valorizado":
-        x.style.display = "none";
+        this.mostrarUser = false;
+        this.mostrarAdmin = true;
+        this.mostrarBusquedaIndividual = false;
+        this.mostrarActualizacion = false;
+        /* x.style.display = "none";
         y.style.display = "block";
-        z.style.display = "none";
+        z.style.display = "none"; */
         break;
       case "Busqueda Individual":
         this.transacciones = [];
         this.invetarioP = [];
         this.invetarioFaltante = [];
-        x.style.display = "none";
+        this.mostrarUser = false;
+        this.mostrarAdmin = false;
+        this.mostrarBusquedaIndividual = true;
+        this.mostrarActualizacion = false;
+        /* x.style.display = "none";
         y.style.display = "none";
-        z.style.display = "block";
+        z.style.display = "block"; */
         break;
+      case "Actualizacion Productos":
+        this.traerTransacciones();
+        this.traerProductosPendientes();
+        this.mostrarUser = false;
+        this.mostrarAdmin = false;
+        this.mostrarBusquedaIndividual = false;
+        this.mostrarActualizacion = true;
       default:
     }
   }
@@ -1082,6 +1207,14 @@ export class ConsolidadoComponent implements OnInit {
     this.mostrarPopupProductos(e.row.data);
   }
 
+  mostrarProductosGeneral = (e) => {
+    this.mostrarPopupProductos(e.row.data);
+  }
+
+  updateInventarioClasificacion = (e) => {
+    this.actualizarInventarioPorClasificacion(e.row.data);
+  };
+
   mostrarPopup(e: any) {
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
@@ -1106,6 +1239,9 @@ export class ConsolidadoComponent implements OnInit {
 
   mostrarPopupProductos(e: any) {
     this.arregloNotas = [];
+    this.totalCajas = 0;
+    this.totalPiezas = 0;
+    this.totalM2 = 0;
     this.productosPendientesNoENLista = [];
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
@@ -1115,10 +1251,19 @@ export class ConsolidadoComponent implements OnInit {
     });
 
     this.productosPendientesNoEN.forEach((element) => {
-      if (element.producto.PRODUCTO == e.producto.PRODUCTO) {
+      if (element.producto.PRODUCTO == e.producto.PRODUCTO) 
         this.productosPendientesNoENLista.push(element);
-      }
     });
+
+    this.productosPendientesNoENLista.forEach((element) => {
+      this.totalCajas += element.cajas;
+      this.totalPiezas += element.piezas;
+      this.totalM2 += element.cantM2;
+    });
+
+    
     this.popupVisiblePendientes = true;
   }
+
+
 }

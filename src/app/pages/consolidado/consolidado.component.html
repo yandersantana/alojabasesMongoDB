@@ -19,7 +19,7 @@
 </div>
 
 
-<div id="busquedaProducto" class="remiPro" style="display: block;">
+<div id="busquedaProducto" *ngIf="mostrarBusquedaIndividual">
     <div class="row">
         <div class="col-md-12 card carIn">
             <div class="row">
@@ -38,8 +38,7 @@
                             hint={{nombreProducto}}
                             itemTemplate="item">
                             <div *dxTemplate="let data of 'item'">
-                                <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}
-                                   </div>
+                                <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
                             </div>
                         </dx-select-box>
                         </div>
@@ -204,7 +203,7 @@
 
 
 
-<div id="user" class="remiPro" style="display: none;">
+<div id="user" class="remiPro" *ngIf="mostrarUser">
     <dx-data-grid #datag2
         id="gridContainer"
         [dataSource]="invetarioP"
@@ -345,13 +344,13 @@
          <dxi-column type="buttons" dataField="bt1" caption="Ubic." width="7%">
             <dxi-button hint="Ubicación Geográfica" icon="fa fa-map-marker" [onClick]="mostrarUbicacion"></dxi-button>
         </dxi-column>
-
         <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
-        <dxi-column
-                dataField="bodega"
-                caption="Bodegas"
+        <dxi-column type="buttons" dataField="bt1" caption="Pend." width="7%">
+            <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarProductos"></dxi-button>
+        </dxi-column>
+        <dxi-column dataField="bodega" caption="Bodegas"
                 dataType="string"
                 [visible]="false">
             </dxi-column>
@@ -366,7 +365,7 @@
     </dx-data-grid>
 </div>
 
-<div id="admin" class="remiPro" style="display: none;">
+<div id="admin" class="remiPro" *ngIf="mostrarAdmin">
     
         <dx-data-grid #datag2
             id="gridContainer"
@@ -553,6 +552,36 @@
 
     
 
+</div>
+
+<div class="remiPro" *ngIf="mostrarActualizacion">
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Actualizacion de Productos por Clasificación</h5>
+        <div class="row">
+            <div class="col-md-3"></div>
+            <div class="col-md-6">
+                <dx-data-grid #datag2
+                    id="gridContainer"
+                    [dataSource]="listaClasificacion"
+                    [showBorders]="true">
+                    <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                    <dxi-column dataField="nombreClasificacion" caption="Clasificación" dataType="string"></dxi-column>
+                    <dxi-column dataField="cantidadProductos" caption="Cantidad Productos" dataType="number"></dxi-column>
+                    <dxi-column type="buttons" dataField="bt1" caption="Accion" width="30%">
+                        <dxi-button text="Actualizar" [onClick]="updateInventarioClasificacion"></dxi-button>   
+                    </dxi-column>
+                    <dxo-paging [pageSize]="12"></dxo-paging>
+                    <dxo-pager
+                        [showPageSizeSelector]="true"
+                        [allowedPageSizes]="[8, 12, 20]"
+                    ></dxo-pager>
+                </dx-data-grid>
+            </div>
+            <div class="col-md-3"></div>
+        </div>
+       
+    </div>
 </div>
 
 <dx-popup [width]="600" [height]="450" [showTitle]="true" title="Ubicación {{nameProducto}}" [dragEnabled]="false"

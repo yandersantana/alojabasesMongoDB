@@ -1030,16 +1030,33 @@ export class ReciboCajaComponent implements OnInit {
   }
 
   generarDto(){
+    this.reciboCaja.isAutorizado = true
     this.reciboCaja.operacionesComercialesList = this.listadoOperaciones;
     this.reciboCaja.operacionesComercialesList.forEach(element=>{
       var cuenta = this.listaCuentas.find(element2=> element2._id == element.idCuenta);
       element.nombreCuenta = cuenta.nombre;
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
+
+      /* if(this.tipoRecibo == "Cierre" ){
+        if(element.nombreCuenta == "1.8 EFECTIVO LÍQUIDO"){
+          if(element.nombreSubcuenta != "1.8.0 Queda en caja")
+            this.reciboCaja.isAutorizado = true;
+        } 
+      } */
     });
 
     if(this.tipoRecibo == "Cta.x Cobrar")
       this.actualizarRecibo();
+
+   
+    if(this.tipoRecibo == "Cierre" ){
+      var existe = this.reciboCaja.operacionesComercialesList.find(element=>element.nombreSubcuenta == "1.8.1 Dineros por Legalizar")
+      var existeCuenta = this.reciboCaja.operacionesComercialesList.find(element=>element.nombreCuenta == "1.7 DEPÓSITOS")
+      if(existe != null || existeCuenta != null){
+          this.reciboCaja.isAutorizado = false;
+      } 
+    }
 
     this.guardarReciboCaja(); 
     

@@ -17,7 +17,6 @@ export class PrecioEspecialService {
   }
 
   getPrecio() {
-    console.log("pase por aqui ks");
     return this.http.get(this.URL + "/getPreciosEsp");
   }
 

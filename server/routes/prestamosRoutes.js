@@ -13,6 +13,12 @@ router.post("/getPrestamosPorRUC/:documento", async (req, res, next) => {
   res.json(documentos);
 });
 
+router.post("/getPrestamosPorReferencias/:documento", async (req, res, next) => {
+  const { documento } = req.params;
+  const documentos = await Prestamos.find({comprobanteId: documento, estado:"Activa"});
+  res.json(documentos);
+});
+
 router.post("/getPrestamosPorNombre/:nombre", async (req, res, next) => {
   const { nombre } = req.params;
   const documentos = await Prestamos.find({beneficiario: nombre, estado:"Activa"});
@@ -57,6 +63,13 @@ router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   const { id } = req.params;
   const { estado } = req.params;
   await Prestamos.findByIdAndUpdate(id,{ $set: { estado: estado } },{ new: true });
+  res.json({ status: "Cuenta Updated" });
+});
+
+router.put("/updateValor/:id/:valor", async (req, res, next) => {
+  const { id } = req.params;
+  const { valor } = req.params;
+  await Prestamos.findByIdAndUpdate(id,{ $set: { valor: valor } },{ new: true });
   res.json({ status: "Cuenta Updated" });
 });
 

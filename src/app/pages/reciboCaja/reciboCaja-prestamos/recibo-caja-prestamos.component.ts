@@ -1125,6 +1125,10 @@ export class ReciboCajaPrestamosComponent implements OnInit {
           transaccion.isContabilizada = false;
         this.InsertarPrestamo(transaccion)
       }
+
+      if(element.nombreCuenta == "1.3 INGRESOS" && element.nombreSubcuenta == "1.3.3 Pago o Abono Préstamo"){
+        transaccion.referenciaPrestamo = this.numReciboCajaTraido
+      }
         
       
 

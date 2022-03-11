@@ -23,6 +23,11 @@ export class PrestamosService {
     return this.http.post(this.URL + `/getPrestamosPorRUC/${objeto.rucCliente}`,objeto );
   }
 
+  getPrestamosPorReferencias(objeto) {
+    console.log("---",objeto)
+    return this.http.post(this.URL + `/getPrestamosPorReferencias/${objeto.referenciaPrestamo}`,objeto );
+  }
+
   getPrestamosPorNombre(objeto) {
     return this.http.post(this.URL + `/getPrestamosPorNombre/${objeto.nombreCliente}`,objeto );
   }
@@ -49,6 +54,10 @@ export class PrestamosService {
 
   updateEstadoPrestamo(objeto, estado: string) {
     return this.http.put(this.URL + `/updateEstado/${objeto._id}/${estado}`, objeto);
+  }
+
+  updateValorPrestamo(objeto, valor: number) {
+    return this.http.put(this.URL + `/updateValor/${objeto._id}/${valor}`, objeto);
   }
 
   deleteCuenta(cuenta) {

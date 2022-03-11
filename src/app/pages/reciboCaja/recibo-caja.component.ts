@@ -24,6 +24,8 @@ import { NotasVentasService } from 'src/app/servicios/notas-ventas.service';
 import { ClienteService } from 'src/app/servicios/cliente.service';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
+import { PrestamosService } from 'src/app/servicios/prestamos.service';
+import { Prestamos } from '../prestamos/prestamos';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -138,6 +140,7 @@ export class ReciboCajaComponent implements OnInit {
 
   constructor(
     public _cuentasService : CuentasService,
+    public _prestamosService : PrestamosService,
     public _subCuentasService : SubCuentasService,
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _reciboCajaService : ReciboCajaService,
@@ -881,8 +884,24 @@ export class ReciboCajaComponent implements OnInit {
   eliminarTransacciones(){
     var cont = 0;
     this.transaccionesFinancieras.forEach(element=>{
+      if(element.subCuenta == "1.3.3 Pago o Abono Préstamo")
+        this.actualizarPrestamo(element)
       cont++;
       this._transaccionFinancieraService.deleteTransaccionFinanciera(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})
+    })
+  }
+
+  actualizarPrestamo(transaccion : TransaccionesFinancieras){
+    console.log("ddd",transaccion.referenciaPrestamo)
+    this._prestamosService.getPrestamosPorReferencias(transaccion).subscribe(res => {
+      var lista = res as Prestamos[];
+      var prestamo = lista[0];
+      var valorTotal = prestamo.valor + transaccion.valor;
+      console.log("ddd",valorTotal)
+      this._prestamosService.updateValorPrestamo(prestamo,valorTotal).subscribe(res => {
+        console.log("actualice")
+      
+      })
     })
   }
 

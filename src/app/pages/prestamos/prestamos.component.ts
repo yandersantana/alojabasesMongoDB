@@ -1,4 +1,3 @@
-import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { Component, OnInit } from '@angular/core';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';

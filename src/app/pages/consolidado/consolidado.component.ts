@@ -19,7 +19,6 @@ import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
 import { OpcionesCatalogoService } from "src/app/servicios/opciones-catalogo.service";
 import { opcionesCatalogo } from "../catalogo/catalogo";
-import { elementEventFullName } from "@angular/compiler/src/view_compiler/view_compiler";
 
 @Component({
   selector: "app-consolidado",

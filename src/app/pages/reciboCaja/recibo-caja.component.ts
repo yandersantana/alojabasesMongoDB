@@ -1223,15 +1223,6 @@ export class ReciboCajaComponent implements OnInit {
           transaccion.isContabilizada = true;
       }
       
-      if(this.tipoRecibo == "Cta.x Cobrar"){
-        if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
-          transaccion.isContabilizada = true;
-      }
-
-  /*     if( element.nombreSubcuenta == "1.3.2 Abono o pago Documento Venta" && this.tipoRecibo == "Facturación")
-          transaccion.isContabilizada = true;
-      
- */
       transaccion.tipoPago = "";
       transaccion.soporte = "";
       transaccion.dias = 0;
@@ -1239,6 +1230,13 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.subCuenta = element.nombreSubcuenta;
       transaccion.notas = this.reciboCaja.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
+
+      if(this.tipoRecibo == "Cta.x Cobrar"){
+        if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
+          transaccion.isContabilizada = true;
+        if(fechaRecibo != fecha2 && element.nombreSubcuenta == "2.0.0 Cuentas x Cobrar")
+          transaccion.isContabilizada = false;
+      }
 
       if(element.nombreCuenta == "2.0 SALDOS" && element.nombreSubcuenta == "2.0.0 Cuentas x Cobrar"){
         this.InsertarCuentaPorCobrar(transaccion)

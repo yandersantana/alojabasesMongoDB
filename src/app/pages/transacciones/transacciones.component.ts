@@ -134,6 +134,7 @@ export class TransaccionesComponent implements OnInit {
   }
 
   separarTransacciones() {
+    this.transacciones = [];
     if (this.usuarioLogueado[0].rol != "Administrador") {
       switch (this.usuarioLogueado[0].sucursal) {
         case "matriz":

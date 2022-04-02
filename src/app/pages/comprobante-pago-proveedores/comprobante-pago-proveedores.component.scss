@@ -18,7 +18,7 @@
     text-align: right;
 }
 
-.espacioSelect dx-select-box,dx-number-box,dx-text-box,dx-button,dx-autocomplete{
+.espacioSelect dx-select-box,dx-number-box,dx-text-box,dx-button,dx-autocomplete,dx-date-box{
     margin-top: -0.8em;
 }
 
@@ -97,4 +97,8 @@
 
 .dateB dx-date-box{
     margin-top: -0.8em;
+}
+
+.dates dx-date-box{
+    margin-top: 0.05em;
 }

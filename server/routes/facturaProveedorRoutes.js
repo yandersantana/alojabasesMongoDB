@@ -9,13 +9,13 @@ router.get('/getFacturasProveedor', async (req, res) => {
 
 router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
   const { documento } = req.params;
-  var tipoEstado="Por Ingresar"
-  console.log(req.params)
-  console.log(documento)
-  const documentos = await FacturaProveedor.find({
-    nSolicitud: documento
-  });
-  
+  const documentos = await FacturaProveedor.find({nSolicitud: documento});
+  res.json(documentos);
+});
+
+router.post("/getFacturasPendientesPorProveedor/:proveedor", async (req, res, next) => {
+  const { proveedor } = req.params;
+  const documentos = await FacturaProveedor.find({proveedor: proveedor,estado : "PENDIENTE"});
   res.json(documentos);
 });
 
@@ -71,8 +71,7 @@ router.delete('/delete/:id', async (req, res,next) => {
 })
 
 router.post('/newFacturaProveedor', async (req, res) => {
-   // const { nombre, representante, direccion,email_empresarial,email_administrador,contrasena,numUsuarios } = req.body;
-   const Newfacturas = new FacturaProveedor({
+    const Newfacturas = new FacturaProveedor({
     idF: req.body.idF,
     fecha: req.body.fecha,
     fechaExpiracion: req.body.fechaExpiracion,

@@ -18,6 +18,7 @@ router.post('/newContadores', async (req, res) => {
         contProductosPendientes_Ndocumento:req.bosy.contProductosPendientes_Ndocumento,
         contTraslados_Ndocumento:req.body.contTraslados_Ndocumento,
         auditorias_Ndocumento:req.body.auditorias_Ndocumento,
+        
         transacciones_Ndocumento: req.body.transacciones_Ndocumento});
     await newCont.save();
     res.json({status: 'Contador creado'});
@@ -186,6 +187,12 @@ router.put('/updateIDRegistroCaja/:id', async (req, res,next) => {
 router.put('/updateIDComprobantePago/:id', async (req, res,next) => {
     const { id } = req.params;
     await Contadores.findByIdAndUpdate(id, {$set: {comprobantePago_Ndocumento:req.body.comprobantePago_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateIDComprobantePagoProveedor/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {comprobantePagoProveedor_Ndocumento:req.body.comprobantePagoProveedor_Ndocumento}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

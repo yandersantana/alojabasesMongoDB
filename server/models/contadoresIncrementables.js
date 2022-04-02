@@ -23,6 +23,7 @@ const ContadoresSchema = new Schema({
     contProductosEntregadosSucursal_Ndocumento:{ type: Number, required: false},
     reciboCaja_Ndocumento:{ type: Number, required: false},
     comprobantePago_Ndocumento:{ type: Number, required: false},
+    comprobantePagoProveedor_Ndocumento:{ type: Number, required: false},
     cajaMenor_Ndocumento:{ type: Number, required: false}
     
 },{

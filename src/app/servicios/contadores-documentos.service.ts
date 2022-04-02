@@ -6,9 +6,9 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class ContadoresDocumentosService {
-  //private URL = 'http://localhost:3000/contadores'; //localhost
+  private URL = 'http://localhost:3000/contadores'; //localhost
   //private URL = "http://159.223.107.115:3000/contadores";
-  private URL = "http://104.131.82.174:3000/contadores";
+  //private URL = "http://104.131.82.174:3000/contadores";
 
   constructor(public http: HttpClient, public router: Router) {}
 
@@ -172,11 +172,12 @@ export class ContadoresDocumentosService {
     );
   }
 
+  updateContadoresIDComprobantePagoProveedor(contadores) {
+    return this.http.put(this.URL + `/updateIDComprobantePagoProveedor/${contadores._id}`,contadores);
+  }
+
   updateContadoresIDCajaMenor(contadores) {
-    return this.http.put(
-      this.URL + `/updateIDCajaMenor/${contadores._id}`,
-      contadores
-    );
+    return this.http.put(this.URL + `/updateIDCajaMenor/${contadores._id}`,contadores );
   }
   
   deleteContadores(contadores) {

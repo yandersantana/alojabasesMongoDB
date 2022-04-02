@@ -8,16 +8,13 @@ import { factura } from "../pages/ventas/venta";
 })
 export class FacturasProveedorService {
   facturas: factura[];
-  //private URL = 'http://localhost:3000/facturasProveedor'; //localhost
+  private URL = 'http://localhost:3000/facturasProveedor'; //localhost
   //private URL = "http://159.223.107.115:3000/facturasProveedor";
-  private URL = 'http://104.131.82.174:3000/facturasProveedor';
+  //private URL = 'http://104.131.82.174:3000/facturasProveedor';
   constructor(public http: HttpClient, public router: Router) {}
 
   newFacturaProveedor(facturasProveedor) {
-    return this.http.post<any>(
-      this.URL + "/newFacturaProveedor",
-      facturasProveedor
-    );
+    return this.http.post<any>(this.URL + "/newFacturaProveedor", facturasProveedor);
   }
 
   getFacturasProveedor() {
@@ -25,24 +22,19 @@ export class FacturasProveedorService {
   }
 
   getFacturasDocumento(documento) {
-    return this.http.post(
-      this.URL + `/getFacturasPorDocumento/${documento.nSolicitud}`,
-      documento
-    );
+    return this.http.post(this.URL + `/getFacturasPorDocumento/${documento.nSolicitud}`,documento);
+  }
+
+  getFacturasPendientesPorProveedor(documento) {
+    return this.http.post(this.URL + `/getFacturasPendientesPorProveedor/${documento.proveedor}`,documento);
   }
 
   updateFacturasProveedor(facturasProveedor) {
-    return this.http.put(
-      this.URL + `/update/${facturasProveedor._id}`,
-      facturasProveedor
-    );
+    return this.http.put(this.URL + `/update/${facturasProveedor._id}`,facturasProveedor);
   }
 
   updateEstado(facturasProveedor: string, estado: string) {
-    return this.http.put(
-      this.URL + `/updateEstado/${facturasProveedor}/${estado}`,
-      facturasProveedor
-    );
+    return this.http.put(this.URL + `/updateEstado/${facturasProveedor}/${estado}`, facturasProveedor);
   }
 
   updateEstado2(facturasProveedor, estado: string) {

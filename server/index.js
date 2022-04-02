@@ -65,6 +65,9 @@ app.use('/centroCosto', require('./routes/centroCosto'));
 app.use('/cajaMenor', require('./routes/cajaMenor'));
 app.use('/beneficiario', require('./routes/beneficiario'));
 app.use('/prestamos', require('./routes/prestamosRoutes'));
+app.use('/comprobantePagoProveedor', require('./routes/comprobantePagoProveedores'));
+app.use('/transaccionFacturas', require('./routes/transaccionesFacturasRoutes'));
+app.use('/transaccionesCheques', require('./routes/transaccionesChequesRoutes'));
 
 
 
@@ -76,12 +79,12 @@ app.listen(app.get('port'), () => {
 
 // Find 404 and hand over to error handler
 app.use((req, res, next) => {
-    next(createError(404));
-  });
-  
-  // error handler
-  app.use(function (err, req, res, next) {
-    console.error(err.message);
-    if (!err.statusCode) err.statusCode = 500;
-    res.status(err.statusCode).send(err.message);
-  });
+  next(createError(404));
+});
+
+// error handler
+app.use(function (err, req, res, next) {
+  console.error(err.message);
+  if (!err.statusCode) err.statusCode = 500;
+  res.status(err.statusCode).send(err.message);
+});

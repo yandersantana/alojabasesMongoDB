@@ -24,6 +24,7 @@ const ContadoresSchema = new Schema({
     reciboCaja_Ndocumento:{ type: Number, required: false},
     comprobantePago_Ndocumento:{ type: Number, required: false},
     comprobantePagoProveedor_Ndocumento:{ type: Number, required: false},
+    pagoCheque_Ndocumento:{ type: Number, required: false},
     cajaMenor_Ndocumento:{ type: Number, required: false}
     
 },{

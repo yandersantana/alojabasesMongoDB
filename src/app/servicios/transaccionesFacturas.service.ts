@@ -9,6 +9,7 @@ export class TransaccionesFacturasService {
   //private URL = "http://localhost:3000/transaccionFacturas"; //localhost
   //private URL = "http://104.131.82.174:3000/transaccionFacturas";
   private URL = "http://159.223.107.115:3000/transaccionFacturas";
+  
   constructor(public http: HttpClient, public router: Router) {}
 
   newTransaccion(transaccion) {
@@ -23,20 +24,17 @@ export class TransaccionesFacturasService {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
   }
 
+  obtenerTransaccionesPorFactura(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorFactura", tipobusqueda);
+  }
 
 
-
-
-
-
-  
   getTransaccionesPorTipoDocumento(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }
 
-  obtenerTransaccionesPorDocumentoYRecibo(tipobusqueda) {
-    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);
-  }
+
+
 
   obtenerTransaccionesPrestamos(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPrestamos", tipobusqueda);
@@ -54,7 +52,7 @@ export class TransaccionesFacturasService {
     return this.http.put(this.URL + `/updateContabilizada/${transaccion._id}/${estado}`, transaccion);
   }
 
-  deleteTransaccionFinanciera(transaccion) {
+  deleteTransaccion(transaccion) {
     return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
   }
 }

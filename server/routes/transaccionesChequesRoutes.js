@@ -34,8 +34,13 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
 });
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
-  const transacciones = await TransaccionesCheques.find({ id_documento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
+  const transacciones = await TransaccionesCheques.find({ idComprobante: req.body.NumDocumento , proveedor : req.body.tipoTransaccion});
   res.json(transacciones);
+});
+
+router.delete("/delete/:id", async (req, res, next) => {
+  await TransaccionesCheques.findByIdAndRemove(req.params.id);
+  res.json({ status: "Transaccion Eliminada" });
 });
 
 router.post("/newTransaccion", async (req, res) => {

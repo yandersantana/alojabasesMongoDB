@@ -48,6 +48,10 @@ export class FacturasProveedorService {
     return this.http.put(this.URL + `/updateEstado3/${id}/${estado}`, id);
   }
 
+  updateEstadoPorFactura(id: string, estado: string) {
+    return this.http.put(this.URL + `/updateEstadoPorId/${id}/${estado}`, id);
+  }
+
   deleteFacturasProveedor(facturasProveedor) {
     return this.http.delete(
       this.URL + `/delete/${facturasProveedor._id}`,

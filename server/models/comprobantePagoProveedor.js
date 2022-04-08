@@ -9,6 +9,7 @@ const ComprobantePagoProveedoresSchema = new Schema({
     usuario: { type: String, required: false},
     sucursal: { type: String, required: false},
     nombreProveedor: { type: String, required: false},
+    estadoComprobante: { type: String, required: false},
     transaccionesFacturas: { type: Array, required: false},
     transaccionesCheques: { type: Array, required: false}
 },{

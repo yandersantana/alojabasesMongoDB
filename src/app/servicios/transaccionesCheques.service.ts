@@ -24,16 +24,20 @@ export class TransaccionesChequesService {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
   }
 
+  getTransaccionesPorTipoDocumento(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
+  }
 
+  deleteTransaccion(transaccion) {
+    return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
+  }
 
 
 
 
 
   
-  /* getTransaccionesPorTipoDocumento(tipobusqueda) {
-    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
-  }
+  /* 
 
   obtenerTransaccionesPorDocumentoYRecibo(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);

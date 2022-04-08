@@ -179,6 +179,10 @@ export class ContadoresDocumentosService {
   updateContadoresIDCajaMenor(contadores) {
     return this.http.put(this.URL + `/updateIDCajaMenor/${contadores._id}`,contadores );
   }
+
+  updateContadoresIDPagoCheque(contadores) {
+    return this.http.put(this.URL + `/updateIDPagoCheque/${contadores._id}`,contadores );
+  }
   
   deleteContadores(contadores) {
     return this.http.delete(this.URL + `/delete/${contadores._id}`, contadores);

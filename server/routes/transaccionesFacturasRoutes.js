@@ -34,7 +34,7 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
 });
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
-  const transacciones = await TransaccionesFacturas.find({ id_documento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
+  const transacciones = await TransaccionesFacturas.find({ idComprobante: req.body.NumDocumento , proveedor : req.body.tipoTransaccion});
   res.json(transacciones);
 });
 
@@ -63,6 +63,10 @@ router.post("/newTransaccion", async (req, res) => {
 });
 
 
+router.post("/getTransaccionesPorFactura", async (req, res, next) => {
+  const transacciones = await TransaccionesFacturas.find({ numFactura: req.body.NumDocumento});
+  res.json(transacciones);
+});
 
 
 
@@ -88,7 +92,7 @@ router.post("/getTransaccionesPorTipoDocumentoYRecibo2", async (req, res, next) 
 });
 
 router.delete("/delete/:id", async (req, res, next) => {
-  await TransaccionFinanciera.findByIdAndRemove(req.params.id);
+  await TransaccionesFacturas.findByIdAndRemove(req.params.id);
   res.json({ status: "Transaccion Eliminada" });
 });
 

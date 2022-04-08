@@ -4,7 +4,7 @@ import { CuentasService } from 'src/app/servicios/cuentas.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import Swal from 'sweetalert2';
 import { CentroCosto, Cuenta, SubCuenta } from '../administracion-cuentas/administracion-cuenta';
-import { objDate } from '../transacciones/transacciones';
+import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
 import { contadoresDocumentos } from '../ventas/venta';
 import pdfMake from "pdfmake/build/pdfmake";
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
@@ -40,10 +40,17 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   mostrarTransaccionesFacturas: boolean = false;
   mostrarTransaccionesCheques: boolean = false;
   comprobantePago : ComprobantePagoProveedor
+  busquedaTransaccion : tipoBusquedaTransaccion
   comprobantePagoDescarga : ComprobantePagoProveedor
   listadoComprobantes: ComprobantePagoProveedor [] = []
   listadoTransaccionesFactura: TransaccionesFacturas [] = []
   listadoTransaccionesCheque: TransaccionChequesGirado [] = []
+  listaTransaccionesEncontradas: TransaccionesFacturas [] = []
+  listaTransaccionesEncontradasAEliminar: TransaccionesFacturas [] = []
+  listaTransaccionesChequesEncontradasAEliminar: TransaccionChequesGirado [] = []
+  listadoComprobantesActivos: ComprobantePagoProveedor [] = []
+  listadoComprobantesAnulados: ComprobantePagoProveedor [] = []
+  listadoComprobantesPendientes: ComprobantePagoProveedor [] = []
   proveedores: Proveedor [] = []
 
 
@@ -58,11 +65,14 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   listadoOperaciones: OperacionComercial [] = []
   operacionComercial: OperacionComercial
-
+  valorTotalFacturas = 0;
+  valorTotalCheques = 0;
+  mostrarDelete : boolean = true;
+  mostrarAprobacion : boolean = false;
 
 
   mostrarLoading : boolean = false;
-  mostrarLoadingBase : boolean = false;
+  mensajeLoading = "Cargando"
 
   parametrizaciones: parametrizacionsuc[] = [];
   detallesCostos: CentroCosto[] = [];
@@ -75,6 +85,18 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     "Comprobantes de Pago Generados",
     "Transacciones Facturas",
     "Transacciones Cheques"
+  ];
+
+  arraySucursales: string[] = [
+    "matriz",
+    "sucursal1",
+    "sucursal2"
+  ];
+
+  estados: string[] = [
+      'Activos',
+      'Pendientes',
+      'Anulados',
   ];
 
   imagenLogotipo ="";
@@ -117,21 +139,27 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     await this._contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.comprobantePago.idDocumento = this.contadores[0].comprobantePagoProveedor_Ndocumento + 1;
+      this.listadoPagos[0].idPago = this.contadores[0].pagoCheque_Ndocumento + 1;
    })
   }
 
 
   traerProveedores(){
+    this.mostrarLoading = true;
     this._proveedoresService.getProveedor().subscribe(res => {
       this.proveedores = res as Proveedor[];
+      this.mostrarLoading = false;
    })
   }
 
   traerFacturasPorProveedor(e){
+    this.mostrarLoading = true;
+    this.mensajeLoading = "Buscando Facturas"
     var factura = new FacturaProveedor();
     factura.proveedor = this.comprobantePago.nombreProveedor;
     this._facturaProveedorService.getFacturasPendientesPorProveedor(factura).subscribe(res => {
       this.listaFacturas = res as FacturaProveedor[];
+      this.mostrarLoading = false;
     }) 
   }
 
@@ -144,30 +172,70 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   traerComprobantesPago(){
     this.listadoComprobantes = [];
-    this.mostrarLoadingBase = true;
+    this.mostrarLoading = true;
     this._comprobantePagoProveedoresService.getComprobantes().subscribe(res => {
       this.listadoComprobantes = res as ComprobantePagoProveedor[];
-      this.mostrarLoadingBase = false;
+      this.separarComprobantes();
     })  
   }
 
+  separarComprobantes(){
+    this.listadoComprobantes.forEach(element=> {
+      if(element.estadoComprobante == "Activo")
+        this.listadoComprobantesActivos.push(element);
+      else if(element.estadoComprobante == "Pendiente")
+        this.listadoComprobantesPendientes.push(element);
+      else if(element.estadoComprobante == "Anulado")
+        this.listadoComprobantesAnulados.push(element);
+    })
+    this.listadoComprobantes = this.listadoComprobantesActivos;
+    this.mostrarLoading = false;
+  }
+
+
   traerTransaccionesFactura(){
     this.listadoTransaccionesFactura = [];
-    this.mostrarLoadingBase = true;
+    this.mostrarLoading = true;
     this._transaccionesFacturaService.getTransacciones().subscribe(res => {
       this.listadoTransaccionesFactura = res as TransaccionesFacturas[];
-      this.mostrarLoadingBase = false;
+      this.mostrarLoading = false;
     })  
+  }
+
+  limpiarArrays(){
+    this.listadoComprobantes = [];
+    this.listadoComprobantesActivos = [];
+    this.listadoComprobantesAnulados = [];
+    this.listadoComprobantesPendientes = [];
   }
 
 
   traerTransaccionesCheques(){
     this.listadoTransaccionesCheque = [];
-    this.mostrarLoadingBase = true;
+    this.mostrarLoading = true;
     this._transaccionChequesService.getTransacciones().subscribe(res => {
       this.listadoTransaccionesCheque = res as TransaccionChequesGirado[];
-      this.mostrarLoadingBase = false;
+      this.mostrarLoading = false;
     })  
+  }
+
+  async traerTransaccionesPorFactura(e,i){ 
+     var factura = await this.listaFacturas.find(element=> element._id == e.value)
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = factura.nFactura;
+    this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
+      this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
+      this.obtenerAbonos(e,i);
+    })  
+    
+  }
+
+  obtenerAbonos(e,i){
+    this.listadoFacturasPagar[i].valorAbonado = 0;
+    this.listaTransaccionesEncontradas.forEach(element =>{
+      this.listadoFacturasPagar[i].valorAbonado +=element.valorCancelado;
+    })
+    this.obtenerDatosFactura(e,i);
   }
 
 
@@ -214,44 +282,69 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
 
-  traerComprobantesPagoPorRango() {
+  opcionRadio(e){
     this.listadoComprobantes = [];
-    this.mostrarLoadingBase = true;
+      switch (e.value) {
+        case "Activos":
+          this.listadoComprobantes = this.listadoComprobantesActivos;
+          this.mostrarDelete = true;
+          this.mostrarAprobacion = false;
+          break;
+        case "Pendientes":
+          this.listadoComprobantes = this.listadoComprobantesPendientes;
+          this.mostrarDelete= false;
+          this.mostrarAprobacion = true;
+          break;
+        case "Anulados":
+          this.listadoComprobantes = this.listadoComprobantesAnulados;
+          this.mostrarDelete= false;
+          this.mostrarAprobacion = false;
+          break;
+        default:    
+    }    
+  }
+
+
+
+  traerComprobantesPagoPorRango() {
+    this.limpiarArrays();
+    this.listadoComprobantes = [];
+    this.mostrarLoading = true;
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this._comprobantePagoProveedoresService.getComprobantePorRango(this.obj).subscribe(res => {
       this.listadoComprobantes = res as ComprobantePagoProveedor[];
-      this.mostrarLoadingBase = false;
+      this.separarComprobantes();
     })
   }
 
 
   traerTransaccionesFacturaPorRango() {
     this.listadoTransaccionesFactura = [];
-    this.mostrarLoadingBase = true;
+    this.mostrarLoading = true;
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this._transaccionesFacturaService.getTransaccionesPorRango(this.obj).subscribe(res => {
       this.listadoTransaccionesFactura = res as TransaccionesFacturas[];
-      this.mostrarLoadingBase = false;
+      this.mostrarLoading = false;
     })
   }
 
 
   traerTransaccionesChequesPorRango() {
     this.listadoTransaccionesCheque = [];
-    this.mostrarLoadingBase = true;
+    this.mostrarLoading = true;
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
     this.obj.fechaAnterior.setHours(0, 0, 0, 0);
     this._transaccionChequesService.getTransaccionesPorRango(this.obj).subscribe(res => {
       this.listadoTransaccionesCheque = res as TransaccionChequesGirado[];
-      this.mostrarLoadingBase = false;
+      this.mostrarLoading = false;
     })
   }
 
@@ -278,13 +371,11 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   async obtenerDatosFactura(e,i){
-    var factura = await this.listaFacturas.find(element=> element._id == e.value)
-    console.log(factura)
+    var factura = await this.listaFacturas.find(element=> element._id == e.value);
     this.listadoFacturasPagar[i].numFactura = Number(factura.nFactura);
     this.listadoFacturasPagar[i].valorFactura = factura.total;
     this.listadoFacturasPagar[i].fechaFactura = factura.fecha;
     this.listadoFacturasPagar[i].valorSaldos = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado;
-    console.log(factura)
   }
 
 
@@ -299,7 +390,11 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
  
 
   eliminarRegistro(i: number) {
-    this.listadoOperaciones.splice(i, 1);
+    this.listadoFacturasPagar.splice(i, 1);
+  }
+
+  eliminarRegistroPago(i: number) {
+    this.listadoPagos.splice(i, 1);
   }
 
 
@@ -308,29 +403,42 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   addElementPago(){
+    var cont = 0;
     this.listadoPagos.push(new TransaccionChequesGirado());
+    this.listadoPagos.forEach(element=>{
+      cont++;
+      element.idPago = this.contadores[0].pagoCheque_Ndocumento + cont;
+    });
   }
 
 
   async guardar(){
-    this.obtenerId();
+    var flag = true;
+    this.valorTotalCheques = 0;
+    this.valorTotalFacturas = 0;
 
-
-    /* var flag = true;
-    this.listadoOperaciones.forEach(element=>{
-      if(element.idCuenta == null || element.idSubCuenta == null || element.valor == 0){
+    this.listadoFacturasPagar.forEach(element=>{
+      this.valorTotalFacturas = this.valorTotalFacturas + element.valorCancelado;
+      if(element.valorFactura == 0 || element.valorCancelado == 0)
         flag = false;
-      }
     });
 
-    if(flag == true){
-      if(this.comprobantePago.total == 0)
-        this.mostrarMensajeGenerico(2,"El total debe ser superior a 0");  
-      else 
-        this.obtenerId();
+    this.listadoPagos.forEach(element=>{
+      this.valorTotalCheques = this.valorTotalCheques + element.valor;
+      if(element.valor == 0 || element.cuenta == null)
+        flag = false;
+    });
+     
+
+    if(this.valorTotalCheques != this.valorTotalFacturas){
+      flag = false;
+      this.mostrarMensajeGenerico(2,"El valor total de los cheques no es el mismo de la suma de las facturas");
     }
+
+    if(flag == true)
+        this.obtenerId();
     else
-      this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros"); */
+      this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
   }
 
   obtenerId(){
@@ -401,6 +509,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     try {
       this._comprobantePagoProveedoresService.newComprobantePago(this.comprobantePago).subscribe((res) => {
         this.actualizarContador();
+        this.actualizarEstadosFacturas();
         this.generarTransaccionesFacturas();
       },(err) => {});
     } catch (error) {
@@ -413,6 +522,23 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.contadores[0].comprobantePagoProveedor_Ndocumento = this.comprobantePago.idDocumento
     this._contadoresService.updateContadoresIDComprobantePagoProveedor(this.contadores[0]).subscribe( res => {
     },err => {})
+
+    this.contadores[0].pagoCheque_Ndocumento = this.contadores[0].pagoCheque_Ndocumento + this.comprobantePago.transaccionesCheques.length;
+    this._contadoresService.updateContadoresIDPagoCheque(this.contadores[0]).subscribe( res => {
+    },err => {})
+  }
+
+
+  actualizarEstadosFacturas(){
+    var estado = "CUBIERTA"
+    this.comprobantePago.transaccionesFacturas.forEach(element=>{
+      var total = element.valorCancelado - element.valorSaldos
+      if(total != 0)
+        estado = "PARCIAL"
+
+      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {
+      },err => {})
+    });
   }
 
 
@@ -458,6 +584,151 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       this.crearPDF(this.comprobantePago, true);
     }
   }
+
+  deleteComprobante = (e) => {  
+    this.anularComprobante(e.row.data)  
+  }
+
+  aprobarEliminacion = (e) => {  
+   this.validarTransaccionesFactura(e.row.data)  
+  }
+
+  validarTransaccionesFactura(e){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = "CPP"+e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = e.nombreProveedor
+    this._transaccionFacturaService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.listaTransaccionesEncontradasAEliminar = res as TransaccionesFacturas[];
+      console.log(this.listaTransaccionesEncontradasAEliminar)
+      this.validarTransaccionesCheques(e);
+    })
+  } 
+
+
+  validarTransaccionesCheques(e){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = "CPP"+e.idDocumento
+    this.busquedaTransaccion.tipoTransaccion = e.nombreProveedor
+    this._transaccionChequesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.listaTransaccionesChequesEncontradasAEliminar = res as TransaccionChequesGirado[];
+      console.log(this.listaTransaccionesChequesEncontradasAEliminar)
+
+      this.eliminarComp(e) 
+    })
+  } 
+
+
+  eliminarComp(e){
+    Swal.fire({
+      title: 'Eliminar Comprobante',
+      text: "Eliminar comprobante #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        var obs= e.observaciones + ".. Documento Anulado"  
+        e.observaciones= obs
+        this._comprobantePagoProveedoresService.updateEstado(e._id,"Anulado").subscribe(
+          res => { this.eliminarTransaccionesFacturas();},
+          err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+
+  
+  eliminarTransaccionesFacturas(){
+    var cont = 0;
+    this.listaTransaccionesEncontradasAEliminar.forEach(element=>{
+      cont++;
+      this._transaccionFacturaService.deleteTransaccion(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})
+    })
+  }
+
+  contarTransacciones(cont){
+    if(cont == this.listaTransaccionesEncontradasAEliminar.length){
+      this.eliminarTransaccionesCheques();
+    }
+  }
+
+  eliminarTransaccionesCheques(){
+    var cont = 0;
+    this.listaTransaccionesChequesEncontradasAEliminar.forEach(element=>{
+      cont++;
+      this._transaccionChequesService.deleteTransaccion(element).subscribe( res => {this.contarTransaccionesCheques(cont)}, err => {alert("error")})
+    })
+  }
+
+  contarTransaccionesCheques(cont){
+    if(cont == this.listaTransaccionesChequesEncontradasAEliminar.length){
+      Swal.close()
+      Swal.fire({
+        title: 'Comprobante Anulado',
+        text: 'Se ha guardado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        this.traerComprobantesPagoPorRango();
+      })
+    }
+  }
+
+
+
+  mostrarMensaje(){
+    let timerInterval
+      Swal.fire({
+        title: 'Guardando !',
+        html: 'Procesando',
+        timerProgressBar: true,
+        onBeforeOpen: () => {
+          Swal.showLoading()
+          timerInterval = setInterval(() => {
+            const content = Swal.getContent()
+            if (content) {
+              const b = content.querySelector('b')
+            }
+          }, 100)
+        },
+        onClose: () => {
+          clearInterval(timerInterval)
+        }
+      })
+  }
+
+
+  anularComprobante(e:any){ 
+    Swal.fire({
+      title: 'Anular Comprobante',
+      text: "Desea anular el comprobante #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._comprobantePagoProveedoresService.updateEstado( e._id ,"Pendiente").subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Un administrador aprobará su anulación',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            this.traerComprobantesPagoPorRango();
+          })
+        }, err => {alert("error")})
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso");
+      }
+    })
+  }
+
+  
 
 
 

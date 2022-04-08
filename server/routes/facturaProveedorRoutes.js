@@ -15,7 +15,7 @@ router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
 
 router.post("/getFacturasPendientesPorProveedor/:proveedor", async (req, res, next) => {
   const { proveedor } = req.params;
-  const documentos = await FacturaProveedor.find({proveedor: proveedor,estado : "PENDIENTE"});
+  const documentos = await FacturaProveedor.find({proveedor: proveedor,estado :{ $in: ['PENDIENTE', 'PARCIAL'] }});
   res.json(documentos);
 });
 
@@ -60,6 +60,14 @@ router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { estado } = req.params;
 
     await FacturaProveedor.findOneAndUpdate({idF:id}, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
+router.put('/updateEstadoPorId/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await FacturaProveedor.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

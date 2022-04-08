@@ -24,10 +24,12 @@ export class ComprobantePagoProveedor{
     referencia : string
     nombreProveedor : string
     sucursal : string
+    estadoComprobante : string
     transaccionesFacturas : TransaccionesFacturas []
     transaccionesCheques : TransaccionChequesGirado []
     constructor(){
         this.fechaComprobante = new Date
+        this.estadoComprobante = "Activo"
     }
 }
 

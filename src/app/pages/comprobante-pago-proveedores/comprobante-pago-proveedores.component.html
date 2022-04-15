@@ -121,15 +121,15 @@
                             </div>
 
                             <div class="padding-tr-13">
-                                <dx-number-box [(value)]="p.valorFactura" (onChange)="calcularTotal($event)"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorFactura"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-12">
-                                <dx-number-box [(value)]="p.valorAbonado" readOnly="true" (onChange)="calcularTotal($event)"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorAbonado" readOnly="true"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-13">
-                                <dx-number-box [(value)]="p.valorSaldos" (onChange)="calcularTotal($event)"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorSaldos"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-15">
@@ -137,11 +137,11 @@
                             </div>
 
                             <div class="padding-tr-15">
-                                <dx-text-box [(value)]="p.estado" readOnly="true" (onChange)="calcularTotal($event)"></dx-text-box>
+                                <dx-text-box [(value)]="p.estado" readOnly="true"></dx-text-box>
                             </div>
 
                             <div class="padding-tr-15">
-                                <dx-text-box [(value)]="p.observaciones" (onChange)="calcularTotal($event)"></dx-text-box>
+                                <dx-text-box [(value)]="p.observaciones"></dx-text-box>
                             </div>
                                 
                             <div class="padding-tr-5">
@@ -150,6 +150,14 @@
 
                         </div>
                     </div>
+                    <div class="row" style="padding-top: 1em;">
+                        <div class="col-md-9" style="text-align: right;font-weight: bold;"><p>TOTAL VALOR A CANCELAR</p></div>
+                        <div class="col-md-3">
+                            <div class="valorFact">
+                                <dx-number-box [(value)]="valorTotalFacturas"></dx-number-box>
+                            </div></div>
+                    </div>
+                    
                 </div>
 
 
@@ -198,7 +206,16 @@
                             </div>
 
                             <div class="padding-tr-15">
-                                <dx-text-box [(value)]="p.banco" ></dx-text-box>
+                               <!--  <dx-text-box [(value)]="p.banco" ></dx-text-box> -->
+                                <dx-select-box [items]="listaCuentasBancarias" 
+                                    displayExpr="nombre"
+                                    
+                                    [searchEnabled]="true"
+                                    valueExpr="_id"
+                                    [readOnly]="false" 
+                                    (onValueChanged)="asignarDatosBanco($event,i)"
+                                    [disabled]="false">
+                                </dx-select-box>
                             </div>
 
                             <div class="padding-tr-15">
@@ -323,11 +340,10 @@
         <dxi-column dataField="nombreProveedor" caption="Proveedor" dataType="string"></dxi-column>
         <dxi-column dataField="referencia" caption="Referencia" dataType="string"></dxi-column>
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" [visible]="false" dataType="string"></dxi-column>
        
-
         <dxi-column type="buttons" dataField="bt1" caption="Descargar" width="10%">
-            <dxi-button icon="fa fa-download" [onClick]="downloadFile"></dxi-button>   
+            <dxi-button icon="fa fa-download" [onClick]="downloadFile" ></dxi-button>   
         </dxi-column>
         <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
             <dxi-button icon="clear" [onClick]="deleteComprobante"></dxi-button>   
@@ -469,7 +485,7 @@
 
                                     <div class="col-md-4"></div>
                                     <div class="col-md-4 btnSearch">
-                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesFacturaPorRango()">Buscar</button>
+                                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesChequesPorRango()">Buscar</button>
                                     </div>
                                     <div class="col-md-4"></div>
                                 </div>        
@@ -530,6 +546,10 @@
             [allowedPageSizes]="[8, 12, 20]"
         ></dxo-pager>
     </dx-data-grid>
+</div>
+
+<div *ngIf="mostrarPagoDirecto">
+    <app-comprobante-pago-proveedores-directo></app-comprobante-pago-proveedores-directo>
 </div>
  
 

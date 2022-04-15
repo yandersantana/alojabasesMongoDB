@@ -121,3 +121,14 @@
 .dates dx-date-box{
     margin-top: 0.05em;
 }
+
+.valorFact{
+    padding-right: 1em;
+    padding-left: 1em;
+}
+
+::ng-deep .valorFact .dx-texteditor-input{
+    font-weight: bold;
+    font-size: 15pt;
+    text-align: center; 
+}

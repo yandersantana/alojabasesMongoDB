@@ -37,3 +37,11 @@ export class Beneficiario{
     constructor(){
     }
 }
+
+export class CuentaBancaria{
+    _id:string
+    nombre:string
+    numero:string
+    constructor(){
+    }
+}

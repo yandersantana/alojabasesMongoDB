@@ -68,6 +68,7 @@ app.use('/prestamos', require('./routes/prestamosRoutes'));
 app.use('/comprobantePagoProveedor', require('./routes/comprobantePagoProveedores'));
 app.use('/transaccionFacturas', require('./routes/transaccionesFacturasRoutes'));
 app.use('/transaccionesCheques', require('./routes/transaccionesChequesRoutes'));
+app.use('/cuentaBancaria', require('./routes/cuentaBancariaRoutes'));
 
 
 

@@ -15,7 +15,7 @@
         (onValueChanged)="opcionMenu($event)"
         ></dx-select-box></div>
 </div>
-<div class="ContFact " id="op1">
+<div class="ContFact " *ngIf="op1">
     <div><h4>Facturas / Proveedor</h4></div>
     <div class="row">
         <div class="col-md-4 text1">Orden de Compra
@@ -108,7 +108,7 @@
 
 
 
-<div class="ContFact" id="op2" style="display: none;">
+<div class="ContFact" *ngIf="op2">
     <div><h4>Control Facturas</h4></div>
     <div class="row espacio">
         <div class="col-md-3"><h6>Orden de compra</h6></div>
@@ -258,7 +258,7 @@
            
 </div>
 
-<div id="op3" style="display: none;">
+<div *ngIf="op3">
     
     <div class="ContFact" id="busqueda">
         <div class="row remiPro">
@@ -603,7 +603,7 @@
 </div>
 
 
-<div id="op4" style="display: none;">
+<div *ngIf="op4">
     <div><h4>Facturas ingresadas</h4></div>
     <div class="margen">
         <dx-data-grid #grid
@@ -683,6 +683,15 @@
     </dx-data-grid>
 </div>
 
+
+<div *ngIf="op5">
+    <app-registro-facturas></app-registro-facturas>
+</div>
+
+
+<div *ngIf="op6">
+    <app-base-pagos-proveedores></app-base-pagos-proveedores>
+</div>
 
 
 

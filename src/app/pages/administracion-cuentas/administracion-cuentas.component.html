@@ -17,6 +17,7 @@
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(2)">SUBCUENTAS</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(3)">CENTRO DE COSTO</button></div>
                         <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(4)">BENEFICIARIOS</button></div>
+                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar(5)">CUENTAS BANCARIAS</button></div>
                     </div>
                 </div>
                 <div class="col-md-10 card carIn">
@@ -218,6 +219,53 @@
                     </div>
 
 
+                    <div *ngIf="sectionCuentasBancarias">
+                        <div class="row" class="fomR">
+                            <div class="col-md-12">
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6"><div style="text-align: center;"><h4>CUENTAS BANCARIAS</h4></div></div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <button class="btn" type="button" (click)="mostrarPopupCuentasBancarias()"><i class="fa fa-plus-square" aria-hidden="true"></i></button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                            </div>
+                                
+                            <div *ngFor="let cuenta of listaCuentasBancarias; let id = index">
+                                <div class="row espacio">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-6">
+                                        <input type="text" value={{cuenta.nombre}} [disabled]="varDis" class="form-control" #box (keyup)="onKey(box.value)">
+                                    </div>
+                                    <div class="col-md-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="guardarCuentaBancaria($event, cuenta)">
+                                                    <button class="btn" type="submit" [disabled]="cuenta.noEditable"><i class="fa fa-pencil-square-o" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <form role="form" (submit)="eliminarCuentaBancaria($event, cuenta)">
+                                                    <button  class="btn" type="submit" [disabled]="cuenta.noEditable" style="background-color: red;"><i class="fa fa-trash" aria-hidden="true"></i></button>
+                                                </form>
+                                            </div>
+                                        </div> 
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                    
+                                </div>
+                            </div>
+                               
+                        </div>
+                        
+                    </div>
+
+
                    
                 </div>
                 
@@ -351,6 +399,40 @@
                         (click)="saveNewBeneficiario()">Guardar</button></div>
                 <div class="col-md-4" *ngIf="!isNew"><button class="btn btn2" type="button"
                         (click)="actualizarBeneficiario()">Actualizar</button></div>
+                <div class="col-md-4"></div>
+                 
+            </div>
+        </div>
+    </div>
+</dx-popup>
+
+
+<dx-popup [width]="500" [height]="350" [showTitle]="true" title="Nueva Cuenta" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleCuentaBancaria">
+    <div *dxTemplate="let data of 'content'">
+        <div class="col-md-12">
+            <div class="row espacio">
+                <div class="col-md-4" style="text-align: left;">Banco</div>
+                <div class="col-md-8"> <input type="text" [(ngModel)]="cuentaBancaria.nombre"
+                        name="nombre" class="form-control select" placeholder="Nombre del Banco"
+                        required></div>
+                        <br><br>
+                
+                <div class="col-md-4" style="text-align: left;margin-top: 1em;">Número</div>
+                <div class="col-md-8" style="margin-top: 1em;"> <input type="text" [(ngModel)]="cuentaBancaria.numero"
+                        name="nombre" class="form-control select" placeholder="Número de Cuenta"
+                        required></div>
+                        <br><br>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-4"></div>
+                <div class="col-md-4" *ngIf="isNew"><button class="btn btn2" type="button"
+                        (click)="saveNewCuentaBancaria()">Guardar</button></div>
+                <div class="col-md-4" *ngIf="!isNew"><button class="btn btn2" type="button"
+                        (click)="actualizarCuentaBancaria()">Actualizar</button></div>
                 <div class="col-md-4"></div>
                  
             </div>

@@ -113,7 +113,6 @@ export class TrasladosComponent implements OnInit {
   mostrarLoading: boolean = false;
   constructor(
     private db: AngularFirestore,
-    public afAuth: AngularFireAuth,
     public parametrizacionService: ParametrizacionesService,
     public authenService: AuthenService,
     public trasladosService: TrasladosService,
@@ -205,13 +204,6 @@ export class TrasladosComponent implements OnInit {
     this.sucursal_origen = this.usuarioLogueado[0].sucursal;
     this.variablesucursal = this.usuarioLogueado[0].sucursal;
     this.obtenerDatos(this.variablesucursal);
-    //this.compararlocales()
-    /* this.locales.forEach(element=>{
-      if(element.nombre == this.usuarioLogueado[0].sucursal){
-        this.traslados.sucursal_origen=element
-        this.obtenerDatosSucursalOrigen(element)
-      }
-    }) */
     this.bodegas.forEach((element) => {
       if (element.sucursal == this.sucursal_origen) {
         this.bodegasorigen.push(element);
@@ -337,60 +329,7 @@ export class TrasladosComponent implements OnInit {
     //this.id2=this.contadores[0].contTraslados_Ndocumento+1
   }
 
-  /*  getLocales(){
-    new Promise<any>((resolve, reject) => {
-    this.db.collection('/locales').valueChanges().subscribe((data:Sucursal[]) => {
-      if(data != null)
-        this.locales = data
-    })
-    console.log("hayyy"+this.locales.length)
-  })
-    
-  } */
 
-  /* getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  } */
-
-  /* getbodegas(){
-    this.db.collection('/bodegas').valueChanges().subscribe((data:bodega[]) => {
-      if(data != null)
-        this.bodegas = data
-
-    })
-  } */
-
-  /*  getTransportista(){
-    this.db.collection('/transportista').valueChanges().subscribe((data:transportista[]) => {
-      if(data != null)
-        this.transportistas = data
-
-    })
-  }
- */
-
-  /*  async getTraslados() {
-    
-    await this.db.collection('traslados').snapshotChanges().subscribe((traslados) => {
-      new Promise<any>((resolve, reject) => {
-        traslados.forEach((nt: any) => {
-          this.trasladosG.push(nt.payload.doc.data());
-        })
-      }) 
-   
-    });;
-  } */
-
-  /* getProductosSucursal(){
-    this.db.collection('/productosSucursal').valueChanges().subscribe((data:productosSucursal[]) => {
-      if(data != null)
-        this.productosSucursal = data
-    })
-  } */
 
   asignarValores() {
     this.trasladosG.forEach((element) => {
@@ -407,51 +346,7 @@ export class TrasladosComponent implements OnInit {
     this.mostrarLoading = false;
   }
 
-  /* getProductosTrasladados(){
-    this.db.collection('/productosTrasladados').valueChanges().subscribe((data:detalleTraslados[]) => {
-      if(data != null)
-        this.detalleTrasladosBase = data
-
-    })
-  } */
-
-  /*  getTransacciones(){
-    this.db.collection('/transacciones').valueChanges().subscribe((data:transaccion[]) => {
-      this.transacciones = data
-  
-    })
-  } */
-
-  /*  async getTrasladoId() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('/traslados_ID').doc('matriz').snapshotChanges().subscribe((contador) => {
-      console.log(contador.payload.data())
-      this.id2 = contador.payload.data()['documento_n']+1;  
-     //this.id2=20
-    });;
-  } */
-
-  /*  async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      new Promise<any>((resolve, reject) => {
-        productos.forEach((nt: any) => {
-          this.productosActivos.push(nt.payload.doc.data());
-        })
-      })
-      this.llenarComboProductos2()
-    });;
-  }
- */
-
-  /* async getIDTransacciones() {
-    
-    await this.db.collection('transacciones_ID').doc('matriz').snapshotChanges().subscribe((transacciones) => {
-      console.log(transacciones.payload.data())
-      this.number_transaccion = transacciones.payload.data()['documento_n'];    
-    });;
-  } */
+ 
 
   mostrarC(e) {
     if (this.seleccion) {
@@ -494,13 +389,9 @@ export class TrasladosComponent implements OnInit {
   }
 
   obtenerDatos(sucursal: string) {
-    //console.log(this.locales.length)
-    console.log("ssssssssssssssssssssss");
     this.locales.forEach((element) => {
       if (element.nombre == sucursal) {
         this.traslados.sucursal_origen = element;
-
-        console.log("siiii " + element);
       }
     });
     this.limpiarArreglo5();
@@ -561,26 +452,6 @@ export class TrasladosComponent implements OnInit {
 
   llenarComboProductos(e) {
     this.productosTraslado = this.productos;
-    /* if(e.value=="matriz"){
-      this.productosTraslado= this.productos
-    }
-    else if(e.value=="sucursal Jujan"){
-      this.productosTraslado= this.productos2
-    } */
-    /*  console.log("la bodega es "+e.value)
-    switch (e.value) {
-      case "Milagro":
-        this.productosVendidos[i].disponible = element.sucursal1
-        break;
-      case "Naranjito":
-        this.productosVendidos[i].disponible = element.sucursal2
-        break;
-      case "El Triunfo":
-        this.productosVendidos[i].disponible = element.sucursal3
-          break;
-      default:
-    }
- */
   }
 
   obtenerDatosSucursalDestino(e) {
@@ -660,13 +531,6 @@ export class TrasladosComponent implements OnInit {
         console.log("traje lo siguiente " + JSON.stringify(this.traslados));
       }
     });
-    /* this.detalleTrasladosBase.forEach(element=>{
-      console.log("encontre "+element.producto)
-         if(element.id == e.id){
-           console.log("encontre "+element.producto)
-           this.detalleTraslados.push(element)
-         }
-     }) */
 
     this.parametrizaciones.forEach((element) => {
       if (element.sucursal == this.traslados.sucursal_origen.nombre) {
@@ -819,12 +683,6 @@ export class TrasladosComponent implements OnInit {
             alert("error");
           }
         );
-        /*  this.expensesCollection3 = this.db.collection('/transacciones', ref => ref.where('idTransaccion', '==', element.idTransaccion));
-       this.expensesCollection3.get().toPromise().then(function(querySnapshot) {
-         querySnapshot.forEach(function(doc) {
-           doc.ref.delete();
-         });
-       }); */
       }
     });
 
@@ -980,15 +838,6 @@ export class TrasladosComponent implements OnInit {
     var contVal = 0;
     this.traslados.idT = this.id2;
     this.traslados.transportista = this.transportista;
-    /* this.traslados.transportista.nombre= this.nombre_transportista
-    this.traslados.transportista.celular= this.celular
-    this.traslados.transportista.identificacion= this.identificacion
-    this.traslados.transportista.placa= this.placa
-    this.traslados.transportista.vehiculo= this.tipo_vehiculo */
-    // this.traslados.transportista.nombre= this.nombre_transportista
-    // this.traslados.transportista.celular= this.celular
-    // this.traslados.transportista.placa= this.placa
-    // this.traslados.transportista.vehiculo= this.tipo_vehiculo
     this.traslados.observaciones = this.observaciones;
     this.traslados.detalleTraslados = this.detalleTraslados;
     this.traslados.fecha = this.now;
@@ -1476,41 +1325,6 @@ export class TrasladosComponent implements OnInit {
   }
 
   validarCantidad(i: number) {
-    /* var cantm2=0
-    console.log("la sucursal origen es "+this.sucursal_origen)
-    if(this.sucursal_origen=="matriz"){
-      console.log("sdsdsd")
-      console.log("detalle"+this.detalleTraslados[i].producto)
-      this.productos.forEach(element=>{
-        if(element.PRODUCTO== this.detalleTraslados[i].producto){
-          cantm2=parseInt(((element.M2*this.detalleTraslados[i].cajas)+((this.detalleTraslados[i].piezas*element.M2)/element.P_CAJA)).toFixed(0))
-        this.detalleTraslados[i].cantidadm2=cantm2
-        if(cantm2 >element.cantidad){
-            alert("el cantidad excede el inventario del producto")
-            this.detalleTraslados[i].cajas=0
-            this.detalleTraslados[i].piezas=0
-        }
-        }
-
-      })
-
-    }else if(this.sucursal_origen=="sucursal Jujan"){
-      console.log("sdsdsd")
-      console.log("detalle"+this.detalleTraslados[i].producto)
-      this.productos2.forEach(element=>{
-        if(element.PRODUCTO== this.detalleTraslados[i].producto){
-          cantm2=parseInt(((element.M2*this.detalleTraslados[i].cajas)+((this.detalleTraslados[i].piezas*element.M2)/element.P_CAJA)).toFixed(0))
-        this.detalleTraslados[i].cantidadm2=cantm2
-        if(cantm2 >element.cantidad){
-            alert("el cantidad excede el inventario del producto")
-            this.detalleTraslados[i].cajas=0
-            this.detalleTraslados[i].piezas=0
-        }
-        }
-
-      })
-
-    } */
     var cantm2 = 0;
     this.productos.forEach((element) => {
       if (element.PRODUCTO == this.detalleTraslados[i].producto) {

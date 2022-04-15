@@ -1,10 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
-import { Beneficiario, CentroCosto, Cuenta, SubCuenta } from './administracion-cuenta';
+import { Beneficiario, CentroCosto, Cuenta, CuentaBancaria, SubCuenta } from './administracion-cuenta';
 import { CuentasService } from 'src/app/servicios/cuentas.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
+import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 
 @Component({
   selector: 'app-administracion-cuentas',
@@ -16,6 +17,7 @@ export class AdministracionCuentasComponent implements OnInit {
   listaCuentas : Cuenta[]=[]
   listaCentroCosto : CentroCosto[]=[]
   listaBeneficiarios : Beneficiario[]=[]
+  listaCuentasBancarias : CuentaBancaria[]=[]
   cuenta = {
     nombre:"",
     tipoCuenta:""
@@ -29,6 +31,11 @@ export class AdministracionCuentasComponent implements OnInit {
   beneficiario = {
     nombre:""
   }
+
+  cuentaBancaria = {
+    nombre:"",
+    numero:""
+  }
   centroCsotos:CentroCosto[]=[]
   varDis:boolean=true
   bloqueoSubCuenta:boolean=true
@@ -40,9 +47,11 @@ export class AdministracionCuentasComponent implements OnInit {
   valueCuenta= "";
   cuentaPrueba:Cuenta[]=[]
   newCuenta:Cuenta
+  newCuentaBancaria:CuentaBancaria
   newCentroCosto: CentroCosto
   newBeneficiario: Beneficiario
   popupVisible:boolean = false
+  popupVisibleCuentaBancaria:boolean = false
   popupVisibleSubcuenta:boolean = false
   popupVisibleCosto:boolean = false
   popupVisibleBeneficiario:boolean = false
@@ -50,6 +59,7 @@ export class AdministracionCuentasComponent implements OnInit {
   sectionSubCuentas:boolean = false
   sectionCostos:boolean = false
   sectionBeneficiarios:boolean = false
+  sectionCuentasBancarias:boolean = false
 
   newSubCuenta: SubCuenta
   idCuenta:string
@@ -62,6 +72,7 @@ export class AdministracionCuentasComponent implements OnInit {
     public _subCuentasService : SubCuentasService,
     public _centroCostoService : CentroCostoService,
     public _beneficiariosService : BeneficiarioService,
+    public _cuentaBancariaService : CuentaBancariaService,
     ) {
    }
 
@@ -95,6 +106,12 @@ export class AdministracionCuentasComponent implements OnInit {
     this.beneficiario.nombre = "";
     this.isNew = true;
   }
+
+  mostrarPopupCuentasBancarias(){
+    this.popupVisibleCuentaBancaria=true
+    this.cuentaBancaria.nombre = "";
+    this.cuentaBancaria.numero = "";
+  }
  
   traerListaCuentas(){
     this.mostrarLoading = true;
@@ -127,6 +144,15 @@ export class AdministracionCuentasComponent implements OnInit {
     this.mostrarLoading = true;
     this._beneficiariosService.getBeneficiarios().subscribe(res => {
       this.listaBeneficiarios = res as Beneficiario[];
+      this.mostrarLoading = false;
+   })
+  }
+
+
+  traerCuentasBancarias(){
+    this.mostrarLoading = true;
+    this._cuentaBancariaService.getCuentas().subscribe(res => {
+      this.listaCuentasBancarias = res as CuentaBancaria[];
       this.mostrarLoading = false;
    })
   }
@@ -184,6 +210,18 @@ export class AdministracionCuentasComponent implements OnInit {
     })
   }
 
+  correctoCuentasBancarias(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se ha guardado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerCuentasBancarias();
+    })
+  }
+  
+
   messaggeDelete(){
     Swal.fire({
       title: 'Correcto',
@@ -214,6 +252,17 @@ export class AdministracionCuentasComponent implements OnInit {
       confirmButtonText: 'Ok'
     }).then((result) => {
       this.traerBeneficiarios();
+    })
+  }
+
+  messaggeDeleteCuentaBancaria(){
+    Swal.fire({
+      title: 'Correcto',
+      text: 'Se ha eliminado con éxito',
+      icon: 'success',
+      confirmButtonText: 'Ok'
+    }).then((result) => {
+      this.traerCuentasBancarias();
     })
   }
   
@@ -298,9 +347,39 @@ export class AdministracionCuentasComponent implements OnInit {
   } 
 
 
+  saveNewCuentaBancaria(){
+    var existe = this.listaCuentasBancarias.find(element=> element.nombre == this.cuenta.nombre);
+    if(!existe){
+      this.popupVisibleCuentaBancaria = false;
+      this.newCuentaBancaria = new CuentaBancaria();
+      this.newCuentaBancaria.nombre = this.cuentaBancaria.nombre;
+      this.newCuentaBancaria.numero = this.cuentaBancaria.numero;
+      this.mensajeGuardando()
+      new Promise<any>((resolve, reject) => {
+        this._cuentaBancariaService.newCuenta(this.newCuentaBancaria).subscribe(
+          res => {
+            this.correctoCuentasBancarias()
+          },
+          err => {
+             this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
+          })
+      })
+    }else{
+      this.popupVisible = false;
+      this.mostrarMensajeGenerico(2,"El nombre de cuenta a crear ya existe");
+    }
+  } 
+
+
   guardar(e,cuenta){
     this.cuenta = cuenta;
     this.popupVisible = true;
+    this.isNew = false;
+  }
+
+  guardarCuentaBancaria(e,cuenta){
+    this.cuentaBancaria = cuenta;
+    this.popupVisibleCuentaBancaria = true;
     this.isNew = false;
   }
 
@@ -328,7 +407,20 @@ export class AdministracionCuentasComponent implements OnInit {
           this.mostrarMensajeGenerico(2,"Revise e intente nuevamente");
         })
     })
+  }
 
+  actualizarCuentaBancaria(){
+    this.mensajeGuardando()
+    new Promise<any>((resolve, reject) => {
+      this._cuentaBancariaService.updateCuentas(this.cuentaBancaria).subscribe(
+        res => {
+          this.popupVisibleCuentaBancaria = false;
+          this.correctoCuentasBancarias()
+        },
+        err => {
+          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente");
+        })
+    })
   }
 
   actualizarDetalleCosto(){
@@ -468,6 +560,27 @@ export class AdministracionCuentasComponent implements OnInit {
   }
 
 
+  eliminarCuentaBancaria(e,cuenta){
+    Swal.fire({
+      title: 'Eliminar Cuenta',
+      text: "Esta seguro que desea eliminar el nombre de cuenta "+ cuenta.nombre,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._cuentaBancariaService.deleteCuentas(cuenta).subscribe(
+          res => {
+           this.messaggeDeleteCuentaBancaria();
+          },err => {alert("error")})
+     
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.")
+      }
+    })
+  }
+
 
   mensajeGuardando(){
     let timerInterval
@@ -498,6 +611,7 @@ export class AdministracionCuentasComponent implements OnInit {
         this.sectionSubCuentas = false;
         this.sectionCostos = false;
         this.sectionBeneficiarios = false;
+        this.sectionCuentasBancarias = false;
         break;
   
       case 2:
@@ -505,6 +619,7 @@ export class AdministracionCuentasComponent implements OnInit {
         this.sectionSubCuentas = true;
         this.sectionCostos = false;
         this.sectionBeneficiarios = false;
+        this.sectionCuentasBancarias = false;
         break;
 
       case 3:
@@ -512,6 +627,7 @@ export class AdministracionCuentasComponent implements OnInit {
         this.sectionSubCuentas = false;
         this.sectionCostos = true;
         this.sectionBeneficiarios = false;
+        this.sectionCuentasBancarias = false;
         if(this.listaCentroCosto.length == 0)
             this.traerCuentasCostos();
         break;
@@ -521,8 +637,19 @@ export class AdministracionCuentasComponent implements OnInit {
         this.sectionSubCuentas = false;
         this.sectionCostos = false;
         this.sectionBeneficiarios = true;
+        this.sectionCuentasBancarias = false;
         if(this.listaBeneficiarios.length == 0)
             this.traerBeneficiarios();
+        break;
+
+      case 5:
+        this.sectionCuentas = false;
+        this.sectionSubCuentas = false;
+        this.sectionCostos = false;
+        this.sectionBeneficiarios = false;
+        this.sectionCuentasBancarias = true;
+        if(this.listaCuentasBancarias.length == 0)
+            this.traerCuentasBancarias();
         break;
       default:    
     }      

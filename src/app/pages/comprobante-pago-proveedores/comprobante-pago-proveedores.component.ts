@@ -3,7 +3,7 @@ import { ContadoresDocumentosService } from 'src/app/servicios/contadores-docume
 import { CuentasService } from 'src/app/servicios/cuentas.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import Swal from 'sweetalert2';
-import { CentroCosto, Cuenta, SubCuenta } from '../administracion-cuentas/administracion-cuenta';
+import { CentroCosto, Cuenta, CuentaBancaria, SubCuenta } from '../administracion-cuentas/administracion-cuenta';
 import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
 import { contadoresDocumentos } from '../ventas/venta';
 import pdfMake from "pdfmake/build/pdfmake";
@@ -23,6 +23,7 @@ import { FacturaProveedor } from '../orden-compra/ordencompra';
 import { ComprobantePagoProveedoresService } from 'src/app/servicios/comprobantePagoProveedores.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
+import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 
 
 
@@ -39,6 +40,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   mostrarListaCP: boolean = false;
   mostrarTransaccionesFacturas: boolean = false;
   mostrarTransaccionesCheques: boolean = false;
+  mostrarPagoDirecto: boolean = false;
   comprobantePago : ComprobantePagoProveedor
   busquedaTransaccion : tipoBusquedaTransaccion
   comprobantePagoDescarga : ComprobantePagoProveedor
@@ -59,6 +61,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   listaSubCuentas: SubCuenta [] = []
   listaSubCuentas2: SubCuenta [] = []
   listaSubCuentas3: SubCuenta [] = []
+  listaCuentasBancarias: CuentaBancaria [] = []
+  
   isReadOnly: boolean = false;
   contadores:contadoresDocumentos[]
   comprobantesEncontrados:ComprobantePago[]
@@ -82,6 +86,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   nowhasta: Date = new Date();
   menu: string[] = [
     "Nuevo Comprobante",
+    "Pago Directo Facturas",
     "Comprobantes de Pago Generados",
     "Transacciones Facturas",
     "Transacciones Cheques"
@@ -116,7 +121,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     public _proveedoresService: ProveedoresService,
     public _centroCostoService: CentroCostoService,
     public _facturaProveedorService: FacturasProveedorService,
-    public _authenService:AuthenService
+    public _authenService:AuthenService,
+    public _cuentaBancariaService: CuentaBancariaService
     ) {
    }
 
@@ -131,7 +137,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.traerParametrizaciones();
     this.traerDatosConfiguracion();
     this.traerProveedores();
-
+    this.traerCuentasBancarias();
   }
 
 
@@ -140,6 +146,15 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       this.contadores = res as contadoresDocumentos[];
       this.comprobantePago.idDocumento = this.contadores[0].comprobantePagoProveedor_Ndocumento + 1;
       this.listadoPagos[0].idPago = this.contadores[0].pagoCheque_Ndocumento + 1;
+   })
+  }
+
+
+  traerCuentasBancarias(){
+    this.mostrarLoading = true;
+    this._cuentaBancariaService.getCuentas().subscribe(res => {
+      this.listaCuentasBancarias = res as CuentaBancaria[];
+      this.mostrarLoading = false;
    })
   }
 
@@ -221,19 +236,26 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   async traerTransaccionesPorFactura(e,i){ 
      var factura = await this.listaFacturas.find(element=> element._id == e.value)
+    this.listadoFacturasPagar[i].estado = factura.estado;
     this.busquedaTransaccion = new tipoBusquedaTransaccion()
     this.busquedaTransaccion.NumDocumento = factura.nFactura;
     this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
       this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
       this.obtenerAbonos(e,i);
     })  
-    
+  }
+
+  async asignarDatosBanco(e,i){ 
+    var cuenta = await this.listaCuentasBancarias.find(element=> element._id == e.value)
+    this.listadoPagos[i].banco = cuenta.nombre
+    this.listadoPagos[i].cuenta = cuenta.numero
+    console.log(cuenta)
   }
 
   obtenerAbonos(e,i){
     this.listadoFacturasPagar[i].valorAbonado = 0;
     this.listaTransaccionesEncontradas.forEach(element =>{
-      this.listadoFacturasPagar[i].valorAbonado +=element.valorCancelado;
+      this.listadoFacturasPagar[i].valorAbonado += element.valorCancelado;
     })
     this.obtenerDatosFactura(e,i);
   }
@@ -267,18 +289,20 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
 
   calcularValor(e,i){
-   // var total = this.listadoFacturasPagar[i].valorCancelado - this.listadoFacturasPagar[i].valorCancelado
     if(this.listadoFacturasPagar[i].valorCancelado > this.listadoFacturasPagar[i].valorSaldos){
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
     }
-    
+    this.calcularTotal();
+     
   }
 
-  calcularTotal(e){
-    /* this.listadoOperaciones.forEach(element =>{
-      this.comprobantePago.total +=element.valor;
-    })  */
+
+  calcularTotal(){
+    this.valorTotalFacturas = 0;
+    this.listadoFacturasPagar.forEach(element=>{
+      this.valorTotalFacturas = this.valorTotalFacturas + element.valorCancelado;
+    });
   }
 
 
@@ -371,11 +395,13 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   async obtenerDatosFactura(e,i){
+    var valor = 0;
     var factura = await this.listaFacturas.find(element=> element._id == e.value);
     this.listadoFacturasPagar[i].numFactura = Number(factura.nFactura);
     this.listadoFacturasPagar[i].valorFactura = factura.total;
     this.listadoFacturasPagar[i].fechaFactura = factura.fecha;
-    this.listadoFacturasPagar[i].valorSaldos = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado;
+    valor =  Number(this.listadoFacturasPagar[i].valorFactura.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorAbonado.toFixed(2));
+    this.listadoFacturasPagar[i].valorSaldos = Number(valor.toFixed(2))
   }
 
 
@@ -391,6 +417,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   eliminarRegistro(i: number) {
     this.listadoFacturasPagar.splice(i, 1);
+    this.calcularTotal();
   }
 
   eliminarRegistroPago(i: number) {
@@ -483,6 +510,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     });
 
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
+      element.estado = "Cubierto"
       element.usuario = this.comprobantePago.usuario;
       element.fechaFactura = this.comprobantePago.fechaComprobante;
       element.proveedor = this.comprobantePago.nombreProveedor;
@@ -495,6 +523,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
     this.comprobantePago.transaccionesCheques.forEach(element=>{
       element.facturas = facturas.slice(1);
+      element.usuario = this.comprobantePago.usuario;
       element.proveedor = this.comprobantePago.nombreProveedor;
       element.fechaPago = element.fechaPagoDate.toLocaleDateString()
     });
@@ -533,6 +562,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     var estado = "CUBIERTA"
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
       var total = element.valorCancelado - element.valorSaldos
+      console.log(total)
       if(total != 0)
         estado = "PARCIAL"
 
@@ -729,6 +759,12 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   
+  onRowPrepared(e: any) {
+    console.log(e.data)
+  if(e.data && e.data.nombreProveedor == "Rialto") {
+      e.rowElement.className += " my-disable";
+  }
+}
 
 
 
@@ -764,12 +800,21 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarListaCP = false;
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = false;
-       break;
+        this.mostrarPagoDirecto = false;
+        break;
+      case "Pago Directo Facturas":
+        this.mostrarNewCP = false;
+        this.mostrarListaCP = false;
+        this.mostrarTransaccionesFacturas = false;
+        this.mostrarTransaccionesCheques = false;
+        this.mostrarPagoDirecto = true;
+        break;
       case "Comprobantes de Pago Generados":
         this.mostrarNewCP = false;
         this.mostrarListaCP = true;
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = false;
+        this.mostrarPagoDirecto = false;
         if(this.listadoComprobantes.length == 0)
           this.traerComprobantesPagoPorRango();
         break;
@@ -778,6 +823,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarListaCP = false;
         this.mostrarTransaccionesFacturas = true;
         this.mostrarTransaccionesCheques = false;
+        this.mostrarPagoDirecto = false;
         if(this.listadoTransaccionesFactura.length == 0)
           this.traerTransaccionesFacturaPorRango();
         break;
@@ -786,6 +832,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarListaCP = false;
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = true;
+        this.mostrarPagoDirecto = false;
         if(this.listadoTransaccionesCheque.length == 0)
           this.traerTransaccionesChequesPorRango();
       default:    
@@ -1201,7 +1248,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
 
   getTransaccionesCheques(operaciones: TransaccionChequesGirado[]) {
-    return {
+    if(operaciones?.length > 0){
+      return {
       table: {
         widths: ["12%", "12%", "12%", "12%", "12%", "10%", "30%"],
         alignment: "center",
@@ -1268,6 +1316,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         ],
       },
     };
+    }
+    
   }
 
 

@@ -1,4 +1,3 @@
-
 import { Component, OnInit, Pipe, PipeTransform ,ViewChild} from '@angular/core';
 import { DxDataGridComponent } from 'devextreme-angular';
 import { OrdenDeCompra } from '../compras/compra';
@@ -87,6 +86,13 @@ fecha_pago: Date= new Date()
 valor:number=0
 beneficiario: string
 
+op1 = true;
+op2 = false;
+op3 = false;
+op4 = false;
+op5 = false;
+op6 = false;
+
 
 
 employees: ProductoDetalleCompra;
@@ -112,14 +118,14 @@ menu1: string[] = [
   "Factura Proveedor",
   "Facturas Ingresadas",
   "Control / Facturas",
-  "Pagos Proveedor"
+  "Pagos Proveedor",
+  "Registros Facturas",
+  "Agenda Financiera"
 ];
 numOrden:number=0
 selectionChangedBySelectbox: boolean;
 prefix: string;
 num_documento:number=0
-//tasks: DataSource;
-//factura datos
 proveedor:string=""
 sucursal:string=""
 usuario:string=""
@@ -1587,46 +1593,66 @@ anadirDetallePago = (e) => {
 
 
   opcionMenu(e){
-    var x = document.getElementById("op1");
-    var y = document.getElementById("op2");
-    var z = document.getElementById("op3");
-    var z1 = document.getElementById("op4");
-
     switch (e.value) {
       case "Factura Proveedor":
-        x.style.display = "block";
-        y.style.display="none";
-        z.style.display="none";
-        z1.style.display="none";
-       break;
+        this.op1 = true;
+        this.op2 = false;
+        this.op3 = false;
+        this.op4 = false;
+        this.op5 = false;
+        this.op6 = false;
+        break;
 
       case "Control / Facturas":
-       
-        x.style.display = "none";
-        y.style.display="block";
-        z.style.display="none";
-        z1.style.display="none";
+        this.op1 = false;
+        this.op2 = true;
+        this.op3 = false;
+        this.op4 = false;
+        this.op5 = false;
+        this.op6 = false;
         break;
      
       case "Pagos Proveedor":
-        
-        x.style.display = "none";
-        y.style.display="none";
-        z.style.display="block";
-        z1.style.display="none";
+        this.op1 = false;
+        this.op2 = false;
+        this.op3 = true;
+        this.op4 = false;
+        this.op5 = false;
+        this.op6 = false;
         this.traerOrdenesCompraMensuales();
         break;
 
-        case "Facturas Ingresadas":
-          this.llenarFacturasPendientes()
-        x.style.display = "none";
-        y.style.display="none";
-        z.style.display="none";
-        z1.style.display="block";
+      case "Facturas Ingresadas":
+        this.llenarFacturasPendientes()
+        this.op1 = false;
+        this.op2 = false;
+        this.op3 = false;
+        this.op4 = true;
+        this.op5 = false;
+        this.op6 = false;
+        break;
+
+      case "Registros Facturas":
+        this.llenarFacturasPendientes()
+        this.op1 = false;
+        this.op2 = false;
+        this.op3 = false;
+        this.op4 = false;
+        this.op5 = true;
+        this.op6 = false;
+        break;
+
+      case "Agenda Financiera":
+        this.op1 = false;
+        this.op2 = false;
+        this.op3 = false;
+        this.op4 = false;
+        this.op5 = false;
+        this.op6 = true;
         break;
       default:    
     }     
-    }
+  }
 
 
   cargarValoresFactura(){
@@ -1639,10 +1665,6 @@ anadirDetallePago = (e) => {
 
     let subtotal2=0
     this.subtotalFactura1=this.ordenDeCompra2.subtotal/1.12
-    //this.subtotalFactura2=products/1.12
-   // console.log("subt "+this.subtotalFactura2)
-    console.log("total "+this.ordenDeCompra2.total)
-    //console.log("subt "+this.subtotalFactura2)
     this.subtotal = this.ordenDeCompra2.total +this.ordenDeCompra2.costeUnitaTransport+this.ordenDeCompra2.otrosCostosGen
     this.subtotal1 =this.subtotal
     this.subtMenosDesc=this.ordenDeCompra2.subtotalDetalles-this.ordenDeCompra2.subtDetalles2

@@ -44,6 +44,10 @@ export class FacturasProveedorService {
     );
   }
 
+  getFacturasPorRango(objFecha) {
+    return this.http.post(this.URL + "/getFacturasPorRango", objFecha);
+  }
+
   updateEstado3(id: string, estado: string) {
     return this.http.put(this.URL + `/updateEstado3/${id}/${estado}`, id);
   }

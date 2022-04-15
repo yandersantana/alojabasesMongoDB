@@ -97,6 +97,9 @@ import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 import { ReciboCajaPrestamosComponent } from "./pages/reciboCaja/reciboCaja-prestamos/recibo-caja-prestamos.component";
+import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
+import { ComprobantePagoProveedoresDirectoComponent } from "./pages/comprobante-pago-proveedores-directo/comprobante-pago-proveedores-directo.component";
+import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
 
 @NgModule({
   declarations: [
@@ -148,7 +151,10 @@ import { ReciboCajaPrestamosComponent } from "./pages/reciboCaja/reciboCaja-pres
     CuentaPorPagarComponent,
     PrestamosComponent,
     ReciboCajaPrestamosComponent,
-    ReciboCajaPrestamosComponent
+    ReciboCajaPrestamosComponent,
+    RegistroFacturasComponent,
+    ComprobantePagoProveedoresDirectoComponent,
+    BasePagoProveedoresComponent
   ],
   imports: [
     BrowserModule,

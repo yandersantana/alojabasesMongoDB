@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { user } from './user';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
-import { sucursal } from '../ventas/venta';
 import { Sucursal } from '../compras/compra';
 import { NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
@@ -235,13 +234,7 @@ export class UserComponent implements OnInit {
               icon: 'error'
             })
           })
-    /* } else {
-      Swal.fire({
-        title: 'Usuario existe',
-        text: 'Ya hay un nombre creado con ese usuario',
-        icon: 'error'
-      })
-    } */
+
 
   }
 

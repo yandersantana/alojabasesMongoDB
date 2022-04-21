@@ -24,6 +24,10 @@ export class TransaccionesChequesService {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
   }
 
+   getTransaccionesPorRangoEstadoCubierto(objFecha) {
+    return this.http.post(this.URL + "/getTransaccionesPorRangoEstadoCubierto", objFecha);
+  }
+
   getTransaccionesPorTipoDocumento(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }

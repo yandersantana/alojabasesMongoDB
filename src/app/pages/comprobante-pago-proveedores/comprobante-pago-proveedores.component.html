@@ -198,7 +198,7 @@
                             </div>
 
                             <div class="padding-tr-12">
-                                <dx-number-box [(value)]="p.valor" ></dx-number-box>
+                                <dx-number-box [(value)]="p.valor" (onChange)="calcularTotalCheque()"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-13">
@@ -209,7 +209,6 @@
                                <!--  <dx-text-box [(value)]="p.banco" ></dx-text-box> -->
                                 <dx-select-box [items]="listaCuentasBancarias" 
                                     displayExpr="nombre"
-                                    
                                     [searchEnabled]="true"
                                     valueExpr="_id"
                                     [readOnly]="false" 
@@ -230,6 +229,13 @@
                                  <dx-button icon="clear" (onClick)="eliminarRegistroPago(i)" ></dx-button>
                             </div>
                         </div>
+                    </div>
+                    <div class="row" style="padding-top: 1em;">
+                        <div class="col-md-9" style="text-align: right;font-weight: bold;"><p>TOTAL VALOR A PAGAR</p></div>
+                        <div class="col-md-3">
+                            <div class="valorFact">
+                                <dx-number-box [(value)]="valorTotalCheques"></dx-number-box>
+                            </div></div>
                     </div>
                 </div>
 

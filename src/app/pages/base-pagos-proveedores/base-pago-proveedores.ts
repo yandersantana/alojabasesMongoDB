@@ -13,9 +13,18 @@ export class AgendaPago{
     banco6Nombre?: string
     valor6?: number
     totalColumna? : number
-    /* bancos: Banco []
+    listaPagos : ArrayPagos []
     constructor(){
-    } */
+    } 
+}
+
+
+export class ArrayPagos{
+    cuenta : string
+    valor : number
+    constructor(){
+        this.valor = 0;
+    }
 }
 
 
@@ -26,5 +35,13 @@ export class Banco{
     }
 }
 
+
+export class Nota{
+    fecha: Date
+    descripcion: string
+    constructor(){
+        
+    }
+}
 
 

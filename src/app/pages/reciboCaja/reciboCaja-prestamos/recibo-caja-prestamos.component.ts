@@ -279,6 +279,8 @@ export class ReciboCajaPrestamosComponent implements OnInit {
     this.valorTotalInicioFactura = e.value.valorInicialFactura
     this.tipoDocumentoCuenta = e.value.tipo_documento
     this.fechaDeuda = e.value.fecha_deuda
+    console.log(e.value)
+    this.fechaDocumentoPendiente = e.value.fecha
     this.reciboCaja.numDocumento = this.numeroDocumento
     if(this.tipoRecibo == "Facturacion")
       this.reciboCaja.fecha = e.value.fecha;
@@ -987,7 +989,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
 
   InsertarPrestamo(transaccion : TransaccionesFinancieras ){
     var prestamo = new Prestamos();
-    prestamo.fecha = this.reciboCaja.fecha;
+    prestamo.fecha = this.fechaDocumentoPendiente;
     prestamo.sucursal = this.reciboCaja.sucursal;
     prestamo.beneficiario = this.reciboCaja.cliente;
     prestamo.ruc = this.reciboCaja.ruc;
@@ -1033,7 +1035,6 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       this._transaccionFinancieraService.obtenerTransaccionesPrestamos(this.busquedaTransaccion).subscribe(
         async (res) => {
           var transacciones = res as TransaccionesFinancieras[];
-          console.log("dd",transacciones)
           await this.actualizarTransacciones(transacciones);},
         (err) => {});
     } 
@@ -1121,8 +1122,13 @@ export class ReciboCajaPrestamosComponent implements OnInit {
 
       if(element.nombreCuenta == "2.1 PRÉSTAMOS" && element.nombreSubcuenta == "2.2.4 Saldos"){
         transaccion.referenciaPrestamo = this.numReciboCajaTraido
-        if(fechaRecibo != fecha2)
+        if(fechaRecibo == fecha2){
+          transaccion.isContabilizada = true;
+        }
+        else{
           transaccion.isContabilizada = false;
+        }
+          
         this.InsertarPrestamo(transaccion)
       }
 

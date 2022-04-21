@@ -33,6 +33,33 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorRangoEstadoCubierto", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  var sucursal = req.body.sucursal;
+  var transacciones = [];
+  if(sucursal == ""){
+     transacciones = await TransaccionesCheques.find({
+      createdAt: {
+        $gte: start,
+        $lt: end,
+      },
+      estado:"Cubierto"
+    });
+  }else{
+     transacciones = await TransaccionesCheques.find({
+      createdAt: {
+        $gte: start,
+        $lt: end,
+      },
+      estado:"Cubierto",
+      sucursal:sucursal
+    });
+  }
+  
+  res.json(transacciones);
+});
+
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
   const transacciones = await TransaccionesCheques.find({ idComprobante: req.body.NumDocumento , proveedor : req.body.tipoTransaccion});
   res.json(transacciones);

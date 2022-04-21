@@ -25,12 +25,13 @@
                             <div class="col-md-3">Hasta</div>
                             <div class="col-md-9">
                                 <dx-date-box
+                                format="dd/MM/yyyy"
                                     [(value)]="nowhasta"
                                     type="date">
                                 </dx-date-box>
                             </div>
 
-                            <div class="col-md-12">
+                           <!--  <div class="col-md-12">
                                 <div class="dx-field radio">
                                     <div class="dx-field-value">
                                         <dx-radio-group
@@ -41,7 +42,7 @@
                                         </dx-radio-group>
                                     </div>
                                 </div>
-                            </div>
+                            </div> -->
 
                             <div class="col-md-4"></div>
                             <div class="col-md-4 btnSearch">
@@ -59,32 +60,106 @@
     </div>
 </div>
 
-
-<!-- <table>
-    <tr>
-        <th *ngFor="let item of data.columnNames">{{item}}</th>
-    </tr>
-    <tr *ngFor="let rowData of data.rows">
-        <td *ngFor="let el of rowData">{{el}}</td>
-    </tr>
-</table> -->
+<div class="row">
+    <div class="col-md-6"></div>
+    <div class="col-md-4"></div>
+    <div class="col-md-2 btnSearch" style="text-align: right;">
+        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="mostrarPopupNotas()">Notas</button>
+    </div>
+    
+</div>
 
 <br>
 <dx-data-grid #datag2
     id="gridContainer"
     [dataSource]="datosPago"
     [showBorders]="true">
-    <!-- <dxo-filter-row [visible]="false" ></dxo-filter-row>
-    <dxo-export [enabled]="true" [(fileName)]="nombreArchivo" [allowExportSelectedData]="true"></dxo-export>
+    <dxo-filter-row [visible]="true" ></dxo-filter-row>
+    <!-- <dxo-export [enabled]="true" [(fileName)]="nombreArchivo" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel> -->
-    <dxi-column dataField="fecha" caption="Fecha" format="dd/MM/yyyy" dataType="date"></dxi-column>
+    <dxi-column dataField="fecha" caption="Fecha" format="dd/MM/yyyy" cssClass="cell-highlighted" dataType="date"></dxi-column>
    <!--  <dxi-column dataField="banco1Nombre" caption="Banco" dataType="string"></dxi-column> -->
-    <dxi-column dataField="valor1" caption="Banco 1" dataType="number" ></dxi-column>
-    <dxi-column dataField="valor2" caption="Banco 2" dataType="number" *ngIf="mostrar2"></dxi-column>
-    <dxi-column dataField="valor3" caption="Banco 3" dataType="number" *ngIf="mostrar3"></dxi-column>
-    <dxi-column dataField="valor4" caption="Banco 4" dataType="number" *ngIf="mostrar4"></dxi-column>
-   
 
+   <dxi-column [(caption)]="nombreBanco1"  cssClass="cell-highlighted" dataField="">
+        <dxi-column dataField="valor1" [(caption)]="cuentaBanco1" cssClass="cell-highlighted" >
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+    </dxi-column>
+
+    <dxi-column [(caption)]="nombreBanco2"  cssClass="cell-highlighted" dataField="" *ngIf="mostrar2">
+        <dxi-column dataField="valor2" [(caption)]="cuentaBanco2" style="text-align: center;" cssClass="cell-highlighted" dataType="number" >
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+    </dxi-column>
+
+    <dxi-column [(caption)]="nombreBanco3"  cssClass="cell-highlighted" dataField="" *ngIf="mostrar3">
+        <dxi-column dataField="valor3" [(caption)]="cuentaBanco3" cssClass="cell-highlighted" dataType="number" >
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+    </dxi-column>
+
+    <dxi-column [(caption)]="nombreBanco4"  cssClass="cell-highlighted" dataField="" *ngIf="mostrar4">
+        <dxi-column dataField="valor4" [(caption)]="cuentaBanco4" cssClass="cell-highlighted" dataType="number" >
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+    </dxi-column>
+
+    <dxi-column [(caption)]="nombreBanco5"  cssClass="cell-highlighted" dataField="" *ngIf="mostrar5">
+        <dxi-column dataField="valor5" [(caption)]="cuentaBanco5" cssClass="cell-highlighted" dataType="number" >
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+    </dxi-column>
+    <dxi-column dataField="totalColumna" cssClass="cell-highlighted" caption="Total" dataType="number">
+        <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+    </dxi-column>
+   
+    <dxo-summary>
+        <dxi-total-item
+            column="valor1"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="valor2"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="valor3"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="valor4"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="valor5"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="totalColumna"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+
+    </dxo-summary>
+
+    <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager
         [showPageSizeSelector]="true"
@@ -93,32 +168,73 @@
 </dx-data-grid>
 
 
-<!-- <dx-data-grid
-  id="gridContainer"
-  [dataSource]="listaFacturas"
-  [columnAutoWidth]="true"
-  [showBorders]="true"
-  dataRowTemplate="dataRowTemplateName"
->
-  
+<dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleNotas">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio" style="text-align: right;">
+                <dx-radio-group
+                    [items]="estados"
+                    [(value)]="valorOption"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadio($event)">
+                </dx-radio-group>            
+            </div>
 
-  <ng-container *dxTemplate="let employee of 'dataRowTemplateName'">
-    <tr class="main-row">
-      <td>sfsdf</td>
-      <td>sfsdf</td>
-      <td>sfsdf</td>
-      <td>sfsdf</td>
-      <td>sfsdf</td>
-      <td>sfsdf</td>
-    </tr>
-    <tr class="notes-row">
-      <td colspan="6"
-        ><div>{{ employee.data.Notes }}</div></td
-      >
-    </tr>
-  </ng-container>
-</dx-data-grid>
- -->
+            <br>
+            <div *ngIf="mostrarListaNotas">
+                <dx-data-grid #datag2
+                    id="gridContainer"
+                    [dataSource]="listadoNotas"
+                    [showBorders]="true">
+                    <!-- <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                    <dxo-export [enabled]="true" fileName="Notas" [allowExportSelectedData]="true"></dxo-export>
+                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel> -->
+                    <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
+                    <dxi-column dataField="descripcion" caption="Descripcion" dataType="string"></dxi-column>
+
+                    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="15%" >
+                        <dxi-button icon="clear" [onClick]="deleteNota"></dxi-button>   
+                    </dxi-column>
+
+                    <dxo-paging [pageSize]="12"></dxo-paging>
+                    <dxo-pager
+                        [showPageSizeSelector]="true"
+                        [allowedPageSizes]="[8, 12, 20]"
+                    ></dxo-pager>
+                </dx-data-grid>
+            </div>
+
+            <div *ngIf="mostrarNuevaNotas">
+                <div class="row">
+                    <div class="col-md-4" style="text-align: left;margin-top: 2em;">Fecha</div>
+                    <div class="col-md-8" style="margin-top: 1em;">
+                        <dx-date-box
+                            [(value)]="nota.fecha"
+                            type="date">
+                        </dx-date-box>
+                    </div>
+
+                    <div class="col-md-4" style="text-align: left;margin-top: 2em;">Descripción</div>
+                    <div class="col-md-8" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
+                        name="nombre" class="form-control select" placeholder="Descripcion"
+                        required></div>
+
+                        <br><br><br>
+                    <div class="col-md-4"></div>
+                    <div class="col-md-4 btnSearch">
+                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarNuevaNota()">Guardar</button>
+                    </div>
+                    <div class="col-md-4"></div>
+                </div>
+            </div>
+        </div>
+
+       
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 
 

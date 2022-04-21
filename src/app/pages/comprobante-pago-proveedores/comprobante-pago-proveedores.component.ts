@@ -305,6 +305,15 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     });
   }
 
+  calcularTotalCheque(){
+    console.log("sdsd")
+    this.valorTotalCheques = 0;
+    this.listadoPagos.forEach(element=>{
+      this.valorTotalCheques = this.valorTotalCheques + element.valor;
+      console.log(this.valorTotalCheques)
+    });
+  }
+
 
   opcionRadio(e){
     this.listadoComprobantes = [];
@@ -422,6 +431,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   eliminarRegistroPago(i: number) {
     this.listadoPagos.splice(i, 1);
+    this.calcularTotalCheque();
   }
 
 

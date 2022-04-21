@@ -1,11 +1,11 @@
 <ngx-spinner
-bdOpacity = 0.4
-bdColor = "#333"
-size = "medium"
-color = "#fff"
-type = "ball-beat"
-[fullScreen] = "false"
->
+  bdOpacity = 0.4
+  bdColor = "#333"
+  size = "medium"
+  color = "#fff"
+  type = "ball-beat"
+  [fullScreen] = "false"
+  >
 <p style="color: white" > Espere </p>
 </ngx-spinner>
 
@@ -38,66 +38,8 @@ type = "ball-beat"
 
     <div class="col-md-12">
       <div style="text-align: center;">
-        <a href="http://104.248.14.190:3000/">Software de Pruebas</a>
+        <a href="http://159.223.107.115/:3000/">Software de Pruebas</a>
       </div>
       
     </div>
 </dx-validation-group>
-
-
-<!-- 
- <div class="app-body">
-    <main class="main d-flex align-items-center">
-      <div class="container">
-        <div class="row">
-          <div class="col-md-8 mx-auto ">
-            <div class="card-group">
-              <div class="card p-4">
-                <div class="card-body">
-                  <form  #f="ngForm" (ngSubmit)="signIn(f)"> 
-                    <h1>Iniciar Sesión</h1>
-                    <p class="text-muted">
-                      Iniciar sesión en su cuenta</p>
-                    <div class="input-group mb-3">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="icon-user" ></i></span>
-                      </div>
-                      <input type="email" id="email" #email="ngModel"  [(ngModel)]="user.email" name="email" class="form-control" placeholder="Correo Electronico" autocomplete="email"
-                        required>
-                        
-                    </div>
-                    <div class="alert alert-danger" role="alert" *ngIf="email.touched && !email.valid">
-                      <div *ngIf="email.errors.required">Escriba su correo</div>                    
-                    </div>
-                    <div class="input-group mb-4">
-                      <div class="input-group-prepend">
-                        <span class="input-group-text"><i class="icon-lock"></i></span>
-                      </div>
-                      <input type="password" id="password" #password="ngModel"  [(ngModel)]="user.password" name="password"  class="form-control" placeholder="Contraseña" autocomplete="current-password"
-                        required>
-                    </div>
-                    <div class="alert alert-danger" role="alert" *ngIf="password.touched && !password.valid">
-                      <div *ngIf="password.errors.required">Escriba la contraseña</div>                    
-                    </div>
-                    <div class="row" style="text-align: center;">
-                      <div class="col-12">
-                        <button  class="btn btn-primary px-4" style="background-color: #0061a9;" >Iniciar</button>
-                      </div>
-                      <div class="col-12 " >
-                        <button  class="btn btn-link px-0">¿Olvidaste tu contraseña?</button>
-                      </div>
-                    </div>
-                    <div class="alert alert-danger" role="alert" *ngIf="isError">
-                      <p>{{loginError}}</p>                      
-                    </div>
-                  </form>
-                 
-                </div>
-              </div>
-            
-            </div>
-          </div>
-        </div>
-      </div>
-    </main>
-  </div> -->

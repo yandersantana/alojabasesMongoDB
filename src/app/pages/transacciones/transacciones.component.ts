@@ -180,12 +180,7 @@ export class TransaccionesComponent implements OnInit {
         this.correo = localStorage.getItem("maily");
       }
       this.authenService.getUserLogueado(this.correo).subscribe(
-        (res) => {
-          this.usuarioLogueado = res as user;
-          if (this.usuarioLogueado[0].rol == "Usuario") {
-          } else {
-          }
-        },
+        (res) => { this.usuarioLogueado = res as user;},
         (err) => {}
       );
     });

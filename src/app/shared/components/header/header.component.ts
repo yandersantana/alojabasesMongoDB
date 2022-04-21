@@ -31,7 +31,7 @@ export class HeaderComponent {
   }];
 
   constructor(private authService: AuthService) { 
-    //this.title = "SOFTWARE VERSIÓN DE PRUEBAS";
+    this.title = "SOFTWARE VERSIÓN DE PRUEBAS";
     this.title = "";
   }
 

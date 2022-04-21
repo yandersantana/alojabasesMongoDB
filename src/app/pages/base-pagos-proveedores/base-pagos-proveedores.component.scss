@@ -69,3 +69,22 @@ td, th {
 tr:nth-child(even) {
   background-color: #dddddd;
 }
+
+
+.tittleB{
+  font-size: 15pt;
+}
+
+
+ 
+::ng-deep .dx-header-row .cell-highlighted .dx-datagrid-text-content{
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}
+
+::ng-deep .dx-header-row .cell-highlighted .dx-datagrid-text-content2 {
+    font-size: 15px;
+    font-weight: bold;
+    text-align: center;
+}

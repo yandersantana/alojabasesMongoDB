@@ -1,0 +1,184 @@
+    <div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+<br><br>
+<div class="row">
+    <div class="col-md-1"></div>
+    <div class="col-md-10">
+
+        <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-8">
+                <div class="dx-field radio">
+                    <div class="dx-field-value">
+                        <dx-radio-group
+                        [items]="tiposMenu"
+                        [(value)]="opMenu"
+                        layout="horizontal"
+                        (onValueChanged)="opcionRadioTipos($event)">
+                        </dx-radio-group>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card" *ngIf="mostrarSeccionFecha">
+            <h5 class="card-header text-center font-weight-bold text-uppercase ">Gestionar Fechas Pago</h5>
+            <div class="card-body">
+             
+                <div class="row">
+                    <div class="col-md-3 espacioDivs" style="text-align: center;font-weight: bold;">
+                        <div>BUSCAR POR:</div>
+                    </div>
+
+                    
+
+                    <div class="col-md-9">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4">ID PAGO:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="idPago" (onChange)="buscarTransaccionChequePorIdPago()"></dx-number-box></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4"># CHEQUE:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="numCheque" (onChange)="buscarTransaccionChequePorNumCheque()"></dx-number-box></div>                             
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <br>
+                <h6 class="card-header card-header-subtitle text-center font-weight-bold ">DATOS GENERALES</h6>
+                <br>
+                
+
+                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                    <tr>
+                        <th class="text-center" style="width: 12%;">Nª Pago</th>
+                        <th class="text-center" style="width: 13%;">Cheque</th>
+                        <th class="text-center" style="width: 12%;">Valor</th>
+                        <th class="text-center" style="width: 13%;">Fecha Pago</th>
+                        <th class="text-center" style="width: 15%;">Banco</th>
+                        <th class="text-center" style="width: 15%;">Cuenta</th>
+
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.idPago}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.numCheque}}</td>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.valor}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.fechaPago}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.banco}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.cuenta}}</td>
+
+                    </tr>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="row espacioDivs">
+                            <div class="col-md-4" style="font-weight: bold;">NUEVA FECHA PAGO:</div>
+                            <div class="col-md-8"><dx-date-box [(value)]="nuevaFecha" [(min)]="fechaMinima" (onChange)="buscarTransaccionChequePorIdPago()" [readOnly]="false"></dx-date-box></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+
+             
+                <div style="text-align: center;">
+                    <br><br>
+                    <dx-button [text]="'Actualizar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                </div>
+
+            </div>
+        </div>
+
+        <div class="card" *ngIf="mostrarSeccionPagoEstado">
+            <h2>NO LISTO, SE ENCUENTRA EN PROCESO</h2>
+            <h5 class="card-header text-center font-weight-bold text-uppercase ">Gestionar Pago Cheques</h5>
+            <div class="card-body">
+             
+                <div class="row">
+                    <div class="col-md-3 espacioDivs" style="text-align: center;font-weight: bold;">
+                        <div>BUSCAR POR:</div>
+                    </div>
+
+                    
+
+                    <div class="col-md-9">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4">ID PAGO:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="idPago" (onChange)="buscarTransaccionChequePorIdPago()"></dx-number-box></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4"># CHEQUE:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="numCheque" (onChange)="buscarTransaccionChequePorNumCheque()"></dx-number-box></div>                             
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <br>
+                <h6 class="card-header card-header-subtitle text-center font-weight-bold ">DATOS GENERALES</h6>
+                <br>
+                
+
+                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                    <tr>
+                        <th class="text-center" style="width: 12%;">Nª Pago</th>
+                        <th class="text-center" style="width: 13%;">Cheque</th>
+                        <th class="text-center" style="width: 12%;">Valor</th>
+                        <th class="text-center" style="width: 13%;">Fecha Pago</th>
+                        <th class="text-center" style="width: 15%;">Banco</th>
+                        <th class="text-center" style="width: 15%;">Cuenta</th>
+
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.idPago}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.numCheque}}</td>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.valor}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.fechaPago}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.banco}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.cuenta}}</td>
+
+                    </tr>
+                </table>
+
+                <div class="row">
+                    <div class="col-md-3"></div>
+                    <div class="col-md-6">
+                        <div class="row espacioDivs">
+                            <div class="col-md-4" style="font-weight: bold;">NUEVA FECHA PAGO:</div>
+                            <div class="col-md-8"><dx-date-box [(value)]="nuevaFecha" [(min)]="fechaMinima" (onChange)="buscarTransaccionChequePorIdPago()" [readOnly]="false"></dx-date-box></div>
+                        </div>
+                    </div>
+                    <div class="col-md-3"></div>
+                </div>
+
+             
+                <div style="text-align: center;">
+                    <br><br>
+                    <dx-button [text]="'Actualizar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1"></div>
+</div>

@@ -65,6 +65,16 @@ router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorIdPago", async (req, res, next) => {
+  const transacciones = await TransaccionesCheques.find({ idPago: req.body.NumDocumento});
+  res.json(transacciones);
+});
+
+router.post("/getTransaccionesPorNumCheque", async (req, res, next) => {
+  const transacciones = await TransaccionesCheques.find({ numCheque: req.body.NumDocumento});
+  res.json(transacciones);
+});
+
 router.delete("/delete/:id", async (req, res, next) => {
   await TransaccionesCheques.findByIdAndRemove(req.params.id);
   res.json({ status: "Transaccion Eliminada" });
@@ -90,6 +100,12 @@ router.post("/newTransaccion", async (req, res) => {
   await newTransaccion.save();
   res.json({ status: "Transaccion creada" });
 });
+
+router.put('/updateFechaPago/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await TransaccionesCheques.findByIdAndUpdate(id, {$set: {fechaPago : req.body.fechaPago}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
 
 
 module.exports = router;

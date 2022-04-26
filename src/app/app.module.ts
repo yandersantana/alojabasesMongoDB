@@ -100,6 +100,7 @@ import { ReciboCajaPrestamosComponent } from "./pages/reciboCaja/reciboCaja-pres
 import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
 import { ComprobantePagoProveedoresDirectoComponent } from "./pages/comprobante-pago-proveedores-directo/comprobante-pago-proveedores-directo.component";
 import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
+import { GestionPagoChequesComponent } from "./pages/gestion-pago-cheques/gestion-pago-cheques.component";
 
 @NgModule({
   declarations: [
@@ -154,7 +155,8 @@ import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/bas
     ReciboCajaPrestamosComponent,
     RegistroFacturasComponent,
     ComprobantePagoProveedoresDirectoComponent,
-    BasePagoProveedoresComponent
+    BasePagoProveedoresComponent,
+    GestionPagoChequesComponent
   ],
   imports: [
     BrowserModule,

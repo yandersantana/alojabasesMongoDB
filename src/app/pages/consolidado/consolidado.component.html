@@ -45,7 +45,7 @@
 
                     <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
                         <div class="col-md-4"></div>
-                        <div class="col-md-4"><button class="btn btn-block btn-success " (click)="traerTransaccionesPorProducto()">Buscar</button></div>
+                        <div class="col-md-4"><button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesPorProducto()">Buscar</button></div>
                         <div class="col-md-4"></div>
                     </div>
                 </div>
@@ -195,7 +195,7 @@
 
     <div class="row" style="margin-top: 1rem;">
         <div class="col-md-4"></div>
-        <div class="col-md-4"><button class="btn btn-block btn-success " [disabled]="invetarioP.length == 0"  (click)="mensajeActualizar()">Actualizar Productos</button></div>
+        <div class="col-md-4" style="padding-right: 6em;padding-left: 6em;"><button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" [disabled]="invetarioP.length == 0"  (click)="mensajeActualizar()">Actualizar Productos</button></div>
         <div class="col-md-4"></div>
     </div>
     
@@ -730,7 +730,7 @@
 
 
 
-<dx-popup [width]="600" [height]="450" [showTitle]="true" title="Pendientes:  {{nameProducto}}" [dragEnabled]="false"
+<dx-popup [width]="750" [height]="450" [showTitle]="true" title="Pendientes:  {{nameProducto}}" [dragEnabled]="false"
     [closeOnOutsideClick]="true" [(visible)]="popupVisiblePendientes">
     <div *dxTemplate="let data of 'content'">
         <dx-scroll-view width="100%" height="100%">
@@ -740,7 +740,7 @@
                 <div class="col-md-10">
                     <table>
                     <tr>
-                        <th class="text-center" ></th>
+                        <th class="text-center"></th>
                         <th class="text-center">M2</th>
                         <th class="text-center">Cajas</th>
                         <th class="text-center">Piezas</th>
@@ -766,7 +766,8 @@
                 <br><br><br>
                 <table style="margin-top: 1em;">
                     <tr>
-                        <th class="text-center" >Fecha</th>
+                        <th class="text-center">Fecha</th>
+                        <th class="text-center">Sucursal</th>
                         <th class="text-center">Documento</th>
                         <th class="text-center">Tipo</th>
                         <th class="text-center">M2</th>
@@ -775,13 +776,16 @@
                         <td style="text-align: center;width: 25%;">
                             {{pro.fecha}}
                         </td>
-                        <td style="text-align: center;width: 25%;">
+                         <td style="text-align: center;width: 20%;">
+                            {{pro.sucursal}}
+                        </td>
+                        <td style="text-align: center;width: 20%;">
                            {{pro.documento}}
                         </td>
-                        <td style="text-align: center;width: 25%;">
+                        <td style="text-align: center;width: 20%;">
                            {{pro.tipo_documento}}
                         </td>
-                        <td style="text-align: center;width: 25%;">
+                        <td style="text-align: center;width: 15%;">
                            {{pro.cantM2}}
                         </td>
                         

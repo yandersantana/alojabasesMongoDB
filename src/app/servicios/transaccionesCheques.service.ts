@@ -24,7 +24,7 @@ export class TransaccionesChequesService {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
   }
 
-   getTransaccionesPorRangoEstadoCubierto(objFecha) {
+  getTransaccionesPorRangoEstadoCubierto(objFecha) {
     return this.http.post(this.URL + "/getTransaccionesPorRangoEstadoCubierto", objFecha);
   }
 
@@ -32,38 +32,19 @@ export class TransaccionesChequesService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }
 
+  getTransaccionesPorIdPago(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorIdPago", tipobusqueda);
+  }
+
+  getTransaccionesPorNumCheque(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorNumCheque", tipobusqueda);
+  }
+
+  updateFechaPago(transaccion) {
+    return this.http.put(this.URL + `/updateFechaPago/${transaccion._id}`, transaccion);
+  }
+
   deleteTransaccion(transaccion) {
     return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
   }
-
-
-
-
-
-  
-  /* 
-
-  obtenerTransaccionesPorDocumentoYRecibo(tipobusqueda) {
-    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo", tipobusqueda);
-  }
-
-  obtenerTransaccionesPrestamos(tipobusqueda) {
-    return this.http.post(this.URL + "/getTransaccionesPrestamos", tipobusqueda);
-  }
-
-  obtenerTransaccionesPorDocumentoYRecibo2(tipobusqueda) {
-    return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo2", tipobusqueda);
-  }
-
-  updateEstado(transaccion, estado: boolean) {
-    return this.http.put(this.URL + `/updateEstado/${transaccion._id}/${estado}`, transaccion);
-  }
-
-  updateIsContabilizada(transaccion, estado: boolean) {
-    return this.http.put(this.URL + `/updateContabilizada/${transaccion._id}/${estado}`, transaccion);
-  }
-
-  deleteTransaccionFinanciera(transaccion) {
-    return this.http.delete(this.URL + `/delete/${transaccion._id}`,transaccion);
-  } */
 }

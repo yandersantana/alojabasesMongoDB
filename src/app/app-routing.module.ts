@@ -49,6 +49,7 @@ import { ComprobantePagoProveedoresComponent } from "./pages/comprobante-pago-pr
 import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar.component";
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
+import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
 
 const routes: Routes = [
   {
@@ -192,6 +193,11 @@ const routes: Routes = [
   {
     path: "anulaciones",
     component: AnulacionesComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "registros-facturas",
+    component: RegistroFacturasComponent,
     canActivate: [AuthGuardService],
   },
    {

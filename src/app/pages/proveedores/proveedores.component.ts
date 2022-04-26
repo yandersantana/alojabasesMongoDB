@@ -119,7 +119,6 @@ menu1: string[] = [
   "Facturas Ingresadas",
   "Control / Facturas",
   "Pagos Proveedor",
-  "Registros Facturas",
   "Agenda Financiera"
 ];
 numOrden:number=0

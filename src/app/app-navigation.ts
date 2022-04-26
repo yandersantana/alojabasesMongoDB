@@ -382,6 +382,10 @@ export const navigationAdmin = [
       {
         text: "Anulaciones",
         path: "/anulaciones",
+      },
+      {
+        text: "Registros Fact. Proveedor",
+        path: "/registros-facturas",
       }, 
       {
         text: "Administrar Cuentas",

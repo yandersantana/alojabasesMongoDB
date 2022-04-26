@@ -41,6 +41,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   mostrarTransaccionesFacturas: boolean = false;
   mostrarTransaccionesCheques: boolean = false;
   mostrarPagoDirecto: boolean = false;
+  mostrarGestionCheque: boolean = false;
   comprobantePago : ComprobantePagoProveedor
   busquedaTransaccion : tipoBusquedaTransaccion
   comprobantePagoDescarga : ComprobantePagoProveedor
@@ -89,7 +90,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     "Pago Directo Facturas",
     "Comprobantes de Pago Generados",
     "Transacciones Facturas",
-    "Transacciones Cheques"
+    "Transacciones Cheques",
+    "Gestión de Cheques"
   ];
 
   arraySucursales: string[] = [
@@ -811,6 +813,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = false;
         break;
       case "Pago Directo Facturas":
         this.mostrarNewCP = false;
@@ -818,6 +821,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = true;
+        this.mostrarGestionCheque = false;
         break;
       case "Comprobantes de Pago Generados":
         this.mostrarNewCP = false;
@@ -825,6 +829,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = false;
         if(this.listadoComprobantes.length == 0)
           this.traerComprobantesPagoPorRango();
         break;
@@ -834,6 +839,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesFacturas = true;
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = false;
         if(this.listadoTransaccionesFactura.length == 0)
           this.traerTransaccionesFacturaPorRango();
         break;
@@ -843,8 +849,18 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesFacturas = false;
         this.mostrarTransaccionesCheques = true;
         this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = false;
         if(this.listadoTransaccionesCheque.length == 0)
           this.traerTransaccionesChequesPorRango();
+        break;
+      case "Gestión de Cheques":
+        this.mostrarNewCP = false;
+        this.mostrarListaCP = false;
+        this.mostrarTransaccionesFacturas = false;
+        this.mostrarTransaccionesCheques = false;
+        this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = true;
+        break;
       default:    
     }      
   }

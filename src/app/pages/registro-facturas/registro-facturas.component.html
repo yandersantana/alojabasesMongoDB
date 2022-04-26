@@ -64,8 +64,8 @@
 </div>
 
 <div class="row">
-    <div class="col-md-6"></div>
-    <div class="col-md-6">
+    <div class="col-md-4"></div>
+    <div class="col-md-8">
         <div class="dx-field radio">
             <div class="dx-field-value">
                 <dx-radio-group
@@ -94,6 +94,17 @@
     <dxi-column dataField="nSolicitud" caption="N/Orden" dataType="string"></dxi-column>
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="total" caption="Total" dataType="string"></dxi-column>
+    <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+
+    <dxo-summary>
+            <dxi-total-item
+                column="total"
+                valueFormat="currency"
+                displayFormat="{0}"
+                summaryType="sum"
+                alignment="left">
+            </dxi-total-item>
+        </dxo-summary>
 
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

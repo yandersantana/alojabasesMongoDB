@@ -453,6 +453,30 @@
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones" caption="Observaciones" dataType="string" [visible]="false"></dxi-column>
 
+        <dxo-summary>
+            <dxi-total-item
+                column="valorFactura"
+                valueFormat="currency"
+                displayFormat="{0}"
+                summaryType="sum"
+                alignment="right">
+            </dxi-total-item>
+            <dxi-total-item
+                column="valorAbonado"
+                valueFormat="currency"
+                displayFormat="{0}"
+                summaryType="sum"
+                alignment="right">
+            </dxi-total-item>
+            <dxi-total-item
+                column="valorSaldos"
+                valueFormat="currency"
+                displayFormat="{0}"
+                summaryType="sum"
+                alignment="right">
+            </dxi-total-item>
+        </dxo-summary>
+
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
@@ -533,7 +557,8 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-export [enabled]="true" fileName="Transacciones_Cheques" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column dataField="idComprobante" caption="CPP" dataType="number"></dxi-column>
+        <dxi-column dataField="idComprobante" caption="CPP" dataType="string"></dxi-column>
+        <dxi-column dataField="idPago" caption="ID Pago" dataType="number"></dxi-column>
         <dxi-column dataField="numCheque" caption="Cheque" dataType="string"></dxi-column>
         <dxi-column dataField="banco" caption="Banco" dataType="string"></dxi-column>
         <dxi-column dataField="cuenta" caption="Cuenta" dataType="string"></dxi-column>
@@ -546,6 +571,15 @@
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones" caption="Observaciones" dataType="string" [visible]="false"></dxi-column>
 
+         <dxo-summary>
+            <dxi-total-item
+                column="valor"
+                valueFormat="currency"
+                displayFormat="{0}"
+                summaryType="sum"
+                alignment="right">
+            </dxi-total-item>
+        </dxo-summary>
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
@@ -556,6 +590,10 @@
 
 <div *ngIf="mostrarPagoDirecto">
     <app-comprobante-pago-proveedores-directo></app-comprobante-pago-proveedores-directo>
+</div>
+
+<div *ngIf="mostrarGestionCheque">
+    <app-gestion-pago-cheques></app-gestion-pago-cheques>
 </div>
  
 

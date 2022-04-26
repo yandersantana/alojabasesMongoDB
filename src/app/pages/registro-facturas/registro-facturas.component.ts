@@ -23,6 +23,7 @@ export class RegistroFacturasComponent implements OnInit {
   obj: objDate;
   mostrarLoading: boolean = false;
   tiposFactura: string[] = [
+    'General',
     'Pendiente',
     'Parcial',
     'Cubierto',
@@ -36,7 +37,7 @@ export class RegistroFacturasComponent implements OnInit {
   constructor(public _facturasProveedorService: FacturasProveedorService ) {}
 
   ngOnInit() {
-    this.tipoFactura = "Pendiente"
+    this.tipoFactura = "General"
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerFacturasPorRango();
   }
@@ -81,6 +82,10 @@ export class RegistroFacturasComponent implements OnInit {
   opcionRadioTipos(e){
     this.listaFacturas = [];
     switch (e.value) {
+      case "General":
+        this.nombreArchivo = "Facturas Generales";
+        this.listaFacturas = this.listaFacturasTmp;
+        break;
       case "Pendiente":
         this.nombreArchivo = "Facturas Pendientes";
         this.listaFacturas = this.listaFacturasPendientes;
@@ -109,11 +114,11 @@ export class RegistroFacturasComponent implements OnInit {
         this.listaFacturasParciales.push(element)
       else if(element.estado == "CUBIERTA")
         this.listaFacturasCubiertas.push(element)
-      else if(element.estado == "Pagada")
+      else if(element.estado == "PAGADA" || element.estado == "Pagada")
         this.listaFacturasPagadas.push(element)
     })
 
-   this.listaFacturas = this.listaFacturasPendientes;    
+   this.listaFacturas = this.listaFacturasTmp;    
   }
 
 }

@@ -40,8 +40,16 @@ export class TransaccionesChequesService {
     return this.http.post(this.URL + "/getTransaccionesPorNumCheque", tipobusqueda);
   }
 
+  getTransaccionesPorIdComprobante(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorIdComprobante", tipobusqueda);
+  }
+
   updateFechaPago(transaccion) {
     return this.http.put(this.URL + `/updateFechaPago/${transaccion._id}`, transaccion);
+  }
+
+  updateEstadoPago(transaccion) {
+    return this.http.put(this.URL + `/updateEstadoPago/${transaccion._id}`, transaccion);
   }
 
   deleteTransaccion(transaccion) {

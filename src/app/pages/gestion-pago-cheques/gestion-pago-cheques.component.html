@@ -102,7 +102,6 @@
         </div>
 
         <div class="card" *ngIf="mostrarSeccionPagoEstado">
-            <h2>NO LISTO, SE ENCUENTRA EN PROCESO</h2>
             <h5 class="card-header text-center font-weight-bold text-uppercase ">Gestionar Pago Cheques</h5>
             <div class="card-body">
              
@@ -160,22 +159,36 @@
                     </tr>
                 </table>
 
-                <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
-                        <div class="row espacioDivs">
-                            <div class="col-md-4" style="font-weight: bold;">NUEVA FECHA PAGO:</div>
-                            <div class="col-md-8"><dx-date-box [(value)]="nuevaFecha" [(min)]="fechaMinima" (onChange)="buscarTransaccionChequePorIdPago()" [readOnly]="false"></dx-date-box></div>
-                        </div>
+                <div *ngIf="mostrarFacturas">
+                    <br>
+                    <h6 class="card-header card-header-subtitle text-center font-weight-bold ">FACTURAS ASOCIADAS</h6>
+                    <br>
+                    
+
+                    <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                        <tr>
+                            <th class="text-center" style="width: 12%;">Factura</th>
+                            <th class="text-center" style="width: 13%;">Valor Fact</th>
+                            <th class="text-center" style="width: 15%;">Valor a Cancelar</th>
+                            <th class="text-center" style="width: 15%;">Estado</th>
+
+                        </tr>
+                        <tr *ngFor="let p of listaFacturas;let i = index">
+                            <td class="text-center" style="width: 12%;">{{p.numFactura}}</td>
+                            <td class="text-center" style="width: 13%;">{{p.valorFactura}}</td>
+                            <td class="text-center" style="width: 15%;">{{p.valorCancelado}}</td>
+                            <td class="text-center" style="width: 15%;">{{p.estado}}</td>
+
+                        </tr>
+                    </table>
+                
+                    <div style="text-align: center;">
+                        <br><br>
+                        <dx-button [text]="'Marcar como Cancelado'" [type]="'success'" style="background-color: #ff5722;" (onClick)="actualizarEstadoPago()"></dx-button>
                     </div>
-                    <div class="col-md-3"></div>
                 </div>
 
-             
-                <div style="text-align: center;">
-                    <br><br>
-                    <dx-button [text]="'Actualizar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="guardar()"></dx-button>
-                </div>
+                
 
             </div>
         </div>

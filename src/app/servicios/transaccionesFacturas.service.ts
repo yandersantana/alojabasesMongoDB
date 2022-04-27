@@ -28,12 +28,13 @@ export class TransaccionesFacturasService {
     return this.http.post(this.URL + "/getTransaccionesPorFactura", tipobusqueda);
   }
 
+  getTransaccionesPorIdComprobante(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorIdComprobante", tipobusqueda);
+  }
 
   getTransaccionesPorTipoDocumento(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
   }
-
-
 
 
   obtenerTransaccionesPrestamos(tipobusqueda) {
@@ -44,8 +45,8 @@ export class TransaccionesFacturasService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo2", tipobusqueda);
   }
 
-  updateEstado(transaccion, estado: boolean) {
-    return this.http.put(this.URL + `/updateEstado/${transaccion._id}/${estado}`, transaccion);
+  updateEstadoFactura(transaccion, estado) {
+    return this.http.put(this.URL + `/updateEstadoFactura/${transaccion._id}/${estado}`, transaccion);
   }
 
   updateIsContabilizada(transaccion, estado: boolean) {

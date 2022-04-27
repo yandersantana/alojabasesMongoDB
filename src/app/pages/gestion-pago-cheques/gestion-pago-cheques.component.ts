@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { tipoBusquedaTransaccion } from '../transacciones/transacciones';
-import { contadoresDocumentos } from '../ventas/venta';
+import { contadoresDocumentos, factura } from '../ventas/venta';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
-import { FacturaProveedor } from '../orden-compra/ordencompra';
-import { TransaccionChequesGirado } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
+import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
+import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
+import { FacturaProveedor } from '../orden-compra/ordencompra';
 
 @Component({
   selector: 'app-gestion-pago-cheques',
@@ -23,8 +24,10 @@ export class GestionPagoChequesComponent implements OnInit {
   numCheque : number
   mostrarSeccionFecha : boolean = true
   mostrarSeccionPagoEstado : boolean = false
+  mostrarFacturas  : boolean = false
   busquedaTransaccion : tipoBusquedaTransaccion
-  listaFacturas: FacturaProveedor [] = []
+  listaFacturas: TransaccionesFacturas [] = []
+  listaChequesEncontrados: TransaccionChequesGirado [] = []
   isReadOnly: boolean = false;
   contadores:contadoresDocumentos[]
   mostrarLoading : boolean = false;
@@ -37,8 +40,12 @@ export class GestionPagoChequesComponent implements OnInit {
   ];
 
 
+  estadoFacturas =""
+
+
   constructor(
     public _transaccionesChequeService: TransaccionesChequesService,
+    public _transaccionesFacturasService: TransaccionesFacturasService,
     public _facturaProveedorService: FacturasProveedorService,
     public _authenService:AuthenService,
     ) {
@@ -73,13 +80,29 @@ export class GestionPagoChequesComponent implements OnInit {
     busquedaTransaccion.NumDocumento = this.idPago.toString();
     this._transaccionesChequeService.getTransaccionesPorIdPago(busquedaTransaccion).subscribe(res => {
       var pago = res as TransaccionChequesGirado[];
-      if(pago.length != 0)
+      if(pago.length != 0){
         this.pagoCheque = pago[0];
-      else
+        this.buscarChequesRelacionados();
+        if(this.pagoCheque.estado == "Pagado"){
+          this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
+          this.mostrarLoading = false;
+          this.reiniciarPagoCheque()
+          return;
+        }
+
+      }else
         this.mostrarMensajeGenerico(2,"No se encontraron datos")
-      this.mostrarLoading = false;
+
+      if(this.opMenu == "Gestionar Pagos/Cheques")
+        this.buscarFacturasPorComprobante()
+      else
+        this.mostrarLoading = false;
+      
+      //this.mostrarLoading = false;
     })  
   }
+
+  
 
   buscarTransaccionChequePorNumCheque(){
     this.mostrarLoading = true;
@@ -88,13 +111,70 @@ export class GestionPagoChequesComponent implements OnInit {
     busquedaTransaccion.NumDocumento = this.numCheque.toString();
     this._transaccionesChequeService.getTransaccionesPorNumCheque(busquedaTransaccion).subscribe(res => {
       var pago = res as TransaccionChequesGirado[];
-      if(pago.length != 0)
+      if(pago.length != 0){
         this.pagoCheque = pago[0];
-      else
+        this.buscarChequesRelacionados();
+        if(this.pagoCheque.estado == "Pagado"){
+          this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
+          return;
+        }
+
+      }else
         this.mostrarMensajeGenerico(2,"No se encontraron datos")
       
+      if(this.opMenu == "Gestionar Pagos/Cheques")
+        this.buscarFacturasPorComprobante()
+      else
+        this.mostrarLoading = false;
+    })  
+  }
+
+  buscarChequesRelacionados(){
+    var busquedaTransaccion = new tipoBusquedaTransaccion();
+    busquedaTransaccion.NumDocumento = this.pagoCheque.idComprobante;
+    this._transaccionesChequeService.getTransaccionesPorIdComprobante(busquedaTransaccion).subscribe(res => {
+      this.listaChequesEncontrados = res as TransaccionChequesGirado[];
+      this.validarEstadosCheques();
+    })  
+  }
+
+  buscarFacturasPorComprobante(){
+    this.mensajeLoading = "Buscando Facturas..."
+    var busquedaTransaccion = new tipoBusquedaTransaccion();
+    busquedaTransaccion.NumDocumento = this.pagoCheque.idComprobante;
+    this._transaccionesFacturasService.getTransaccionesPorIdComprobante(busquedaTransaccion).subscribe(res => {
+      this.listaFacturas = res as TransaccionesFacturas[];
+      this.mostrarFacturas = true;
       this.mostrarLoading = false;
     })  
+  }
+
+  validarEstadosCheques(){
+    var cont = 0;
+    var cheque = new TransaccionChequesGirado();
+    if(this.listaChequesEncontrados.length == 1)
+      this.estadoFacturas = "PAGADA"
+    else if(this.listaChequesEncontrados.length > 1){
+      this.listaChequesEncontrados.forEach(element => {
+        if(element.estado != "Pagado"){
+          cont++;
+          cheque = element;
+        }
+      });
+
+      console.log(this.estadoFacturas,cont)
+      if(cont == 1 && cheque.idPago == this.pagoCheque.idPago)
+        this.estadoFacturas = "PAGADA"
+      else
+        this.estadoFacturas = "ABONADA"
+
+    }
+
+    
+
+
+      console.log(this.estadoFacturas)
+
   }
 
 
@@ -110,6 +190,80 @@ export class GestionPagoChequesComponent implements OnInit {
     });
   }
 
+
+  actualizarEstadoPago(){
+    if(this.listaFacturas.length != 0){
+      Swal.fire({
+        title: 'Pago Cheque',
+        text: "Esta seguro que desea actualizar el pago del cheque # "+ this.pagoCheque.numCheque ,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.mostrarLoading = true;
+          this.pagoCheque.estado = "Pagado"
+          this._transaccionesChequeService.updateEstadoPago(this.pagoCheque).subscribe((res) => {
+            this.actualizarEstadosFacturas();
+            
+          },(err) => {});
+      
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso.");
+        }
+      })
+    }else
+      this.mostrarMensajeGenerico(2,"No existen facturas vinculadas")    
+  }
+
+  actualizarEstadosFacturas(){
+    var cont = 0;
+    this.listaFacturas.forEach(element =>{
+      cont++;
+      element.estado = this.estadoFacturas;
+      this._transaccionesFacturasService.updateEstadoFactura(element,this.estadoFacturas).subscribe((res) => {
+        this.contadorVal(cont);
+      },(err) => {});
+    })
+    
+  }
+
+  contadorVal(cont) {
+    if(this.listaFacturas.length == cont){
+      this.actualizarEstadosFacturasProveedor();
+    } 
+  }
+
+  actualizarEstadosFacturasProveedor(){
+    var cont = 0;
+    this.listaFacturas.forEach(element =>{
+      cont++;
+      var busquedaTransaccion = new tipoBusquedaTransaccion();
+      busquedaTransaccion.NumDocumento = element.numFactura.toString();
+      this._facturaProveedorService.getFacturaPorNFactura(busquedaTransaccion).subscribe((res) => {
+        var facturas = res as FacturaProveedor[];
+        var facturaEncontrada = facturas[0];
+        if(facturaEncontrada.estado == "CUBIERTA"  || facturaEncontrada.estado == "ABONADA"){
+          this._facturaProveedorService.updateEstadoFactura(facturaEncontrada._id,this.estadoFacturas).subscribe((res) => {
+            this.contadorValFacturas(cont);
+          },(err) => {});
+        }else{
+          this.contadorValFacturas(cont);
+        }
+        
+      },(err) => {});
+    })
+    
+  }
+
+   contadorValFacturas(cont) {
+    if(this.listaFacturas.length == cont){
+      this.mostrarLoading = false;
+      this.mostrarMensajeGenerico(1,"Estado actualizado correctamente")
+      this.reiniciarPagoCheque();
+    } 
+  }
 
 
   guardar(){
@@ -128,6 +282,14 @@ export class GestionPagoChequesComponent implements OnInit {
     this.pagoCheque = new TransaccionChequesGirado();
     this.idPago = 0;
     this.numCheque = 0;
+  }
+
+
+   reiniciarPagoCheque(){
+    this.pagoCheque = new TransaccionChequesGirado();
+    this.idPago = 0;
+    this.numCheque = 0;
+    this.listaFacturas = [];
   }
 
   

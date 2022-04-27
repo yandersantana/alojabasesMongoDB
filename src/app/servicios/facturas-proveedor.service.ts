@@ -37,6 +37,10 @@ export class FacturasProveedorService {
     return this.http.put(this.URL + `/updateEstado/${facturasProveedor}/${estado}`, facturasProveedor);
   }
 
+  updateEstadoFactura(facturasProveedor: string, estado: string) {
+    return this.http.put(this.URL + `/updateEstadoFactura/${facturasProveedor}/${estado}`, facturasProveedor);
+  }
+
   updateEstado2(facturasProveedor, estado: string) {
     return this.http.put(
       this.URL + `/updateEstado2/${facturasProveedor._id}/${estado}`,
@@ -46,6 +50,10 @@ export class FacturasProveedorService {
 
   getFacturasPorRango(objFecha) {
     return this.http.post(this.URL + "/getFacturasPorRango", objFecha);
+  }
+
+  getFacturaPorNFactura(tipobusqueda) {
+    return this.http.post(this.URL + "/getFacturaPorNumero", tipobusqueda);
   }
 
   updateEstado3(id: string, estado: string) {

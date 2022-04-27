@@ -60,6 +60,11 @@ router.put('/updateEstado2/:id/:estado', async (req, res,next) => {
     res.json({status: 'factura Updated'});  
 })
 
+router.post("/getFacturaPorNumero", async (req, res, next) => {
+  const transacciones = await FacturaProveedor.find({ nFactura: req.body.NumDocumento});
+  res.json(transacciones);
+});
+
 router.put('/updateEstado3/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
@@ -72,6 +77,14 @@ router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { estado } = req.params;
 
     await FacturaProveedor.findOneAndUpdate({idF:id}, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+router.put('/updateEstadoFactura/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+
+    await FacturaProveedor.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

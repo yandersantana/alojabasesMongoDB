@@ -392,6 +392,10 @@ export const navigationAdmin = [
         path: "/administracion-cuentas",
       },
       {
+        text: "Agenda Financiera",
+        path: "/agenda-financiera",
+      },
+      {
         text: "Transacciones Financieras",
         path: "/transacciones-financieras",
       },

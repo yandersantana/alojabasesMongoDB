@@ -14,7 +14,7 @@ import { OperacionComercial } from '../reciboCaja/recibo-caja';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
-import { Proveedor } from '../compras/compra';
+import { OrdenDeCompra, Proveedor } from '../compras/compra';
 import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
 import { ComprobantePago } from '../comprobante-pago/comprobante-pago';
 import { ComprobantePagoProveedor, TransaccionChequesGirado, TransaccionesFacturas } from './comprobante-pago-proveedores';
@@ -24,6 +24,7 @@ import { ComprobantePagoProveedoresService } from 'src/app/servicios/comprobante
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 
 
 
@@ -122,6 +123,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     public _configuracionService: DatosConfiguracionService,
     public _proveedoresService: ProveedoresService,
     public _centroCostoService: CentroCostoService,
+    public _ordenCompraService: OrdenesCompraService,
     public _facturaProveedorService: FacturasProveedorService,
     public _authenService:AuthenService,
     public _cuentaBancariaService: CuentaBancariaService
@@ -244,6 +246,18 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
       this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
       this.obtenerAbonos(e,i);
+      this.obtenerOrdenCompraRelacionada(e,i);
+    })  
+  }
+
+  async obtenerOrdenCompraRelacionada(e,i){ 
+    var factura = await this.listaFacturas.find(element=> element._id == e.value)
+    var newOrden = new OrdenDeCompra()
+    newOrden.n_orden = factura.nSolicitud;
+    this._ordenCompraService.getOrdenEspecifica(newOrden).subscribe(res => {
+      var orden = res as OrdenDeCompra[];
+      if(orden.length != 0)
+        this.listadoFacturasPagar[i].estadoOrden = orden[0].estadoOrden;
     })  
   }
 
@@ -538,6 +552,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       element.usuario = this.comprobantePago.usuario;
       element.proveedor = this.comprobantePago.nombreProveedor;
       element.fechaPago = element.fechaPagoDate.toLocaleDateString()
+      element.fechaPagoDate = element.fechaPagoDate;
     });
 
     this.guardarComprobantePago(); 

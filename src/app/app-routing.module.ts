@@ -50,6 +50,7 @@ import { CuentaPorPagarComponent } from "./pages/cuentasPorPagar/cuentasPorPagar
 import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCobrar.component";
 import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
+import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
 
 const routes: Routes = [
   {
@@ -218,6 +219,11 @@ const routes: Routes = [
   {
     path: "comprobante-pago",
     component: ComprobantePagoComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "agenda-financiera",
+    component: BasePagoProveedoresComponent,
     canActivate: [AuthGuardService],
   },
    {

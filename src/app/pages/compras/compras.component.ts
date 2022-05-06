@@ -1,19 +1,13 @@
 import { Component, OnInit, ViewChild, Pipe } from '@angular/core';
 import { OrdenDeCompra, compra, Proveedor,Sucursal,Producto} from './compra';
-import {  ProductoDetalleVenta ,ProductoDetalleCompra } from '../producto/producto';
-//import { Cliente, Factura } from '../ventas/venta';
+import { ProductoDetalleCompra } from '../producto/producto';
 import { transaccion } from '../transacciones/transacciones';
 import { DxFormComponent } from 'devextreme-angular';
-import { AngularFirestore } from 'angularfire2/firestore';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { dxFormGroupItem } from 'devextreme/ui/form';
 import pdfMake from 'pdfmake/build/pdfmake';
-import { style } from '@angular/animations';
 import Swal from 'sweetalert2';
-import { element } from 'protractor';
-import { sucursal, proveedor, producto, contadoresDocumentos } from '../ventas/venta';
-import { DatePipe, JsonPipe } from '@angular/common';
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
+import { producto, contadoresDocumentos } from '../ventas/venta';
+import { DatePipe } from '@angular/common';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { catalogo } from '../catalogo/catalogo';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
@@ -26,7 +20,6 @@ import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { ProductosCompradosService } from 'src/app/servicios/productos-comprados.service';
-import { HttpClient } from '@angular/common/http';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import DataSource from "devextreme/data/data_source";
 import { user } from '../user/user';
@@ -124,10 +117,7 @@ export class ComprasComponent implements OnInit {
     this.ordenDeCompra.otrosCostosGen= this.otrosCostosGen
     this.ordenDeCompra.condpago="Contado"
     this.ordenDeCompra.observaciones=""
-    this.ordenDeCompra.usuario = sessionStorage.getItem('user')
-
-
-        
+    this.ordenDeCompra.usuario = sessionStorage.getItem('user') 
     
   }
 
@@ -140,43 +130,9 @@ export class ComprasComponent implements OnInit {
     this.traerSucursales()
     this.traerProveedores()
     this.traerContadoresDocumentos()
-    /* this.db.collection('/compras').valueChanges().subscribe((data:compra[]) => {
-      this.compras = data
-
-    }) */
-
-  
-
-/* 
-    this.db.collection('/proveedores').valueChanges().subscribe((data:Proveedor[]) => {
-      if(data != null)
-        this.proveedores = data
-
-    }) */
-
-   /*  this.db.collection('/OrdenesCompraGlobal').doc('matriz').valueChanges().subscribe(data => {
-      console.log(data)
-      if(data != null)
-        this.ordenDeCompra.documento = data['n_documento']+1
-
-
-    }) */
-
-   /*  this.db.collection('/locales').snapshotChanges().subscribe((locales) => {
-      this.locales = []
-      locales.forEach((nt: any) => {
-        this.locales.push(nt.payload.doc.data());
-      })
-    });;
-
-    this.ordenDeCompra.contacto=this.afAuth.auth.currentUser.email */
-   // this.incrementable()
   }
 
-  /* async incrementable(){
-    const data = await this.http.get('http://localhost:3000/contadores/getContadores').toPromise();
-    console.log("Data: " + JSON.stringify(data)); 
-  } */
+  
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
@@ -188,12 +144,9 @@ export class ComprasComponent implements OnInit {
           res => {
             this.usuarioLogueado = res as user;
             this.ordenDeCompra.usuario = this.usuarioLogueado[0].username
-            console.log("fff "+this.usuarioLogueado[0].rol)
             if( this.usuarioLogueado[0].rol == "Administrador"){
-              var z = document.getElementById("admin");
-                  z.style.display = "block";
-            }else{
-             // alert("entre por falso")
+              /* var z = document.getElementById("admin");
+                  z.style.display = "block"; */
             }
 
           },
@@ -249,35 +202,6 @@ export class ComprasComponent implements OnInit {
   }
 
   
-
-  /* getProductosCatalogo(){
-    this.db.collection('/catalogo').valueChanges().subscribe((data:catalogo[]) => {
-      this.productosCatalogo = data
-    })
-  } */
-
-
-  /* async getProductos() {
-    //REVISAR OPTIMIZACION
-    await this.db.collection('productos').snapshotChanges().subscribe((productos) => {
-      this.productos = []
-      new Promise<any>((resolve, reject) => {
-        productos.forEach((nt: any) => {
-          this.productosActivos.push(nt.payload.doc.data());
-        })
-      })
-      this.llenarPR()
-      this.llenarComboProductos()
-    });;
-  } */
-
-  /* getParametrizaciones(){
-    this.db.collection('/parametrizacionSucursales').valueChanges().subscribe((data:parametrizacionsuc[]) => {
-      if(data != null)
-        this.parametrizaciones = data
-
-    })
-  } */
 
   llenarComboProductos(){
     this.productosActivos.forEach(element=>{

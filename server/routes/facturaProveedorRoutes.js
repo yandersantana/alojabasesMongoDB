@@ -15,7 +15,7 @@ router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
 
 router.post("/getFacturasPendientesPorProveedor/:proveedor", async (req, res, next) => {
   const { proveedor } = req.params;
-  const documentos = await FacturaProveedor.find({proveedor: proveedor, estado3: "Ingresada",estado :{ $in: ['PENDIENTE', 'PARCIAL'] }});
+  const documentos = await FacturaProveedor.find({proveedor: proveedor,estado :{ $in: ['PENDIENTE', 'PARCIAL'] }});
   res.json(documentos);
 });
 

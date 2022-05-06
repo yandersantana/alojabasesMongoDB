@@ -96,11 +96,12 @@
                     <tr>
                         <th class="text-center" style="width: 12%;">Factura</th>
                         <th class="text-center" style="width: 13%;">Valor Fact</th>
-                        <th class="text-center" style="width: 12%;">Abonados</th>
-                        <th class="text-center" style="width: 13%;">Saldos</th>
-                        <th class="text-center" style="width: 15%;">Valor a Cancelar</th>
-                        <th class="text-center" style="width: 15%;">Estado</th>
-                        <th class="text-center" style="width: 15%;">Observaciones</th>
+                        <th class="text-center" style="width: 10%;">Abonados</th>
+                        <th class="text-center" style="width: 10%;">Saldos</th>
+                        <th class="text-center" style="width: 10%;">Valor a Cancelar</th>
+                        <th class="text-center" style="width: 12%;">Estado</th>
+                        <th class="text-center" style="width: 12%;">Estado Orden</th>
+                        <th class="text-center" style="width: 16%;">Observaciones</th>
                         <th class="text-center" style="width: 5%;"></th>
                     </tr>
                 </table>
@@ -124,23 +125,27 @@
                                 <dx-number-box [(value)]="p.valorFactura"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-12">
+                            <div class="padding-tr-10">
                                 <dx-number-box [(value)]="p.valorAbonado" readOnly="true"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-13">
+                            <div class="padding-tr-10">
                                 <dx-number-box [(value)]="p.valorSaldos"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-15">
+                            <div class="padding-tr-10">
                                 <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-15">
+                            <div class="padding-tr-12">
                                 <dx-text-box [(value)]="p.estado" readOnly="true"></dx-text-box>
                             </div>
 
-                            <div class="padding-tr-15">
+                            <div class="padding-tr-12">
+                                <dx-text-box [(value)]="p.estadoOrden" readOnly="true"></dx-text-box>
+                            </div>
+
+                            <div class="padding-tr-16">
                                 <dx-text-box [(value)]="p.observaciones"></dx-text-box>
                             </div>
                                 
@@ -437,16 +442,23 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-export [enabled]="true" fileName="Transacciones_Facturas" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column dataField="idComprobante" caption="CPP" dataType="number" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="idComprobante" caption="CPP" dataType="string" sortOrder="desc"></dxi-column>
         <dxi-column dataField="numFactura" caption="Factura" dataType="number"></dxi-column>
         <dxi-column dataField="fechaFactura" dataType="date" format="dd/MM/yyyy"  caption="Fecha Factura" ></dxi-column>
-        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number"></dxi-column>
-        <dxi-column dataField="valorAbonado" caption="Valor Abonado" dataType="number"></dxi-column>
-        <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number"></dxi-column>
+        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number">
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="valorAbonado" caption="Valor Abonado" dataType="number">
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number">
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" dataType="string"></dxi-column>
         <dxi-column dataField="numCheque" caption="Cheque" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="cuenta" caption="Cuenta" dataType="string" [visible]="false"></dxi-column>
+        <dxi-column dataField="numCheque" caption="Cheque(s)" dataType="string" [visible]="true"></dxi-column>
         <dxi-column dataField="fechaPago" dataType="date" format="dd/MM/yyyy"  caption="Fecha Pago" ></dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" dataType="string"></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
@@ -458,6 +470,7 @@
                 column="valorFactura"
                 valueFormat="currency"
                 displayFormat="{0}"
+                valueFormat="$##0.00"
                 summaryType="sum"
                 alignment="right">
             </dxi-total-item>
@@ -465,6 +478,7 @@
                 column="valorAbonado"
                 valueFormat="currency"
                 displayFormat="{0}"
+                valueFormat="$##0.00"
                 summaryType="sum"
                 alignment="right">
             </dxi-total-item>
@@ -472,6 +486,7 @@
                 column="valorSaldos"
                 valueFormat="currency"
                 displayFormat="{0}"
+                valueFormat="$##0.00"
                 summaryType="sum"
                 alignment="right">
             </dxi-total-item>
@@ -501,7 +516,8 @@
                                     <div class="col-md-9 dates">
                                     <dx-date-box
                                         [(value)]="nowdesde"
-                                        type="date">
+                                        type="date"
+                                        format="dd/MM/yyyy">
                                     </dx-date-box>
                                     </div>
 
@@ -509,7 +525,8 @@
                                     <div class="col-md-9 dates">
                                     <dx-date-box
                                         [(value)]="nowhasta"
-                                        type="date">
+                                        type="date"
+                                        format="dd/MM/yyyy">
                                     </dx-date-box>
                                     </div>
 
@@ -576,6 +593,7 @@
                 column="valor"
                 valueFormat="currency"
                 displayFormat="{0}"
+                valueFormat="$##0.00"
                 summaryType="sum"
                 alignment="right">
             </dxi-total-item>

@@ -31,6 +31,7 @@ router.post("/getOrdenesPorRango", async (req, res, next) => {
   res.json(ordenes);
 });
 
+
 router.post('/getOrdenCompraEspecifica/:ordenId', async (req, res,next) => {
     var ordenId = req.body.n_orden;
     const ordenes = await OrdenCompra.find({n_orden: ordenId })

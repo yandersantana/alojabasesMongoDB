@@ -10,6 +10,7 @@ const TransaccionesChequesSchema = new Schema({
     banco: { type: String, required: false},
     cuenta: { type: String, required: false},
     fechaPago: { type: String, required: false},
+    fechaPagoDate: { type: Date, required: false},
     valor: { type: Number, required: false},
     facturas: { type: String, required: false},
     proveedor: { type: String, required: false},

@@ -670,7 +670,7 @@ export class ComprobantePagoComponent implements OnInit {
   actualizarRecibo(){
     var cuenta = new CuentaPorPagar();
     cuenta._id = this.idCuentaPorPagar;
-    this._cuentaPorPagar.updateEstadoCuenta(cuenta,"Cancelada").subscribe( res => {},err => {})
+    this._cuentaPorPagar.updateEstadoCuenta(cuenta,"PAGADA").subscribe( res => {},err => {})
   }
 
 

@@ -73,6 +73,7 @@ export class TransaccionesFacturas{
     proveedor: string
     usuario: string
     estado: string
+    estadoOrden: string
     observaciones: string
     constructor(){
         this.valorFactura = 0;

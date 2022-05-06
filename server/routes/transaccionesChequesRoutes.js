@@ -15,14 +15,14 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var transacciones = [];
   if(sucursal == ""){
      transacciones = await TransaccionesCheques.find({
-      createdAt: {
+      fechaPagoDate: {
         $gte: start,
         $lt: end,
       },
     });
   }else{
      transacciones = await TransaccionesCheques.find({
-      createdAt: {
+      fechaPagoDate: {
         $gte: start,
         $lt: end,
       },
@@ -96,6 +96,7 @@ router.post("/newTransaccion", async (req, res) => {
     banco: req.body.banco,
     cuenta: req.body.cuenta,
     fechaPago: req.body.fechaPago,
+    fechaPagoDate: req.body.fechaPagoDate,
     valor: req.body.valor,
     facturas: req.body.facturas,
     proveedor: req.body.proveedor,

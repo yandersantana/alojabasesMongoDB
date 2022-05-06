@@ -271,7 +271,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     this.comprobantePago.transaccionesFacturas = this.listadoFacturasPagar
     
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      element.estado = "Pagada"
+      element.estado = "PAGADA"
       element.usuario = this.comprobantePago.usuario;
       element.fechaFactura = this.comprobantePago.fechaComprobante;
       element.proveedor = this.comprobantePago.nombreProveedor;
@@ -319,7 +319,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
   }
 
   actualizarEstadosFacturas(){
-    var estado = "Pagada"
+    var estado = "PAGADA"
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
       this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {
       },err => {})

@@ -29,10 +29,12 @@ export class ConsolidadoComponent implements OnInit {
   menu1: string[] = [
     "Busqueda Individual",
     "Inventario General",
+    "Inventario Contable",
     "Inventario Valorizado",
     "Actualizacion Productos",
   ];
 
+  valorMenu = ""
   mostrarLoading: boolean = false;
   popupVisible: boolean = false;
   popupVisibleNotas: boolean = false;
@@ -752,14 +754,7 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.cantidadPiezas2 = contPiezas2;
       this.invetarioProd.cantidadPiezas3 = contPiezas3;
       //this.invetarioProd.bodega= "S1 ("+this.bodegasMatriz+" ) S2 ("+this.bodegasSucursal1+") S3("+this.bodegasSucursal2+")"
-      this.invetarioProd.bodega =
-        "S1 (" +
-        element2.ubicacionSuc1 +
-        " ) S2 (" +
-        element2.ubicacionSuc2 +
-        ") S3(" +
-        element2.ubicacionSuc3 +
-        ")";
+      this.invetarioProd.bodega = "S1 (" +element2.ubicacionSuc1 +" ) S2 (" + element2.ubicacionSuc2 +") S3(" +  element2.ubicacionSuc3 + ")";
 
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
@@ -967,6 +962,7 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   opcionMenu(e) {
+    this.valorMenu = e.value;
     switch (e.value) {
       case "Inventario General":
         this.traerTransacciones();
@@ -975,18 +971,20 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = false;
         this.mostrarActualizacion = false;
-       /*  x.style.display = "block";
-        y.style.display = "none";
-        z.style.display = "none"; */
+        break;
+      case "Inventario Contable":
+        this.traerTransacciones();
+        this.traerProductosPendientes();
+        this.mostrarUser = true;
+        this.mostrarAdmin = false;
+        this.mostrarBusquedaIndividual = false;
+        this.mostrarActualizacion = false;
         break;
       case "Inventario Valorizado":
         this.mostrarUser = false;
         this.mostrarAdmin = true;
         this.mostrarBusquedaIndividual = false;
         this.mostrarActualizacion = false;
-        /* x.style.display = "none";
-        y.style.display = "block";
-        z.style.display = "none"; */
         break;
       case "Busqueda Individual":
         this.transacciones = [];
@@ -996,9 +994,6 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = true;
         this.mostrarActualizacion = false;
-        /* x.style.display = "none";
-        y.style.display = "none";
-        z.style.display = "block"; */
         break;
       case "Actualizacion Productos":
         this.traerTransacciones();
@@ -1087,28 +1082,33 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   ajustarSaldos() {
-    this.invetarioP.forEach((element) => {
-      if (element.cantidadM2 <= 0) {
-        element.cantidadCajas = 0;
-        element.cantidadPiezas = 0;
-        element.cantidadM2 = 0;
-        element.totalb1 = 0;
-      }
-      if (element.cantidadM2b2 <= 0) {
-        element.cantidadCajas2 = 0;
-        element.cantidadPiezas2 = 0;
-        element.cantidadM2b2 = 0;
-        element.totalb2 = 0;
-      }
-      if (element.cantidadM2b3 <= 0) {
-        element.cantidadCajas3 = 0;
-        element.cantidadPiezas3 = 0;
-        element.cantidadM2b3 = 0;
-        element.totalb3 = 0;
-      }
-    });
+    if(this.valorMenu != "Inventario Contable"){
+      this.invetarioP.forEach((element) => {
+        if (element.cantidadM2 <= 0) {
+          element.cantidadCajas = 0;
+          element.cantidadPiezas = 0;
+          element.cantidadM2 = 0;
+          element.totalb1 = 0;
+        }
+        if (element.cantidadM2b2 <= 0) {
+          element.cantidadCajas2 = 0;
+          element.cantidadPiezas2 = 0;
+          element.cantidadM2b2 = 0;
+          element.totalb2 = 0;
+        }
+        if (element.cantidadM2b3 <= 0) {
+          element.cantidadCajas3 = 0;
+          element.cantidadPiezas3 = 0;
+          element.cantidadM2b3 = 0;
+          element.totalb3 = 0;
+        }
+      });
+    }
+    
     this.mostrarLoading = false;
-    console.log(this.invetarioP);
+
+
+
     this.invetarioP.forEach((element) => {
       var requiere = false;
       this.productos.forEach(element2 =>{
@@ -1121,7 +1121,6 @@ export class ConsolidadoComponent implements OnInit {
             requiere = true;
         }
       })
-      console.log(requiere,)
       element.requiereActualizacion = requiere ? "SI":"NO"
     });
     // this.actualizarInventario()

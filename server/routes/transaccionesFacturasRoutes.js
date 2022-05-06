@@ -15,14 +15,14 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var transacciones = [];
   if(sucursal == ""){
      transacciones = await TransaccionesFacturas.find({
-      createdAt: {
+      fechaFactura: {
         $gte: start,
         $lt: end,
       },
     });
   }else{
      transacciones = await TransaccionesFacturas.find({
-      createdAt: {
+      fechaFactura: {
         $gte: start,
         $lt: end,
       },

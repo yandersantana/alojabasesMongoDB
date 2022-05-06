@@ -118,8 +118,7 @@ menu1: string[] = [
   "Factura Proveedor",
   "Facturas Ingresadas",
   "Control / Facturas",
-  "Pagos Proveedor",
-  "Agenda Financiera"
+  "Pagos Proveedor"
 ];
 numOrden:number=0
 selectionChangedBySelectbox: boolean;

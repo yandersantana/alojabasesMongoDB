@@ -185,6 +185,80 @@ export class BasePagoProveedoresComponent implements OnInit {
             this.mostrar2 = true;
             this.mostrar3 = true;
           break;
+        case 4:
+            this.nombreBanco1 = this.listaCuentasBancarias[0].nombre 
+            this.cuentaBanco1 = this.listaCuentasBancarias[0].numero
+            valor = 0;
+            var listaBanco = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[0].numero)
+            listaBanco.forEach(element=>{valor = valor + element.valor})
+            pago.banco1Nombre = this.listaCuentasBancarias[0].numero;
+            pago.valor1 = valor;
+            valor = 0;
+            this.nombreBanco2 = this.listaCuentasBancarias[1].nombre 
+            this.cuentaBanco2 = this.listaCuentasBancarias[1].numero
+            var listaBanco2 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[1].numero)
+            listaBanco2.forEach(element=>{valor = valor + element.valor})
+            pago.banco2Nombre = this.listaCuentasBancarias[1].numero;
+            pago.valor2 = valor;
+            valor = 0;
+            this.nombreBanco3 = this.listaCuentasBancarias[2].nombre 
+            this.cuentaBanco3 = this.listaCuentasBancarias[2].numero
+            var listaBanco3 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[2].numero)
+            listaBanco3.forEach(element=>{valor = valor + element.valor})
+            pago.banco3Nombre = this.listaCuentasBancarias[2].numero;
+            pago.valor3 = valor;
+            valor = 0;
+            this.nombreBanco4 = this.listaCuentasBancarias[3].nombre 
+            this.cuentaBanco4 = this.listaCuentasBancarias[3].numero
+            var listaBanco4 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[3].numero)
+            listaBanco4.forEach(element=>{valor = valor + element.valor})
+            pago.banco4Nombre = this.listaCuentasBancarias[3].numero;
+            pago.valor4 = valor;
+            this.mostrar2 = true;
+            this.mostrar3 = true;
+            this.mostrar4 = true;
+          break;
+        case 5:
+            this.nombreBanco1 = this.listaCuentasBancarias[0].nombre 
+            this.cuentaBanco1 = this.listaCuentasBancarias[0].numero
+            valor = 0;
+            var listaBanco = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[0].numero)
+            listaBanco.forEach(element=>{valor = valor + element.valor})
+            pago.banco1Nombre = this.listaCuentasBancarias[0].numero;
+            pago.valor1 = valor;
+            valor = 0;
+            this.nombreBanco2 = this.listaCuentasBancarias[1].nombre 
+            this.cuentaBanco2 = this.listaCuentasBancarias[1].numero
+            var listaBanco2 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[1].numero)
+            listaBanco2.forEach(element=>{valor = valor + element.valor})
+            pago.banco2Nombre = this.listaCuentasBancarias[1].numero;
+            pago.valor2 = valor;
+            valor = 0;
+            this.nombreBanco3 = this.listaCuentasBancarias[2].nombre 
+            this.cuentaBanco3 = this.listaCuentasBancarias[2].numero
+            var listaBanco3 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[2].numero)
+            listaBanco3.forEach(element=>{valor = valor + element.valor})
+            pago.banco3Nombre = this.listaCuentasBancarias[2].numero;
+            pago.valor3 = valor;
+            valor = 0;
+            this.nombreBanco4 = this.listaCuentasBancarias[3].nombre 
+            this.cuentaBanco4 = this.listaCuentasBancarias[3].numero
+            var listaBanco4 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[3].numero)
+            listaBanco4.forEach(element=>{valor = valor + element.valor})
+            pago.banco4Nombre = this.listaCuentasBancarias[3].numero;
+            pago.valor4 = valor;
+            valor = 0;
+            this.nombreBanco5 = this.listaCuentasBancarias[4].nombre 
+            this.cuentaBanco5 = this.listaCuentasBancarias[4].numero
+            var listaBanco5 = listado.filter(element=>element.cuenta == this.listaCuentasBancarias[4].numero)
+            listaBanco5.forEach(element=>{valor = valor + element.valor})
+            pago.banco5Nombre = this.listaCuentasBancarias[4].numero;
+            pago.valor5 = valor;
+            this.mostrar2 = true;
+            this.mostrar3 = true;
+            this.mostrar4 = true;
+            this.mostrar5 = true;
+          break;
         default:
           break;
       } 
@@ -216,6 +290,30 @@ export class BasePagoProveedoresComponent implements OnInit {
             nueva.banco3Nombre = element.banco3Nombre;
             nueva.valor3 = element.valor3;
             nueva.totalColumna = element.valor1 + element.valor2 + element.valor3;
+          break;
+        case 4:
+            nueva.banco1Nombre = element.banco1Nombre;
+            nueva.valor1 = element.valor1;
+            nueva.banco2Nombre = element.banco2Nombre;
+            nueva.valor2 = element.valor2;
+            nueva.banco3Nombre = element.banco3Nombre;
+            nueva.valor3 = element.valor3;
+            nueva.banco4Nombre = element.banco4Nombre;
+            nueva.valor4 = element.valor4;
+            nueva.totalColumna = element.valor1 + element.valor2 + element.valor3 + element.valor4;
+          break;
+        case 5:
+            nueva.banco1Nombre = element.banco1Nombre;
+            nueva.valor1 = element.valor1;
+            nueva.banco2Nombre = element.banco2Nombre;
+            nueva.valor2 = element.valor2;
+            nueva.banco3Nombre = element.banco3Nombre;
+            nueva.valor3 = element.valor3;
+            nueva.banco4Nombre = element.banco4Nombre;
+            nueva.valor4 = element.valor4;
+            nueva.banco5Nombre = element.banco5Nombre;
+            nueva.valor5 = element.valor5;
+            nueva.totalColumna = element.valor1 + element.valor2 + element.valor3 + element.valor4 + element.valor5;
           break;
         default:
           break;

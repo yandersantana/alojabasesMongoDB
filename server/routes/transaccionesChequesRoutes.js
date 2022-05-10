@@ -40,7 +40,7 @@ router.post("/getTransaccionesPorRangoEstadoCubierto", async (req, res, next) =>
   var transacciones = [];
   if(sucursal == ""){
      transacciones = await TransaccionesCheques.find({
-      createdAt: {
+      fechaPagoDate: {
         $gte: start,
         $lt: end,
       },
@@ -48,7 +48,7 @@ router.post("/getTransaccionesPorRangoEstadoCubierto", async (req, res, next) =>
     });
   }else{
      transacciones = await TransaccionesCheques.find({
-      createdAt: {
+      fechaPagoDate: {
         $gte: start,
         $lt: end,
       },

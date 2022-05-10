@@ -459,8 +459,10 @@
         <dxi-column dataField="banco" caption="Banco" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="cuenta" caption="Cuenta" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="numCheque" caption="Cheque(s)" dataType="string" [visible]="true"></dxi-column>
-        <dxi-column dataField="fechaPago" dataType="date" format="dd/MM/yyyy"  caption="Fecha Pago" ></dxi-column>
+        <dxi-column dataField="fechaPago" dataType="date" format="dd/MM/yyyy"  caption="Fecha Pago (dd/MM/yyyy)" ></dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" dataType="string"></dxi-column>
+        <dxi-column dataField="estadoOrden" caption="Estado Orden" dataType="string"></dxi-column>
+        <dxi-column dataField="numeroOrden" caption="Numero Orden" dataType="number"></dxi-column>
         <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
         <dxi-column dataField="usuario" caption="Usuario" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones" caption="Observaciones" dataType="string" [visible]="false"></dxi-column>
@@ -580,7 +582,7 @@
         <dxi-column dataField="banco" caption="Banco" dataType="string"></dxi-column>
         <dxi-column dataField="cuenta" caption="Cuenta" dataType="string"></dxi-column>
         <dxi-column dataField="createdAt" caption="ID" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
-        <dxi-column dataField="fechaPago" dataType="string" caption="Fecha Pago" ></dxi-column>
+        <dxi-column dataField="fechaPago" dataType="string" caption="Fecha Pago (dd/MM/yyyy)" ></dxi-column>
         <dxi-column dataField="valor" caption="Valor" dataType="number"></dxi-column>
         <dxi-column dataField="facturas" caption="Facturas" dataType="string"></dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" dataType="string"></dxi-column>

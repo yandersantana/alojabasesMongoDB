@@ -34,6 +34,8 @@ export class ConsolidadoComponent implements OnInit {
     "Actualizacion Productos",
   ];
 
+  opMenu = "Busqueda Individual"
+
   valorMenu = ""
   mostrarLoading: boolean = false;
   popupVisible: boolean = false;
@@ -77,6 +79,12 @@ export class ConsolidadoComponent implements OnInit {
   mostrarBusquedaIndividual = true;
   mostrarActualizacion = false;
   opcionesCatalogo: opcionesCatalogo[]=[]
+
+  tiposBusqueda: string[] = [
+      'Normal',
+      'Contable'
+  ];
+  tipoBusqueda = "Normal"
   constructor(
     public bodegasService: BodegaService,
     public authenService: AuthenService,
@@ -202,13 +210,13 @@ export class ConsolidadoComponent implements OnInit {
         (res) => {
           this.usuarioLogueado = res as user;
 
-          if (this.usuarioLogueado[0].rol != "Administrador") {
+          /* if (this.usuarioLogueado[0].rol != "Administrador") {
             var z = document.getElementById("admin1");
             z.style.display = "none";
           } else {
             var z = document.getElementById("admin1");
             z.style.display = "block";
-          }
+          } */
         },
         (err) => {}
       );
@@ -965,6 +973,7 @@ export class ConsolidadoComponent implements OnInit {
     this.valorMenu = e.value;
     switch (e.value) {
       case "Inventario General":
+        this.tipoBusqueda = "Normal"
         this.traerTransacciones();
         this.traerProductosPendientes();
         this.mostrarUser = true;
@@ -973,6 +982,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarActualizacion = false;
         break;
       case "Inventario Contable":
+         this.tipoBusqueda = "Contable"
         this.traerTransacciones();
         this.traerProductosPendientes();
         this.mostrarUser = true;
@@ -987,6 +997,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarActualizacion = false;
         break;
       case "Busqueda Individual":
+        this.tipoBusqueda = "Normal"
         this.transacciones = [];
         this.invetarioP = [];
         this.invetarioFaltante = [];
@@ -996,6 +1007,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarActualizacion = false;
         break;
       case "Actualizacion Productos":
+        this.tipoBusqueda = "Normal"
         this.traerTransacciones();
         this.traerProductosPendientes();
         this.mostrarUser = false;
@@ -1082,28 +1094,35 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   ajustarSaldos() {
+    console.log(this.tipoBusqueda)
     if(this.valorMenu != "Inventario Contable"){
-      this.invetarioP.forEach((element) => {
-        if (element.cantidadM2 <= 0) {
-          element.cantidadCajas = 0;
-          element.cantidadPiezas = 0;
-          element.cantidadM2 = 0;
-          element.totalb1 = 0;
-        }
-        if (element.cantidadM2b2 <= 0) {
-          element.cantidadCajas2 = 0;
-          element.cantidadPiezas2 = 0;
-          element.cantidadM2b2 = 0;
-          element.totalb2 = 0;
-        }
-        if (element.cantidadM2b3 <= 0) {
-          element.cantidadCajas3 = 0;
-          element.cantidadPiezas3 = 0;
-          element.cantidadM2b3 = 0;
-          element.totalb3 = 0;
-        }
-      });
+      if(this.tipoBusqueda == "Normal"){
+        this.invetarioP.forEach((element) => {
+          if (element.cantidadM2 <= 0) {
+            element.cantidadCajas = 0;
+            element.cantidadPiezas = 0;
+            element.cantidadM2 = 0;
+            element.totalb1 = 0;
+          }
+          if (element.cantidadM2b2 <= 0) {
+            element.cantidadCajas2 = 0;
+            element.cantidadPiezas2 = 0;
+            element.cantidadM2b2 = 0;
+            element.totalb2 = 0;
+          }
+          if (element.cantidadM2b3 <= 0) {
+            element.cantidadCajas3 = 0;
+            element.cantidadPiezas3 = 0;
+            element.cantidadM2b3 = 0;
+            element.totalb3 = 0;
+          }
+        });
+      }
+      
     }
+
+    
+     
     
     this.mostrarLoading = false;
 

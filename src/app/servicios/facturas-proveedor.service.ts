@@ -42,10 +42,7 @@ export class FacturasProveedorService {
   }
 
   updateEstado2(facturasProveedor, estado: string) {
-    return this.http.put(
-      this.URL + `/updateEstado2/${facturasProveedor._id}/${estado}`,
-      facturasProveedor
-    );
+    return this.http.put(this.URL + `/updateEstado2/${facturasProveedor._id}/${estado}`,facturasProveedor);
   }
 
   getFacturasPorRango(objFecha) {
@@ -65,9 +62,6 @@ export class FacturasProveedorService {
   }
 
   deleteFacturasProveedor(facturasProveedor) {
-    return this.http.delete(
-      this.URL + `/delete/${facturasProveedor._id}`,
-      facturasProveedor
-    );
+    return this.http.delete(this.URL + `/delete/${facturasProveedor._id}`, facturasProveedor);
   }
 }

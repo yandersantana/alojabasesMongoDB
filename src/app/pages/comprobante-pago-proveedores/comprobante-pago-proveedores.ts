@@ -73,6 +73,7 @@ export class TransaccionesFacturas{
     proveedor: string
     usuario: string
     estado: string
+    numeroOrden: number
     estadoOrden: string
     observaciones: string
     constructor(){

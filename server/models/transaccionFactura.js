@@ -21,6 +21,8 @@ const TransaccionesFacturasSchema = new Schema({
     proveedor: { type: String, required: false},
     usuario: { type: String, required: false},
     estado: { type: String, required: false},
+    estadoOrden: { type: String, required: false},
+    numeroOrden: { type: Number, required: false},
     observaciones: { type: String, required: false}
 },{
     timestamps:true

@@ -45,8 +45,8 @@ export class TransaccionesFacturasService {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumentoYRecibo2", tipobusqueda);
   }
 
-  updateEstadoFactura(transaccion, estado) {
-    return this.http.put(this.URL + `/updateEstadoFactura/${transaccion._id}/${estado}`, transaccion);
+  updateEstadoFactura(transaccion, estado:string , valor:number) {
+    return this.http.put(this.URL + `/updateEstadoFactura/${transaccion._id}/${estado}/${valor}`, transaccion);
   }
 
   updateIsContabilizada(transaccion, estado: boolean) {

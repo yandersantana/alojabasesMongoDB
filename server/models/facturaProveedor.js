@@ -1,8 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-
-
 const FacturaProveedorSchema = new Schema({
     id: { type: String, required: false},
     idF: { type: Number, required: false},

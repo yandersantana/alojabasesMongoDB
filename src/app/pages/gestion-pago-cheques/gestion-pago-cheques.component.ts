@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import Swal from 'sweetalert2';
 import { tipoBusquedaTransaccion } from '../transacciones/transacciones';
-import { contadoresDocumentos, factura } from '../ventas/venta';
+import { contadoresDocumentos } from '../ventas/venta';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
@@ -15,6 +15,7 @@ import { FacturaProveedor } from '../orden-compra/ordencompra';
   templateUrl: './gestion-pago-cheques.component.html',
   styleUrls: ['./gestion-pago-cheques.component.scss']
 })
+
 export class GestionPagoChequesComponent implements OnInit {
   pagoCheque: TransaccionChequesGirado
   listadoTransaccionesCheque: TransaccionChequesGirado [] = []
@@ -38,10 +39,7 @@ export class GestionPagoChequesComponent implements OnInit {
     'Gestionar Fechas Pago',
     'Gestionar Pagos/Cheques'
   ];
-
-
   estadoFacturas =""
-
 
   constructor(
     public _transaccionesChequeService: TransaccionesChequesService,
@@ -98,7 +96,6 @@ export class GestionPagoChequesComponent implements OnInit {
       else
         this.mostrarLoading = false;
       
-      //this.mostrarLoading = false;
     })  
   }
 
@@ -171,10 +168,6 @@ export class GestionPagoChequesComponent implements OnInit {
     }
 
     
-
-
-      console.log(this.estadoFacturas)
-
   }
 
 
@@ -206,7 +199,6 @@ export class GestionPagoChequesComponent implements OnInit {
           this.pagoCheque.estado = "Pagado"
           this._transaccionesChequeService.updateEstadoPago(this.pagoCheque).subscribe((res) => {
             this.actualizarEstadosFacturas();
-            
           },(err) => {});
       
         } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -218,11 +210,19 @@ export class GestionPagoChequesComponent implements OnInit {
   }
 
   actualizarEstadosFacturas(){
+    var sumaValores = 0;
+    this.listaFacturas.forEach(element =>{
+      sumaValores = sumaValores + element.valorCancelado;
+    })
+    var valorPorcentaje = (this.pagoCheque.valor * 100) / sumaValores;
     var cont = 0;
+    var valorT = 0;
     this.listaFacturas.forEach(element =>{
       cont++;
       element.estado = this.estadoFacturas;
-      this._transaccionesFacturasService.updateEstadoFactura(element,this.estadoFacturas).subscribe((res) => {
+      valorT = (valorPorcentaje*element.valorCancelado) / 100
+      element.valorAbonado = valorT + element.valorAbonado;
+      this._transaccionesFacturasService.updateEstadoFactura(element,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
         this.contadorVal(cont);
       },(err) => {});
     })

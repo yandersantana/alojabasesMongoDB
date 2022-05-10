@@ -95,6 +95,9 @@
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="total" caption="Total" dataType="string"></dxi-column>
     <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+    <dxi-column type="buttons" dataField="bt1" caption="Trans." width="7%">
+        <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarTransaciones"></dxi-button>
+    </dxi-column>
 
     <dxo-summary>
             <dxi-total-item
@@ -115,7 +118,52 @@
 
 
 
+<dx-popup [width]="750" [height]="450" [showTitle]="true" title="Factura #: {{numeroFactura}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisible">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio" style="text-align: center;">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h6>Transacciones Facturas</h6>
+                    <table style="margin-top: 1em;">
+                        <tr>
+                            <th class="text-center">Fecha</th>
+                            <th class="text-center">Valor Abonado</th>
+                            <th class="text-center">Valor Saldos</th>
+                            <th class="text-center">Valor</th>
+                        <!--   <th class="text-center">M2</th> -->
+                        </tr>
+                        <tr *ngFor="let pro of listadoTransaccionesFacturas; let id = index">
+                            <td style="text-align: center;width: 25%;">
+                                {{pro.fechaFactura | date: 'dd/MM/yyyy'}}
+                            </td>
+                            <td style="text-align: center;width: 20%;">
+                                {{pro.valorAbonado}}
+                            </td>
+                            <td style="text-align: center;width: 20%;">
+                            {{pro.valorSaldos}}
+                            </td>
+                            <td style="text-align: center;width: 20%;">
+                            {{pro.valorCancelado}}
+                            </td>
+                                                    
+                        </tr>
+                    </table>
+                    
+                </div>
+                <div class="col-md-1"></div>
+                
+                
+            </div>
+           
+        </div>
 
+
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 
 

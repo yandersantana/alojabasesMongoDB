@@ -56,6 +56,8 @@ router.post("/newTransaccion", async (req, res) => {
     proveedor: req.body.proveedor,
     usuario: req.body.usuario,
     estado: req.body.estado,
+    estadoOrden:req.body.estadoOrden,
+    numeroOrden:req.body.numeroOrden,
     observaciones : req.body.observaciones
   });
   await newTransaccion.save();
@@ -74,10 +76,11 @@ router.post("/getTransaccionesPorIdComprobante", async (req, res, next) => {
   res.json(transacciones);
 });
 
-router.put('/updateEstadoFactura/:id/:estado', async (req, res,next) => {
+router.put('/updateEstadoFactura/:id/:estado/:valor', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
-    await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {estado : estado}}, {new: true});
+    const { valor } = req.params;
+    await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {estado : estado, valorAbonado : valor}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

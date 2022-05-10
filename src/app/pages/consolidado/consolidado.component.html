@@ -4,7 +4,7 @@
         
     </div></div>
     <div class="col-md-4"> <dx-select-box [items]="menu1" 
-        [value]="menu1[0]" 
+        [(value)]="opMenu" 
         [readOnly]="false" 
         [disabled]="false"
         (onValueChanged)="opcionMenu($event)"
@@ -29,17 +29,27 @@
                         <div class="col-md-4" style="padding-top: 0.7em;">PRODUCTO</div>
                         <div class="col-md-8">
                             <dx-select-box
-                            [dataSource]="productos22"
-                            displayExpr="PRODUCTO"
-                            [searchEnabled]="true"
-                            valueExpr="PRODUCTO"
-                            [(value)]="nombreProducto"
-                            hint={{nombreProducto}}
-                            itemTemplate="item">
-                            <div *dxTemplate="let data of 'item'">
-                                <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
+                                [dataSource]="productos22"
+                                displayExpr="PRODUCTO"
+                                [searchEnabled]="true"
+                                valueExpr="PRODUCTO"
+                                [(value)]="nombreProducto"
+                                hint={{nombreProducto}}
+                                itemTemplate="item">
+                                <div *dxTemplate="let data of 'item'">
+                                    <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
+                                </div>
+                            </dx-select-box>
+                        </div>
+                        <div class="col-md-4" style="margin-top: 0.5em;">Tipo Búsqueda</div>
+                        <div class="col-md-8" style="margin-top: 0.5em;">
+                            <div >
+                                <dx-radio-group
+                                [items]="tiposBusqueda"
+                                [(value)]="tipoBusqueda"
+                                layout="horizontal">
+                                </dx-radio-group>
                             </div>
-                        </dx-select-box>
                         </div>
                     </div>
 

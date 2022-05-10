@@ -28,6 +28,7 @@ import { dataDocumento, OperacionComercial, ReciboCaja } from '../recibo-caja';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Prestamos } from '../../prestamos/prestamos';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-recibo-caja-prestamos',
@@ -1041,10 +1042,14 @@ export class ReciboCajaPrestamosComponent implements OnInit {
   }
 
   async actualizarTransacciones(transacciones : TransaccionesFinancieras[]){
+    var listado = this.reciboCaja.operacionesComercialesList.find(element => element.nombreSubcuenta == "2.2.4 Saldos");
     transacciones.forEach(element=>{
-      //if(element.subCuenta == "2.0.0 Cuentas x Cobrar"){
-        this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});
-      //}    
+      var fechaRecibo = this.reciboCaja.fecha.toLocaleDateString();
+      var fecha2  = new Date(element.fecha).toLocaleDateString();
+      if(fechaRecibo == fecha2 && (element.subCuenta == "2.1.0 Internos" || element.subCuenta == "2.2.1 Externos" || element.subCuenta == "2.2.4 Saldos") && listado == undefined)
+        console.log("no cambio")
+      else
+       this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});   
     });
   }
 

@@ -258,6 +258,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       var orden = res as OrdenDeCompra[];
       if(orden.length != 0)
         this.listadoFacturasPagar[i].estadoOrden = orden[0].estadoOrden;
+        this.listadoFacturasPagar[i].numeroOrden = orden[0].n_orden;
     })  
   }
 

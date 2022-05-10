@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
+import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
+import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
-import { objDate } from '../transacciones/transacciones';
+import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
 
 @Component({
   selector: 'app-registro-facturas',
@@ -16,12 +19,17 @@ export class RegistroFacturasComponent implements OnInit {
   listaFacturasParciales: FacturaProveedor [] = []
   listaFacturasCubiertas: FacturaProveedor [] = []
   listaFacturasPagadas: FacturaProveedor [] = []
+  listadoTransaccionesFacturas: TransaccionesFacturas [] = []
+  listadoTransaccionesCheques: TransaccionChequesGirado [] = []
  
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   fechaAnteriorDesde: Date = new Date();
   obj: objDate;
+  busquedaTransaccion : tipoBusquedaTransaccion
+  popupVisible = false;
   mostrarLoading: boolean = false;
+  numeroFactura = "";
   tiposFactura: string[] = [
     'General',
     'Pendiente',
@@ -34,7 +42,9 @@ export class RegistroFacturasComponent implements OnInit {
   nombreArchivo = "Facturas Pendientes"
 
   
-  constructor(public _facturasProveedorService: FacturasProveedorService ) {}
+  constructor(public _facturasProveedorService: FacturasProveedorService,
+    public _transaccionFacturaService : TransaccionesFacturasService,
+    public _transaccionesChequesService : TransaccionesChequesService ) {}
 
   ngOnInit() {
     this.tipoFactura = "General"
@@ -77,6 +87,21 @@ export class RegistroFacturasComponent implements OnInit {
       },
       () => {}
     );
+  }
+
+
+  mostrarTransaciones = (e) => {
+    this.obtenerTransaccionesFacturas(e.row.data);
+  }
+
+  obtenerTransaccionesFacturas(e:any){
+    this.numeroFactura = e.nFactura;
+    this.popupVisible = true;
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.nFactura;
+    this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
+      this.listadoTransaccionesFacturas = res as TransaccionesFacturas[];
+    }) 
   }
 
   opcionRadioTipos(e){

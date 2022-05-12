@@ -44,6 +44,8 @@ export class UserComponent implements OnInit {
   cantidadUsuarios: number = 0
   cont1: number = 0
   locales:Sucursal[]=[]
+  mostrarLoading = false;
+  mensajeLoading = ""
   
   menu1: string[] = [
     "Usuario",
@@ -67,8 +69,11 @@ export class UserComponent implements OnInit {
   }
 
   traerUsuarios(){
+    this.mensajeLoading = "Cargando.."
+    this.mostrarLoading = true;
     this.userService.getUsers().subscribe(res => {
       this.usuarios= res as user[];
+      this.mostrarLoading = false;
     },err => {})
   }
 
@@ -87,19 +92,15 @@ export class UserComponent implements OnInit {
 
   deleteUser = (e) => {  
     this.mensajeConfirmacion(e.row.data)
-    
   }
 
 
   updateUsuario() {
     this.popupVisible=false
     this.mensajeGuardando()
-    console.log("entre a actualizar " + JSON.stringify(this.usuario))
     this.userService.updateUsuario(this.usuario).subscribe(
-      res => {
-        console.log(res); this.mensajeUpdate()
-      },
-      err => { console.log(err); this.mensajeError() }
+      res => { this.mensajeUpdate() },
+      err => { this.mensajeError() }
     )
   }
 
@@ -117,14 +118,11 @@ export class UserComponent implements OnInit {
   }
 
   deleteUsuario(e:any) {
-    this.usuario=e
-    console.log("sjksjkdjskd" + this.usuario._id)
+    this.usuario = e
     this.mensajeGuardando()
     this.userService.deleteUsuario(this.usuario).subscribe(
-      res => {
-        console.log(); this.mensajeEliminado()
-      },
-      err => { console.log(err); this.mensajeError() }
+      res => { this.mensajeEliminado() },
+      err => { this.mensajeError() }
     )
   }
 
@@ -217,23 +215,18 @@ export class UserComponent implements OnInit {
 
 
   validarUserRepet(user: string) {
-   
-
-   
-      this.mensajeGuardando()
-      this.usuario.sucursal= this.localAsignado
-      this.userService.newUser(this.usuario)
-        .subscribe(
-          res => {
-            console.log(res + "entre por si"); this.mensajeCorrecto()
-          },
-          err => {
-            Swal.fire({
-              title: err.error,
-              text: 'Revise e intente nuevamente',
-              icon: 'error'
-            })
+    this.mensajeGuardando()
+    this.usuario.sucursal= this.localAsignado
+    this.userService.newUser(this.usuario)
+      .subscribe(
+        res => { this.mensajeCorrecto() },
+        err => {
+          Swal.fire({
+            title: err.error,
+            text: 'Revise e intente nuevamente',
+            icon: 'error'
           })
+    })
 
 
   }

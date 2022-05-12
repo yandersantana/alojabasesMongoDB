@@ -11,15 +11,14 @@ import { OperacionComercial } from '../reciboCaja/recibo-caja';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
-import { Proveedor } from '../compras/compra';
+import { OrdenDeCompra, Proveedor } from '../compras/compra';
 import { ComprobantePago } from '../comprobante-pago/comprobante-pago';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
 import { ComprobantePagoProveedoresService } from 'src/app/servicios/comprobantePagoProveedores.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
-import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 import { ComprobantePagoProveedor, TransaccionesFacturas } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
-
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 
 
 @Component({
@@ -30,7 +29,6 @@ import { ComprobantePagoProveedor, TransaccionesFacturas } from '../comprobante-
 export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
   listadoFacturasPagar: TransaccionesFacturas [] = []
   comprobantesEncontrados:ComprobantePago[]
-
   mostrarNewCP: boolean = true;
   mostrarListaCP: boolean = false;
   mostrarTransaccionesFacturas: boolean = false;
@@ -46,12 +44,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
   listadoComprobantesAnulados: ComprobantePagoProveedor [] = []
   listadoComprobantesPendientes: ComprobantePagoProveedor [] = []
   proveedores: Proveedor [] = []
-
-
   listaFacturas: FacturaProveedor [] = []
-
-
-  
   isReadOnly: boolean = false;
   contadores:contadoresDocumentos[]
 
@@ -98,6 +91,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     public _configuracionService: DatosConfiguracionService,
     public _proveedoresService: ProveedoresService,
     public _facturaProveedorService: FacturasProveedorService,
+    public _ordenCompraService : OrdenesCompraService,
     public _authenService:AuthenService,
     ) {
    }
@@ -174,9 +168,24 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
     }
-    this.calcularTotal();
-     
+ 
+    var total = this.listadoFacturasPagar[i].valorSaldos - this.listadoFacturasPagar[i].valorCancelado 
+    if(total == 0)
+      this.listadoFacturasPagar[i].estado = "PAGADA"
+    else if(total > 0)
+      this.listadoFacturasPagar[i].estado = "CUBIERTA PARCIAL"
+
+
+    console.log(this.listadoFacturasPagar[i].estado)
+    
   }
+
+
+
+
+
+
+
 
 
   calcularTotal(){
@@ -210,7 +219,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     this.listadoFacturasPagar[i].fechaFactura = factura.fecha;
     valor =  Number(this.listadoFacturasPagar[i].valorFactura.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorAbonado.toFixed(2));
     this.listadoFacturasPagar[i].valorSaldos = Number(valor.toFixed(2))
-    this.listadoFacturasPagar[i].valorCancelado = Number(valor.toFixed(2))
+    //this.listadoFacturasPagar[i].valorCancelado = Number(valor.toFixed(2))
   }
 
 
@@ -267,11 +276,14 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     })
   }
 
+
+
+
   generarDto(){
     this.comprobantePago.transaccionesFacturas = this.listadoFacturasPagar
     
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      element.estado = "PAGADA"
+      //element.estado = "PAGADA"
       element.usuario = this.comprobantePago.usuario;
       element.fechaFactura = this.comprobantePago.fechaComprobante;
       element.proveedor = this.comprobantePago.nombreProveedor;
@@ -283,7 +295,6 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
 
     this.guardarComprobantePago(); 
   }
-
 
 
   guardarComprobantePago(){
@@ -315,13 +326,28 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     this._transaccionesFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
       this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
       this.obtenerAbonos(e,i);
+      this.obtenerOrdenCompraRelacionada(e,i);
     })  
   }
 
+
+  async obtenerOrdenCompraRelacionada(e,i){ 
+    var factura = await this.listaFacturas.find(element=> element._id == e.value)
+    var newOrden = new OrdenDeCompra()
+    newOrden.n_orden = factura.nSolicitud;
+    this._ordenCompraService.getOrdenEspecifica(newOrden).subscribe(res => {
+      var orden = res as OrdenDeCompra[];
+      if(orden.length != 0){
+        this.listadoFacturasPagar[i].estadoOrden = orden[0].estadoOrden;
+        this.listadoFacturasPagar[i].numeroOrden = orden[0].n_orden;
+      }
+    })  
+  }
+
+
   actualizarEstadosFacturas(){
-    var estado = "PAGADA"
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {
+      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,element.estado).subscribe( res => {
       },err => {})
     });
   }

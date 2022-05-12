@@ -239,15 +239,23 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   async traerTransaccionesPorFactura(e,i){ 
-     var factura = await this.listaFacturas.find(element=> element._id == e.value)
-    this.listadoFacturasPagar[i].estado = factura.estado;
-    this.busquedaTransaccion = new tipoBusquedaTransaccion()
-    this.busquedaTransaccion.NumDocumento = factura.nFactura;
-    this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
-      this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
-      this.obtenerAbonos(e,i);
-      this.obtenerOrdenCompraRelacionada(e,i);
-    })  
+    var factura = await this.listaFacturas.find(element=> element._id == e.value)
+    var fact = await this.listadoFacturasPagar.find(element=> element.numFactura?.toString() == factura.nFactura)
+    if(fact != null){
+      this.mostrarMensajeGenerico(2,"La factura se encuentra en lista")
+    }
+    else{
+      this.listadoFacturasPagar[i].estado = factura.estado;
+      this.busquedaTransaccion = new tipoBusquedaTransaccion()
+      this.busquedaTransaccion.NumDocumento = factura.nFactura;
+      this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
+        this.listaTransaccionesEncontradas = res as TransaccionesFacturas[];
+        this.obtenerAbonos(e,i);
+        this.obtenerOrdenCompraRelacionada(e,i);
+      }) 
+    }    
+
+     
   }
 
   async obtenerOrdenCompraRelacionada(e,i){ 
@@ -537,7 +545,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     });
 
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      element.estado = "Cubierto"
+      element.estado = "CUBIERTA"
       element.usuario = this.comprobantePago.usuario;
       element.fechaFactura = this.comprobantePago.fechaComprobante;
       element.proveedor = this.comprobantePago.nombreProveedor;
@@ -587,15 +595,15 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
 
   actualizarEstadosFacturas(){
-    var estado = "CUBIERTA"
+    var estado = ""
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      var total = element.valorCancelado - element.valorSaldos
-      console.log(total)
-      if(total != 0)
-        estado = "PARCIAL"
+      var total = element.valorSaldos - element.valorCancelado 
+      if(total == 0)
+        estado = "CUBIERTA"
+      else if(total > 0)
+        estado = "CUBIERTA PARCIAL"
 
-      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {
-      },err => {})
+      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {},err => {})
     });
   }
 

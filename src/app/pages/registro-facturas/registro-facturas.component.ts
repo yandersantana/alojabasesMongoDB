@@ -18,6 +18,7 @@ export class RegistroFacturasComponent implements OnInit {
   listaFacturasPendientes: FacturaProveedor [] = []
   listaFacturasParciales: FacturaProveedor [] = []
   listaFacturasCubiertas: FacturaProveedor [] = []
+  listaFacturasCubiertasParciales: FacturaProveedor [] = []
   listaFacturasPagadas: FacturaProveedor [] = []
   listadoTransaccionesFacturas: TransaccionesFacturas [] = []
   listadoTransaccionesCheques: TransaccionChequesGirado [] = []
@@ -34,8 +35,9 @@ export class RegistroFacturasComponent implements OnInit {
     'General',
     'Pendiente',
     'Parcial',
-    'Cubierto',
-    'Pagado'
+    'Cubierta',
+    'Cubierta Parcial',
+    'Pagada'
   ];
 
   tipoFactura = ""
@@ -67,6 +69,7 @@ export class RegistroFacturasComponent implements OnInit {
     this.listaFacturas = [];
     this.listaFacturasTmp = [];
     this.listaFacturasCubiertas = [];
+    this.listaFacturasCubiertasParciales = [];
     this.listaFacturasPagadas = [];
     this.listaFacturasParciales = [];
     this.listaFacturasPendientes = [];
@@ -119,11 +122,15 @@ export class RegistroFacturasComponent implements OnInit {
         this.nombreArchivo = "Facturas Parciales";
         this.listaFacturas = this.listaFacturasParciales;
         break;
-      case "Cubierto":
+      case "Cubierta":
         this.nombreArchivo = "Facturas Cubiertas";
         this.listaFacturas = this.listaFacturasCubiertas;
         break;
-      case "Pagado":
+      case "Cubierta Parcial":
+        this.nombreArchivo = "Facturas Cubiertas Parciales";
+        this.listaFacturas = this.listaFacturasCubiertasParciales;
+        break;
+      case "Pagada":
         this.nombreArchivo = "Facturas Pagadas";
         this.listaFacturas = this.listaFacturasPagadas;
         break;
@@ -139,6 +146,8 @@ export class RegistroFacturasComponent implements OnInit {
         this.listaFacturasParciales.push(element)
       else if(element.estado == "CUBIERTA")
         this.listaFacturasCubiertas.push(element)
+      else if(element.estado == "CUBIERTA PARCIAL")
+        this.listaFacturasCubiertasParciales.push(element)
       else if(element.estado == "PAGADA" || element.estado == "Pagada")
         this.listaFacturasPagadas.push(element)
     })

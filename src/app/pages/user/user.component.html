@@ -1,4 +1,9 @@
 <br>
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+
 <div class="card mb-3">
     <div class="card-header">
         <i class="fa fa-lg fa-user  text-danger"></i> Administración de Usuarios

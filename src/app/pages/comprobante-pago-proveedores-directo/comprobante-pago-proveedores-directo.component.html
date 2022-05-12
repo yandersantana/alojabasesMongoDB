@@ -81,8 +81,8 @@
                         <th class="text-center" style="width: 12%;">Abonados</th>
                         <th class="text-center" style="width: 13%;">Saldos</th>
                         <th class="text-center" style="width: 15%;">Valor a Cancelar</th>
-                        <!-- <th class="text-center" style="width: 15%;">Estado</th> -->
-                        <th class="text-center" style="width: 30%;">Observaciones</th>
+                        <th class="text-center" style="width: 15%;">Estado</th>
+                        <th class="text-center" style="width: 15%;">Observaciones</th>
                         <th class="text-center" style="width: 5%;"></th>
                     </tr>
                 </table>
@@ -115,14 +115,14 @@
                             </div>
 
                             <div class="padding-tr-15">
-                                <dx-number-box [(value)]="p.valorCancelado" readOnly="true"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
                             </div>
 
-                           <!--  <div class="padding-tr-15">
+                            <div class="padding-tr-15">
                                 <dx-text-box [(value)]="p.estado" readOnly="true"></dx-text-box>
-                            </div> -->
+                            </div>
 
-                            <div class="padding-tr-30">
+                            <div class="padding-tr-15">
                                 <dx-text-box [(value)]="p.observaciones"></dx-text-box>
                             </div>
                                 

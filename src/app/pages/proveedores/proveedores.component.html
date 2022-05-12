@@ -6,7 +6,6 @@
 
 <div class="row alin2">
     <div class="col-md-8"><div class="">
-       <!--  <h4>Facturas / Proveedor</h4> -->
     </div></div>
     <div class="col-md-4"> <dx-select-box [items]="menu1" 
         [value]="menu1[0]" 
@@ -91,12 +90,14 @@
             </span>
         </div>
     </div>
-    <div class="col-md-12" style="text-align: right;"><dx-button
-        [disabled]="newButtonEnabled2"
-                            class="button-info"
-                            text="Registrar"
-                            (onClick)="guardarFacturaProveedor()">
-                        </dx-button></div>
+    <div class="col-md-12" style="text-align: right;">
+        <dx-button
+            [disabled]="newButtonEnabled2"
+            class="button-info"
+            text="Registrar"
+            (onClick)="guardarFacturaProveedor()">
+        </dx-button>
+    </div>
     
     <div><br>
         <br>

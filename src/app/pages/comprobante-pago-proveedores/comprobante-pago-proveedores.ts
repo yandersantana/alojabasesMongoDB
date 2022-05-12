@@ -81,7 +81,7 @@ export class TransaccionesFacturas{
         this.valorCancelado = 0;
         this.valorAbonado = 0;
         this.observaciones = "";
-        this.estado = "Pendiente";
+        this.estado = "PENDIENTE";
     }
 }
 

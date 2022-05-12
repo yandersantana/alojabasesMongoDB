@@ -144,7 +144,7 @@ obj:objDate
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('datag3') dataGrid4: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
-//@ViewChild('comprasForm', { static: false }) comprasForm: DxFormComponent;
+
   constructor( public contadoresService:ContadoresDocumentosService,public remisionesService:RemisionesService, public productoService:ProductoService,public pagoFacturaService:PagoProveedorService, public detallePagoService:DetallePagoService, public facturasProveedorService: FacturasProveedorService, public ordenesService:OrdenesCompraService, public proveedoresService:ProveedoresService, public ordenesCompraService:OrdenesCompraService) {
     this.obj = new objDate();
     this.facturaProveedor = new FacturaProveedor()
@@ -302,59 +302,6 @@ obj:objDate
           this.mostrarError()
         }
     })
-    
-    /*this.ordencompraleida = this.ordenBuscada
-    this.productosCompradosLeidos= this.ordenBuscada.productosComprados
-    this.facturaProveedor.documento_solicitud= this.ordenBuscada.documento
-    solicitud= this.ordenBuscada..documento
-    if(this.ordenBuscada.tipo=="Entregado"){
-      this.datoTotal = this.ordenBuscada.total
-      this.datoNFact= this.ordenBuscada.factPro
-      this.facturaProveedor.estado3="Ingresada"
-      setTimeout(() => {
-        this.dataGrid3.instance.selectAll()
-      }, 2000);
-      
-    }*/
-
-
-
-    /*this.ordenesCompra.forEach(element=>{
-      if(element.n_orden == numero){
-        this.ordencompraleida=element
-        this.productosCompradosLeidos= element.productosComprados
-        //alert(this.productosCompradosLeidos.length)
-        //alert("enre "+element.documento)
-        this.facturaProveedor.documento_solicitud= element.documento
-          solicitud=element.documento
-          if(element.tipo=="Entregado"){
-            this.datoTotal = element.total
-            this.datoNFact= element.factPro
-            this.facturaProveedor.estado3="Ingresada"
-            //alert("coloco "+element.documento)
-            
-            setTimeout(() => {
-              this.dataGrid3.instance.selectAll()
-            }, 2000);
-            
-          }
-      }
-    })
-
-
-
-
-    var flag:boolean=true
-    this.ordenesCompraAprobadas.forEach(element=>{
-      if(this.datoNsolicitud == element.n_orden){
-        //alert("si encontre")
-        this.newButtonEnabled2=false
-        this.productosComprados3=element.productosComprados
-        console.log("es correcto")
-        flag=false
-      }
-    })*/
-   //this.mostrarError()
   }
 
   continuarProceso(){
@@ -464,12 +411,6 @@ obj:objDate
       }
     })
 
-   /*  this.productosComprados.forEach(element=>{
-      if(element.solicitud_n == solicitud){
-        this.productosComprados3.push(element)
-      }
-    }) */
-
   }
 
  
@@ -506,20 +447,13 @@ obj:objDate
      
     })
 
-    /* this.ordenesCompra.forEach(element=>{
-      if(element.documento==this.dato && element.estado=="Rechazado"){
-        this.ordenesCompraRechazadas.push(element)
-      }
-      console.log("orden "+element.documento)
-    }) */
+   
   }
 
 
   mostrarmensaje = (e) =>{
-    //console.log("entre aquiooooo")
-    //console.log("el texto es "+this.textoArea)
+
     this.popupVisible2 = true;
-    //this.rechazarOrden(e)
   }
 
   getLinkedLocations(e: any){  
@@ -849,10 +783,6 @@ obj:objDate
         var est:string="Aprobado"
         var num:string
         num=e.documento+""
-        //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "secuencia": "En Proceso"})
-       // this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra})
-       // this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra})
-       
 
 
 
@@ -926,24 +856,7 @@ obj:objDate
   }
 
   actualizarOrdenRec(e){
-    //console.log("mostrando"+e.documento+ " mensaje"+ this.textoArea)
-
-
-    /* Swal.fire({
-      title: 'Input something',
-      input: 'textarea',
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar'
-    }).then(function(result) {
-      console.log("mostrando"+e.documento+ " mensaje"+ result.value)
-      if (result.value) {
-        Swal.fire(result.value)
-      }
-    }) */
-
-
-    //console.log("mostrando"+e.documento+ " mensaje"+ )
-
+ 
 
     Swal.fire({
       title: 'Solicitud #'+e.documento,
@@ -1089,14 +1002,7 @@ anadirDetallePago = (e) => {
       })
     })
     var matriz = {};
- /* this.ordenes.forEach(function(registro) { 
-      var pais = registro["n_orden"];
-      matriz[pais] = matriz[pais] ? (matriz[pais] + 1) : 1;
-    });
-    matriz = Object.keys(matriz).map(function(pais) {
-      return { orden: pais};
-   });
-   console.log(matriz); */
+ 
    let sinRepetidos = this.ordenes.filter((valorActual, indiceActual, arreglo) => {
     //Podríamos omitir el return y hacerlo en una línea, pero se vería menos legible
     return arreglo.findIndex(valorDelArreglo => JSON.stringify(valorDelArreglo) === JSON.stringify(valorActual)) === indiceActual
@@ -1114,7 +1020,6 @@ anadirDetallePago = (e) => {
     )
   }
 
-  // console.log("yo tengo +++"+JSON.stringify(sinRepetidos)) 
   }
 
 
@@ -1180,14 +1085,12 @@ anadirDetallePago = (e) => {
     this.facturaProveedorBus.forEach(element=>{
       cont++
     })
-    console.log("mostrando antes"+this.productosComprados2.length)
+
     if(cont>=0){
       this.facturaProveedorBus.forEach(element=>{
         this.facturaProveedorBus.splice(0)
         this.totalsuma2=0
       })
-      
-      console.log("mostrando"+this.facturaProveedorBus.length)
     }
 
     //var totalsuma2=0
@@ -1213,9 +1116,8 @@ anadirDetallePago = (e) => {
 
     this.ordenesCompraAprobadas.forEach(element=>{
       if(this.datoNsolicitud == element.n_orden){
-        //this.totalOrden=element.total  - element.costeUnitaTransport-element.otrosCostosGen
         this.totalOrden=element.total
-            this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
+        this.facturaProveedor.proveedor=element.proveedor.nombre_proveedor   //365
       }
     })
   
@@ -1235,15 +1137,21 @@ anadirDetallePago = (e) => {
       }else if(this.facturaProveedor.total <= this.totalsuma){
         new Promise<any>((resolve, reject) => { 
           this.mostrarMsnsaConf()
-            let datoNFact:string
-            datoNFact=this.facturaNp+""
-           this.facturasProveedorService.newFacturaProveedor(this.facturaProveedor).subscribe( res => {
-            this.contadores[0].contFacturaProveedor_Ndocumento=this.facturaNp
-            console.log("ddd "+JSON.stringify(this.contadores[0]))
-            this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( res => {this.actualizarProductosBodega()}, err => {alert("error")})
-           }, err => {alert("error")})
+          let datoNFact:string
+          datoNFact=this.facturaNp+""
+
+          var ultimo = this.facturaProveedor.proveedor.slice(-1);
+          if(ultimo == " ")
+            this.facturaProveedor.proveedor = this.facturaProveedor.proveedor.substring(0, this.facturaProveedor.proveedor.length-1);
+
+          this.facturasProveedorService.newFacturaProveedor(this.facturaProveedor).subscribe( res => {
+          this.contadores[0].contFacturaProveedor_Ndocumento=this.facturaNp
+          this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( 
+            res => {this.actualizarProductosBodega()}, 
+            err => {alert("error")})
+          }, err => {alert("error")})
            
-         });
+        });
       }
 
     }else{
@@ -1312,17 +1220,14 @@ anadirDetallePago = (e) => {
   }
 
   contadorValidaciones(i:number){
-    //alert("entre con "+i)
-    if(this.facturaProveedor.productos.length==i){
+    if(this.facturaProveedor.productos.length==i)
        this.confirmar()
-    }else{
+    else
       console.log("no he entrado "+i)
-    }
-
   }
 
+
   contadorValidaciones5(i:number){
-    
     if(this.productosCompradosLeidos.length==i){
       Swal.close()
       Swal.fire({
@@ -1333,9 +1238,6 @@ anadirDetallePago = (e) => {
       }).then((result) => {
         window.location.reload()
       })
-    }else{
-      console.log("no he entrado "+i)
-      //alert("no entro")
     }
 
   }
@@ -1555,23 +1457,13 @@ anadirDetallePago = (e) => {
     var dato=""
     this.detallePago.forEach(element=>{
       dato=element.id_factura+""
-
       this.facturasProveedorService.updateEstado(dato,"Cancelado").subscribe( res => {}, err => {alert("error")})
-      //this.pagoFacturaService.newPagoProveedor(this.pago_proveedor).subscribe( res => {}, err => {alert("error")})
-     // this.db.collection('/facturasProveedor').doc(dato).update({"estado" :"Cancelado"})
-      //this.db.collection('/pagoProveedor').doc(num5).set({...Object.assign({},this.pago_proveedor )}) ;
-      
     })
   }
 
 
 
    traerOrdenesCompraMensuales(){
-   /* this.ordenesCompra=[]
-    this.ordenesCompraPendientes=[]
-    this.ordenesCompraRechazadas=[]
-    this.ordenesCompraAprobadas=[]
-    this.ordenesCompraDirectas=[]*/
     this.mostrarLoading=true;
     this.ordenesService.getOrdenesMensuales(this.obj).subscribe(res => {
       this.ordenesCompra = res as OrdenDeCompra[];

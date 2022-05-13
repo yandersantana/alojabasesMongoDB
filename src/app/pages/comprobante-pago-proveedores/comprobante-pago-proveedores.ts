@@ -60,7 +60,7 @@ export class TransaccionChequesGirado{
 export class TransaccionesFacturas{
     idComprobante: string
     idFactura: string
-    numFactura: number
+    numFactura: string
     fechaFactura : Date
     valorFactura : number
     valorCancelado : number

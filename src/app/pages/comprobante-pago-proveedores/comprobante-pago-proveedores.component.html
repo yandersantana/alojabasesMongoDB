@@ -443,7 +443,7 @@
         <dxo-export [enabled]="true" fileName="Transacciones_Facturas" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxi-column dataField="idComprobante" caption="CPP" dataType="string" sortOrder="desc"></dxi-column>
-        <dxi-column dataField="numFactura" caption="Factura" dataType="number"></dxi-column>
+        <dxi-column dataField="numFactura" caption="Factura" dataType="string"></dxi-column>
         <dxi-column dataField="fechaFactura" dataType="date" format="dd/MM/yyyy"  caption="Fecha Factura" ></dxi-column>
         <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number">
             <dxo-format type="fixedPoint" [precision]="2"></dxo-format>

@@ -214,7 +214,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
   async obtenerDatosFactura(e,i){
     var valor = 0;
     var factura = await this.listaFacturas.find(element=> element._id == e.value);
-    this.listadoFacturasPagar[i].numFactura = Number(factura.nFactura);
+    this.listadoFacturasPagar[i].numFactura = factura.nFactura;
     this.listadoFacturasPagar[i].valorFactura = factura.total;
     this.listadoFacturasPagar[i].fechaFactura = factura.fecha;
     valor =  Number(this.listadoFacturasPagar[i].valorFactura.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorAbonado.toFixed(2));

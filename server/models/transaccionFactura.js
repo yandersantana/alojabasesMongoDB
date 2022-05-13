@@ -6,7 +6,7 @@ const TransaccionesFacturasSchema = new Schema({
     fecha: { type: Date, required: false},
     idFactura: { type: String, required: false},
     idComprobante: { type: String, required: false},
-    numFactura: { type: Number, required: false},
+    numFactura: { type: String, required: false},
     fechaFactura: { type: Date, required: false},
     valorFactura: { type: Number, required: false},
     valorCancelado: { type: Number, required: false},

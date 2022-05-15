@@ -79,8 +79,8 @@
                         <th class="text-center" style="width: 12%;">Factura</th>
                         <th class="text-center" style="width: 13%;">Valor Fact</th>
                         <th class="text-center" style="width: 12%;">Abonados</th>
-                        <th class="text-center" style="width: 13%;">Saldos</th>
-                        <th class="text-center" style="width: 15%;">Valor a Cancelar</th>
+                        <th class="text-center" style="width: 15%;">Nuevo Pago</th>
+                        <th class="text-center" style="width: 13%;">Saldo</th>
                         <th class="text-center" style="width: 15%;">Estado</th>
                         <th class="text-center" style="width: 15%;">Observaciones</th>
                         <th class="text-center" style="width: 5%;"></th>
@@ -110,12 +110,12 @@
                                 <dx-number-box [(value)]="p.valorAbonado" readOnly="true"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-13">
-                                <dx-number-box [(value)]="p.valorSaldos" readOnly="true"></dx-number-box>
+                             <div class="padding-tr-15">
+                                <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-15">
-                                <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
+                            <div class="padding-tr-13">
+                                <dx-number-box [(value)]="p.valorSaldos" readOnly="true"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-15">

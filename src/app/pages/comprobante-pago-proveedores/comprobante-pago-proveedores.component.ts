@@ -27,15 +27,16 @@ import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service'
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 
 
-
 @Component({
   selector: 'app-comprobante-pago-proveedores',
   templateUrl: './comprobante-pago-proveedores.component.html',
   styleUrls: ['./comprobante-pago-proveedores.component.scss']
 })
+
 export class ComprobantePagoProveedoresComponent implements OnInit {
   listadoFacturasPagar: TransaccionesFacturas [] = []
   listadoPagos: TransaccionChequesGirado [] = []
+  textoPdf = "RELACIÓN DE DOCUMENTOS DE PAGO"
 
   mostrarNewCP: boolean = true;
   mostrarListaCP: boolean = false;
@@ -43,6 +44,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   mostrarTransaccionesCheques: boolean = false;
   mostrarPagoDirecto: boolean = false;
   mostrarGestionCheque: boolean = false;
+  mostrarRegistrosFacturas: boolean = false;
+  
   comprobantePago : ComprobantePagoProveedor
   busquedaTransaccion : tipoBusquedaTransaccion
   comprobantePagoDescarga : ComprobantePagoProveedor
@@ -92,7 +95,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     "Comprobantes de Pago Generados",
     "Transacciones Facturas",
     "Transacciones Cheques",
-    "Gestión de Cheques"
+    "Gestión de Cheques",
+    "Registros Fact.Proveedor"
   ];
 
   arraySucursales: string[] = [
@@ -314,7 +318,9 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
 
   calcularValor(e,i){
-    if(this.listadoFacturasPagar[i].valorCancelado > this.listadoFacturasPagar[i].valorSaldos){
+    var valor = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado
+    this.listadoFacturasPagar[i].valorSaldos = valor - this.listadoFacturasPagar[i].valorCancelado
+    if(this.listadoFacturasPagar[i].valorCancelado > valor){
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
     }
@@ -535,8 +541,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     var facturas = "";
     this.comprobantePago.transaccionesFacturas = this.listadoFacturasPagar
     this.comprobantePago.transaccionesCheques = this.listadoPagos
-    //var str = id.join(";") 
-    
+
     this.comprobantePago.transaccionesCheques.forEach(element=>{
       cheques = cheques +"-"+ element.numCheque;
       bancos = bancos +"-"+ element.banco;
@@ -597,13 +602,15 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   actualizarEstadosFacturas(){
     var estado = ""
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      var total = element.valorSaldos - element.valorCancelado 
+      var valor = element.valorFactura - element.valorAbonado
+      var total = valor - element.valorCancelado 
       if(total == 0)
         estado = "CUBIERTA"
       else if(total > 0)
         estado = "CUBIERTA PARCIAL"
 
-      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,estado).subscribe( res => {},err => {})
+      var abono = element.valorAbonado + element.valorCancelado
+      this._facturaProveedorService.updateFacturaPorTransaccion(element.idFactura,estado,abono).subscribe( res => {},err => {})
     });
   }
 
@@ -838,6 +845,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
         this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = false;
         break;
       case "Pago Directo Facturas":
         this.mostrarNewCP = false;
@@ -846,6 +854,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = true;
         this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = false;
         break;
       case "Comprobantes de Pago Generados":
         this.mostrarNewCP = false;
@@ -854,6 +863,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
         this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = false;
         if(this.listadoComprobantes.length == 0)
           this.traerComprobantesPagoPorRango();
         break;
@@ -864,6 +874,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
         this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = false;
         if(this.listadoTransaccionesFactura.length == 0)
           this.traerTransaccionesFacturaPorRango();
         break;
@@ -874,6 +885,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = true;
         this.mostrarPagoDirecto = false;
         this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = false;
         if(this.listadoTransaccionesCheque.length == 0)
           this.traerTransaccionesChequesPorRango();
         break;
@@ -884,6 +896,16 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.mostrarTransaccionesCheques = false;
         this.mostrarPagoDirecto = false;
         this.mostrarGestionCheque = true;
+        this.mostrarRegistrosFacturas = false;
+        break;
+      case "Registros Fact.Proveedor":
+        this.mostrarNewCP = false;
+        this.mostrarListaCP = false;
+        this.mostrarTransaccionesFacturas = false;
+        this.mostrarTransaccionesCheques = false;
+        this.mostrarPagoDirecto = false;
+        this.mostrarGestionCheque = false;
+        this.mostrarRegistrosFacturas = true;
         break;
       default:    
     }      
@@ -960,6 +982,10 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.mostrarLoading = true;
     this.comprobantePagoDescarga = recibo;
     this.traerDatosFaltantes(this.comprobantePagoDescarga.sucursal);
+    if(this.comprobantePagoDescarga.transaccionesCheques.length == 0)
+      this.textoPdf = ""
+    else
+      this.textoPdf = "RELACIÓN DE DOCUMENTOS DE PAGO"
     const documentDefinition = this.getDocumentDefinition();
 
     var IdNum = new Promise<any>((resolve, reject) => {
@@ -1120,7 +1146,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         { text: " RELACIÓN DE FACTURAS A PAGAR " ,style: "subtitulos" },
         this.getListaOperaciones(this.comprobantePagoDescarga.transaccionesFacturas),
         { text: " " },
-         { text: " RELACIÓN DE DOCUMENTOS DE PAGO " ,style: "subtitulos" },
+        { text: this.textoPdf ,style: "subtitulos" },
         this.getTransaccionesCheques(this.comprobantePagoDescarga.transaccionesCheques),
 
       ],
@@ -1258,7 +1284,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
               alignment: "center",
             },
             {
-              text: "Valor",
+              text: "Pago Recibido",
               style: "tableHeader2",
               fontSize: 8,
               alignment: "center",
@@ -1299,6 +1325,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   getTransaccionesCheques(operaciones: TransaccionChequesGirado[]) {
     if(operaciones?.length > 0){
+      this.textoPdf = ""
       return {
       table: {
         widths: ["12%", "12%", "12%", "12%", "12%", "10%", "30%"],

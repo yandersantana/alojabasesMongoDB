@@ -1,5 +1,3 @@
-
-
 export class FacturaProveedor{
     _id:string
     fecha:Date
@@ -7,6 +5,7 @@ export class FacturaProveedor{
     nFactura:string
     nSolicitud:number
     total:number
+    valorAbonado:number
     proveedor:string
     productos:string[]
     estado:string
@@ -15,10 +14,10 @@ export class FacturaProveedor{
     idF:number
     documento_solicitud:number
     constructor(){
-      this.estado="PENDIENTE"
-      this.estado2="Aceptada"
-      this.estado3="Por ingresar"
-       
+        this.estado="PENDIENTE"
+        this.estado2="Aceptada"
+        this.estado3="Por ingresar"
+        this.valorAbonado = 0;
     }
 }
 
@@ -32,10 +31,9 @@ export class PagoProveedor{
     valor:number=0
     beneficiario: string
     estado : string
-    constructor(){
-
-    }
+    constructor(){}
 }
+
 
 export class DetallePagoProveedor{
     idPago:number
@@ -55,6 +53,5 @@ export class DetallePagoProveedor{
     constructor(){
         this.no_conformidad=0
         this.estado="Por Pagar"
-
     }
 }

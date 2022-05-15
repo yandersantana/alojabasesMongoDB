@@ -164,12 +164,15 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
 
 
   calcularValor(e,i){
-    if(this.listadoFacturasPagar[i].valorCancelado > this.listadoFacturasPagar[i].valorSaldos){
+    var valor = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado
+    this.listadoFacturasPagar[i].valorSaldos = valor - this.listadoFacturasPagar[i].valorCancelado
+    if(this.listadoFacturasPagar[i].valorCancelado > valor){
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
     }
  
-    var total = this.listadoFacturasPagar[i].valorSaldos - this.listadoFacturasPagar[i].valorCancelado 
+    var valor = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado
+    var total = valor - this.listadoFacturasPagar[i].valorCancelado 
     if(total == 0)
       this.listadoFacturasPagar[i].estado = "PAGADA"
     else if(total > 0)
@@ -347,7 +350,8 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
 
   actualizarEstadosFacturas(){
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
-      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,element.estado).subscribe( res => {
+      var abono = element.valorAbonado + element.valorCancelado
+      this._facturaProveedorService.updateFacturaPorTransaccion(element.idFactura, element.estado, abono).subscribe( res => {
       },err => {})
     });
   }

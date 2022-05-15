@@ -12,6 +12,7 @@ import { CajaMenor, DetalleCajaMenor, FormatoImpresion } from './caja-menor';
 import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import 'jspdf-autotable';
+import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 
 @Component({
   selector: 'app-caja-menor',
@@ -44,6 +45,7 @@ export class CajaMenorComponent implements OnInit {
   docImpresion : FormatoImpresion [] = [];
   formImpresion : FormatoImpresion
   newCaja = true;
+  valorVentaDiarias = 0
 
   tipoUsuario = "";
   isAdmin = true;
@@ -220,12 +222,16 @@ export class CajaMenorComponent implements OnInit {
       this.totalRC += element.TotalRC ?? 0;
     });
 
-    this.resultado = this.totalSuma - this.totalResta - this.totalRC;
-    if(this.resultado == 0)
+    console.log(this.totalSuma.toFixed(2))
+    console.log(this.totalResta.toFixed(2))
+    console.log(this.totalRC)
+
+    this.resultado = Number(this.totalSuma.toFixed(2)) - Number(this.totalResta.toFixed(2)) - Number(this.totalRC.toFixed(2));
+    if(Number(this.resultado.toFixed(2)) == 0)
       this.estadoCuenta = "OK"
-    else if(this.resultado > 0)
+    else if(Number(this.resultado.toFixed(2)) > 0)
       this.estadoCuenta = "SOBRANTE"
-    else if(this.resultado < 0)
+    else if(Number(this.resultado.toFixed(2)) < 0)
       this.estadoCuenta = "FALTANTE"
     
     this.cajaMenor.totalIngresos = Number(this.totalSuma.toFixed(2));
@@ -262,7 +268,6 @@ export class CajaMenorComponent implements OnInit {
       newCaja.OrderDate = element.fecha.toLocaleString();
       newCaja.Sub1 = element.numDocumento;
       newCaja.Notas = element.notas;
-      console.log(newCaja.Notas)
       if(element.cuenta == "2.1 PRÉSTAMOS")
         newCaja.Sub2 = element.cedula;
       else
@@ -271,31 +276,6 @@ export class CajaMenorComponent implements OnInit {
       newCaja.Cuenta = element.cuenta;
       var cadena = element.cuenta.split(" ");
       newCaja.Orden = Number(cadena[0]);
-
-
-      /* if(newCaja.Orden == 1)
-        newCaja.Cuenta = "A. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 2)
-        newCaja.Cuenta = "B. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 3)
-        newCaja.Cuenta = "C. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 4)
-        newCaja.Cuenta = "D. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 5)
-        newCaja.Cuenta = "E. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 6)
-        newCaja.Cuenta = "F. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 7)
-        newCaja.Cuenta = "G. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 8)
-        newCaja.Cuenta = "H. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 9)
-        newCaja.Cuenta = "I. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 10)
-        newCaja.Cuenta = "J. "+newCaja.Cuenta;
-      else if(newCaja.Orden == 11)
-        newCaja.Cuenta = "K. "+newCaja.Cuenta; */
-
 
       if(element.tipoCuenta == "Ingresos") 
         newCaja.TotalIngresos = element.valor;
@@ -312,11 +292,23 @@ export class CajaMenorComponent implements OnInit {
       
     });
     this.calcular();
+    this.obtenerVentasDiarias();
+
 
     if(this.isDescarga)
         this.crearPDF(null, false);
   }
 
+
+  obtenerVentasDiarias(){
+    this.valorVentaDiarias = 0;
+    this.transaccionesCaja.forEach(element=>{
+      if(element.SubCuenta == "1.3.0 Facturacion" || element.SubCuenta == "1.3.1 Nota_Venta")
+        this.valorVentaDiarias = this.valorVentaDiarias + element.TotalIngresos
+    })
+
+    console.log(this.valorVentaDiarias)
+  }
   
   
   downloadFile = (e) => {
@@ -703,6 +695,19 @@ export class CajaMenorComponent implements OnInit {
             body: [
               [ { text: 'Resultado del Ejercicio', bold: true ,style: "detalleTotales"}, {text: this.resultado.toFixed(2), style:"totales" }],
               [ { text: 'Estado de la Caja', bold: true ,style: "detalleTotales"}, {text: this.estadoCuenta, style:"totales" }],
+            ]
+          }
+        },
+        { text: ''},
+        { text: ''},
+        {
+          style: 'tableExample2',
+          fontSize: 7,
+          table: {
+            widths: [315,180],
+            body: [
+              [ { text: 'Ventas Del Dia', bold: true ,style: "detalleTotales"}, {text: this.valorVentaDiarias.toFixed(2), style:"totales" }],
+             
             ]
           }
         },

@@ -851,24 +851,6 @@ contadorFirebase:contadoresDocumentos[]=[]
   }
 
   actualizarOrdenRec(e){
-    //console.log("mostrando"+e.documento+ " mensaje"+ this.textoArea)
-
-
-    /* Swal.fire({
-      title: 'Input something',
-      input: 'textarea',
-      confirmButtonText: 'Enviar',
-      cancelButtonText: 'Cancelar'
-    }).then(function(result) {
-      console.log("mostrando"+e.documento+ " mensaje"+ result.value)
-      if (result.value) {
-        Swal.fire(result.value)
-      }
-    }) */
-
-
-    //console.log("mostrando"+e.documento+ " mensaje"+ )
-
 
     Swal.fire({
       title: 'Solicitud #'+e.documento,
@@ -1034,14 +1016,7 @@ anadirDetallePago = (e) => {
       })
     })
     var matriz = {};
- /*    this.ordenes.forEach(function(registro) { 
-      var pais = registro["n_orden"];
-      matriz[pais] = matriz[pais] ? (matriz[pais] + 1) : 1;
-    });
-    matriz = Object.keys(matriz).map(function(pais) {
-      return { orden: pais};
-   });
-   console.log(matriz); */
+
    let sinRepetidos = this.ordenes.filter((valorActual, indiceActual, arreglo) => {
     //Podríamos omitir el return y hacerlo en una línea, pero se vería menos legible
     return arreglo.findIndex(valorDelArreglo => JSON.stringify(valorDelArreglo) === JSON.stringify(valorActual)) === indiceActual

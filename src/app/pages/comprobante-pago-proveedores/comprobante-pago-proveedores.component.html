@@ -97,8 +97,8 @@
                         <th class="text-center" style="width: 12%;">Factura</th>
                         <th class="text-center" style="width: 13%;">Valor Fact</th>
                         <th class="text-center" style="width: 10%;">Abonados</th>
-                        <th class="text-center" style="width: 10%;">Saldos</th>
-                        <th class="text-center" style="width: 10%;">Valor a Cancelar</th>
+                        <th class="text-center" style="width: 10%;">Nuevo Pago</th>
+                        <th class="text-center" style="width: 10%;">Saldo</th>
                         <th class="text-center" style="width: 12%;">Estado</th>
                         <th class="text-center" style="width: 12%;">Estado Orden</th>
                         <th class="text-center" style="width: 16%;">Observaciones</th>
@@ -130,11 +130,11 @@
                             </div>
 
                             <div class="padding-tr-10">
-                                <dx-number-box [(value)]="p.valorSaldos"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-10">
-                                <dx-number-box [(value)]="p.valorCancelado" (onChange)="calcularValor($event,i)"></dx-number-box>
+                                <dx-number-box [(value)]="p.valorSaldos"></dx-number-box>
                             </div>
 
                             <div class="padding-tr-12">
@@ -442,13 +442,17 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-export [enabled]="true" fileName="Transacciones_Facturas" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column dataField="idComprobante" caption="CPP" dataType="string" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="createdAt" dataType="date"  sortOrder="desc"  [visible]="false"></dxi-column>
+        <dxi-column dataField="idComprobante" caption="CPP" dataType="string"></dxi-column>
         <dxi-column dataField="numFactura" caption="Factura" dataType="string"></dxi-column>
         <dxi-column dataField="fechaFactura" dataType="date" format="dd/MM/yyyy"  caption="Fecha Factura" ></dxi-column>
         <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="number">
             <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
         </dxi-column>
         <dxi-column dataField="valorAbonado" caption="Valor Abonado" dataType="number">
+            <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        </dxi-column>
+        <dxi-column dataField="valorCancelado" caption="Valor Cancelado" dataType="number">
             <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
         </dxi-column>
         <dxi-column dataField="valorSaldos" caption="Valor Saldos" dataType="number">
@@ -576,6 +580,7 @@
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-export [enabled]="true" fileName="Transacciones_Cheques" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="createdAt" dataType="date"  sortOrder="desc"  [visible]="false"></dxi-column>
         <dxi-column dataField="idComprobante" caption="CPP" dataType="string"></dxi-column>
         <dxi-column dataField="idPago" caption="ID Pago" dataType="number"></dxi-column>
         <dxi-column dataField="numCheque" caption="Cheque" dataType="string"></dxi-column>
@@ -616,6 +621,10 @@
     <app-gestion-pago-cheques></app-gestion-pago-cheques>
 </div>
  
+
+<div *ngIf="mostrarRegistrosFacturas">
+    <app-registro-facturas></app-registro-facturas>
+</div>
 
 <div *ngIf="mostrarLoading">
     <dx-popup

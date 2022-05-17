@@ -37,6 +37,7 @@ import { DatosConfiguracionService } from "src/app/servicios/datosConfiguracion.
 import { dataDocumento } from "../reciboCaja/recibo-caja";
 import { CajaMenor } from "../cajaMenor/caja-menor";
 import { CajaMenorService } from "src/app/servicios/cajaMenor.service";
+import { AuthService } from "src/app/shared/services";
 
 @Component({
   selector: "app-devoluciones",
@@ -127,6 +128,7 @@ export class DevolucionesComponent implements OnInit {
     public sucursalesService: SucursalesService,
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public productoService: ProductoService,
+    public authService: AuthService,
     public _cajaMenorService : CajaMenorService,
     public _configuracionService : DatosConfiguracionService
   ) {
@@ -172,6 +174,10 @@ export class DevolucionesComponent implements OnInit {
             this.menuPrincipalRoles = this.menu1;
             this.isUsuario = false;
           }
+
+          if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
+
         },
         (err) => {}
       );

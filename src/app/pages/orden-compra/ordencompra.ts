@@ -6,11 +6,13 @@ export class FacturaProveedor{
     nSolicitud:number
     total:number
     valorAbonado:number
+    valorPagado:number
     proveedor:string
     productos:string[]
     estado:string
     estado2:string
     estado3:string
+    estadoOrden:string
     idF:number
     documento_solicitud:number
     constructor(){
@@ -18,6 +20,7 @@ export class FacturaProveedor{
         this.estado2="Aceptada"
         this.estado3="Por ingresar"
         this.valorAbonado = 0;
+        this.valorPagado = 0;
     }
 }
 

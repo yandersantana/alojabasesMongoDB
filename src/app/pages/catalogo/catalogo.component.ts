@@ -14,6 +14,7 @@ import { Observable } from 'rxjs';
 import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-catalogo',
@@ -144,7 +145,9 @@ export class CatalogoComponent implements OnInit {
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
-  constructor(public catalogoService: CatalogoService ,public authenService:AuthenService, private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
+  constructor(public catalogoService: CatalogoService ,
+    public authService2: AuthService,
+    public authService: AuthenService,public authenService:AuthenService, private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
     this.catalogo2.ESTADO="ACTIVO"
     this.catalogo2.ORIGEN = "Nacional"
     this.catalogo2.TIPO= "Original"
@@ -175,6 +178,10 @@ export class CatalogoComponent implements OnInit {
               var z = document.getElementById("admin1");
               z.style.display = "none";
             }
+
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService2.logOut();
+           
           },
           err => {
           }

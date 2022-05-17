@@ -20,6 +20,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { auditoriasProductos, auditoria } from '../auditorias/auditorias';
 import DataSource from 'devextreme/data/data_source';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-auditoria-cl',
@@ -82,7 +83,12 @@ export class AuditoriaClComponent implements OnInit {
     "Nueva Auditoria"
   ];
 
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore, 
+    public  afAuth:  AngularFireAuth,
+    public transaccionesService:TransaccionesService,
+    public authenService:AuthenService, 
+    public authService: AuthService,
+    public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.newAuditoria = new auditoria()
     this.newAuditoria.fecha_inicio= new Date().toLocaleString()
@@ -850,7 +856,9 @@ export class AuditoriaClComponent implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            this.validarRol()
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
+            
           },
           err => {
           }
@@ -858,12 +866,6 @@ export class AuditoriaClComponent implements OnInit {
     });
   }
 
-  validarRol(){
-    if(this.usuarioLogueado[0].rol == "Administrador"){
-      //var z = document.getElementById("admin");
-      //z.style.display = "block";
-    }
-  }
 
   calcularTotalM2Base(){
     this.auditoria.m2base=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_sistema)+((this.auditoria.piezas_sistema*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))

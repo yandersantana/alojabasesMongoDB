@@ -20,6 +20,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-auditoria2',
@@ -88,7 +89,8 @@ export class Auditoria2Component implements OnInit {
   fecha_inicio = new Date()
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
-  constructor(private db: AngularFirestore,private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore,
+    public authService: AuthService, private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.auditoria.valoracion= "Ok"
     this.newAuditoria = new auditoria()
@@ -961,7 +963,9 @@ export class Auditoria2Component implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            this.validarRol()
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();    
+
           },
           err => {
           }
@@ -969,12 +973,7 @@ export class Auditoria2Component implements OnInit {
     });
   }
 
-  validarRol(){
-    if(this.usuarioLogueado[0].rol == "Administrador"){
-      //var z = document.getElementById("admin");
-      //z.style.display = "block";
-    }
-  }
+
 
   calcularTotalM2Base(){
     this.auditoria.m2base=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_sistema)+((this.auditoria.piezas_sistema*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))

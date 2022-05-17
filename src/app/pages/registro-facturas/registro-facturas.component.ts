@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
+import { OrdenDeCompra } from '../compras/compra';
 import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
 import { objDate, tipoBusquedaTransaccion } from '../transacciones/transacciones';
@@ -29,8 +31,11 @@ export class RegistroFacturasComponent implements OnInit {
   obj: objDate;
   busquedaTransaccion : tipoBusquedaTransaccion
   popupVisible = false;
+  popupVisibleEstado = false;
   mostrarLoading: boolean = false;
   numeroFactura = "";
+  estadoOrden = " ";
+  numOrden = "";
   tiposFactura: string[] = [
     'General',
     'Pendiente',
@@ -46,6 +51,7 @@ export class RegistroFacturasComponent implements OnInit {
   
   constructor(public _facturasProveedorService: FacturasProveedorService,
     public _transaccionFacturaService : TransaccionesFacturasService,
+    public _ordenCompraService : OrdenesCompraService,
     public _transaccionesChequesService : TransaccionesChequesService ) {}
 
   ngOnInit() {
@@ -95,6 +101,25 @@ export class RegistroFacturasComponent implements OnInit {
 
   mostrarTransaciones = (e) => {
     this.obtenerTransaccionesFacturas(e.row.data);
+  }
+
+  mostrarEstado = (e) => {
+    this.obtenerEstadoOrden(e.row.data);
+  }
+
+  obtenerEstadoOrden(e:any){
+    this.numeroFactura = e.nFactura;
+    this.popupVisibleEstado = true;
+    this.mostrarLoading = true;
+    var newOrden = new OrdenDeCompra()
+    newOrden.n_orden = e.nSolicitud;
+    this._ordenCompraService.getOrdenEspecifica(newOrden).subscribe(res => {
+      var orden = res as OrdenDeCompra[];
+      this.mostrarLoading = false;
+      if(orden.length != 0)
+        this.estadoOrden= orden[0].estadoOrden;
+        this.numOrden = orden[0].n_orden.toString();
+    }) 
   }
 
   obtenerTransaccionesFacturas(e:any){

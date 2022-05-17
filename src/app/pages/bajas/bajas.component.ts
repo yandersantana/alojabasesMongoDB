@@ -17,6 +17,7 @@ import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import DataSource from 'devextreme/data/data_source';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-bajas',
@@ -74,7 +75,9 @@ export class BajasComponent implements OnInit {
   ];
   correo=""
   contadores:contadoresDocumentos[]=[]
-  constructor(private db: AngularFirestore, public authenService:AuthenService, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
+  constructor(private db: AngularFirestore, 
+    public authService: AuthService,
+    public authenService:AuthenService, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public transaccionesService:TransaccionesService, public bajasService:BajasService, public productoService:ProductoService, public sucursalesService:SucursalesService, public contadoresService:ContadoresDocumentosService, ) { 
     this.baja = new baja
     this.productosBaja.push(new productosBajas)
   }
@@ -101,8 +104,8 @@ export class BajasComponent implements OnInit {
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-           
-           
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
           },
           err => {
         })

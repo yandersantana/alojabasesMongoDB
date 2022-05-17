@@ -49,6 +49,10 @@ export class TransaccionesFacturasService {
     return this.http.put(this.URL + `/updateEstadoFactura/${transaccion._id}/${estado}/${valor}`, transaccion);
   }
 
+  updateFechaPago(transaccion ) {
+    return this.http.put(this.URL + `/updateFechaPago/${transaccion._id}`, transaccion);
+  }
+
   updateIsContabilizada(transaccion, estado: boolean) {
     return this.http.put(this.URL + `/updateContabilizada/${transaccion._id}/${estado}`, transaccion);
   }

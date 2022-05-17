@@ -14,6 +14,7 @@ import { user } from "../user/user";
 import { objDate, transaccion } from "../transacciones/transacciones";
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
 import { productoTransaccion } from "../consolidado/consolidado";
+import { AuthService } from "src/app/shared/services";
 @Component({
   selector: "app-consultas",
   templateUrl: "./consultas.component.html",
@@ -56,6 +57,7 @@ export class ConsultasComponent implements OnInit {
     public preciosService: ControlPreciosService,
     private transaccionesService: TransaccionesService,
     private rutaActiva: ActivatedRoute,
+    public authService: AuthService,
     public productoService: ProductoService
   ) {
     //this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
@@ -152,6 +154,9 @@ export class ConsultasComponent implements OnInit {
             var z = document.getElementById("galeria2");
             z.style.display = "block";
           }
+
+          if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
         },
         (err) => {}
       );

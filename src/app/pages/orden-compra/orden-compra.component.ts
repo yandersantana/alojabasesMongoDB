@@ -22,8 +22,9 @@ import { producto, contadoresDocumentos, orden_compra } from '../ventas/venta';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
-import { AngularFireAuth } from 'angularfire2/auth';
 import { AngularFirestore } from 'angularfire2/firestore';
+import { AuthService } from 'src/app/shared/services';
+import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 
 
 @Component({
@@ -140,7 +141,10 @@ selectionModeValue: string = "all";
 contadorFirebase:contadoresDocumentos[]=[]
 @ViewChild('list', { static: false }) comprasForm: DxListComponent;
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public transaccionesService: TransaccionesService,public authenService:AuthenService, public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService,public proveedoresService:ProveedoresService, public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
+  constructor(private db: AngularFirestore,
+public authService: AuthService, public transaccionesService: TransaccionesService,public authenService:AuthenService, public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService,public proveedoresService:ProveedoresService, public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,
+public _facturasProveedorService : FacturasProveedorService,
+public sucursalesService: SucursalesService) {
     
     this.facturaProveedor = new FacturaProveedor()
     this.pago_proveedor= new PagoProveedor()
@@ -168,15 +172,12 @@ contadorFirebase:contadoresDocumentos[]=[]
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
-            //console.log("fff "+JSON.stringify(this.usuarioLogueado))
-            //console.log("fff "+this.usuarioLogueado[0].rol)
-            if( this.usuarioLogueado[0].rol == "Administrador"){
-/*               var z = document.getElementById("opadmin");
-                  z.style.display = "block"; */
-                  this.opadmin=true
-            }else{
-             // alert("entre por falso")
-            }
+            if( this.usuarioLogueado[0].rol == "Administrador")
+              this.opadmin=true
+
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
+
 
           },
           err => {
@@ -707,11 +708,13 @@ contadorFirebase:contadoresDocumentos[]=[]
     this.contadoresService.updateContadoresIDOrdenesAprobadas(this.contadores[0]).subscribe( res => {}, err => {this.errorMensaje()})
     if(e.tipo == "Entregado"){
       this.actualizarProductos(e , ord)
-      
     }else{
       this.cerrarAlert()
     }
   }
+
+
+
 
   mostrarNotas= (e) => {  
     this.popupOrdenes(e.row.data)  
@@ -779,17 +782,35 @@ contadorFirebase:contadoresDocumentos[]=[]
 
         new Promise<any>((resolve, reject) => {
           if(e.tipo == "Entregado"){
+            var facturaProveedor = new FacturaProveedor();
+            facturaProveedor.total = e.total;
+            facturaProveedor.valorPagado = e.total;
+            facturaProveedor.valorAbonado = e.total;
+            facturaProveedor.nSolicitud = this.nordenCompra;
+            facturaProveedor.fecha = new Date();
+            facturaProveedor.fechaExpiracion = e.fecha;
+            facturaProveedor.nFactura = e.factPro;
+            facturaProveedor.idF = this.contadores[0].contFacturaProveedor_Ndocumento+1;
+            facturaProveedor.proveedor = e.proveedor.nombre_proveedor;
+            facturaProveedor.estado = "PAGADA";
+            facturaProveedor.estado2 = "Aceptada";
+            facturaProveedor.estado3 = "Ingresada";
+            facturaProveedor.documento_solicitud = e.documento;
+            this._facturasProveedorService.newFacturaProveedor(facturaProveedor).subscribe( res => {
+              this.contadores[0].contFacturaProveedor_Ndocumento = facturaProveedor.idF
+              this.contadoresService.updateContadoresIDFacturasProveedor(this.contadores[0]).subscribe( 
+                res => {}, 
+                err => {alert("error")})
+            }, err => {alert("error")})
+
+
             this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"COMPLETO").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
           }else{
-          this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"PENDIENTE").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
+            this.ordenesService.updateOrdenEstadoAprobado(num, "Aprobado", this.nordenCompra, this.usuariologueado,"PENDIENTE").subscribe( res => {this.confirmarM(e ,this.nordenCompra )}, err => {this.errorMensaje()})
         }
-          /* this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "n_orden":this.nordenCompra, "usuarioAuth":this.usuariologueado, "estadoOrden":"PENDIENTE"}).then(res => {console.log("jjjjj") }, err => alert(err));
-          this.db.collection('/ordenCompraAprobadasGlobal').doc("matriz").update({"n_documento" :this.nordenCompra}).then(res => { this.confirmarM(e ,this.nordenCompra )}, err => alert(err)); */
-          
+
         })
-        //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "secuencia": "En Proceso"})
-       
-       
+
 
 
 

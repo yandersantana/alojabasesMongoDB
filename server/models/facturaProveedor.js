@@ -10,6 +10,7 @@ const FacturaProveedorSchema = new Schema({
     nSolicitud: { type: Number, required: false},
     total: { type: Number, required: false},
     valorAbonado: { type: Number, required: false},
+    valorPagado: { type: Number, required: false},
     proveedor: { type: String, required: false},
     productos: { type: Array, required: false},
     estado: { type: String, required: false},

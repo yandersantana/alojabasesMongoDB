@@ -80,3 +80,8 @@
     float: right;
     display: contents;
 }
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}

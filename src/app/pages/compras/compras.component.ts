@@ -23,6 +23,9 @@ import { ProductosCompradosService } from 'src/app/servicios/productos-comprados
 import { AuthenService } from 'src/app/servicios/authen.service';
 import DataSource from "devextreme/data/data_source";
 import { user } from '../user/user';
+import { AuthService } from 'src/app/shared/services';
+import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { FacturaProveedor } from '../orden-compra/ordencompra';
 @Component({
   selector: 'app-compras',
   templateUrl: './compras.component.html',
@@ -108,7 +111,9 @@ export class ComprasComponent implements OnInit {
   popupvisible:boolean=false
   usuarioLogueado:user
   productos22: DataSource;
-  constructor(public authenService: AuthenService,public transaccionesService: TransaccionesService,public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService, public proveedoresService:ProveedoresService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, public productoService:ProductoService,public sucursalesService: SucursalesService) {
+  constructor(public authenService: AuthenService,public authService: AuthService, public transaccionesService: TransaccionesService,public productosCompradosService: ProductosCompradosService, public ordenesService: OrdenesCompraService, public proveedoresService:ProveedoresService, public productosVenService:ProductosVendidosService,public parametrizacionService:ParametrizacionesService, public contadoresService: ContadoresDocumentosService, public catalogoService: CatalogoService, 
+    public _facturasProveedorService : FacturasProveedorService,
+    public productoService:ProductoService,public sucursalesService: SucursalesService) {
     this.ordenDeCompra = new OrdenDeCompra()
     this.ordenDeCompra.fecha = this.now.toDateString()  
     this.ordenDeCompra.fechaEntrega = new Date().toDateString()
@@ -144,10 +149,8 @@ export class ComprasComponent implements OnInit {
           res => {
             this.usuarioLogueado = res as user;
             this.ordenDeCompra.usuario = this.usuarioLogueado[0].username
-            if( this.usuarioLogueado[0].rol == "Administrador"){
-              /* var z = document.getElementById("admin");
-                  z.style.display = "block"; */
-            }
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
 
           },
           err => {
@@ -1393,15 +1396,11 @@ cambiarEstadoSeleccionado(e){
     var bandera:boolean=true
     this.productosComprados.forEach(element => {
       contpro++
-      console.log("mmmmm"+element.total)
-      if(element.total==0){
-        console.log("el total es ...."+element.total)
+      if(element.total==0)
         bandera=false
-      }
     });
-    console.log("contador de el "+contpro)
+
     if(contpro>=1 &&bandera){
-      console.log("entre aqui sin validar")
     this.ordenDeCompra.proveedor.nombre_proveedor= this.mensaje2
     this.ordenDeCompra.fecha = this.now.toLocaleDateString()
     this.ordenDeCompra.fechaEntrega = this.now3.toLocaleDateString()
@@ -1434,39 +1433,12 @@ cambiarEstadoSeleccionado(e){
           var cant=0
           cant= element.nombreComercial.bodegaProveedor+ element.cantidad
           element.nombreComercial.bodegaProveedor=cant
-          if(this.seleccion){
-          }else{
-            /* this.productoService.updateProductoBodegaProveedor(element.nombreComercial).subscribe(
-              res => {
-                console.log(res + "entre por si");
-              },
-              err => {
-                Swal.fire({
-                  title: err.error,
-                  text: 'Revise e intente nuevamente',
-                  icon: 'error'
-                })
-              }) */
-          }
-          
-           /*  this.productosCompradosService.newProductoComprado(element).subscribe(
-              res => {
-                console.log(res + "entre por si");
-                contVal++,this.contadorValidaciones(contVal) 
-              },
-              err => {
-                Swal.fire({
-                  title: err.error,
-                  text: 'Revise e intente nuevamente',
-                  icon: 'error'
-                })
-              }) */
 
-         /*  this.db.collection("/productos").doc(element.nombreComercial.PRODUCTO).update({ "bodegaProveedor" :cant })
-          .then(res => { }, err => alert(err)); */
-          /* this.db.collection("/productosComprados").add({ ...element })
-          .then(res => {contVal++,this.contadorValidaciones(contVal) }, err => alert(err)); */
-         
+          if(this.seleccion){
+            
+          }else{
+          }
+
         });
       });
       this.mostrarMensaje()

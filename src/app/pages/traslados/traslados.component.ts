@@ -33,6 +33,7 @@ import { TrasladosService } from "src/app/servicios/traslados.service";
 import { AuthenService } from "src/app/servicios/authen.service";
 import { user } from "../user/user";
 import DataSource from "devextreme/data/data_source";
+import { AuthService } from "src/app/shared/services";
 
 @Component({
   selector: "app-traslados",
@@ -120,6 +121,7 @@ export class TrasladosComponent implements OnInit {
     public contadoresService: ContadoresDocumentosService,
     public productoService: ProductoService,
     public bodegasService: BodegaService,
+    public authService: AuthService,
     public transaccionesService: TransaccionesService,
     public sucursalesService: SucursalesService
   ) {
@@ -156,6 +158,11 @@ export class TrasladosComponent implements OnInit {
             var z = document.getElementById("admin1");
             z.style.display = "none";
           }
+
+          if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
+
+
           this.validarRol();
           //this.separarRegistrosTraslados()
         },

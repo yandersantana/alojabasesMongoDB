@@ -97,13 +97,16 @@
     <dxi-column dataField="nFactura" caption="Factura" dataType="string"></dxi-column>
     <dxi-column dataField="nSolicitud" caption="N/Orden" dataType="string"></dxi-column>
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="true"></dxi-column>
-    <dxi-column dataField="valorAbonado" caption="Valor Abonado" dataType="number"></dxi-column>
-    <dxi-column dataField="total" caption="Total" dataType="string"></dxi-column>
-    <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+    <dxi-column dataField="valorAbonado" caption="Valor Cubierto" dataType="number"></dxi-column>
+    <dxi-column dataField="total" caption="Total Factura" dataType="number"></dxi-column>
+    <dxi-column dataField="valorPagado" caption="Valores Pagados" dataType="number"></dxi-column>
+    <dxi-column dataField="estado" caption="Estado Factura" dataType="string"></dxi-column>
+     <dxi-column type="buttons" dataField="bt2" caption="Est.Orden" width="7%">
+        <dxi-button hint="Estado Orden" icon="fa fa-eye" [onClick]="mostrarEstado"></dxi-button>
+    </dxi-column>
     <dxi-column type="buttons" dataField="bt1" caption="Trans." width="7%">
         <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarTransaciones"></dxi-button>
     </dxi-column>
-
     <dxo-summary>
             <dxi-total-item
                 column="total"
@@ -121,6 +124,29 @@
     ></dxo-pager>
 </dx-data-grid>
 
+
+<dx-popup [width]="750" [height]="250" [showTitle]="true" title="Factura #: {{numeroFactura}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleEstado">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio" style="text-align: center;">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h6>Orden: {{numOrden}}</h6>
+                </div>
+                <div class="col-md-1"></div> 
+
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h6>Estado Orden: {{estadoOrden}}</h6>
+                </div>
+                <div class="col-md-1"></div> 
+            </div>
+        </div>
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 
 <dx-popup [width]="750" [height]="450" [showTitle]="true" title="Factura #: {{numeroFactura}}" [dragEnabled]="false"

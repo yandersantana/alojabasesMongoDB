@@ -9,6 +9,7 @@ import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-gestion-pago-cheques',
@@ -80,6 +81,7 @@ export class GestionPagoChequesComponent implements OnInit {
       var pago = res as TransaccionChequesGirado[];
       if(pago.length != 0){
         this.pagoCheque = pago[0];
+        console.log(this.pagoCheque)
         this.buscarChequesRelacionados();
         if(this.pagoCheque.estado == "Pagado"){
           this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
@@ -91,15 +93,16 @@ export class GestionPagoChequesComponent implements OnInit {
       }else
         this.mostrarMensajeGenerico(2,"No se encontraron datos")
 
-      if(this.opMenu == "Gestionar Pagos/Cheques")
+      //if(this.opMenu == "Gestionar Pagos/Cheques")
         this.buscarFacturasPorComprobante()
-      else
-        this.mostrarLoading = false;
+      //else
+        //this.mostrarLoading = false;
       
+      if(this.opMenu == "Gestionar Fechas Pago")
+        this.buscarChequesRelacionados()
     })  
   }
 
-  
 
   buscarTransaccionChequePorNumCheque(){
     this.mostrarLoading = true;
@@ -119,10 +122,13 @@ export class GestionPagoChequesComponent implements OnInit {
       }else
         this.mostrarMensajeGenerico(2,"No se encontraron datos")
       
-      if(this.opMenu == "Gestionar Pagos/Cheques")
+      //if(this.opMenu == "Gestionar Pagos/Cheques")
         this.buscarFacturasPorComprobante()
-      else
-        this.mostrarLoading = false;
+      //else
+        //this.mostrarLoading = false;
+
+      if(this.opMenu == "Gestionar Fechas Pago")
+        this.buscarChequesRelacionados()
     })  
   }
 
@@ -131,6 +137,7 @@ export class GestionPagoChequesComponent implements OnInit {
     busquedaTransaccion.NumDocumento = this.pagoCheque.idComprobante;
     this._transaccionesChequeService.getTransaccionesPorIdComprobante(busquedaTransaccion).subscribe(res => {
       this.listaChequesEncontrados = res as TransaccionChequesGirado[];
+      console.log(this.listaChequesEncontrados)
       this.validarEstadosCheques();
     })  
   }
@@ -245,7 +252,7 @@ export class GestionPagoChequesComponent implements OnInit {
         var facturas = res as FacturaProveedor[];
         var facturaEncontrada = facturas[0];
         if(facturaEncontrada.estado == "CUBIERTA"  || facturaEncontrada.estado == "ABONADA"){
-          this._facturaProveedorService.updateEstadoFactura(facturaEncontrada._id,this.estadoFacturas).subscribe((res) => {
+          this._facturaProveedorService.updateEstadoFacturaProveedor(facturaEncontrada._id,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
             this.contadorValFacturas(cont);
           },(err) => {});
         }else{
@@ -270,13 +277,39 @@ export class GestionPagoChequesComponent implements OnInit {
     this.mostrarLoading = true;
     this.mensajeLoading = "Actualizando .."
     this.pagoCheque.fechaPago = this.nuevaFecha.toLocaleDateString();
+    this.pagoCheque.fechaPagoDate = this.nuevaFecha;
     this._transaccionesChequeService.updateFechaPago(this.pagoCheque).subscribe((res) => {
       this.mostrarLoading = false;
-      this.mostrarMensajeGenerico(1,"Fecha de Pago actualizada")
-      this.reiniciar();
+      this.updateTransaccionesFactura();
     },(err) => {});
   }
 
+  updateTransaccionesFactura(){
+    var cont=0;
+    var nuevaFecha = ""
+    this.listaChequesEncontrados.forEach(element =>{
+      if(element.idPago != this.pagoCheque.idPago)
+        nuevaFecha = element.fechaPago +"-"+ nuevaFecha
+    }) 
+    console.log(nuevaFecha)
+    this.listaFacturas.forEach(element =>{
+      element.fechaPago = nuevaFecha + this.nuevaFecha.toLocaleDateString()
+      console.log("nueva face",element.fechaPago)
+      this._transaccionesFacturasService.updateFechaPago(element).subscribe((res) => {
+        cont++;
+        this.contadorVal2(cont);
+      },(err) => {});
+    }) 
+    
+  }
+
+
+  contadorVal2(cont) {
+    if(this.listaFacturas.length == cont){
+      this.mostrarMensajeGenerico(1,"Fecha de Pago actualizada")
+      this.reiniciar();
+    } 
+  }
 
   reiniciar(){
     this.pagoCheque = new TransaccionChequesGirado();

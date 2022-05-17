@@ -76,11 +76,20 @@ router.post("/getTransaccionesPorIdComprobante", async (req, res, next) => {
   res.json(transacciones);
 });
 
+
 router.put('/updateEstadoFactura/:id/:estado/:valor', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
     const { valor } = req.params;
     await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {estado : estado, valorAbonado : valor}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
+router.put('/updateFechaPago/:id', async (req, res,next) => {
+    const { id } = req.params;
+    console.log(req.body)
+    await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {fechaPago : req.body.fechaPago}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

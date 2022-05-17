@@ -44,6 +44,7 @@ import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.serv
 import { Router } from '@angular/router';
 import { CajaMenor } from '../cajaMenor/caja-menor';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
+import { AuthService } from 'src/app/shared/services';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -224,6 +225,7 @@ export class VentasComponent implements OnInit {
     public userService: UserService,
     public _configuracionService : DatosConfiguracionService,
     public _reciboCajaService : ReciboCajaService,
+    public authService: AuthService,
     public _cuentaPorCobrar : CuentasPorCobrarService,
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _cajaMenorService : CajaMenorService,
@@ -280,6 +282,8 @@ export class VentasComponent implements OnInit {
             this.factura.username=this.usuarioLogueado[0].username
             this.username =this.factura.username
             this.factura.sucursal=this.usuarioLogueado[0].sucursal
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
             this.buscarDatosSucursal()
             this.validarRol()},
           err => {})

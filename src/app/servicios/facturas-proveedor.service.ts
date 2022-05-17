@@ -41,6 +41,10 @@ export class FacturasProveedorService {
     return this.http.put(this.URL + `/updateEstadoFactura/${facturasProveedor}/${estado}`, facturasProveedor);
   }
 
+  updateEstadoFacturaProveedor(facturasProveedor: string, estado: string, valorAbonado : number) {
+    return this.http.put(this.URL + `/updateEstadoFacturaProveedor/${facturasProveedor}/${estado}/${valorAbonado}`, facturasProveedor);
+  }
+
   updateEstado2(facturasProveedor, estado: string) {
     return this.http.put(this.URL + `/updateEstado2/${facturasProveedor._id}/${estado}`,facturasProveedor);
   }

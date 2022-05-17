@@ -20,6 +20,7 @@ import { AngularFirestore } from 'angularfire2/firestore';
 import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/shared/services';
 
 @Component({
   selector: 'app-auditorias',
@@ -106,7 +107,9 @@ export class AuditoriasComponent implements OnInit {
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
-  constructor(private db: AngularFirestore,private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
+  constructor(private db: AngularFirestore,
+    public authService: AuthService,
+    private router:Router, public  afAuth:  AngularFireAuth,public transaccionesService:TransaccionesService,public authenService:AuthenService, public auditoriaProductoService: AuditoriaProductoService, public auditoriasService:AuditoriasService, public contadoresService:ContadoresDocumentosService, public parametrizacionService: ParametrizacionesService, public sucursalesService: SucursalesService , public productoService:ProductoService) { 
     this.auditoria = new auditoriasProductos()
     this.numCoinc = new coincidencias()
     this.auditoria.valoracion= "Ok"
@@ -1108,6 +1111,9 @@ guardarAuditoriaProducto(){
         .subscribe(
           res => {
             this.usuarioLogueado = res as user;
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
+            
             this.validarRol()
           },
           err => {}

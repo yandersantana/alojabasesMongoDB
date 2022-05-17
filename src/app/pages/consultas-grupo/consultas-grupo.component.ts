@@ -16,6 +16,7 @@ import { consultaGrupo } from './consultas-grupo';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { userInfo } from 'os';
 import { user } from '../user/user';
+import { AuthService } from 'src/app/shared/services';
 @Component({
   selector: 'app-consultas-grupo',
   templateUrl: './consultas-grupo.component.html',
@@ -64,7 +65,9 @@ export class ConsultasGrupoComponent implements OnInit {
   correo=""
   usuarioLogueado:user
 
-  constructor(public bodegasService:BodegaService,public authenService: AuthenService,public opcionesService:OpcionesCatalogoService, public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
+  constructor(public bodegasService:BodegaService,
+    public authService: AuthService,
+    public authenService: AuthenService,public opcionesService:OpcionesCatalogoService, public transaccionesService: TransaccionesService,public productosPendientesService:ProductosPendientesService, public productoService:ProductoService) { 
   
   }
 
@@ -117,7 +120,8 @@ export class ConsultasGrupoComponent implements OnInit {
           res => {
             this.usuarioLogueado = res as user;
             this.sucursalLeida = this.usuarioLogueado[0].sucursal
-            
+            if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
 
           },
           err => {

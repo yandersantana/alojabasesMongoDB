@@ -19,6 +19,7 @@ import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
 import { OpcionesCatalogoService } from "src/app/servicios/opciones-catalogo.service";
 import { opcionesCatalogo } from "../catalogo/catalogo";
+import { AuthService } from "src/app/shared/services";
 
 @Component({
   selector: "app-consolidado",
@@ -88,6 +89,7 @@ export class ConsolidadoComponent implements OnInit {
   constructor(
     public bodegasService: BodegaService,
     public authenService: AuthenService,
+    public authService: AuthService,
     public transaccionesService: TransaccionesService,
     public productosPendientesService: ProductosPendientesService,
     public productoService: ProductoService,
@@ -209,14 +211,10 @@ export class ConsolidadoComponent implements OnInit {
       this.authenService.getUserLogueado(this.correo).subscribe(
         (res) => {
           this.usuarioLogueado = res as user;
+          if(this.usuarioLogueado[0].status == "Inactivo")
+              this.authService.logOut();
 
-          /* if (this.usuarioLogueado[0].rol != "Administrador") {
-            var z = document.getElementById("admin1");
-            z.style.display = "none";
-          } else {
-            var z = document.getElementById("admin1");
-            z.style.display = "block";
-          } */
+         
         },
         (err) => {}
       );

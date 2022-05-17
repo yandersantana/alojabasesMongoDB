@@ -38,9 +38,9 @@ import { ProductosObsequioService } from "src/app/servicios/productos-obsequio.s
 import { FacturasProveedorService } from "src/app/servicios/facturas-proveedor.service";
 import { RemisionesService } from "src/app/servicios/remisiones.service";
 import { ProductosIngresadosService } from "src/app/servicios/productos-ingresados.service";
-import { AngularFireAuth } from "angularfire2/auth";
 import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
+import { AuthService } from "src/app/shared/services";
 
 @Component({
   selector: "app-producto",
@@ -170,13 +170,11 @@ export class ProductoComponent implements OnInit {
   @ViewChild("datag2") dataGrid2: DxDataGridComponent;
 
   @ViewChild("productoForm", { static: false }) dxForm: DxFormComponent;
-  /*  expensesCollection: AngularFirestoreCollection<ProductoDetalleEntrega>;
-  expensesCollection2: AngularFirestoreCollection<ProductoDetalleCompra>;
-  expensesCollection3: AngularFirestoreCollection<transaccion>; */
+
   constructor(
     private db: AngularFirestore,
     public authenService: AuthenService,
-    public afAuth: AngularFireAuth,
+    public authService: AuthService,
     public parametrizacionService: ParametrizacionesService,
     public productosObservice: ProductosObsequioService,
     public productosIngresadoService: ProductosIngresadosService,
@@ -191,7 +189,6 @@ export class ProductoComponent implements OnInit {
     public contadoresService: ContadoresDocumentosService
   ) {
     setTimeout(() => {
-      console.log("hello");
     }, 3000);
     this.producto = new Producto();
     this.remisionProducto = new RemisionProductos();
@@ -227,6 +224,9 @@ export class ProductoComponent implements OnInit {
       this.authenService.getUserLogueado(this.correo).subscribe(
         (res) => {
           this.usuarioLogueado = res as user;
+          if(this.usuarioLogueado[0].status == "Inactivo")
+            this.authService.logOut();
+
         },
         (err) => {}
       );

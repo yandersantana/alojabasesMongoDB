@@ -8,6 +8,7 @@ import DataSource from "devextreme/data/data_source";
 import { ProductoService } from "src/app/servicios/producto.service";
 import { producto } from "../ventas/venta";
 import { productoTransaccion } from "../consolidado/consolidado";
+import { AuthService } from "src/app/shared/services";
 
 @Component({
   selector: "app-transacciones",
@@ -36,6 +37,7 @@ export class TransaccionesComponent implements OnInit {
   constructor(
     public transaccionesService: TransaccionesService,
     public authenService: AuthenService,
+    public authService: AuthService,
     public _productoService : ProductoService
   ) {}
 
@@ -180,7 +182,11 @@ export class TransaccionesComponent implements OnInit {
         this.correo = localStorage.getItem("maily");
       }
       this.authenService.getUserLogueado(this.correo).subscribe(
-        (res) => { this.usuarioLogueado = res as user;},
+        (res) => { this.usuarioLogueado = res as user;
+        if(this.usuarioLogueado[0].status == "Inactivo")
+          this.authService.logOut();
+
+        },
         (err) => {}
       );
     });

@@ -301,7 +301,6 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
 
 
   guardarComprobantePago(){
-    console.log(this.comprobantePago)
     try {
       this._comprobantePagoProveedoresService.newComprobantePago(this.comprobantePago).subscribe((res) => {
         this.actualizarContador();
@@ -351,7 +350,8 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
   actualizarEstadosFacturas(){
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
       var abono = element.valorAbonado + element.valorCancelado
-      this._facturaProveedorService.updateFacturaPorTransaccion(element.idFactura, element.estado, abono).subscribe( res => {
+      //updateEstadoFacturaProveedor
+      this._facturaProveedorService.updateEstadoFacturaProveedor(element.idFactura, element.estado, abono).subscribe( res => {
       },err => {})
     });
   }

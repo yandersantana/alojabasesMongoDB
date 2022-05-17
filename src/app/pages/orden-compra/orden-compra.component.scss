@@ -91,11 +91,6 @@ background-color: green;
       margin-bottom: 2em;
   }
 
-  /* .dx-button-has-text /deep/ .dx-button-content {
-    background-color: green;
-    color: white;
-    font-weight: bold;
-  } */
 
   .centrar {
     text-align: center;
@@ -152,9 +147,7 @@ h5{
     margin-bottom: 3em;
 }
 
-/* .dx-data-row /deep/ td.cls {  
-    text-align: left!important;  
-}  */ 
+
 
 .bt{
     background-color: red;
@@ -175,4 +168,9 @@ h5{
     background-color: red;
     border: red;
     
+}
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
 }

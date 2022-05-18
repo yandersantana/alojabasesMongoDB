@@ -1,4 +1,6 @@
+import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
+import { element } from 'protractor';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
@@ -52,6 +54,7 @@ export class RegistroFacturasComponent implements OnInit {
   constructor(public _facturasProveedorService: FacturasProveedorService,
     public _transaccionFacturaService : TransaccionesFacturasService,
     public _ordenCompraService : OrdenesCompraService,
+    public _facturaProveedorService : FacturasProveedorService,
     public _transaccionesChequesService : TransaccionesChequesService ) {}
 
   ngOnInit() {
@@ -65,9 +68,19 @@ export class RegistroFacturasComponent implements OnInit {
     this.mostrarLoading = true;
     this._facturasProveedorService.getFacturasProveedor().subscribe(res => {
       this.listaFacturasTmp = res as FacturaProveedor[];
+      console.log("Hay",this.listaFacturasTmp.length)
       this.separarCuentas(1)
       this.mostrarLoading = false;
    })
+  }
+
+  actualizarEstados(){
+    this.listaFacturasTmp.forEach(element=>{
+      this._facturaProveedorService.updateEstadoMasivo(element,"PAGADA").subscribe( res => {
+        console.log("correcto")
+      },err => {console.log("error")})
+    })
+    
   }
 
 

@@ -151,6 +151,7 @@ export class ReciboCajaComponent implements OnInit {
     public _facturaService: FacturasService,
     public _notaVentaService : NotasVentasService,
     public _clienteService : ClienteService,
+    public _transaccionesFinancierasService : TransaccionesFinancierasService,
     public _authenService:AuthenService,
     public _cajaMenorService : CajaMenorService,
     private route: ActivatedRoute,
@@ -739,7 +740,8 @@ export class ReciboCajaComponent implements OnInit {
         this.mostrarMensajeGenerico(2,"No se encontraron transacciones")
       }
       else{
-         this.updateEstadoRecibo(e)
+        this.validarTransaccionDeposito();
+         this.updateEstadoRecibo(e);
       }
        
     })
@@ -753,6 +755,22 @@ export class ReciboCajaComponent implements OnInit {
       err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado recibo")})
   }
 
+
+  validarTransaccionDeposito(){
+    this.transaccionesFinancieras.forEach(element =>{
+      if(element.cuenta == "1.7 DEPÓSITOS" && element.subCuenta == "1.7.1 Dineros entregados a Caja Principal"){
+        element.fecha = new Date();
+        element.cuenta = "1.2 ADICIONALES"
+        element.subCuenta = "1.2.1 Dinero ventas sucursal"
+        element.tipoCuenta = "Ingresos"
+        element.sucursal = "matriz"
+        element.isContabilizada = true;
+        this._transaccionesFinancierasService.newTransaccionFinanciera(element).subscribe((res) => {})
+      }
+
+    })
+  }
+
   actualizarTransaccionesAutorizadas(e){
     var cont = 0
     this.transaccionesFinancieras.forEach(element=>{
@@ -760,6 +778,9 @@ export class ReciboCajaComponent implements OnInit {
       this._transaccionFinancieraService.updateIsContabilizada(element,true).subscribe((res) => {cont++,this.terminarOperacionActualizaciones(cont)},(err) => {});
     });
   }
+
+
+  
 
   terminarOperacionActualizaciones(num){
     if(this.transaccionesFinancieras.length == num){

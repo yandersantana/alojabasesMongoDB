@@ -50,7 +50,7 @@
                                     <div class="row">
                                         <div class="col-md-4"></div>
                                         <div class="col-md-4">
-                                        <button class="btn btn-block btn-success espacio" (click)="guardarAuditoria()">Registrar Auditoria</button>
+                                        <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarAuditoria()">Registrar Auditoria</button>
                                         <br>
                                         <br>
                                         <br>
@@ -101,10 +101,10 @@
                                               <span><button class="btnIcons5" (click)="verLista(audit.idAuditoria)"><i class="fa fa-list fa-1x"></i></button></span>
                                             </td>
                                             <td style="width: 15%;">
-                                                <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
+                                                <span><button class="btn btn-block btn-success " style="background-color: #ff5722;border-color: #ff5722;" (click)="continuarAuditoria(id)">Continuar</button></span>
                                             </td>
                                             <td style="width: 15%;">
-                                                <span><button class="btn btn-block btn-success " (click)="seguirAuditoria(id)">Seguir</button></span>
+                                                <span><button class="btn btn-block btn-success " style="background-color: #ff5722;border-color: #ff5722;" (click)="seguirAuditoria(id)">Seguir</button></span>
                                             </td>
                                             
                                           </tr>
@@ -274,7 +274,7 @@
                                     <br>
                                     <br>
                                     <br>
-                                    <div class="col-md-12" style="text-align: center;"><h5>Auditorias de Inventarios</h5></div>
+                                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5 style="text-align: center;font-weight: bold;">Auditorias de Inventarios</h5></div>
 
                                     <div class="row">
                                         <div class="col-md-4" ><p class="texto">ID</p></div>
@@ -296,10 +296,16 @@
                                 <div class="col-md-12">
                                     <div class="row">
                                         <div class="col-md-4"><p class="texto">Seleccione un producto</p></div>
-                                        <div class="col-md-8"><dx-select-box  [dataSource]="productos22" [(value)]="productoEntregado" [readOnly]="false" [disabled]="false"
+                                        <div class="col-md-7"><dx-select-box  [dataSource]="productos22" [(value)]="productoEntregado" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
                                         </dx-select-box>
                                         <br>
+                                        </div>
+                                        <div class="col-md-1">
+                                            <div style="float: left;">
+                                                <button style="margin-right: 20px;" (click)="clearForm()"><i class="fa fa-eraser" aria-hidden="true"></i></button>
+                                            </div>
+                                            
                                         </div>
                                         <br>
                                     </div>
@@ -367,7 +373,7 @@
                                     <div class="row">
                                         <div class="col-md-3"></div>
                                         <div class="col-md-6">
-                                        <button class="btn btn-block btn-success espacio" [(disabled)]="btnRe" (click)="guardarAuditoriaProducto()">Guardar Auditoria</button>
+                                        <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" [(disabled)]="btnRe" (click)="guardarAuditoriaProducto()">Guardar Auditoria</button>
                                         <br>
                                         <br>
                                         <br>

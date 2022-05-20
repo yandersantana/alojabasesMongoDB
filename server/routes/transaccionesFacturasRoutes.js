@@ -94,6 +94,10 @@ router.put('/updateFechaPago/:id', async (req, res,next) => {
 })
 
 
+router.delete("/delete/:id", async (req, res, next) => {
+  await TransaccionesFacturas.findByIdAndRemove(req.params.id);
+  res.json({ status: "Transaccion Eliminada" });
+});
 
 
 

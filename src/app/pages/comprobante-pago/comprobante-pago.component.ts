@@ -740,7 +740,6 @@ export class ComprobantePagoComponent implements OnInit {
     prestamo.valor = transaccion.valor;
     prestamo.valorDeuda = transaccion.valor;
     prestamo.notas = this.comprobantePago.observaciones;
-    console.log("inserterk")
     this._prestamoService.newPrestamo(prestamo).subscribe((res) => {
     },(err) => {});
   }
@@ -782,6 +781,10 @@ export class ComprobantePagoComponent implements OnInit {
       if(element.nombreCuenta == "2.1 PRÉSTAMOS"){
         transaccion.referenciaPrestamo = "CP"+this.comprobantePago.idDocumento.toString();
         this.InsertarPrestamo(transaccion)
+      }
+
+      if(element.nombreSubcuenta == "1.5.7 Descuentos"){
+        transaccion.isContabilizada = false;
       }
         
 

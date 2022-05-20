@@ -111,6 +111,10 @@ export const navigation = [
         path: "/cuentas-porPagar",
       },
       {
+        text: "Transacciones Nóminas",
+        path: "/transacciones-nominas",
+      },
+      {
         text: "Transacciones Financieras",
         path: "/transacciones-financieras",
       },
@@ -383,10 +387,6 @@ export const navigationAdmin = [
         text: "Anulaciones",
         path: "/anulaciones",
       },
-      /* {
-        text: "Registros Fact. Proveedor",
-        path: "/registros-facturas",
-      },  */
       {
         text: "Administrar Cuentas",
         path: "/administracion-cuentas",
@@ -394,6 +394,10 @@ export const navigationAdmin = [
       {
         text: "Agenda Financiera",
         path: "/agenda-financiera",
+      },
+      {
+        text: "Transacciones Nóminas",
+        path: "/transacciones-nominas",
       },
       {
         text: "Transacciones Financieras",

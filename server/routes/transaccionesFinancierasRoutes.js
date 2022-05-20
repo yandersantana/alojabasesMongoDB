@@ -7,20 +7,13 @@ router.get("/getTransacciones", async (req, res) => {
   res.send(transacciones);
 });
 
-/* router.post("/getTransaccionesPorRango", async (req, res, next) => {
-  var start = req.body.fechaAnterior;
-  var end = req.body.fechaActual;
-  var sucursal = req.body.sucursal;
+router.get("/getTransaccionesNominas", async (req, res) => {
   const transacciones = await TransaccionFinanciera.find({
-    createdAt: {
-      $gte: start,
-      $lt: end,
-    },
-    sucursal:sucursal
+    subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
   });
-  res.json(transacciones);
+  res.send(transacciones);
 });
- */
+
 
 router.post("/getTransaccionesPorRango", async (req, res, next) => {
   var start = req.body.fechaAnterior;
@@ -47,6 +40,42 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
   res.json(transacciones);
 });
 
+
+router.post("/getTransaccionesNominasPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  var sucursal = req.body.sucursal;
+  var transacciones = [];
+
+  transacciones = await TransaccionFinanciera.find({
+    fecha: {
+      $gte: start,
+      $lt: end,
+    },
+   subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
+  });
+  res.json(transacciones);
+});
+
+
+router.post("/getTransaccionesNominasPorRangoYBeneficiario", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  var sucursal = req.body.sucursal;
+  var transacciones = [];
+
+  transacciones = await TransaccionFinanciera.find({
+    fecha: {
+      $gte: start,
+      $lt: end,
+    },
+    beneficiario : sucursal,
+   subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
+  });
+  res.json(transacciones);
+});
+
+
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
   const transacciones = await TransaccionFinanciera.find({ id_documento: req.body.NumDocumento , tipoTransaccion : req.body.tipoTransaccion});
   res.json(transacciones);
@@ -59,6 +88,11 @@ router.post("/getTransaccionesPorTipoDocumentoYRecibo", async (req, res, next) =
 
 router.post("/getTransaccionesPrestamos", async (req, res, next) => {
   const transacciones = await TransaccionFinanciera.find({ numDocumento: req.body.NumDocumento ,referenciaPrestamo : req.body.rCajaId});
+  res.json(transacciones);
+});
+
+router.post("/getTransaccionesPrestamosPorComprobante", async (req, res, next) => {
+  const transacciones = await TransaccionFinanciera.find({ referenciaPrestamo : req.body.NumDocumento});
   res.json(transacciones);
 });
 

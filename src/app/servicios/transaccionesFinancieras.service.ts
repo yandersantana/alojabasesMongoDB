@@ -19,8 +19,20 @@ export class TransaccionesFinancierasService {
     return this.http.get(this.URL + "/getTransacciones");
   }
 
+  getTransaccionesFinancierasNominas() {
+    return this.http.get(this.URL + "/getTransaccionesNominas");
+  }
+
   getTransaccionesFinancierasPorRango(objFecha) {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
+  }
+
+  getTransaccionesFinancierasNominasPorRango(objFecha) {
+    return this.http.post(this.URL + "/getTransaccionesNominasPorRango", objFecha);
+  }
+
+  getTransaccionesFinancierasNominasPorRangoYBeneficiario(objFecha) {
+    return this.http.post(this.URL + "/getTransaccionesNominasPorRangoYBeneficiario", objFecha);
   }
 
   getTransaccionesPorTipoDocumento(tipobusqueda) {
@@ -33,6 +45,10 @@ export class TransaccionesFinancierasService {
 
   obtenerTransaccionesPrestamos(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPrestamos", tipobusqueda);
+  }
+
+  obtenerTransaccionesPrestamosPorComprobante(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPrestamosPorComprobante", tipobusqueda);
   }
 
   obtenerTransaccionesPorDocumentoYRecibo2(tipobusqueda) {

@@ -51,6 +51,7 @@ import { CuentaPorCobrarComponent } from "./pages/cuentasPorCobrar/cuentasPorCob
 import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
 import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
+import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
 
 const routes: Routes = [
   {
@@ -244,6 +245,11 @@ const routes: Routes = [
   {
     path: "transacciones-financieras",
     component: TransaccionesFinancierasComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "transacciones-nominas",
+    component: TransaccionesNominasComponent,
     canActivate: [AuthGuardService],
   },
   {

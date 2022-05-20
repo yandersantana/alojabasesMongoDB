@@ -232,6 +232,22 @@ export class AuditoriasComponent implements OnInit {
     this.mostrarLoading = false;
   }
 
+
+  clearForm(){
+    this.auditoria.producto = null;
+    this.productoEntregado = "";
+    this.auditoria.cajas_fisico = 0;
+    this.auditoria.cajas_danadas = 0;
+    this.auditoria.cajas_diferencia = 0;
+    this.auditoria.cajas_sistema = 0;
+    this.auditoria.piezas_danadas = 0;
+    this.auditoria.piezas_diferencia = 0;
+    this.auditoria.piezas_fisico = 0;
+    this.auditoria.piezas_sistema = 0;
+    this.auditoria.nombreproducto = "";
+    this.auditoria.ubicacion = "";
+
+  }
  
 
   obtenerDetallesproducto(e){

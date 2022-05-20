@@ -1,7 +1,6 @@
 <div *ngIf="mostrarLoading">
-  <app-loading></app-loading>
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
-
 
 <br><br>
  <div class="card">
@@ -83,22 +82,21 @@
 <dx-data-grid #datag2
     id="gridContainer"
     [dataSource]="listaPrestamos"
-    [showBorders]="true"
-    (onExporting)="onExporting($event)"
-    (onExported)="onExported($event)">
+    [showBorders]="true">
     <dxo-filter-row [visible]="true" ></dxo-filter-row>
     <dxo-export [enabled]="true" fileName="Prestamos" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
     <dxi-column dataField="comprobanteId" caption="RC" dataType="string" sortOrder="desc"></dxi-column>
     <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-    <!-- <dxi-column dataField="documentoVenta" caption="Documento" dataType="string"></dxi-column> -->
-   
     <dxi-column dataField="valorDeuda" caption="Valor Deuda" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="valor" caption="Valor Pendiente" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="beneficiario" caption="Beneficiario" dataType="string"></dxi-column>
     <dxi-column dataField="ruc" caption="RUC / CI" dataType="string"></dxi-column>
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
+    <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
+            <dxi-button icon="clear" [onClick]="deletePrestamo"></dxi-button>   
+        </dxi-column>
 
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

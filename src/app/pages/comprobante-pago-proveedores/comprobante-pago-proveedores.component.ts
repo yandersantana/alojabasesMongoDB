@@ -663,7 +663,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
   aprobarEliminacion = (e) => {  
-   this.validarTransaccionesFactura(e.row.data)  
+    this.validarTransaccionesFactura(e.row.data)  
   }
 
   validarTransaccionesFactura(e){
@@ -717,6 +717,10 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   
   eliminarTransaccionesFacturas(){
     var cont = 0;
+    this.listaTransaccionesEncontradasAEliminar.forEach(element=>{
+      this._facturaProveedorService.updateEstadoPorFactura(element.idFactura,"PENDIENTE").subscribe( res => {}, err => {alert("error")})
+    })
+
     this.listaTransaccionesEncontradasAEliminar.forEach(element=>{
       cont++;
       this._transaccionFacturaService.deleteTransaccion(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})

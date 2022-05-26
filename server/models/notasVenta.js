@@ -3,7 +3,6 @@ const { Schema } = mongoose;
 const CientesSchema = require('../models/clientes').schema;
 
 
-
 const NotasSchema = new Schema({
     id: { type: Number, required: false},
     documento_n: { type: Number, required: false},

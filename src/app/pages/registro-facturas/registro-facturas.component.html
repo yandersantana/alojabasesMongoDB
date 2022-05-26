@@ -108,14 +108,28 @@
         <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarTransaciones"></dxi-button>
     </dxi-column>
     <dxo-summary>
-            <dxi-total-item
-                column="total"
-                valueFormat="currency"
-                displayFormat="{0}"
-                summaryType="sum"
-                alignment="left">
-            </dxi-total-item>
-        </dxo-summary>
+        <dxi-total-item
+            column="valorAbonado"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="total"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+        <dxi-total-item
+            column="valorPagado"
+            valueFormat="currency"
+            displayFormat="{0}"
+            summaryType="sum"
+            alignment="right">
+        </dxi-total-item>
+    </dxo-summary>
 
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

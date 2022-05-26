@@ -27,6 +27,8 @@ import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
 import { Prestamos } from '../prestamos/prestamos';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';
+import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
+import { NotasPagoService } from 'src/app/servicios/notas.service';
 
 
 
@@ -67,7 +69,8 @@ export class ComprobantePagoComponent implements OnInit {
   mostrarLoadingBase : boolean = false;
   mostrarDelete : boolean = true;
   mostrarAprobacion : boolean = false;
-
+  popupVisibleNotas : boolean = false;
+  mostrarListaNotas : boolean = true;
   parametrizaciones: parametrizacionsuc[] = [];
   detallesCostos: CentroCosto[] = [];
   beneficiarios: Beneficiario[] = [];
@@ -75,9 +78,15 @@ export class ComprobantePagoComponent implements OnInit {
   obj: objDate;
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
+  valorOption = ""
   menu: string[] = [
     "Nuevo Comprobante",
     "Comprobantes de Pago Generados"
+  ];
+
+  opciones: string[] = [
+      'Lista Notas',
+      'Nueva Nota'
   ];
 
   estados: string[] = [
@@ -116,8 +125,13 @@ export class ComprobantePagoComponent implements OnInit {
   valorDocumento = "";
   idCuentaPorPagar = "";
   isUser = false
-
-    
+  mostrarNuevaNotas : boolean = false;
+  listadoNotas: Nota [] = []
+  nota = {
+    fecha:"",
+    descripcion:"",
+    tipo:""
+  }
         
 
 
@@ -135,12 +149,14 @@ export class ComprobantePagoComponent implements OnInit {
     public _authenService: AuthenService,
     public _cajaMenorService: CajaMenorService,
     public _cuentaPorPagar: CuentasPorPagarService,
-    public _prestamoService: PrestamosService
+    public _prestamoService: PrestamosService,
+    public _notasService: NotasPagoService,
     ) {
       this.tipoComprobante = this.tiposComprobantes[0];
    }
 
   ngOnInit() {
+    this.valorOption = "Lista Notas";
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.listadoOperaciones.push(new OperacionComercial());
     this.comprobantePago = new ComprobantePago();
@@ -169,6 +185,56 @@ export class ComprobantePagoComponent implements OnInit {
       this.listaCuentasGlobal = res as Cuenta[];
       this.separarcuentas();
    })
+  }
+
+  mostrarPopupNotas(){
+    this.popupVisibleNotas = true;
+    this.traerListadoNotas();
+  }
+
+  guardarNuevaNota(){
+    if(this.nota.descripcion != null){
+      this.popupVisibleNotas = false;
+      this.mostrarLoading = true;
+      this.nota.tipo = "Comprobante"
+      this._notasService.newNota(this.nota).subscribe(res => {
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Se registró su nota con éxito");
+        this.nota.descripcion = ""
+        this.valorOption = "Lista Notas"
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+      })
+    }else{
+      this.mostrarMensajeGenerico(2,"Hay campos vacios");
+    }
+    
+  }
+
+  traerListadoNotas(){
+    this.mostrarLoading = true,
+    this.listadoNotas = [];
+    this._notasService.getNotasPorTipo("Comprobante").subscribe(res => {
+      this.listadoNotas = res as Nota[];
+      this.mostrarLoading = false;
+   })
+  }
+
+  deleteNota = (e) => {  
+    this.eliminarNota(e.row.data)  
+  }
+
+  eliminarNota(e:any){ 
+    this._notasService.deleteNotas(e).subscribe( res => {
+      this.popupVisibleNotas = false;
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se eliminó la nota con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => { })
+    }, err => {alert("error")})
   }
 
  
@@ -259,6 +325,21 @@ export class ComprobantePagoComponent implements OnInit {
         break;
       default:    
     }      
+  }
+
+   opcionRadio2(e){
+    switch (e.value) {
+      case "Lista Notas":
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+        break;
+      case "Nueva Nota":
+        this.mostrarListaNotas = false;
+        this.mostrarNuevaNotas = true;
+        break;
+      default:    
+    }       
   }
 
 

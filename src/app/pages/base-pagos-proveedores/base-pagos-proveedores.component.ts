@@ -30,6 +30,7 @@ export class BasePagoProveedoresComponent implements OnInit {
 
   nota = {
     fecha:"",
+    tipo:"",
     descripcion:""
   }
 
@@ -101,7 +102,7 @@ export class BasePagoProveedoresComponent implements OnInit {
   traerListadoNotas(){
     this.mostrarLoading = true,
     this.listadoNotas = [];
-    this._notasService.getNotas().subscribe(res => {
+    this._notasService.getNotasPorTipo("Agenda").subscribe(res => {
       this.listadoNotas = res as Nota[];
       this.mostrarLoading = false;
    })
@@ -351,6 +352,7 @@ export class BasePagoProveedoresComponent implements OnInit {
     if(this.nota.descripcion != null && this.nota.fecha != null){
       this.popupVisibleNotas = false;
       this.mostrarLoading = true;
+      this.nota.tipo = "Agenda"
       this._notasService.newNota(this.nota).subscribe(res => {
         this.mostrarLoading = false;
         this.mostrarMensajeGenerico(1,"Se registró su nota con éxito");

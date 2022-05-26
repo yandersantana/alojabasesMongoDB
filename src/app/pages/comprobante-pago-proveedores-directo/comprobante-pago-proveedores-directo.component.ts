@@ -165,7 +165,9 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
 
   calcularValor(e,i){
     var valor = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado
-    this.listadoFacturasPagar[i].valorSaldos = valor - this.listadoFacturasPagar[i].valorCancelado
+    var valor2 = Number(valor.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorCancelado.toFixed(2))
+    this.listadoFacturasPagar[i].valorSaldos = Number(valor2.toFixed(2))
+
     if(this.listadoFacturasPagar[i].valorCancelado > valor){
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
@@ -178,23 +180,15 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     else if(total > 0)
       this.listadoFacturasPagar[i].estado = "CUBIERTA PARCIAL"
 
-
-    console.log(this.listadoFacturasPagar[i].estado)
+    this.calcularTotal();
     
   }
-
-
-
-
-
-
-
 
 
   calcularTotal(){
     this.valorTotalFacturas = 0;
     this.listadoFacturasPagar.forEach(element=>{
-      this.valorTotalFacturas = this.valorTotalFacturas + element.valorCancelado;
+      this.valorTotalFacturas = Number(this.valorTotalFacturas.toFixed(2)) + Number(element.valorCancelado.toFixed(2));
     });
   }
 

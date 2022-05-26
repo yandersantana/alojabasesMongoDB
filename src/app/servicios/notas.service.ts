@@ -20,6 +20,10 @@ export class NotasPagoService {
     return this.http.get(this.URL + "/getNotas");
   }
 
+  getNotasPorTipo(tipo:string) {
+    return this.http.post(this.URL + `/getNotasPorTipo/${tipo}`, tipo);
+  }
+
   deleteNotas(notas) {
     return this.http.delete(this.URL + `/delete/${notas._id}`, notas);
   }

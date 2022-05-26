@@ -8,8 +8,8 @@
     <div class="col-md-10">
 
         <div class="row">
-            <div class="col-md-4"></div>
-            <div class="col-md-8">
+            <div class="col-md-2"></div>
+            <div class="col-md-10">
                 <div class="dx-field radio">
                     <div class="dx-field-value">
                         <dx-radio-group
@@ -195,6 +195,73 @@
 
             </div>
         </div>
+
+        <div class="card" *ngIf="mostrarSeccionAnulacion">
+            <h5 class="card-header text-center font-weight-bold text-uppercase ">Anulación Cheques</h5>
+            <div class="card-body">
+             
+                <div class="row">
+                    <div class="col-md-3 espacioDivs" style="text-align: center;font-weight: bold;">
+                        <div>BUSCAR POR:</div>
+                    </div>
+
+                    
+
+                    <div class="col-md-9">
+                        
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4">ID PAGO:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="idPago" (onChange)="buscarTransaccionChequePorIdPago()"></dx-number-box></div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4"># CHEQUE:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="numCheque" (onChange)="buscarTransaccionChequePorNumCheque()"></dx-number-box></div>                             
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                </div>
+
+                <br>
+                <h6 class="card-header card-header-subtitle text-center font-weight-bold ">DATOS GENERALES</h6>
+                <br>
+                
+
+                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
+                    <tr>
+                        <th class="text-center" style="width: 12%;">Nª Pago</th>
+                        <th class="text-center" style="width: 13%;">Cheque</th>
+                        <th class="text-center" style="width: 12%;">Valor</th>
+                        <th class="text-center" style="width: 13%;">Fecha Pago</th>
+                        <th class="text-center" style="width: 15%;">Banco</th>
+                        <th class="text-center" style="width: 15%;">Cuenta</th>
+
+                    </tr>
+                    <tr>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.idPago}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.numCheque}}</td>
+                        <td class="text-center" style="width: 12%;">{{pagoCheque.valor}}</td>
+                        <td class="text-center" style="width: 13%;">{{pagoCheque.fechaPago}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.banco}}</td>
+                        <td class="text-center" style="width: 15%;">{{pagoCheque.cuenta}}</td>
+
+                    </tr>
+                </table>
+             
+                <div style="text-align: center;">
+                    <br><br>
+                    <dx-button [text]="'Anular Cheque'" [type]="'success'" style="background-color: #ff5722;" (onClick)="anularCheque()"></dx-button>
+                </div>
+
+            </div>
+        </div>
+
     </div>
     <div class="col-md-1"></div>
 </div>

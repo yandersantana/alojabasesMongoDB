@@ -39,6 +39,7 @@ export class Banco{
 export class Nota{
     fecha: Date
     descripcion: string
+    tipo : string
     constructor(){
         
     }

@@ -95,12 +95,11 @@
     <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
     <dxi-column dataField="rCajaId" caption="RC" dataType="string" ></dxi-column>
     <dxi-column dataField="documentoVenta" caption="Fact" dataType="string"></dxi-column>
-    <dxi-column dataField="cedula" caption="Cedula" dataType="string"></dxi-column>
+    <dxi-column dataField="cedula" caption="Cedula" dataType="string" [visible]="false"></dxi-column>
     <dxi-column dataField="numDocumento" caption="Documento" dataType="string"></dxi-column>
     <dxi-column dataField="valor" caption="Valor" dataType="number" [visible]="true"></dxi-column>
     <dxi-column dataField="cuenta" caption="Cuenta" dataType="string"></dxi-column>
-    <dxi-column dataField="tipoCuenta" caption="Tipo Cuenta" dataType="string"></dxi-column>
-    <dxi-column dataField="subCuenta" caption="SubCuenta" dataType="string"></dxi-column>
+    <dxi-column dataField="subCuenta" caption="SubCuenta" dataType="string" width="18%"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
     <dxi-column dataField="beneficiario" caption="Beneficiario" dataType="string" [visible]="false"></dxi-column>
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="false"></dxi-column>

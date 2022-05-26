@@ -26,6 +26,8 @@ import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Prestamos } from '../prestamos/prestamos';
+import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
+import { NotasPagoService } from 'src/app/servicios/notas.service';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -135,6 +137,24 @@ export class ReciboCajaComponent implements OnInit {
   tipoDocumentoCuenta = ""
   isUser = false
   fechaDeuda = new Date()
+  popupVisibleNotas : boolean = false;
+  mostrarListaNotas : boolean = true;
+  valorOption = ""
+  mostrarNuevaNotas : boolean = false;
+  listadoNotas: Nota [] = []
+
+  opciones: string[] = [
+      'Lista Notas',
+      'Nueva Nota'
+  ];
+
+
+  nota = {
+    fecha:"",
+    descripcion:"",
+    tipo:""
+  }
+        
 
 
 
@@ -155,9 +175,11 @@ export class ReciboCajaComponent implements OnInit {
     public _authenService:AuthenService,
     public _cajaMenorService : CajaMenorService,
     private route: ActivatedRoute,
+    private _notasService : NotasPagoService,
     private _router: Router) {
       this.factura = new factura()
       this.tipoRecibo = this.tiposRecibo[0];
+      this.valorOption = "Lista Notas"
    }
 
   ngOnInit() {
@@ -197,6 +219,11 @@ export class ReciboCajaComponent implements OnInit {
       this.reciboCaja.tipoDoc = this.tipoDocumentos[1];
       this.traerDocumentosPorTipo(this.reciboCaja.tipoDoc,1)
     }
+  }
+
+  mostrarPopupNotas(){
+    this.popupVisibleNotas = true;
+    this.traerListadoNotas();
   }
 
 
@@ -324,6 +351,67 @@ export class ReciboCajaComponent implements OnInit {
     }
       
    
+  }
+
+  traerListadoNotas(){
+    this.mostrarLoading = true,
+    this.listadoNotas = [];
+    this._notasService.getNotasPorTipo("Recibo").subscribe(res => {
+      this.listadoNotas = res as Nota[];
+      this.mostrarLoading = false;
+   })
+  }
+
+  deleteNota = (e) => {  
+    this.eliminarNota(e.row.data)  
+  }
+
+  eliminarNota(e:any){ 
+    this._notasService.deleteNotas(e).subscribe( res => {
+      this.popupVisibleNotas = false;
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se eliminó la nota con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => { })
+    }, err => {alert("error")})
+  }
+
+  guardarNuevaNota(){
+    if(this.nota.descripcion != null){
+      this.popupVisibleNotas = false;
+      this.mostrarLoading = true;
+      this.nota.tipo = "Recibo"
+      this._notasService.newNota(this.nota).subscribe(res => {
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Se registró su nota con éxito");
+        this.nota.descripcion = ""
+        this.valorOption = "Lista Notas"
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+      })
+    }else{
+      this.mostrarMensajeGenerico(2,"Hay campos vacios");
+    }
+    
+  }
+
+
+  opcionRadio2(e){
+    switch (e.value) {
+      case "Lista Notas":
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+        break;
+      case "Nueva Nota":
+        this.mostrarListaNotas = false;
+        this.mostrarNuevaNotas = true;
+        break;
+      default:    
+    }       
   }
 
 

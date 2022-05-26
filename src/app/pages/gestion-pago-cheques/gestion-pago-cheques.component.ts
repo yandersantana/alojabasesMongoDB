@@ -9,7 +9,6 @@ import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
-import { element } from 'protractor';
 
 @Component({
   selector: 'app-gestion-pago-cheques',
@@ -26,6 +25,7 @@ export class GestionPagoChequesComponent implements OnInit {
   numCheque : number
   mostrarSeccionFecha : boolean = true
   mostrarSeccionPagoEstado : boolean = false
+  mostrarSeccionAnulacion : boolean = false
   mostrarFacturas  : boolean = false
   busquedaTransaccion : tipoBusquedaTransaccion
   listaFacturas: TransaccionesFacturas [] = []
@@ -38,7 +38,8 @@ export class GestionPagoChequesComponent implements OnInit {
   opMenu = "";
   tiposMenu: string[] = [
     'Gestionar Fechas Pago',
-    'Gestionar Pagos/Cheques'
+    'Gestionar Pagos/Cheques',
+    'Anulación/Cheques'
   ];
   estadoFacturas =""
 
@@ -62,10 +63,17 @@ export class GestionPagoChequesComponent implements OnInit {
       case "Gestionar Fechas Pago":
         this.mostrarSeccionFecha = true;
         this.mostrarSeccionPagoEstado = false;
+        this.mostrarSeccionAnulacion= false;
         break;
       case "Gestionar Pagos/Cheques":
         this.mostrarSeccionFecha = false;
         this.mostrarSeccionPagoEstado = true;
+        this.mostrarSeccionAnulacion= false;
+        break;
+      case "Anulación/Cheques":
+        this.mostrarSeccionFecha = false;
+        this.mostrarSeccionPagoEstado = false;
+        this.mostrarSeccionAnulacion= true;
         break;
       default:    
     }      
@@ -85,6 +93,12 @@ export class GestionPagoChequesComponent implements OnInit {
         this.buscarChequesRelacionados();
         if(this.pagoCheque.estado == "Pagado"){
           this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
+          this.mostrarLoading = false;
+          this.reiniciarPagoCheque()
+          return;
+        }
+        else if(this.pagoCheque.estado == "Anulado"){
+          this.mostrarMensajeGenerico(2,"El cheque se encuentra Anulado")
           this.mostrarLoading = false;
           this.reiniciarPagoCheque()
           return;
@@ -116,6 +130,13 @@ export class GestionPagoChequesComponent implements OnInit {
         this.buscarChequesRelacionados();
         if(this.pagoCheque.estado == "Pagado"){
           this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
+          return;
+        }
+
+        else if(this.pagoCheque.estado == "Anulado"){
+          this.mostrarMensajeGenerico(2,"El cheque se encuentra Anulado")
+          this.mostrarLoading = false;
+          this.reiniciarPagoCheque()
           return;
         }
 
@@ -282,6 +303,34 @@ export class GestionPagoChequesComponent implements OnInit {
       this.mostrarLoading = false;
       this.updateTransaccionesFactura();
     },(err) => {});
+  }
+
+  anularCheque(){
+
+    Swal.fire({
+      title: 'Anular Cheque',
+      text: "Está seguro de anular el cheque #"+this.pagoCheque.numCheque+"?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarLoading = true;
+        this.mensajeLoading = "Anulando .."
+        this.pagoCheque.estado = "Anulado"
+        this._transaccionesChequeService.updateEstadoPago(this.pagoCheque).subscribe((res) => {
+          this.mostrarLoading = false;
+          this.mostrarMensajeGenerico(1,"Se realizó su proceso correctamente")
+          this.reiniciarPagoCheque();
+        },(err) => {});
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Genere un recibo de caja de otro tipo");
+      }
+    })
+
+
+    
   }
 
   updateTransaccionesFactura(){

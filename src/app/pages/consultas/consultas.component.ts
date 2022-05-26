@@ -164,12 +164,6 @@ export class ConsultasComponent implements OnInit {
   }
 
   llenarComboProductos() {
-    /*this.productosActivos.forEach((element) => {
-      if (element.ESTADO == "ACTIVO") {
-        this.productos.push(element);
-      }
-    });*/
-
     this.productos22 = new DataSource({
       store: this.productos,
       sort: [{ field: "PRODUCTO", asc: true }],

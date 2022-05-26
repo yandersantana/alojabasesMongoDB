@@ -25,6 +25,7 @@ import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFac
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { element } from 'protractor';
 
 
 @Component({
@@ -319,7 +320,8 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   calcularValor(e,i){
     var valor = this.listadoFacturasPagar[i].valorFactura - this.listadoFacturasPagar[i].valorAbonado
-    this.listadoFacturasPagar[i].valorSaldos = valor - this.listadoFacturasPagar[i].valorCancelado
+    var valor2 = Number(valor.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorCancelado.toFixed(2))
+    this.listadoFacturasPagar[i].valorSaldos = Number(valor2.toFixed(2))
     if(this.listadoFacturasPagar[i].valorCancelado > valor){
       this.listadoFacturasPagar[i].valorCancelado = 0; 
       this.mostrarMensajeGenerico(2,"La cantidad ingresada es superior al saldo") 
@@ -332,12 +334,11 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   calcularTotal(){
     this.valorTotalFacturas = 0;
     this.listadoFacturasPagar.forEach(element=>{
-      this.valorTotalFacturas = this.valorTotalFacturas + element.valorCancelado;
+      this.valorTotalFacturas = Number(this.valorTotalFacturas.toFixed(2)) + Number(element.valorCancelado.toFixed(2));
     });
   }
 
   calcularTotalCheque(){
-    console.log("sdsd")
     this.valorTotalCheques = 0;
     this.listadoPagos.forEach(element=>{
       this.valorTotalCheques = this.valorTotalCheques + element.valor;
@@ -539,6 +540,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     var cuentas = "";
     var fechas = "";
     var facturas = "";
+    var bandera = false;
     this.comprobantePago.transaccionesFacturas = this.listadoFacturasPagar
     this.comprobantePago.transaccionesCheques = this.listadoPagos
 
@@ -567,15 +569,19 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
       element.proveedor = this.comprobantePago.nombreProveedor;
       element.fechaPago = element.fechaPagoDate.toLocaleDateString()
       element.fechaPagoDate = element.fechaPagoDate;
+     // if(element.numCheque == 101)
+       // bandera = true;
     });
 
-    this.guardarComprobantePago(); 
+    //if(bandera)
+      this.actualizarEstadosFacturas2();
+    //else
+      //this.guardarComprobantePago(); 
   }
 
 
 
   guardarComprobantePago(){
-    console.log(this.comprobantePago)
     try {
       this._comprobantePagoProveedoresService.newComprobantePago(this.comprobantePago).subscribe((res) => {
         this.actualizarContador();
@@ -650,6 +656,69 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     }); 
     return true;
   }
+
+
+  //sfsdfsdfsdfsdf
+  actualizarEstadosFacturas2(){
+    var sumaValores = 0;
+    this.comprobantePago.transaccionesFacturas.forEach(element =>{
+      sumaValores = sumaValores + element.valorCancelado;
+    })
+    var valorCheque = this.comprobantePago.transaccionesCheques.find(element => element.numCheque == 101).valor;
+    var valorPorcentaje = (valorCheque * 100) / sumaValores;
+    var cont = 0;
+    var valorT = 0;
+    this.comprobantePago.transaccionesFacturas.forEach(element =>{
+      cont++;
+      //element.estado = this.estadoFacturas;
+      valorT = (valorPorcentaje*element.valorCancelado) / 100
+      element.valorAbonado = valorT + element.valorAbonado;
+      /* this._transaccionesFacturasService.updateEstadoFactura(element,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
+        this.contadorVal(cont);
+      },(err) => {}); */
+    })
+
+
+    this.guardarComprobantePago();
+    
+  }
+
+  contadorVal(cont) {
+    if(this.listaFacturas.length == cont){
+      this.actualizarEstadosFacturasProveedor();
+    } 
+  }
+
+  actualizarEstadosFacturasProveedor(){
+    /* var cont = 0;
+    this.listaFacturas.forEach(element =>{
+      cont++;
+      var busquedaTransaccion = new tipoBusquedaTransaccion();
+      busquedaTransaccion.NumDocumento = element.numFactura.toString();
+      this._facturaProveedorService.getFacturaPorNFactura(busquedaTransaccion).subscribe((res) => {
+        var facturas = res as FacturaProveedor[];
+        var facturaEncontrada = facturas[0];
+        if(facturaEncontrada.estado == "CUBIERTA"  || facturaEncontrada.estado == "ABONADA"){
+          this._facturaProveedorService.updateEstadoFacturaProveedor(facturaEncontrada._id,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
+            this.contadorValFacturas(cont);
+          },(err) => {});
+        }else{
+          this.contadorValFacturas(cont);
+        }
+        
+      },(err) => {});
+    }) */
+    
+  }
+
+   contadorValFacturas(cont) {
+    if(this.listaFacturas.length == cont){
+      this.mostrarLoading = false;
+      this.mostrarMensajeGenerico(1,"Estado actualizado correctamente")
+    } 
+  }
+
+  //sdfsdfsdfdf
 
   comprobarTransacionesCheques(num:number){
     if(this.comprobantePago.transaccionesCheques.length == num){

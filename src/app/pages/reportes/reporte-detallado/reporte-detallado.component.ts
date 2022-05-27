@@ -1,4 +1,3 @@
-import { THIS_EXPR } from "@angular/compiler/src/output/output_ast";
 import { Component, OnInit } from "@angular/core";
 import { AuthenService } from "src/app/servicios/authen.service";
 import { IngresosService } from "src/app/servicios/ingreso-diario";
@@ -320,6 +319,11 @@ export class ReporteDetalladoComponent implements OnInit {
   customizeValue(data: any) { 
     var valor = "$"+data.value.toFixed(2) 
       return valor;  
+  }
+
+  customizeValue2(data: any) { 
+    var valor = data.value.toFixed(2) + "%"
+    return valor;  
   }
 
   customizeValueRow(data: any) { 

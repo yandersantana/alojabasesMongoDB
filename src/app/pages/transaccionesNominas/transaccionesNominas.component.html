@@ -30,6 +30,20 @@
                             </dx-date-box>
                             </div>
 
+                            <div class="col-md-3">Beneficiario</div>
+                            <div class="col-md-9">
+                                <dx-select-box [items]="beneficiarios" 
+                                    [(value)]="beneficiario"
+                                    [searchEnabled]="true"
+                                    valueExpr="nombre"
+                                    displayExpr="nombre"
+                                    [readOnly]="false" 
+                                    (onValueChanged)="traerTransaccionesPorRangoYBeneficiario()"
+                                    [disabled]="false">
+                                </dx-select-box>
+                            </div>
+
+
                             <div class="col-md-4"></div>
                             <div class="col-md-4 btnSearch">
                                 <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesPorRango()">Buscar</button>
@@ -43,7 +57,7 @@
             <div class="col-md-4 " style="margin-left: 1em;">
                 <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
                 <div class="row card">
-                    <br><br>
+                    <br><br><br>
                     <div class="col-md-12"> 
                         <div class="row">  
                     
@@ -64,22 +78,7 @@
 </div>
 
 <br>
-<div class="row">
-    <div class="col-md-3" style="margin-top: 8px;"><h6>Filtrar por Beneficiario:</h6></div>
-    <div class="col-md-3">
-        <dx-select-box [items]="beneficiarios" 
-                [(value)]="beneficiario"
-                [searchEnabled]="true"
-                valueExpr="nombre"
-                displayExpr="nombre"
-                [readOnly]="false" 
-                (onValueChanged)="traerTransaccionesPorRangoYBeneficiario()"
-                [disabled]="false">
-        </dx-select-box>
-    </div>
-    <div class="col-md-3"></div>
-</div>
-<br>
+
 <dx-data-grid #datag2
     id="gridContainer"
     [dataSource]="listaTransacciones"
@@ -91,15 +90,16 @@
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
      <dxi-column dataField="createdAt" caption="Fecha de creación"  format="dd/MM/yyyy" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
     <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy"  caption="Fecha"></dxi-column>
-    <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+   <!--  <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column> -->
     <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
     <dxi-column dataField="rCajaId" caption="RC" dataType="string" ></dxi-column>
-    <dxi-column dataField="documentoVenta" caption="Fact" dataType="string"></dxi-column>
+    <!-- <dxi-column dataField="documentoVenta" caption="Fact" dataType="string"></dxi-column>
     <dxi-column dataField="cedula" caption="Cedula" dataType="string" [visible]="false"></dxi-column>
-    <dxi-column dataField="numDocumento" caption="Documento" dataType="string"></dxi-column>
-    <dxi-column dataField="valor" caption="Valor" dataType="number" [visible]="true"></dxi-column>
+    <dxi-column dataField="numDocumento" caption="Documento" dataType="string"></dxi-column> -->
+    
     <dxi-column dataField="cuenta" caption="Cuenta" dataType="string"></dxi-column>
     <dxi-column dataField="subCuenta" caption="SubCuenta" dataType="string" width="18%"></dxi-column>
+    <dxi-column dataField="valor" caption="Valor" dataType="number" [visible]="true"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="false"></dxi-column>
     <dxi-column dataField="beneficiario" caption="Beneficiario" dataType="string" [visible]="false"></dxi-column>
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="false"></dxi-column>
@@ -117,15 +117,26 @@
     <div class="col-md-5" style="text-align: center;margin-top: 0.5em;">NÓMINAS</div>
     <div class="col-md-7" style="text-align: right;margin-top: 0.5em;">${{valorNominas | number : '.2-2'}}</div>
     <hr width="100%">
-    <div class="col-md-5" style="text-align: center">ANTICIPOS</div>
-    <div class="col-md-7" style="text-align: right">${{valorAnticipos | number : '.2-2'}}</div>
+    <div class="col-md-5" style="text-align: center;color: red;margin-top: -1em;">ANTICIPOS</div>
+    <div class="col-md-7" style="text-align: right;color: red;margin-top: -1em;">-${{valorAnticipos | number : '.2-2'}}</div>
     <hr width="100%">
-    <div class="col-md-5" style="text-align: center">DESCUENTOS</div>
-    <div class="col-md-7" style="text-align: right">${{valorDescuentos | number : '.2-2'}}</div>
+    <div class="col-md-5" style="text-align: center;margin-top: -1em;">PAGOS EXTRAS</div>
+    <div class="col-md-7" style="text-align: right;margin-top: -1em;">${{valorPagosExtras | number : '.2-2'}}</div>
     <hr width="100%">
-    <div class="col-md-5" style="text-align: center;margin-bottom: 0.5em;">RESULTADO DEL EJERCICIO</div>
-    <div class="col-md-7" style="text-align: right;margin-bottom:  0.5em;">${{resultado | number : '.2-2'}}</div>
+    <div class="col-md-5" style="text-align: center;margin-top: -1em;">COMISIONES X FLETES</div>
+    <div class="col-md-7" style="text-align: right;margin-top: -1em;">${{valorComisiones | number : '.2-2'}}</div>
+    <hr width="100%">
+    <div class="col-md-5" style="text-align: center;color: red;margin-top: -1em;">DESCUENTOS</div>
+    <div class="col-md-7" style="text-align: right;color: red;margin-top: -1em;">-${{valorDescuentos | number : '.2-2'}}</div>
+     <hr width="100%">
+    <div class="col-md-5" style="text-align: center;color: red;margin-top: -1em;">PAGO O ABONO PRÉSTAMOS</div>
+    <div class="col-md-7" style="text-align: right;color: red;margin-top: -1em;">-${{valorPagoPrestamos | number : '.2-2'}}</div>
+    <hr width="100%">
+    <div class="col-md-5" style="text-align: center;margin-bottom: 0.9em;margin-top: -1em;">TOTAL PAGO</div>
+    <div class="col-md-7" style="text-align: right;margin-bottom:  1.3em;margin-top: -1em;">${{resultado | number : '.2-2'}}</div>
 </div>
+
+
 
 
 

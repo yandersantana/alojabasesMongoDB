@@ -192,6 +192,10 @@ export class ComprobantePagoComponent implements OnInit {
     this.traerListadoNotas();
   }
 
+  rechazarEliminacion = (e) => { 
+    this.rechazarEliminacionComp(e.row.data)  
+  }
+
   guardarNuevaNota(){
     if(this.nota.descripcion != null){
       this.popupVisibleNotas = false;
@@ -598,6 +602,27 @@ export class ComprobantePagoComponent implements OnInit {
         e.observaciones= obs
         this._comprobantePagoService.updateEstado(e._id,"Anulado").subscribe(
           res => { this.eliminarTransacciones();},
+          err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+  rechazarEliminacionComp(e){
+    Swal.fire({
+      title: 'Rechazar Eliminacion Comprobante',
+      text: "Está seguro que desea reversar la anulación del comprobante #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        this._comprobantePagoService.updateEstado(e._id,"Activo").subscribe(
+          res => { this.mostrarMensajeGenerico(1,"Se realizo su proceso correctamente");
+                    this.traerComprobantesPagoPorRango();},
           err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")

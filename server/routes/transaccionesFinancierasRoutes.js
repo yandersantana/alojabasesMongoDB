@@ -9,7 +9,8 @@ router.get("/getTransacciones", async (req, res) => {
 
 router.get("/getTransaccionesNominas", async (req, res) => {
   const transacciones = await TransaccionFinanciera.find({
-    subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
+    subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.4 Pagos extras',
+   '1.5.5 Comisiones x Fletes','1.5.6 Decimo cuarto', '1.5.7 Descuentos', '1.3.3 Pago o Abono Préstamo'] }
   });
   res.send(transacciones);
 });
@@ -52,7 +53,8 @@ router.post("/getTransaccionesNominasPorRango", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
-   subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
+   subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.4 Pagos extras',
+   '1.5.5 Comisiones x Fletes','1.5.6 Decimo cuarto', '1.5.7 Descuentos', '1.3.3 Pago o Abono Préstamo'] }
   });
   res.json(transacciones);
 });
@@ -69,8 +71,9 @@ router.post("/getTransaccionesNominasPorRangoYBeneficiario", async (req, res, ne
       $gte: start,
       $lt: end,
     },
-    beneficiario : sucursal,
-   subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.6 Decimo cuarto', '1.5.7 Descuentos'] }
+    cliente : sucursal,
+    subCuenta :{ $in: ['1.5.2 Nominas', '1.5.3 Anticipos nomina','1.5.4 Pagos extras',
+   '1.5.5 Comisiones x Fletes','1.5.6 Decimo cuarto', '1.5.7 Descuentos', '1.3.3 Pago o Abono Préstamo'] }
   });
   res.json(transacciones);
 });

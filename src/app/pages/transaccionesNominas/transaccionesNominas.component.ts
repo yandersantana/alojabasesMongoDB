@@ -25,7 +25,10 @@ export class TransaccionesNominasComponent implements OnInit {
   mostrarLoading: boolean = false;
   valorNominas = 0;
   valorAnticipos = 0;
+  valorPagosExtras = 0;
+  valorComisiones = 0;
   valorDescuentos = 0;
+  valorPagoPrestamos = 0;
   resultado = 0;
   estadoCuenta = ""
   beneficiario = ""
@@ -97,6 +100,9 @@ export class TransaccionesNominasComponent implements OnInit {
   obtenerDatos(){
     this.valorAnticipos = 0;
     this.valorDescuentos = 0;
+    this.valorPagosExtras = 0;
+    this.valorComisiones = 0;
+    this.valorPagoPrestamos = 0;
     this.valorNominas = 0;
     this.resultado = 0;
     this.listaTransacciones.forEach(element =>{
@@ -106,9 +112,15 @@ export class TransaccionesNominasComponent implements OnInit {
         this.valorAnticipos = element.valor + this.valorAnticipos;
       }else if(element.subCuenta == "1.5.7 Descuentos"){
         this.valorDescuentos = element.valor + this.valorDescuentos;
+      }else if(element.subCuenta == "1.5.4 Pagos extras"){
+        this.valorPagosExtras = element.valor + this.valorPagosExtras;
+      }else if(element.subCuenta == "1.5.5 Comisiones x Fletes"){
+        this.valorComisiones = element.valor + this.valorComisiones;
+      }else if(element.subCuenta == "1.3.3 Pago o Abono Préstamo"){
+        this.valorPagoPrestamos = element.valor + this.valorPagoPrestamos;
       }
     })
-    this.resultado = this.valorNominas + this.valorAnticipos - this.valorDescuentos;
+    this.resultado = this.valorNominas - this.valorAnticipos - this.valorPagoPrestamos - this.valorDescuentos + this.valorPagosExtras + this.valorComisiones;
   }
 
   onExporting (e) {

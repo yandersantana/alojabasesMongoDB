@@ -735,6 +735,10 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.validarTransaccionesFactura(e.row.data)  
   }
 
+  rechazarEliminacion = (e) => { 
+    this.rechazarEliminacionComp(e.row.data)  
+  }
+
   validarTransaccionesFactura(e){
     this.busquedaTransaccion = new tipoBusquedaTransaccion()
     this.busquedaTransaccion.NumDocumento = "CPP"+e.idDocumento
@@ -775,6 +779,27 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         e.observaciones= obs
         this._comprobantePagoProveedoresService.updateEstado(e._id,"Anulado").subscribe(
           res => { this.eliminarTransaccionesFacturas();},
+          err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+  rechazarEliminacionComp(e){
+    Swal.fire({
+      title: 'Rechazar Eliminacion Comprobante',
+      text: "Está seguro que desea reversar la anulación del comprobante #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarMensaje()
+        this._comprobantePagoProveedoresService.updateEstado(e._id,"Activo").subscribe(
+          res => { this.mostrarMensajeGenerico(1,"Se realizo su proceso correctamente");
+                    this.traerComprobantesPagoPorRango();},
           err => { this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")

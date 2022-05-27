@@ -2,51 +2,47 @@
   <app-loading></app-loading>
 </div>
 
-
-<div class="row">
-        <div class="col-md-12 card carIn">
+<br>
+<div class="card">
+    <h5 class="card-header text-center font-weight-bold text-uppercase ">REPORTE DETALLADO</h5>
+    <div class="card-body">
             <div class="row">
-                <div class="col-md-2"></div>
-                <div class="col-md-8">
-                    <div class="row"  style="margin-top: 0.7rem">
-                        <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5>Seleccione el Rango de Fechas</h5></div>
-                        <br><br><br>
-                        <div class="col-md-6"> 
-                          <div class="row">
+            <div class="col-md-4"></div>
+            <div class="col-md-4">
+                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Seleccione un Rango de Fechas</h6></div>
+                <div class="row card">
+                    <div class="col-md-12"> 
+                        <div class="row">
                             <div class="col-md-3">Desde</div>
                             <div class="col-md-9">
-                              <dx-date-box
+                            <dx-date-box
                                 [(value)]="nowdesde"
                                 type="date">
-                              </dx-date-box>
+                            </dx-date-box>
                             </div>
-                          </div>        
-                        </div>
 
-                        <div class="col-md-6"> 
-                          <div class="row">
                             <div class="col-md-3">Hasta</div>
                             <div class="col-md-9">
-                              <dx-date-box
-                                 [(value)]="nowhasta"
+                            <dx-date-box
+                                [(value)]="nowhasta"
                                 type="date">
-                              </dx-date-box>
+                            </dx-date-box>
                             </div>
-                          </div>        
-                        </div>
-                        
+
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 btnSearch">
+                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerTransaccionesPorRango()">Buscar</button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>        
                     </div>
-                    <br>
-                    <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
-                        <div class="col-md-4"></div>
-                        <div class="col-md-4"><button class="btn btn-block btn-success "  (click)="traerTransaccionesPorRango()">Buscar</button></div>
-                        <div class="col-md-4"></div>
-                    </div>
-                </div>
-                <div class="col-md-2"></div>
-            </div>     
-        </div>
+                </div>                
+            </div>
+            
+            <div class="col-md-4"></div>
+        </div>   
     </div>
+</div>
 
 <div  class="marginTabla" >
   <dx-data-grid
@@ -186,7 +182,7 @@
       </dxi-column>
     </dxi-column>
 
-    <dxi-column caption="Validación">
+   <!--  <dxi-column caption="Validación">
       <dxi-column
         dataField="validacionMatriz"
         caption="MATRIZ"
@@ -209,16 +205,14 @@
             [precision]="2">
         </dxo-format>
       </dxi-column>
-    </dxi-column>
+    </dxi-column> -->
     <dxi-column type="buttons" dataField="bt1" caption="Notas" [width]="130">
       <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
     </dxi-column>
 
     <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
 
-    <dxi-sort-by-group-summary-info
-      summaryItem="count"
-    ></dxi-sort-by-group-summary-info>
+    <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
 
 
     <dxo-summary>
@@ -303,6 +297,19 @@
                 </dxi-total-item>
 
                 <dxi-total-item
+                    column="MatPorcentaje"
+                    dataType="number"
+                    displayFormat=" {0}%"
+                    [customizeText]="customizeValue2"
+                    summaryType="avg"
+                    alignment="center">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                <dxi-total-item
                     column="Suc1UBruta"
                     dataType="number"
                     displayFormat="$ {0}"
@@ -316,6 +323,21 @@
                 </dxi-total-item>
 
                 <dxi-total-item
+                    column="Suc1Porcentaje"
+                    dataType="number"
+                    displayFormat=" {0}%"
+                    [customizeText]="customizeValue2"
+                    summaryType="avg"
+                    alignment="center">
+                    <dxo-format
+                      type="number"
+                      [precision]="2">
+                    </dxo-format>
+                </dxi-total-item>
+
+                
+
+               <!--  <dxi-total-item
                     column="validacionMatriz"
                     dataType="number"
                     displayFormat="$ {0}"
@@ -339,7 +361,7 @@
                       type="number"
                       [precision]="2">
                     </dxo-format>
-                </dxi-total-item>
+                </dxi-total-item> -->
                 
    
             </dxo-summary>

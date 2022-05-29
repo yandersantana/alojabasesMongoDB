@@ -2,7 +2,6 @@ import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { Router } from "@angular/router";
 import { Producto } from "../pages/compras/compra";
-import { producto } from "../pages/ventas/venta";
 
 @Injectable({
   providedIn: "root",
@@ -39,16 +38,9 @@ export class ProductoService {
     return this.http.delete(this.URL + `/delete/${producto._id}`, producto);
   }
 
-  updateProductosSucursales(
-    producto,
-    suc1: number,
-    suc2: number,
-    suc3: number
-  ) {
+  updateProductosSucursales( producto, suc1: number, suc2: number, suc3: number) {
     return this.http.put(
-      this.URL +
-        `/updateProductosSucursales/${producto._id}/${suc1}/${suc2}/${suc3}`,
-      producto
+      this.URL + `/updateProductosSucursales/${producto._id}/${suc1}/${suc2}/${suc3}`, producto
     );
   }
 
@@ -69,7 +61,8 @@ export class ProductoService {
   updateProductoBodegaProveedor(producto) {
     return this.http.put(this.URL + `/updateBodega/${producto._id}`, producto);
   }
-  //updatePCatalogo/:producto/:referencia/:nombre/:aplicacion
+
+
   updateProductoCatalogo(
     producto: string,
     referencia: string,
@@ -142,24 +135,15 @@ export class ProductoService {
   }
 
   updateProductoSucursal2(producto) {
-    return this.http.put(
-      this.URL + `/updateProductoSuc2/${producto._id}`,
-      producto
-    );
+    return this.http.put( this.URL + `/updateProductoSuc2/${producto._id}`, producto);
   }
 
   updateProductoSucursal3(producto) {
-    return this.http.put(
-      this.URL + `/updateProductoSuc3/${producto._id}`,
-      producto
-    );
+    return this.http.put( this.URL + `/updateProductoSuc3/${producto._id}`,producto);
   }
 
   updateProductoSucursal1conBodega(producto) {
-    return this.http.put(
-      this.URL + `/updateProductoSuc1conBodega/${producto._id}`,
-      producto
-    );
+    return this.http.put(this.URL + `/updateProductoSuc1conBodega/${producto._id}`, producto);
   }
 
   updateProductoSucursal2conBodega(producto) {
@@ -217,4 +201,20 @@ export class ProductoService {
       producto
     );
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
 }

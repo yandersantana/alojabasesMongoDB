@@ -88,8 +88,7 @@ router.put('/updateEstadoFactura/:id/:estado/:valor', async (req, res,next) => {
 
 router.put('/updateFechaPago/:id', async (req, res,next) => {
     const { id } = req.params;
-    console.log(req.body)
-    await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {fechaPago : req.body.fechaPago}}, {new: true});
+    await TransaccionesFacturas.findByIdAndUpdate(id, {$set: {fechaPago : req.body.fechaPago, numCheque : req.body.numCheque}}, {new: true});
     res.json({status: 'factura Updated'});  
 })
 

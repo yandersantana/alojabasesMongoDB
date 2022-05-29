@@ -1,3 +1,6 @@
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
 
 <div class="col-md-12" *ngIf="isAdmin">
     <div class="row">
@@ -57,33 +60,6 @@
 </div>
 
 
-<!-- <div class="row" style="margin-bottom: 1.5em;">
-    <div class="col-4">
-        <h3>Ventas</h3>
-        RUC: {{RucSucursal}}
-    </div>
-    <div class="col-6 tdoc">
-        <div class="row">
-            <div class="col-md-6"><h6>Tipo de Venta</h6></div>
-            <div class="col-md-6"> 
-                <dx-select-box [items]="tipoDocumentos" 
-                    [value]="tipoDocumentos[0]" 
-                    [readOnly]="false" 
-                    [disabled]="false"
-                    (onValueChanged)="obtenerTipoDocumento($event)">
-                </dx-select-box>
-            </div>
-        </div> 
-    </div>
-
-    <div class="col-2">
-        <div class="tdco2">
-            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2"></dx-button>
-        </div>         
-    </div>
-
-</div> -->
-
 <div *ngIf="sectionSearch" style="margin-bottom: 1em;">
     <div class="dx-field row">
         <div class="col-md-4">
@@ -138,7 +114,7 @@
             ></dx-select-box>
 
         </dxi-item>
-        <dxi-item dataField="documento_n" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
+        <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
             <dxo-label
             location="left"
             alignment="right">
@@ -572,7 +548,7 @@
     </dx-popup>
  
 
-    <dx-popup
+<dx-popup
     [width]="'70%'"
     [height]="'80%'"
     [showTitle]="true"
@@ -581,34 +557,34 @@
     [(visible)]="popupVi">
     <div *dxTemplate="let data of 'content'">
         <dx-scroll-view width="100%" height="100%">
-        <div class="col-md-12">
-            <div class="row">
-               
-                <div class="col-md-4">
-                    
-                    <div  *ngFor="let imagen of imagenesData; let id = index">
-                        
-                        <div class="col-md-12 espacio"><button (click)="enviar(id)"><img  class="imgProducto3 " src={{imagen}} alt=""></button></div>
-                   
-                    </div>
-               
-                </div>
+            <div class="col-md-12">
+                <div class="row">
                 
-               
-                <div class="col-md-8">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <pinch-zoom>
-                                <img  class="imgProducto2 " src={{imagenPrincipal}} alt="">
-                            </pinch-zoom>
-                           
+                    <div class="col-md-4">
+                        
+                        <div  *ngFor="let imagen of imagenesData; let id = index">
+                            
+                            <div class="col-md-12 espacio"><button (click)="enviar(id)"><img  class="imgProducto3 " src={{imagen}} alt=""></button></div>
+                    
+                        </div>
+                
+                    </div>
+                    
+                
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <pinch-zoom>
+                                    <img  class="imgProducto2 " src={{imagenPrincipal}} alt="">
+                                </pinch-zoom>
+                            
+                            </div>
                         </div>
                     </div>
-                   </div>
-              
+                
+                </div>
             </div>
-        </div>
-    </dx-scroll-view>
+        </dx-scroll-view>
     </div>
    
 </dx-popup>
@@ -699,7 +675,7 @@
                 [visible]="false"  >
                 </dx-number-box>
         </div>
-        <div >
+        <div>
             <div class="col-md-12" style="text-align: center;">
                 <div class="row">
                     <div class="col-md-3"></div>

@@ -11,7 +11,7 @@ import Swal from 'sweetalert2';
 import { DatePipe } from '@angular/common';
 import dxAutocomplete from 'devextreme/ui/autocomplete';
 import { dxFormGroupItem } from 'devextreme/ui/form';
-import { inventario } from '../consolidado/consolidado';
+import { inventario, productoTransaccion } from '../consolidado/consolidado';
 import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { catalogo } from '../catalogo/catalogo';
 import { ProductoService } from '../../servicios/producto.service';
@@ -45,6 +45,7 @@ import { Router } from '@angular/router';
 import { CajaMenor } from '../cajaMenor/caja-menor';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { AuthService } from 'src/app/shared/services';
+import { element } from 'protractor';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -71,6 +72,13 @@ export class VentasComponent implements OnInit {
     'Abonos',
     'Otros medios Pago',
   ];
+
+  mostrarLoading = false;
+  mensajeLoading = "Cargando";
+
+
+  //procesos para inventario
+  proTransaccion: productoTransaccion = new productoTransaccion();
 
 
   contadorVenta =0;
@@ -252,7 +260,7 @@ export class VentasComponent implements OnInit {
     this.traerProductosCatalogo()
     this.traerPrecios()
     this.traerPreciosEspeciales()
-    this.getIDDocumentos()
+
     this.traerUsuarios()
     this.traerDatosConfiguracion();
 
@@ -309,6 +317,7 @@ export class VentasComponent implements OnInit {
   }
 
   traerProductos(){
+    this.mostrarLoading = true;
     this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[];
       this.llenarPR()
@@ -382,17 +391,7 @@ export class VentasComponent implements OnInit {
   }
 
 
-  async getIDDocumentos() {
-    //REVISAR OPTIMIZACION
-    /* await this.db.collection('consectivosBaseMongoDB').valueChanges().subscribe((data:contadoresDocumentos[]) => {
-      new Promise<any>((resolve, reject) => {
-        if(data != null){
-          this.contadorFirebase = data
-        } 
-      })
-      this.asignarIDdocumentos2()
-    })  */
-  }
+
 
 
   asignarIDdocumentos(){
@@ -426,25 +425,16 @@ export class VentasComponent implements OnInit {
             //normales
             this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
-            //firebase
-            //this.factura.documento_n =this.contadorFirebase[0].facturaMatriz_Ndocumento+1
-            //this.numeroFactura2=this.contadorFirebase[0].facturaMatriz_Ndocumento+1
             break;
           case "sucursal1":
             //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
-            //firebase
-            //this.factura.documento_n =this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
-            //this.numeroFactura2=this.contadorFirebase[0].facturaSucursal1_Ndocumento+1
             break;
           case "sucursal2":
             //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
-            //firebase
-            //this.factura.documento_n =this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
-            //this.numeroFactura2=this.contadorFirebase[0].facturaSucursal2_Ndocumento+1
             break;
           default:
             break;
@@ -452,22 +442,18 @@ export class VentasComponent implements OnInit {
         break;
       case "Nota de Venta":
         this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-        //this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
         break;
       case "Cotización":
         this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
-        //this.factura.documento_n = this.contadorFirebase[0].proformas_Ndocumento+1 
         break;
       default:
         break;
     }
-console.log(this.factura.documento_n)
     this.numeroID= this.contadorFirebase[0].contProductosPendientes_Ndocumento+1
     this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1
   }
 
 
-  
 
   separarClientes(){
     this.clientes.forEach(element=>{
@@ -502,7 +488,6 @@ console.log(this.factura.documento_n)
           break;
         case "Nota de Venta":
           this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-          //this.factura.documento_n = this.contadorFirebase[0].notasVenta_Ndocumento+1 
           break;
         case "Cotización":
           this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
@@ -510,8 +495,6 @@ console.log(this.factura.documento_n)
         default:
           break;
       }
-      console.log(this.factura.documento_n)
-      
     }
 
 
@@ -648,8 +631,6 @@ setSelectedProducto(i:number){
     this.valorEnM2=Math.trunc((this.caltotal+0.01) * this.calp / this.calmetros) - (this.cantidadcal * this.calp);  
   }
 
-  
-
   obtenerDatosCalculadora(e){
     this.productos2.forEach(element=>{
       if(element.PRODUCTO == e.value){
@@ -659,6 +640,8 @@ setSelectedProducto(i:number){
     })
     this.calcularMetros(e)
   }
+
+
   obtenerDatosCalculadora2(e){
     this.productos2.forEach(element=>{
       if(element.PRODUCTO == e.value){
@@ -669,34 +652,31 @@ setSelectedProducto(i:number){
     this.calcularMetros2(e)
   }
 
-  obtenerDatosDeProductoParaUnDetalle(e, i:number) {
+   obtenerDatosDeProductoParaUnDetalle(e, i:number) {
     this.newButtonEnabled = false
     var cont=0
     this.productosVendidos.forEach(element=>{
-      if(element.producto.PRODUCTO == e.value){
+      if(element.producto.PRODUCTO == e.value)
         cont++
-      }
     })
+
     if(cont==0){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
-         
+        this.traerTransaccionesPorProducto(element,i);
           switch (this.factura.sucursal) {
             case "matriz":
-              //this.productosVendidos[i].disponible = element.sucursal1+element.suc1Pendiente
               this.productosVendidos[i].disponible = element.sucursal1
               this.productosVendidos[i].producto = element
               break;
             case "sucursal1":
-              //this.productosVendidos[i].disponible = element.sucursal2+element.suc2Pendiente
               this.productosVendidos[i].disponible = element.sucursal2
               this.productosVendidos[i].producto = element
               break;
             case "sucursal2":
-              //this.productosVendidos[i].disponible = element.sucursal3+element.suc3Pendiente
               this.productosVendidos[i].disponible = element.sucursal3
               this.productosVendidos[i].producto = element
-                break;
+              break;
             default:
           }
           if(this.productosVendidos[i].disponible<0){
@@ -714,9 +694,7 @@ setSelectedProducto(i:number){
         'warning'
       )
       this.deleteProductoVendido(i)
-    }
-
-    
+    } 
   }
 
   getClientNames(){
@@ -791,7 +769,6 @@ setSelectedProducto(i:number){
           if (result.value) {
             this.limpiarArreglo()
             this.asignarIDdocumentos()
-            //this.asignarIDdocumentos2()
             this.buscarDatosSucursal()
             this.productosVendidos.push(new venta())
           }
@@ -799,7 +776,6 @@ setSelectedProducto(i:number){
         })
       }else{
         this.asignarIDdocumentos()
-        //this.asignarIDdocumentos2()
         this.buscarDatosSucursal()
       }        
     }
@@ -1026,6 +1002,7 @@ llenarComboProductos(){
     store: this.productos,  
     sort: [{ field: "PRODUCTO", asc: true }],    
   });
+  this.mostrarLoading = false;
 }
 
 
@@ -1204,9 +1181,7 @@ compararCantidad(nombre:string,i:number,o:number){
 
 
 actualizarProductos(){
-
  var resta =0
- var contVr=0
  new Promise<any>((resolve, reject) => {
   this.productosVendidos.forEach(element=>{
     switch (this.factura.sucursal) {
@@ -1215,22 +1190,19 @@ actualizarProductos(){
         resta =element.producto.sucursal1-element.cantidad
         element.producto.sucursal1=resta
         this.productoService.updateProductoSucursal1(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
-        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal1" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
       case "sucursal1":
         resta =0
         resta =element.producto.sucursal2-element.cantidad
         element.producto.sucursal2=resta
         this.productoService.updateProductoSucursal2(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
-        //this.db.collection('/productos').doc( element.producto.PRODUCTO).update({"sucursal2" :resta}).then(res => {contVr++ ,this.validarentrada(contVr) }, err => reject(err));
         break;
       case "sucursal2":
         resta =0
         resta =element.producto.sucursal3-element.cantidad
         element.producto.sucursal3=resta
         this.productoService.updateProductoSucursal3(element.producto).subscribe( res => {console.log(res + "entre por si");}, err => {})
-        
-          break;
+        break;
       default:
     }
 })
@@ -1579,20 +1551,6 @@ cambiarestado(e,i:number){
               },
               },
               
-              
-              /*{ 
-              fontSize:8,
-              relativePosition: {
-								x: 370,
-								y: 58,
-							},
-                type: 'none',
-                ol: [
-                  'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
-                  'Código  :  '+this.numeroFactura,
-
-                ]
-              }, */
               ],
               [
                 
@@ -2032,7 +1990,6 @@ cambiarestado(e,i:number){
           this.getOtrosValores(),
     
           {
-            //absolutePosition: {x: 40, y: 600},
             columns: [{
 
               type: 'none',
@@ -2761,19 +2718,14 @@ cambiarestado(e,i:number){
               , alignment: 'center'
             },
             
-            /* {
-              text: 'Est',
-              style: 'tableHeader'
-            }, */
+
             ],
             
             ...productos.map(ed =>{
               return [ { text: ed.cantidad, alignment: 'center' },{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},ed.producto.nombre_comercial, {text:ed.precio_venta.toFixed(2), alignment:"center"}, {text:ed.descuento, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",style:"totales2"}];
               
             }),
-            /* [
-              { text: " -- ", alignment: 'center' }, "Servicios de Transporte", { text: " -- ", alignment: 'center' }, { text: " -- ", alignment: 'center' }, {text:this.factura.coste_transporte.toFixed(2), alignment:"right",style:"totales2"} 
-            ] */
+
             
           ]
         }
@@ -3018,25 +2970,18 @@ cambiarestado(e,i:number){
           this.contadores[0].facturaMatriz_Ndocumento = this.factura.documento_n
           console.log(this.factura.documento_n)
           this.contadoresService.updateContadoresIDFacturaMatriz(this.contadores[0]).subscribe(res => {
-            console.log(res)
-/*             this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaMatriz_Ndocumento:this.factura.documento_n })
-            .then(res => { }, err => (err)); */
           },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
           
           break;
         case "sucursal1":
           this.contadores[0].facturaSucursal1_Ndocumento = this.factura.documento_n
            this.contadoresService.updateContadoresIDFacturaSuc1(this.contadores[0]).subscribe(res => {
-            /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal1_Ndocumento:this.factura.documento_n })
-            .then(res => { }, err => (err)); */
           },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
           break;
         case "sucursal2":
           this.contadores[0].facturaSucursal2_Ndocumento = this.factura.documento_n
        
           this.contadoresService.updateContadoresIDFacturaSuc2(this.contadores[0]).subscribe(res => {
-            /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ facturaSucursal2_Ndocumento:this.factura.documento_n })
-            .then(res => { }, err => (err)); */
           },err => {this.mostrarMensajeGenerico(2,"Error al guardar")})
           break;
         default:
@@ -3048,20 +2993,14 @@ cambiarestado(e,i:number){
     actualizarFactureroNotasVenta(){
       this.contadores[0].notasVenta_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDNotasVenta(this.contadores[0]).subscribe(
-        res => {
-          /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ notasVenta_Ndocumento:this.factura.documento_n })
-          .then(res => { }, err => (err)); */
-        },
+        res => { },
         err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
     }
 
     actualizarFactureroProformas(){
       this.contadores[0].proformas_Ndocumento = this.factura.documento_n
       this.contadoresService.updateContadoresIDProformas(this.contadores[0]).subscribe(
-        res => {
-          /* this.db.collection("/consectivosBaseMongoDB").doc("base").update({ proformas_Ndocumento:this.factura.documento_n })
-          .then(res => { }, err => (err)); */
-        },
+        res => { },
         err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
     }
 
@@ -3547,4 +3486,279 @@ cambiarestado(e,i:number){
       });
       return true;
     }
+
+
+
+
+  traerTransaccionesPorProducto(nombreProducto: producto,numero : number) {
+    this.invetarioP = [];
+    this.mostrarLoading = true;
+    this.proTransaccion.nombre = nombreProducto.PRODUCTO;
+    this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion)
+      .subscribe((res) => {
+        this.transacciones = res as transaccion[];
+        this.cargarDatosProductoUnitario(nombreProducto,numero);
+      });
   }
+
+
+  cargarDatosProductoUnitario(nombreProducto : producto , numero : number) {
+    var contCajas = 0;
+    var contCajas2 = 0;
+    var contCajas3 = 0;
+    var contPiezas = 0;
+    var contPiezas2 = 0;
+    var contPiezas3 = 0;
+
+    this.transacciones.forEach((element) => {
+      if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "matriz") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas = Number(element.cajas) + contCajas;
+            contPiezas = Number(element.piezas) + contPiezas;
+            break;
+          case "compra-dir":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+
+            break;
+          default:
+        }
+      } else if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "sucursal1") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas2 = Number(element.cajas) + contCajas2;
+            contPiezas2 = Number(element.piezas) + contPiezas2;
+            break;
+          case "compra-dir":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          default:
+        }
+      } else if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "sucursal2") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas3 = Number(element.cajas) + contCajas3;
+            contPiezas3 = Number(element.piezas) + contPiezas3;
+            break;
+          case "compra-dir":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+
+          default:
+        }
+      }
+    });
+    var cantidadRestante = 0;
+    this.invetarioProd = new inventario();
+    this.invetarioProd.producto = nombreProducto;
+    this.invetarioProd.cantidadCajas = contCajas;
+    this.invetarioProd.cantidadCajas2 = contCajas2;
+    this.invetarioProd.cantidadCajas3 = contCajas3;
+
+    this.invetarioProd.cantidadPiezas = contPiezas;
+    this.invetarioProd.cantidadPiezas2 = contPiezas2;
+    this.invetarioProd.cantidadPiezas3 = contPiezas3;
+    this.invetarioP.push(this.invetarioProd);
+
+
+    contCajas = 0;
+    contPiezas = 0;
+    contCajas2 = 0;
+    contPiezas2 = 0;
+    contCajas3 = 0;
+    contPiezas3 = 0;
+    
+    this.transformarM2_1(numero);
+  }
+
+
+
+  transformarM2_1(numero: number) {
+    this.invetarioP.forEach((element) => {
+      element.cantidadM2 = parseFloat( (element.producto.M2 * element.cantidadCajas +(element.cantidadPiezas * element.producto.M2) / element.producto.P_CAJA ).toFixed(2));
+      element.cantidadM2b2 = parseFloat(
+        (
+          element.producto.M2 * element.cantidadCajas2 +
+          (element.cantidadPiezas2 * element.producto.M2) / element.producto.P_CAJA
+        ).toFixed(2)
+      );
+      element.cantidadM2b3 = parseFloat(
+        (
+          element.producto.M2 * element.cantidadCajas3 +
+          (element.cantidadPiezas3 * element.producto.M2) / element.producto.P_CAJA
+        ).toFixed(2)
+      );
+      element.totalb1 = parseFloat( (element.cantidadM2 * element.producto.precio).toFixed(2) );
+      element.totalb2 = parseFloat((element.cantidadM2b2 * element.producto.precio).toFixed(2));
+      element.totalb3 = parseFloat( (element.cantidadM2b3 * element.producto.precio).toFixed(2));
+    });
+    this.cambiarValores2(numero);
+  }
+
+
+  cambiarValores2(numero : number) {
+    this.invetarioP.forEach((element) => {
+      element.cantidadCajas = Math.trunc( element.cantidadM2 / element.producto.M2);
+      element.cantidadPiezas = parseInt(
+        (
+          (element.cantidadM2 * element.producto.P_CAJA) / element.producto.M2 -
+          element.cantidadCajas * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2 = parseFloat(element.cantidadM2.toFixed(2));
+
+      element.cantidadCajas2 = Math.trunc( element.cantidadM2b2 / element.producto.M2);
+      element.cantidadPiezas2 = parseInt(
+        (
+          (element.cantidadM2b2 * element.producto.P_CAJA) /
+            element.producto.M2 -
+          element.cantidadCajas2 * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2b2 = parseFloat(element.cantidadM2b2.toFixed(2));
+
+      element.cantidadCajas3 = Math.trunc( element.cantidadM2b3 / element.producto.M2);
+      element.cantidadPiezas3 = parseInt(
+        (
+          (element.cantidadM2b3 * element.producto.P_CAJA) /
+            element.producto.M2 -
+          element.cantidadCajas3 * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
+    });
+
+    console.log(this.invetarioP)
+    
+    switch (this.factura.sucursal) {
+      case "matriz":
+        this.productosVendidos[numero].disponible = this.invetarioP[0].cantidadM2;
+        break;
+      case "sucursal1":
+        this.productosVendidos[numero].disponible = this.invetarioP[0].cantidadM2b2;
+        break;
+      case "sucursal2":
+        this.productosVendidos[numero].disponible = this.invetarioP[0].cantidadM2b3;
+        break;
+      default:
+    }
+
+    if(this.productosVendidos[numero].disponible < 0)
+      this.productosVendidos[numero].disponible = 0
+    
+    this.mostrarLoading = false;
+  }
+
+
+}

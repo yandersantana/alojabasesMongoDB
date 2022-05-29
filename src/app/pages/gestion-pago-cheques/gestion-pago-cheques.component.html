@@ -85,14 +85,25 @@
 
 
                 <div class="row">
-                    <div class="col-md-3"></div>
-                    <div class="col-md-6">
-                        <div class="row espacioDivs">
-                            <div class="col-md-4" style="font-weight: bold;">NUEVA FECHA PAGO:</div>
-                            <div class="col-md-8"><dx-date-box [(value)]="nuevaFecha" [(min)]="fechaMinima" (onChange)="buscarTransaccionChequePorIdPago()" [readOnly]="false"></dx-date-box></div>
+                    <div class="col-md-1"></div>
+                    <div class="col-md-10">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4" style="font-weight: bold;">NUEVO # CHEQUE:</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="nuevoNroCheque"></dx-number-box></div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="row espacioDivs">
+                                    <div class="col-md-4" style="font-weight: bold;">NUEVA FECHA PAGO:</div>
+                                    <div class="col-md-8"><dx-date-box [(value)]="nuevaFecha" [(min)]="fechaMinima" (onChange)="buscarTransaccionChequePorIdPago()" [readOnly]="false"></dx-date-box></div>
+                                </div>
+                            </div>
                         </div>
+                        
                     </div>
-                    <div class="col-md-3"></div>
+                    <div class="col-md-1"></div>
                 </div>
 
              

@@ -33,6 +33,7 @@ export class GestionPagoChequesComponent implements OnInit {
   isReadOnly: boolean = false;
   contadores:contadoresDocumentos[]
   mostrarLoading : boolean = false;
+  nuevoNroCheque: number;
   mensajeLoading = "Cargando"
   textLoading = "";
   opMenu = "";
@@ -89,6 +90,7 @@ export class GestionPagoChequesComponent implements OnInit {
       var pago = res as TransaccionChequesGirado[];
       if(pago.length != 0){
         this.pagoCheque = pago[0];
+        this.nuevoNroCheque = this.pagoCheque.numCheque
         console.log(this.pagoCheque)
         this.buscarChequesRelacionados();
         if(this.pagoCheque.estado == "Pagado"){
@@ -127,6 +129,7 @@ export class GestionPagoChequesComponent implements OnInit {
       var pago = res as TransaccionChequesGirado[];
       if(pago.length != 0){
         this.pagoCheque = pago[0];
+        this.nuevoNroCheque = this.pagoCheque.numCheque
         this.buscarChequesRelacionados();
         if(this.pagoCheque.estado == "Pagado"){
           this.mostrarMensajeGenerico(2,"El cheque ya se encuentra cancelado")
@@ -299,6 +302,7 @@ export class GestionPagoChequesComponent implements OnInit {
     this.mensajeLoading = "Actualizando .."
     this.pagoCheque.fechaPago = this.nuevaFecha.toLocaleDateString();
     this.pagoCheque.fechaPagoDate = this.nuevaFecha;
+    this.pagoCheque.numCheque = this.nuevoNroCheque;
     this._transaccionesChequeService.updateFechaPago(this.pagoCheque).subscribe((res) => {
       this.mostrarLoading = false;
       this.updateTransaccionesFactura();
@@ -336,13 +340,17 @@ export class GestionPagoChequesComponent implements OnInit {
   updateTransaccionesFactura(){
     var cont=0;
     var nuevaFecha = ""
+    var nuevoNumCheque = ""
     this.listaChequesEncontrados.forEach(element =>{
-      if(element.idPago != this.pagoCheque.idPago)
+      if(element.idPago != this.pagoCheque.idPago){
         nuevaFecha = element.fechaPago +"-"+ nuevaFecha
+        nuevoNumCheque = element.numCheque +"-"+ nuevoNumCheque
+      }
+        
     }) 
-    console.log(nuevaFecha)
     this.listaFacturas.forEach(element =>{
       element.fechaPago = nuevaFecha + this.nuevaFecha.toLocaleDateString()
+      element.numCheque = nuevoNumCheque + this.nuevoNroCheque
       console.log("nueva face",element.fechaPago)
       this._transaccionesFacturasService.updateFechaPago(element).subscribe((res) => {
         cont++;

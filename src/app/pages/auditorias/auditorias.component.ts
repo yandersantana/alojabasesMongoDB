@@ -246,6 +246,8 @@ export class AuditoriasComponent implements OnInit {
     this.auditoria.piezas_sistema = 0;
     this.auditoria.nombreproducto = "";
     this.auditoria.ubicacion = "";
+    this.auditoria.observaciones = "";
+    this.auditoria.valoracion= "Ok"
 
   }
  

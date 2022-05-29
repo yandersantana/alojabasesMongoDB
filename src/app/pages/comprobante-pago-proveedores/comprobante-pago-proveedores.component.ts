@@ -574,9 +574,9 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     });
 
     //if(bandera)
-      this.actualizarEstadosFacturas2();
+      //this.actualizarEstadosFacturas2();
     //else
-      //this.guardarComprobantePago(); 
+      this.guardarComprobantePago(); 
   }
 
 
@@ -658,7 +658,6 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
 
-  //sfsdfsdfsdfsdf
   actualizarEstadosFacturas2(){
     var sumaValores = 0;
     this.comprobantePago.transaccionesFacturas.forEach(element =>{

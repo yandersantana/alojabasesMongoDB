@@ -213,12 +213,14 @@ export class ConsolidadoComponent implements OnInit {
           this.usuarioLogueado = res as user;
           if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
-
-         
         },
         (err) => {}
       );
     });
+  }
+
+  clearForm(){
+    this.nombreProducto = "";
   }
 
   separarBodegas() {

@@ -25,9 +25,11 @@
                 <div class="col-md-2"></div>
                 <div class="col-md-8">
                     <div class="row"  style="margin-top: 0.7rem">
-                        <div class="col-md-12" style="text-align: center;"><h5>Seleccione un Producto</h5></div>
+                        <div class="col-md-12" style="text-align: center;">
+                            <h5 style="font-weight: bold;">Seleccione un Producto</h5>
+                        </div>
                         <div class="col-md-4" style="padding-top: 0.7em;">PRODUCTO</div>
-                        <div class="col-md-8">
+                        <div class="col-md-6">
                             <dx-select-box
                                 [dataSource]="productos22"
                                 displayExpr="PRODUCTO"
@@ -41,6 +43,7 @@
                                 </div>
                             </dx-select-box>
                         </div>
+                        <div class="col-md-2"><button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="clearForm()">Limpiar</button></div>
                         <div class="col-md-4" style="margin-top: 0.5em;">Tipo Búsqueda</div>
                         <div class="col-md-8" style="margin-top: 0.5em;">
                             <div >

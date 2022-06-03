@@ -3,6 +3,7 @@
   text-align: center;
 }
 
-/* ::ng-deep .dx-datagrid-rowsview .dx-row > td, .dx-datagrid-rowsview .dx-row > tr > td {  
-  background-color: #96c8a2;  
- }  */ 
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}

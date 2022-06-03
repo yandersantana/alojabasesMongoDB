@@ -8,11 +8,8 @@
         [(visible)]="popupVisible">
         <div *dxTemplate="let data of 'content'" class="content">
             <br><br><br>
-            <dx-load-indicator id="large-indicator" height="60" width="60"></dx-load-indicator>
-
-            
-            <h4>{{mensajeLoading}}</h4>
-           
+            <dx-load-indicator id="large-indicator" height="60" width="60"></dx-load-indicator>       
+            <h4 style="font-weight: bold;">{{mensajeLoading}}</h4>
         </div>
     </dx-popup>
 </div>

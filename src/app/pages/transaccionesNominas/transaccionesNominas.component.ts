@@ -1,9 +1,10 @@
-import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 import { Component, OnInit } from '@angular/core';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
+import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';
 import { Beneficiario } from '../administracion-cuentas/administracion-cuenta';
+import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { objDate } from '../transacciones/transacciones';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
 
@@ -32,8 +33,27 @@ export class TransaccionesNominasComponent implements OnInit {
   resultado = 0;
   estadoCuenta = ""
   beneficiario = ""
+  popupVisibleNotas : boolean = false;
+  mostrarListaNotas : boolean = true;
+  valorOption = ""
+  mostrarNuevaNotas : boolean = false;
+  listadoNotas: Nota [] = []
+
+  opciones: string[] = [
+      'Lista Notas',
+      'Nueva Nota'
+  ];
+
+
+  nota = {
+    fecha:"",
+    descripcion:"",
+    tipo:""
+  }
+       
 
   constructor(public _transaccionFinancieraService : TransaccionesFinancierasService,
+    public _notasService : NotasPagoService,
     public _beneficiarioService : BeneficiarioService) {}
 
   ngOnInit() {
@@ -137,6 +157,72 @@ export class TransaccionesNominasComponent implements OnInit {
     e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("centroCosto", "visible", false);
     e.component.endUpdate();
+  }
+
+  mostrarPopupNotas(){
+    this.popupVisibleNotas = true;
+    this.traerListadoNotas();
+  }
+
+
+  traerListadoNotas(){
+    this.mostrarLoading = true,
+    this.listadoNotas = [];
+    this._notasService.getNotasPorTipo("TNomina").subscribe(res => {
+      this.listadoNotas = res as Nota[];
+      this.mostrarLoading = false;
+   })
+  }
+
+  opcionRadio2(e){
+    switch (e.value) {
+      case "Lista Notas":
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+        break;
+      case "Nueva Nota":
+        this.mostrarListaNotas = false;
+        this.mostrarNuevaNotas = true;
+        break;
+      default:    
+    }       
+  }
+
+   deleteNota = (e) => {  
+    this.eliminarNota(e.row.data)  
+  }
+
+  eliminarNota(e:any){ 
+    this._notasService.deleteNotas(e).subscribe( res => {
+      this.popupVisibleNotas = false;
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se eliminó la nota con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => { })
+    }, err => {alert("error")})
+  }
+
+  guardarNuevaNota(){
+    if(this.nota.descripcion != null){
+      this.popupVisibleNotas = false;
+      this.mostrarLoading = true;
+      this.nota.tipo = "TNomina"
+      this._notasService.newNota(this.nota).subscribe(res => {
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Se registró su nota con éxito");
+        this.nota.descripcion = ""
+        this.valorOption = "Lista Notas"
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+      })
+    }else{
+      this.mostrarMensajeGenerico(2,"Hay campos vacios");
+    }
+    
   }
 
   mostrarMensajeGenerico(tipo:number , texto:string){

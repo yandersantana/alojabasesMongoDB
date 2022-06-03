@@ -45,7 +45,7 @@ export class TransaccionesComponent implements OnInit {
     this.proTransaccion = new productoTransaccion();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.cargarUsuarioLogueado();
-    this.traerTransaccionesPorRango();
+    //this.traerTransaccionesPorRango();
   }
 
   traerTransaccionesPorRango() {
@@ -178,14 +178,15 @@ export class TransaccionesComponent implements OnInit {
 
   cargarUsuarioLogueado() {
     new Promise((res, err) => {
-      if (localStorage.getItem("maily") != "") {
+      if (localStorage.getItem("maily") != "") 
         this.correo = localStorage.getItem("maily");
-      }
-      this.authenService.getUserLogueado(this.correo).subscribe(
-        (res) => { this.usuarioLogueado = res as user;
-        if(this.usuarioLogueado[0].status == "Inactivo")
-          this.authService.logOut();
 
+      this.authenService.getUserLogueado(this.correo).subscribe(
+        (res) => { 
+          this.usuarioLogueado = res as user;
+          this.traerTransaccionesPorRango();
+          if(this.usuarioLogueado[0].status == "Inactivo")
+            this.authService.logOut();
         },
         (err) => {}
       );
@@ -207,10 +208,10 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("usu_autorizado", "visible", true);
     e.component.columnOption("usuario", "visible", true);
     e.component.columnOption("observaciones", "visible", true);
-    e.component.columnOption("cliente", "visible", true);
+   // e.component.columnOption("cliente", "visible", true);
     e.component.columnOption("costo_unitario", "visible", true);
     e.component.columnOption("cantM2", "visible", true);
-    e.component.columnOption("proveedor", "visible", true);
+   // e.component.columnOption("proveedor", "visible", true);
     e.component.columnOption("maestro", "visible", true);
     e.component.columnOption("movimiento", "visible", true);
   }
@@ -221,10 +222,10 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("usu_autorizado", "visible", false);
     e.component.columnOption("usuario", "visible", false);
     e.component.columnOption("rucSucursal", "visible", false);
-    e.component.columnOption("cliente", "visible", false);
+   // e.component.columnOption("cliente", "visible", false);
     e.component.columnOption("cantM2", "visible", false);
     e.component.columnOption("costo_unitario", "visible", false);
-    e.component.columnOption("proveedor", "visible", false);
+   // e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("movimiento", "visible", false);
     e.component.columnOption("maestro", "visible", false);
     e.component.columnOption("observaciones", "visible", false);

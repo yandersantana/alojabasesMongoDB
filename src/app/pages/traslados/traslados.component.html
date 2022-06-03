@@ -1,9 +1,8 @@
 
 
- <div *ngIf="mostrarLoading">
-    <app-loading></app-loading>
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
-
 
 <div id="admin" style="display: none;">
     <div class="col-md-12">
@@ -207,11 +206,11 @@
 
     <div style="text-align: center">
         <dx-button
-                        class="button-info bt2"
-                        text="Guardar"
-                        [disabled]="false"
-                        (onClick)="validarGuardar()">
-                    </dx-button>
+            class="button-info bt2"
+            text="Guardar"
+            [disabled]="false"
+            (onClick)="validarGuardar()">
+        </dx-button>
 
                     
     </div>
@@ -282,7 +281,7 @@
         <dxo-export [enabled]="true" fileName="Traslados" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column dataField="_id" caption="Traslado N" dataType="string" [visible]="false" ></dxi-column>
         <dxi-column dataField="idT" caption="Traslado N" dataType="string" sortOrder="desc"> </dxi-column>
-        <dxi-column dataField="fecha" caption="Fecha" dataType="string"></dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="date" format="dd/MM/yyyy"></dxi-column>
         <dxi-column dataField="sucursal_origen.nombre" caption="Sucursal Origen" dataType="string" [visible]="true"></dxi-column>
         <dxi-column dataField="sucursal_destino.nombre" caption="Sucursal Destino" dataType="string" [visible]="true"></dxi-column>
         <dxi-column dataField="transportista.nombre" caption="Transportista" dataType="string" [visible]="true"></dxi-column>
@@ -290,8 +289,8 @@
         <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
-         <dxi-column type="buttons"caption="Recibido" width="15%" [visible]="true">
-            <dxi-button text="Recibido" [onClick]="getCourseRecibido"></dxi-button>   
+         <dxi-column type="buttons"caption="Recibido" width="15%" [visible]="true" >
+            <dxi-button text="Recibido"  [onClick]="getCourseRecibido"  [visible]="isCloneIconDisabled"></dxi-button>   
         </dxi-column> 
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>

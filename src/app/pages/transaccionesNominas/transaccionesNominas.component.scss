@@ -52,3 +52,8 @@
     margin-top: 0.4em;
     margin-bottom: 0.4em;
 }
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}

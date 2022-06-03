@@ -110,6 +110,7 @@
         id="gridContainer"
         [dataSource]="transacciones"
         [showBorders]="true"
+        [columnWidth]="125"
         (onExporting)="onExporting($event)"
         (onExported)="onExported($event)"
         (onRowPrepared)="onRowPrepared($event)">   
@@ -140,13 +141,15 @@
         <dxi-column dataField="valor" dataType="number" caption="V.Unitario" [visible]="false" ></dxi-column>
         <dxi-column dataField="totalsuma"   dataType="number"></dxi-column>
         <dxi-column dataField="usu_autorizado"  [visible]="false"></dxi-column>
-        <dxi-column dataField="cliente"  [visible]="false"></dxi-column>
-        <dxi-column dataField="proveedor"  [visible]="false"></dxi-column>
+        <dxi-column dataField="cliente"  caption="Cliente" [width]="200" [visible]="true"></dxi-column>
+        <dxi-column dataField="proveedor" caption="Proveedor" [width]="200" [visible]="true"></dxi-column>
         <dxi-column dataField="movimiento"  [visible]="false"></dxi-column>
         <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
         <dxi-column dataField="maestro"  [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
+
         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+        
     </dx-data-grid>
     
 

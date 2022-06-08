@@ -40,7 +40,6 @@ router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
 });
 
 
-
 router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;
@@ -54,10 +53,12 @@ router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
   res.json(transacciones);
 });
 
+
 router.get("/getTransacciones", async (req, res) => {
   const transacciones = await Transacciones.find();
   res.send(transacciones);
 });
+
 
 router.put("/update/:id", async (req, res, next) => {
   const { id } = req.params;
@@ -86,6 +87,7 @@ router.put("/update/:id", async (req, res, next) => {
     orden_compra: req.body.orden_compra,
     cantM2: req.body.cantM2,
     movimiento: req.body.movimiento,
+    mcaEntregado: req.body.mcaEntregado
   };
   await Transacciones.findByIdAndUpdate(
     id,
@@ -93,6 +95,12 @@ router.put("/update/:id", async (req, res, next) => {
     { new: true }
   );
   res.json({ status: "Sucursal Actualizada" });
+});
+
+router.put("/updateTransaccionEntrega/:id", async (req, res, next) => {
+  const { id } = req.params;
+  await Transacciones.findByIdAndUpdate( id,{ $set: { mcaEntregado: "SI" } },{ new: true } );
+  res.json({ status: "Transaccion Updated" });
 });
 
 router.delete("/delete/:id", async (req, res, next) => {
@@ -136,9 +144,10 @@ router.post("/newTransaccion", async (req, res) => {
     orden_compra: req.body.orden_compra,
     cantM2: req.body.cantM2,
     movimiento: req.body.movimiento,
+    mcaEntregado: req.body.mcaEntregado
   });
   await newTransaccion.save();
-  res.json({ status: "Sucursal creado" });
+  res.json({ status: "Transaccion creada" });
 });
 
 module.exports = router;

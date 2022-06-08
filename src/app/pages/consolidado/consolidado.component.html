@@ -301,7 +301,6 @@
                 dataField="totalb2"
                 caption="Total"
                 valueFormat="currency"
-               
                 [visible]="false"
                 width="10%">
             </dxi-column>
@@ -384,7 +383,6 @@
 </div>
 
 <div id="admin" class="remiPro" *ngIf="mostrarAdmin">
-    
         <dx-data-grid #datag2
             id="gridContainer"
             [dataSource]="invetarioP"
@@ -532,7 +530,7 @@
                 </dxi-total-item>
    
             </dxo-summary>
-            <dxi-column
+        <dxi-column
             dataField="ultimoPrecioCompra"
             caption="Ult.Pre.Compra"
             [visible]="false"
@@ -540,13 +538,28 @@
             width="10%">
         </dxi-column>
 
+         <dxi-column
+            dataField="porUtilidad"
+            caption="% Utilidad"
+            [visible]="false"
+            dataType="number"
+            width="10%">
+        </dxi-column>
+
+         <dxi-column
+            dataField="valorProducto"
+            caption="PVP"
+            [visible]="false"
+            dataType="number"
+            width="10%">
+        </dxi-column>
+
+
         <dxi-column
             dataField="ultimaFechaCompra"
             caption="Ult.Fech.Compra"
-            
             [visible]="false"
             width="10%">
-            
         </dxi-column>
         <dxi-column
             dataField="notas"

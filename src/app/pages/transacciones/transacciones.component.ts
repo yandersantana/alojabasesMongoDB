@@ -9,6 +9,7 @@ import { ProductoService } from "src/app/servicios/producto.service";
 import { producto } from "../ventas/venta";
 import { productoTransaccion } from "../consolidado/consolidado";
 import { AuthService } from "src/app/shared/services";
+import Swal from "sweetalert2";
 
 @Component({
   selector: "app-transacciones",
@@ -196,6 +197,42 @@ export class TransaccionesComponent implements OnInit {
   mostrarpopup() {
     this.popupvisible = true;
   }
+
+  mostrarNotas = (e) => {
+    console.log(e)
+    var data = e.row.data;
+    console.log(data)
+    Swal.fire({
+      title: 'Actualización Producto',
+      text: "Está seguro que desea marcar como entregado el producto "+data.producto,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mensajeLoading = "Actualizando"
+        this.mostrarLoading = true;
+        this.transaccionesService.updateTransaccionEntrega(data).subscribe(
+          res => {this.mostrarLoading = false;
+                  Swal.fire({ title: "Correcto", text: "Se ha actualizado su transacción", icon: 'success' })
+                  this.traerTransaccionesPorRango();},
+          err => {this.mostrarLoading = false;
+                  Swal.fire({ title: "Error", text: "Error al actualizar estado", icon: 'error'})})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarLoading = false;
+        Swal.fire({title: "Error", text: "Se ha cancelado su proceso", icon: 'error'})
+      }
+    })
+  };
+
+  isCloneIconDisabled(e) {
+    if(e.row.data.mcaEntregado == "NO")
+      return true;
+    else 
+      return false;
+  }
+
 
   onRowPrepared(e) {}
 

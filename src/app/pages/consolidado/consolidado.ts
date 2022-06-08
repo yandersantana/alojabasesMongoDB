@@ -21,6 +21,8 @@ export class inventario {
   notas: string[];
   execute: boolean;
   requiereActualizacion : string;
+  porUtilidad : number;
+  valorProducto : number;
   constructor() {}
 }
 

@@ -24,8 +24,10 @@ export class transaccion {
   cantM2: number;
   movimiento: number;
   createdAt: Date;
+  mcaEntregado : string;
   constructor() {
     this.valor = 0;
+    this.mcaEntregado = "SI";
   }
 }
 

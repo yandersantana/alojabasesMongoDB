@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
+import { ComprobantePagoService } from 'src/app/servicios/ComprobantePago.service';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';
 import { Beneficiario } from '../administracion-cuentas/administracion-cuenta';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
+import { ComprobantePago } from '../comprobante-pago/comprobante-pago';
 import { objDate } from '../transacciones/transacciones';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
 
@@ -34,8 +36,12 @@ export class TransaccionesNominasComponent implements OnInit {
   estadoCuenta = ""
   beneficiario = ""
   popupVisibleNotas : boolean = false;
+  popupVisibleNotasTabla : boolean = false;
   mostrarListaNotas : boolean = true;
   valorOption = ""
+  textoNota = ""
+  nombre = ""
+  nombreSubCuenta = ""
   mostrarNuevaNotas : boolean = false;
   listadoNotas: Nota [] = []
 
@@ -54,6 +60,7 @@ export class TransaccionesNominasComponent implements OnInit {
 
   constructor(public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _notasService : NotasPagoService,
+    public _comprobantePagoService : ComprobantePagoService,
     public _beneficiarioService : BeneficiarioService) {}
 
   ngOnInit() {
@@ -140,7 +147,7 @@ export class TransaccionesNominasComponent implements OnInit {
         this.valorPagoPrestamos = element.valor + this.valorPagoPrestamos;
       }
     })
-    this.resultado = this.valorNominas - this.valorAnticipos - this.valorPagoPrestamos - this.valorDescuentos + this.valorPagosExtras + this.valorComisiones;
+    this.resultado = this.valorNominas + this.valorAnticipos - this.valorPagoPrestamos - this.valorDescuentos + this.valorPagosExtras + this.valorComisiones;
   }
 
   onExporting (e) {
@@ -189,8 +196,26 @@ export class TransaccionesNominasComponent implements OnInit {
     }       
   }
 
-   deleteNota = (e) => {  
+  deleteNota = (e) => {  
     this.eliminarNota(e.row.data)  
+  }
+
+  mostrarNotas = (e) => {
+    this.mostrarPopupNotasTabla(e.row.data);
+  };
+
+  mostrarPopupNotasTabla(e: any) {
+    this.nombre = e.cliente
+    this.nombreSubCuenta = e.subCuenta
+    this.popupVisibleNotasTabla = true;
+
+    var comprobante = new ComprobantePago();
+    comprobante.idDocumento = e.id_documento
+    this._comprobantePagoService.getComprobantePorIdConsecutivo(comprobante).subscribe( 
+      res => { var notas = res as ComprobantePago[];
+              this.textoNota = notas[0].observaciones}, 
+      err => {alert("error")})
+
   }
 
   eliminarNota(e:any){ 

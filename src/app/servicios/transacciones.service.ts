@@ -12,8 +12,8 @@ import { producto } from "../pages/ventas/venta";
 
 export class TransaccionesService {
   //private URL = "http://localhost:3000/transaccion"; //localhost
-  private URL = "http://104.131.82.174:3000/transaccion";
-  //private URL = "http://159.223.107.115:3000/transaccion";
+  //private URL = "http://104.131.82.174:3000/transaccion";
+  private URL = "http://159.223.107.115:3000/transaccion";
 
 
   proTransaccion: productoTransaccion = new productoTransaccion();
@@ -52,6 +52,10 @@ export class TransaccionesService {
 
   updateTransaccion(transaccion) {
     return this.http.put(this.URL + `/update/${transaccion._id}`, transaccion);
+  }
+
+  updateTransaccionEntrega(transaccion) {
+    return this.http.put(this.URL + `/updateTransaccionEntrega/${transaccion._id}`, transaccion);
   }
 
   deleteTransaccion(transaccion) {

@@ -26,7 +26,9 @@ const TransaccionesSchema = new Schema({
     maestro: { type: String, required: false},
     orden_compra: { type: String, required: false},
     cantM2: { type: String, required: false},
-    movimiento: { type: String, required: false}
+    movimiento: { type: String, required: false},
+    mcaEntregado: { type: String, required: false}
+    
 },{
     timestamps:true
 });

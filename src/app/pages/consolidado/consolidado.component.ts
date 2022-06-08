@@ -559,22 +559,19 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.cantidadPiezas3 = contPiezas3;
       //this.invetarioProd.bodega= "S1 ("+this.bodegasMatriz+" ) S2 ("+this.bodegasSucursal1+") S3("+this.bodegasSucursal2+")"
       this.invetarioProd.bodega =
-        "S1 (" +
-        element2.ubicacionSuc1 +
-        " ) S2 (" +
-        element2.ubicacionSuc2 +
-        ") S3(" +
-        element2.ubicacionSuc3 +
-        ")";
+        "  S1 (" + element2.ubicacionSuc1 +
+        ") S2 (" +element2.ubicacionSuc2 +
+        ") S3(" + element2.ubicacionSuc3 +")";
 
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
+      this.invetarioProd.porUtilidad = element2.porcentaje_ganancia;
+      this.invetarioProd.valorProducto = (element2.porcentaje_ganancia * element2.precio) + element2.precio ;
       this.invetarioProd.notas = element2.notas;
       this.invetarioProd.execute = false;
-      if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto) {
+      if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto) 
         this.invetarioP.push(this.invetarioProd);
-      }
-
+      
       contCajas = 0;
       contPiezas = 0;
       contCajas2 = 0;
@@ -765,6 +762,8 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.bodega = "S1 (" +element2.ubicacionSuc1 +" ) S2 (" + element2.ubicacionSuc2 +") S3(" +  element2.ubicacionSuc3 + ")";
 
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
+      this.invetarioProd.porUtilidad = element2.porcentaje_ganancia;
+      this.invetarioProd.valorProducto = ((element2.porcentaje_ganancia * element2.precio)/100) + element2.precio ;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
       console.log(this.invetarioProd);
@@ -982,7 +981,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarActualizacion = false;
         break;
       case "Inventario Contable":
-         this.tipoBusqueda = "Contable"
+        this.tipoBusqueda = "Contable"
         this.traerTransacciones();
         this.traerProductosPendientes();
         this.mostrarUser = true;
@@ -991,6 +990,8 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarActualizacion = false;
         break;
       case "Inventario Valorizado":
+        this.traerTransacciones();
+        this.traerProductosPendientes();
         this.mostrarUser = false;
         this.mostrarAdmin = true;
         this.mostrarBusquedaIndividual = false;
@@ -1192,6 +1193,8 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.precio", "visible", true);
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
+    e.component.columnOption("porUtilidad", "visible", true);
+    e.component.columnOption("valorProducto", "visible", true);
     e.component.columnOption("ultimaFechaCompra", "visible", true);
     e.component.columnOption("notas", "visible", true);
   }
@@ -1203,6 +1206,8 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("producto.precio", "visible", false);
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);
+    e.component.columnOption("porUtilidad", "visible", false);
+    e.component.columnOption("valorProducto", "visible", false);
     e.component.columnOption("ultimaFechaCompra", "visible", false);
     e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();

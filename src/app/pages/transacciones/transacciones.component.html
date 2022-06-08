@@ -129,17 +129,17 @@
         <dxi-column dataField="sucursal"></dxi-column>
         <dxi-column dataField="tipo_transaccion"></dxi-column>
         <dxi-column dataField="bodega"  [visible]="false"></dxi-column>
-        <dxi-column dataField="documento" dataType="number"></dxi-column>
+        <dxi-column dataField="documento" dataType="number" [width]="90"></dxi-column>
         <dxi-column dataField="rucSucursal" dataType="string" [visible]="false"></dxi-column>
-        <dxi-column dataField="orden_compra" caption="Orden N"></dxi-column>
-        <dxi-column dataField="factPro" [visible]="true" caption="Remision" dataType="number"></dxi-column>
+        <dxi-column dataField="orden_compra" caption="Orden N" dataType="number" [width]="80"></dxi-column>
+        <dxi-column dataField="factPro" [visible]="true" caption="Remision" dataType="number" [width]="80"></dxi-column>
         <dxi-column dataField="producto" [width]="380"></dxi-column>
-        <dxi-column dataField="cajas"  dataType="number"></dxi-column>
-        <dxi-column dataField="piezas"  dataType="number"></dxi-column>
+        <dxi-column dataField="cajas"  dataType="number" [width]="80"></dxi-column>
+        <dxi-column dataField="piezas"  dataType="number" [width]="80"></dxi-column>
         <dxi-column dataField="costo_unitario" [visible]="false"></dxi-column>
         <dxi-column dataField="cantM2" caption="Cantidad" [visible]="false"  dataType="number"></dxi-column>
         <dxi-column dataField="valor" dataType="number" caption="V.Unitario" [visible]="false" ></dxi-column>
-        <dxi-column dataField="totalsuma"   dataType="number"></dxi-column>
+        <dxi-column dataField="totalsuma"   dataType="number" [width]="100"></dxi-column>
         <dxi-column dataField="usu_autorizado"  [visible]="false"></dxi-column>
         <dxi-column dataField="cliente"  caption="Cliente" [width]="200" [visible]="true"></dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" [width]="200" [visible]="true"></dxi-column>
@@ -147,6 +147,10 @@
         <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
         <dxi-column dataField="maestro"  [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
+        <dxi-column dataField="mcaEntregado" caption="Entregado" [width]="90" [visible]="true"></dxi-column>
+        <dxi-column type="buttons" dataField="bt1" caption="Notas" [width]="90">
+            <dxi-button hint="Notas" icon="fa fa-check-square-o" [onClick]="mostrarNotas" [visible]="isCloneIconDisabled"></dxi-button>
+        </dxi-column>
 
         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
         

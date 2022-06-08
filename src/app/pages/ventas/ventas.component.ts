@@ -3120,6 +3120,7 @@ cambiarestado(e,i:number){
                 this.transaccion.usuario=this.factura.username
                 this.transaccion.idTransaccion=this.number_transaccion++
                 this.transaccion.cliente=this.factura.cliente.cliente_nombre  
+                this.transaccion.mcaEntregado = element.entregar == true ? "SI":"NO"
 
                 this.transaccionesService.newTransaccion(this.transaccion).subscribe(
                   res => {
@@ -3239,6 +3240,7 @@ cambiarestado(e,i:number){
                 this.transaccion.usuario=this.factura.username
                 this.transaccion.idTransaccion=this.number_transaccion++
                 this.transaccion.cliente=this.factura.cliente.cliente_nombre
+                this.transaccion.mcaEntregado = element.entregar == true ? "SI":"NO"
                 
                 this.transaccionesService.newTransaccion(this.transaccion).subscribe(
                   res => {

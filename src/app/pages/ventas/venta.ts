@@ -69,7 +69,7 @@ export class venta {
     this.cantidad = 0 
     this.descuento = 0
     this.total=0
-    this.precio_venta = 0
+    //this.precio_venta = 0
     this.producto = new producto()
 
     }

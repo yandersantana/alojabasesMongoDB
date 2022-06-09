@@ -685,6 +685,11 @@ setSelectedProducto(i:number){
           this.productosVendidos[i].precio_min = parseFloat((element.precio * element.porcentaje_ganancia / 100 + element.precio).toFixed(2))
           this.productosVendidos[i].equivalencia="0C 0P"
           this.productosVendidos[i].tipoDocumentoVenta= this.tDocumento
+
+            //this.productosVendidos[i].precio_venta = 0
+
+          
+          console.log(this.productosVendidos[i])
         }
       })
     }else{

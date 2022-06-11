@@ -20,7 +20,9 @@ export class SubCuenta{
     nombre:string
     idCuenta:string
     tipoCuenta:string
+    mcaCajaMenor: boolean
     constructor(){
+        this.mcaCajaMenor = true;
     }
 }
 

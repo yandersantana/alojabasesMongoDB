@@ -6,7 +6,8 @@ router.post('/newSubCuenta', async (req, res) => {
     console.log(req)
     const newSubCuenta = new SubCuenta({ 
       nombre:req.body.nombre,
-      id_cuenta:req.body.idCuenta
+      id_cuenta:req.body.idCuenta,
+      mcaCajaMenor:req.body.mcaCajaMenor
     });
     await newSubCuenta.save();
     res.json({status: 'Cuenta creada'});
@@ -32,7 +33,8 @@ router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const newSubCuenta ={ 
             nombre:req.body.nombre,
-            id_cuenta:req.body.id_cuenta};
+            id_cuenta:req.body.id_cuenta,
+            mcaCajaMenor:req.body.mcaCajaMenor};
     await SubCuenta.findByIdAndUpdate(id, {$set: newSubCuenta}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

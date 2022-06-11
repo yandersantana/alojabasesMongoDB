@@ -76,12 +76,14 @@ export class TransaccionesFacturas{
     numeroOrden: number
     estadoOrden: string
     observaciones: string
+    mcaError: boolean
     constructor(){
         this.valorFactura = 0;
         this.valorCancelado = 0;
         this.valorAbonado = 0;
         this.observaciones = "";
         this.estado = "PENDIENTE";
+        this.mcaError = false;
     }
 }
 

@@ -26,6 +26,9 @@ import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheq
 import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { element } from 'protractor';
+import { ProductosEntregadosService } from 'src/app/servicios/productos-entregados.service';
+import { ProductoDetalleEntrega } from '../producto/producto';
+import { ProductosIngresadosService } from 'src/app/servicios/productos-ingresados.service';
 
 
 @Component({
@@ -83,9 +86,12 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   mostrarLoading : boolean = false;
   mensajeLoading = "Cargando"
+  mostrarEvaluacion = false;
 
   parametrizaciones: parametrizacionsuc[] = [];
   detallesCostos: CentroCosto[] = [];
+  listaProductosIngresados: ProductoDetalleEntrega[] = [];
+  
   parametrizacionSucu: parametrizacionsuc;
   obj: objDate;
   nowdesde: Date = new Date();
@@ -131,6 +137,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     public _ordenCompraService: OrdenesCompraService,
     public _facturaProveedorService: FacturasProveedorService,
     public _authenService:AuthenService,
+    public _productosIngresadosService: ProductosIngresadosService,
     public _cuentaBancariaService: CuentaBancariaService
     ) {
    }
@@ -258,9 +265,21 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         this.obtenerAbonos(e,i);
         this.obtenerOrdenCompraRelacionada(e,i);
       }) 
-    }    
+      this.obtenerDatosRemision(factura.nSolicitud,i);
+    }     
+  }
 
-     
+  obtenerDatosRemision(nOrden: number, i : number){
+    console.log(nOrden)
+    var newFacturaP = new ProductoDetalleEntrega()
+    newFacturaP.numeroOrden = nOrden;
+    this._productosIngresadosService.getProductosIngresadosPorOrden(newFacturaP).subscribe(res => {
+        this.listaProductosIngresados = res as ProductoDetalleEntrega[];
+        this.listaProductosIngresados.forEach(element=>{
+          if(element.cantidadDevuelta > 0)
+            this.listadoFacturasPagar[i].mcaError = true;
+        })
+      }) 
   }
 
   async obtenerOrdenCompraRelacionada(e,i){ 
@@ -291,6 +310,18 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   }
 
 
+  mostrarErrores(nOrden:number , i:number){
+    this.mostrarEvaluacion = true;
+    var newFacturaP = new ProductoDetalleEntrega()
+    newFacturaP.numeroOrden = nOrden;
+    this._productosIngresadosService.getProductosIngresadosPorOrden(newFacturaP).subscribe(res => {
+        this.listaProductosIngresados = res as ProductoDetalleEntrega[];
+        this.listaProductosIngresados.forEach(element=>{
+          if(element.cantidadDevuelta > 0)
+            this.listadoFacturasPagar[i].mcaError = true;
+        })
+      }) 
+  }
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
@@ -333,17 +364,20 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   calcularTotal(){
     this.valorTotalFacturas = 0;
+    var valor = 0;
     this.listadoFacturasPagar.forEach(element=>{
-      this.valorTotalFacturas = Number(this.valorTotalFacturas.toFixed(2)) + Number(element.valorCancelado.toFixed(2));
+      valor = Number(valor) + Number(element.valorCancelado.toFixed(2));
     });
+    this.valorTotalFacturas = Number(valor.toFixed(2));
   }
 
   calcularTotalCheque(){
     this.valorTotalCheques = 0;
+    var valor = 0;
     this.listadoPagos.forEach(element=>{
-      this.valorTotalCheques = this.valorTotalCheques + element.valor;
-      console.log(this.valorTotalCheques)
+      valor = valor + element.valor;
     });
+    this.valorTotalCheques = valor;
   }
 
 

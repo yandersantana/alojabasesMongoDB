@@ -95,13 +95,14 @@
                 <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
                     <tr>
                         <th class="text-center" style="width: 12%;">Factura</th>
-                        <th class="text-center" style="width: 13%;">Valor Fact</th>
+                        <th class="text-center" style="width: 12%;">Valor Fact</th>
                         <th class="text-center" style="width: 10%;">Abonados</th>
                         <th class="text-center" style="width: 10%;">Nuevo Pago</th>
                         <th class="text-center" style="width: 10%;">Saldo</th>
-                        <th class="text-center" style="width: 12%;">Estado</th>
-                        <th class="text-center" style="width: 12%;">Estado Orden</th>
-                        <th class="text-center" style="width: 16%;">Observaciones</th>
+                        <th class="text-center" style="width: 11%;">Estado</th>
+                        <th class="text-center" style="width: 11%;">Estado Orden</th>
+                        <th class="text-center" style="width: 14%;">Observaciones</th>
+                        <th class="text-center" style="width: 5%;"></th>
                         <th class="text-center" style="width: 5%;"></th>
                     </tr>
                 </table>
@@ -121,7 +122,7 @@
                                 </dx-select-box>
                             </div>
 
-                            <div class="padding-tr-13">
+                            <div class="padding-tr-12">
                                 <dx-number-box [(value)]="p.valorFactura"></dx-number-box>
                             </div>
 
@@ -137,20 +138,25 @@
                                 <dx-number-box [(value)]="p.valorSaldos"></dx-number-box>
                             </div>
 
-                            <div class="padding-tr-12">
+                            <div class="padding-tr-11">
                                 <dx-text-box [(value)]="p.estado" readOnly="true"></dx-text-box>
                             </div>
 
-                            <div class="padding-tr-12">
+                            <div class="padding-tr-11">
                                 <dx-text-box [(value)]="p.estadoOrden" readOnly="true"></dx-text-box>
                             </div>
 
-                            <div class="padding-tr-16">
+                            <div class="padding-tr-14">
                                 <dx-text-box [(value)]="p.observaciones"></dx-text-box>
                             </div>
                                 
                             <div class="padding-tr-5">
-                                 <dx-button icon="clear" (onClick)="eliminarRegistro(i)" ></dx-button>
+                                 <dx-button icon="clear"  (onClick)="eliminarRegistro(i)" ></dx-button>
+                            </div>
+
+                            <div class="padding-tr-5">
+                                <button class="size-icon" *ngIf="p.mcaError == true" (click)="mostrarErrores(p.numeroOrden,i)"><i class="fa fa-exclamation-triangle" style="color: red;"></i></button>
+                                <button class="size-icon" *ngIf="p.mcaError == false"><i class="fa fa-check-square-o" style="color: green;"></i></button>
                             </div>
 
                         </div>
@@ -644,3 +650,35 @@
         </div>
     </dx-popup>
 </div>
+
+
+ <dx-popup
+        [width]="600"
+        [height]="350"
+        [closeOnOutsideClick]="true" 
+        [showTitle]="false"
+        [dragEnabled]="false"
+        [(visible)]="mostrarEvaluacion">
+        <div *dxTemplate="let data of 'content'" class="content">
+            <br><br>
+            <div style="text-align: center;font-weight: bold;"><h6 style="font-weight: bold;">Productos Devueltos</h6></div>
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <table>
+                        <tr>
+                            <th class="text-center">Producto</th>
+                            <th class="text-center">Cajas</th>
+                            <th class="text-center">Piezas</th>
+                        </tr>
+                        <tr *ngFor="let pro of listaProductosIngresados; let id = index">
+                            <td style="text-align: center;width: 50%;">{{pro.nombreComercial.PRODUCTO}} </td>
+                            <td style="text-align: center;width: 25%;">{{pro.cantidadDevuelta}}</td>
+                            <td style="text-align: center;width: 25%;">{{pro.cantidadDevueltaPiezas}}</td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </dx-popup>

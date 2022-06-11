@@ -971,6 +971,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       element.nombreCuenta = cuenta.nombre;
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
+      element.mcaCajaMenor = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).mcaCajaMenor;
     });
 
 
@@ -1116,6 +1117,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
       transaccion.cedula = this.reciboCaja.ruc;
       transaccion.numDocumento = this.numeroDocumento;
       transaccion.valor = element.valor;
+      transaccion.isContabilizada = element.mcaCajaMenor;
       transaccion.isContabilizada = isContabilizada;
       transaccion.tipoPago = "";
       transaccion.soporte = "";

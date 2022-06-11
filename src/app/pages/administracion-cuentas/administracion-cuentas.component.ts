@@ -23,7 +23,8 @@ export class AdministracionCuentasComponent implements OnInit {
     tipoCuenta:""
   }
   subCuenta = {
-    nombre:""
+    nombre:"",
+    mcaCajaMenor :true
   }
   centroCosto = {
     nombre:""
@@ -60,6 +61,7 @@ export class AdministracionCuentasComponent implements OnInit {
   sectionCostos:boolean = false
   sectionBeneficiarios:boolean = false
   sectionCuentasBancarias:boolean = false
+  mcaCajaMenor:boolean = true
 
   newSubCuenta: SubCuenta
   idCuenta:string
@@ -92,6 +94,7 @@ export class AdministracionCuentasComponent implements OnInit {
   }
 
   mostrarPopupSubCuenta(){
+    this.isNew = true;
     this.popupVisibleSubcuenta=true
     this.subCuenta.nombre = "";
   }
@@ -297,15 +300,12 @@ export class AdministracionCuentasComponent implements OnInit {
     this.newSubCuenta  = new SubCuenta();
     this.newSubCuenta.idCuenta = this.idCuenta;
     this.newSubCuenta.nombre = this.subCuenta.nombre;
+    this.newSubCuenta.mcaCajaMenor = this.subCuenta.mcaCajaMenor;
     this.mensajeGuardando()
     new Promise<any>((resolve, reject) => {
       this._subCuentasService.newSubCuenta(this.newSubCuenta).subscribe(
-        res => {
-          this.correcto()
-        },
-        err => {
-          this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
-        })
+        res => { this.correcto() },
+        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
     })
   } 
 
@@ -374,6 +374,12 @@ export class AdministracionCuentasComponent implements OnInit {
   guardar(e,cuenta){
     this.cuenta = cuenta;
     this.popupVisible = true;
+    this.isNew = false;
+  }
+
+  guardarSubCuenta(e,subCuenta){
+    this.subCuenta = subCuenta;
+    this.popupVisibleSubcuenta = true;
     this.isNew = false;
   }
 
@@ -454,18 +460,12 @@ export class AdministracionCuentasComponent implements OnInit {
 
 
   actualizarSubCuenta(e,subCuenta){
-    //var existe = this.listaCuentas.find(element=> element.nombre == this.valueCuenta);
-
-    subCuenta.nombre = this.valueCuenta;
+    this.popupVisibleSubcuenta = false;
     this.mensajeGuardando()
     new Promise<any>((resolve, reject) => {
       this._subCuentasService.updateSubCuentas(subCuenta).subscribe(
-        res => {
-          this.correcto()
-        },
-        err => {
-            this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")
-        })
+        res => { this.correcto()},
+        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
     })
 
   }

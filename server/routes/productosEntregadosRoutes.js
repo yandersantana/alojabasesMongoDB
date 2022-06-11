@@ -7,7 +7,10 @@ router.get('/getProductosEntregados', async (req, res) => {
     res.send(productosEntregados)      
 })
 
-
+router.post('/getProductosEntregadosPorOrden', async (req, res, next) => {
+  const documentos = await ProductosEntregados.find({ numeroOrden: req.body.numeroOrden});
+  res.json(documentos);
+});
 
 router.put('/updateEstadoIngreso/:id/:estado', async (req, res,next) => {
     const { id } = req.params;

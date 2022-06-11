@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class SubCuentasService {
-  //private URL = "http://159.223.107.115:3000/subCuentas";
-  private URL = "http://104.131.82.174:3000/subCuentas";
+  private URL = "http://159.223.107.115:3000/subCuentas";
+  //private URL = "http://104.131.82.174:3000/subCuentas";
   //private URL = 'http://localhost:3000/subCuentas'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}
@@ -17,7 +17,7 @@ export class SubCuentasService {
   }
 
   getSubCuentas() {
-    return this.http.get(this.URL + "/getSubCuenta");
+    return this.http.get(this.URL + "/getSubCuentas");
   }
 
   getSubCuentasPorId(idCuenta) {

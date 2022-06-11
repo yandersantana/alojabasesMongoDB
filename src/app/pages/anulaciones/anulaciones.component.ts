@@ -2274,16 +2274,16 @@ subtotal:number=0
       })
     })
 
-    if(contIn==0){
+    //if(contIn==0){
       this.mostrarMensaje()
       this.ordenesService.updateEstadosOrdenes(e._id,"Aprobado","ANULADO").subscribe( res => {this.actualizarProductos3(e)}, err => {alert("error")})
-    }else{
+   /*  }else{
       Swal.fire({
         title: 'Error',
         text: "No hay inventario suficiente para realizar la anulación",
         icon: 'error'
       })
-    }
+    } */
   }
 
   verFacturas(e){
@@ -2320,7 +2320,6 @@ subtotal:number=0
         var num:string
         num=e.documento+""
         new Promise<any>((resolve, reject) => {
-         // this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Aprobado", "msjGeneral":result.value,"estadoOrden":"Pendiente/Anulacion"}).then(res => { this.confirmarM()}, err => alert(err));  
          this.ordenesService.updateOrdenEstadoRechazo2(e._id,"Aprobado",result.value,"Pendiente-Anulacion").subscribe( res => {this.confirmarM()}, err => {alert("error")})
         })
         
@@ -2496,8 +2495,6 @@ crearPDF(){
 }
 
 getDocumentDefinition() {
-  //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
-//console.log("holaaaa"+fecha2); 
   this.setearNFactura()
   
   sessionStorage.setItem('resume', JSON.stringify("jj"));

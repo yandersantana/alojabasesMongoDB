@@ -454,9 +454,11 @@ export class ComprobantePagoComponent implements OnInit {
 
   calcularTotal(e){
     this.comprobantePago.total = 0;
+    var valor = 0;
     this.listadoOperaciones.forEach(element =>{
-      this.comprobantePago.total +=element.valor;
+      valor += Number(element.valor.toFixed(2));
     })
+    this.comprobantePago.total = Number(valor.toFixed(2))
 
     if( this.comprobantePago.total > this.totalDeuda && this.tipoComprobante == "Cta.x Pagar")
       Swal.fire( "Atención","La suma de los valores no puede ser mayor al valor de la deuda",'warning')
@@ -765,6 +767,7 @@ export class ComprobantePagoComponent implements OnInit {
       element.nombreCuenta = cuenta.nombre;
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
+      element.mcaCajaMenor = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).mcaCajaMenor;
     });
     this.guardarComprobantePago(); 
     if(this.tipoComprobante == "Cta.x Pagar")
@@ -857,6 +860,19 @@ export class ComprobantePagoComponent implements OnInit {
     },err => {})
   }
 
+  traerCuentasActualizar(){
+    this._subCuentasService.getSubCuentas().subscribe(res => {
+      var listado = res as SubCuenta[];
+      listado.forEach(element =>{
+        element.mcaCajaMenor = true;
+        console.log(element);
+        this._subCuentasService.updateSubCuentas(element).subscribe( res => {
+          console.log("actualice")
+        },err => {})
+      })
+    })
+  }
+
   generarTransaccionesFinancieras(){
     var cont=0;
     this.comprobantePago.operacionesComercialesList.forEach(element=>{
@@ -879,10 +895,10 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.subCuenta = element.nombreSubcuenta;
       transaccion.notas = this.comprobantePago.observaciones;
       transaccion.tipoCuenta = element.tipoCuenta;
-
       transaccion.beneficiario = this.comprobantePago.beneficiario;
       transaccion.centroCosto = this.comprobantePago.centroCosto;
       transaccion.proveedor = this.comprobantePago.proveedor;
+      transaccion.isContabilizada = element.mcaCajaMenor;
 
       if(element.nombreCuenta == "2.1 PRÉSTAMOS"){
         transaccion.referenciaPrestamo = "CP"+this.comprobantePago.idDocumento.toString();

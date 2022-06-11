@@ -36,6 +36,12 @@ router.post("/getCuentasPorRUC/:documento", async (req, res, next) => {
   res.json(documentos);
 });
 
+router.post("/getCuentasPorRUCCancelada/:documento", async (req, res, next) => {
+  const { documento } = req.params;
+  const documentos = await CuentaPorCobrar.find({rucCliente: documento, estado:"Cancelada"});
+  res.json(documentos);
+});
+
 router.post("/getCuentasPorNombre/:nombre", async (req, res, next) => {
   const { nombre } = req.params;
   const documentos = await CuentaPorCobrar.find({cliente: nombre, estado:"Activa"});

@@ -90,6 +90,11 @@
     padding: 0.5em;
 }
 
+.padding-tr-11{
+    width: 11%;
+    padding: 0.5em;
+}
+
 .padding-tr-12{
     width: 12%;
     padding: 0.5em;
@@ -97,6 +102,11 @@
 
 .padding-tr-13{
     width: 13%;
+    padding: 0.5em;
+}
+
+.padding-tr-14{
+    width: 14%;
     padding: 0.5em;
 }
 
@@ -146,4 +156,11 @@
 ::ng-deep .dx-theme-material-typography h2 {
     font-weight: bold;
     font-size: 40px;
+}
+
+.size-icon{
+    background-color: transparent;
+    border: none;
+    font-size: 1.6em;
+    margin-top: -1em;
 }

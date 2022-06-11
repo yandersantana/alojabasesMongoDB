@@ -28,6 +28,7 @@ import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Prestamos } from '../prestamos/prestamos';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -886,11 +887,6 @@ export class ReciboCajaComponent implements OnInit {
   }
 
 
-
-  
-
-
-
   eliminarComp(e){
     Swal.fire({
       title: 'Anular Recibo Caja',
@@ -965,7 +961,8 @@ export class ReciboCajaComponent implements OnInit {
 
   completarEliminacion(e){
     this.eliminarTransacciones();
-    this.eliminarCuentaPorCobrar(e);
+    //this.eliminarCuentaPorCobrar(e);
+    this.restablecerCuentaPorCobrar(e);
   }
 
   mostrarMensaje(){
@@ -1019,6 +1016,23 @@ export class ReciboCajaComponent implements OnInit {
     var cuenta = new CuentaPorCobrar();
     cuenta.rCajaId = "RC"+e.idDocumento;
     this._cuentaPorCobrar.deleteCuentaPorCobrar(cuenta).subscribe( res => {}, err => {alert("error")})
+  }
+
+  restablecerCuentaPorCobrar(e){
+    var cuenta = new CuentaPorCobrar();
+    cuenta.rucCliente = e.ruc;
+    this._cuentaPorCobrar.getCuentasXCobrarPorRUCCancelada(cuenta).subscribe( res => {
+      var cuentas = res as CuentaPorCobrar[];
+      console.log("traje",cuentas)
+      cuentas.forEach(element =>{
+        if(element.valorFactura == e.valorFactura){
+          this._cuentaPorCobrar.updateEstadoCuenta(element, "Activa").subscribe( res => {}, err => {alert("error")})
+        }
+      })
+    }, err => {alert("error")})
+
+
+    
   }
 
   contarTransacciones(cont){
@@ -1165,13 +1179,7 @@ export class ReciboCajaComponent implements OnInit {
       element.nombreCuenta = cuenta.nombre;
       element.tipoCuenta = cuenta.tipoCuenta;
       element.nombreSubcuenta = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).nombre;
-
-      /* if(this.tipoRecibo == "Cierre" ){
-        if(element.nombreCuenta == "1.8 EFECTIVO LÍQUIDO"){
-          if(element.nombreSubcuenta != "1.8.0 Queda en caja")
-            this.reciboCaja.isAutorizado = true;
-        } 
-      } */
+      element.mcaCajaMenor = cuenta.sub_cuentaList.find(element2=> element2._id == element.idSubCuenta).mcaCajaMenor;
     });
 
     if(this.tipoRecibo == "Cta.x Cobrar")
@@ -1320,7 +1328,9 @@ export class ReciboCajaComponent implements OnInit {
       transaccion.cedula = this.reciboCaja.ruc;
       transaccion.numDocumento = this.reciboCaja.numDocumento;
       transaccion.valor = element.valor;
+      transaccion.isContabilizada = element.mcaCajaMenor;
       transaccion.isContabilizada = isContabilizada;
+      
       if(this.tipoRecibo != "Cta.x Cobrar"){
         if(fechaRecibo == fecha2 && element.tipoCuenta == "Reales y Transitorias")
           transaccion.isContabilizada = true;

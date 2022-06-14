@@ -9,8 +9,8 @@ import { factura } from "../pages/ventas/venta";
 export class FacturasProveedorService {
   facturas: factura[];
   //private URL = 'http://localhost:3000/facturasProveedor'; //localhost
-  //private URL = "http://159.223.107.115:3000/facturasProveedor";
-  private URL = 'http://104.131.82.174:3000/facturasProveedor';
+  private URL = "http://159.223.107.115:3000/facturasProveedor";
+  //private URL = 'http://104.131.82.174:3000/facturasProveedor';
   constructor(public http: HttpClient, public router: Router) {}
 
   newFacturaProveedor(facturasProveedor) {
@@ -43,6 +43,10 @@ export class FacturasProveedorService {
 
   updateEstadoMasivo(facturasProveedor, estado: string) {
     return this.http.put(this.URL + `/updateEstadoMasivo/${facturasProveedor._id}/${estado}`, facturasProveedor);
+  }
+
+  updateValoresDescuentos(facturasProveedor) {
+    return this.http.put(this.URL + `/updateValoresDescuentos/${facturasProveedor._id}`, facturasProveedor);
   }
 
   updateEstadoFacturaProveedor(facturasProveedor: string, estado: string, valorAbonado : number) {

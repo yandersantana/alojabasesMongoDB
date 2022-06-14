@@ -35,9 +35,12 @@ export class ProveedoresComponent implements OnInit {
   pago_proveedor: PagoProveedor;
   pago_proveedor2: PagoProveedor;
   pago_proveedores: PagoProveedor[]=[];
+
+  facturaProveedorlistado: FacturaProveedor[] = []
   facturaProveedor2: FacturaProveedor[] = []
   facturaProveedorBus: FacturaProveedor[] = []
-  facturaProveedorBus2: FacturaProveedor[] = []
+  facturasProveedoresPenElim: FacturaProveedor[] = []
+  
   factProvPagos: FacturaProveedor[] = []
   popupVisible = false;
   popupVisible2 = false;
@@ -55,11 +58,18 @@ export class ProveedoresComponent implements OnInit {
   now2: Date = new Date();
   now3: Date = new Date();
   mostrarLoading : boolean = false;
+  tipoRecibo = "";
   tipoDocumentos: string[] = [
     "Factura",
     "Cotización",
     "Nota de Venta"
-];
+  ];
+
+  tiposRecibo: string[] = [
+    'Ingresadas',
+    'Pen.Eliminación'
+  ];
+
 numeroFactura:string
 subtotal:number=0
   subtotal1:number=0
@@ -140,7 +150,7 @@ productosActivos:producto[]=[]
 banderaProductos:boolean=false
 contadorF:number=0
 obj:objDate
-@ViewChild('list', { static: false }) comprasForm: DxListComponent;
+
 @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 @ViewChild('datag3') dataGrid4: DxDataGridComponent;
 @ViewChild('grid') dataGrid3: DxDataGridComponent;
@@ -156,14 +166,11 @@ obj:objDate
     this.traerProveedores()
     this.traerFacturasProveedor()
     this.traerContadoresDocumentos()
-    //this.traerOrdenesCompra()
     this.traerProductos()
     this.traerPagosFacturasProveedor()
     this.traerPagosFacturas()
     this.traerRemisiones()
   }
-
-  
 
   traerProveedores(){
     this.proveedoresService.getProveedor().subscribe(res => {
@@ -174,7 +181,6 @@ obj:objDate
   traerProductos(){
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[];
-      
    })
   }
 
@@ -190,7 +196,6 @@ obj:objDate
       this.contadores = res as contadoresDocumentos[];
       this.facturaNp=this.contadores[0].contFacturaProveedor_Ndocumento+1
       this.facturaNp2=this.contadores[0].pagoProveedor_Ndocumento+1
-      //this.asignarIDdocumentos()
    })
   }
 
@@ -225,6 +230,7 @@ obj:objDate
     this.facturasProveedorService.getFacturasProveedor().subscribe(res => {
       this.facturaProveedor2 = res as FacturaProveedor[];
       this.mostrarLoading = false;
+      //this.separarFacturasP();
    })
   }
 
@@ -249,31 +255,46 @@ obj:objDate
     }
   }
 
-
-  
-  limpiarArreglo6(){
-    var cont=0
-    this.facturaProveedorBus2.forEach(element=>{
-      cont++
+ /*  separarFacturasP(){
+    this.facturaProveedorlistado.forEach(element=> {
+      if(element.estado == "rechazad")
+        this.listadoRecibosCajaActivos.push(element);
+      else if(element.estadoRecibo == "Pendiente")
+        this.listadoRecibosCajaPendientes.push(element);
+      else if(element.estadoRecibo == "Anulado")
+        this.listadoRecibosCajaAnulados.push(element);
     })
-    if(cont>=0){
-      this.facturaProveedorBus2.forEach(element=>{
-        this.facturaProveedorBus2.splice(0)    
-      })
-    }
-  }
+    this.listadoRecibosCaja = this.listadoRecibosCajaActivos;
+    this.mostrarLoadingBase = false;
+  } */
+
+
 
   llenarFacturasPendientes(){
-    this.limpiarArreglo6()
+    this.facturasProveedoresPenElim = [];
     this.facturaProveedor2.forEach(element=>{
       if(element.estado2=="rechazada"){
-          this.facturaProveedorBus2.push(element)
+          this.facturasProveedoresPenElim.push(element)
       }
     })
   }
 
+
   onInitialized(e){  
     e.component.selectAll();  
+  }
+
+  opcionRadioTipos(e){
+    this.tipoRecibo = e.value;
+    switch (e.value) {
+      case "Ingresadas":
+
+        break;
+      case "Pend.Eliminación":
+      
+        break;
+      default:    
+    }      
   }
   
 
@@ -333,19 +354,16 @@ obj:objDate
         'error'
       )
       this.newButtonEnabled2=true
-
     }
     
   }
   
   asignarValor(){
     this.totalsuma2=0
-
   }
 
 
   llenarTabla(){
-    
     var cont2=0
     this.facturaProveedorBus.forEach(element=>{
       cont2++
@@ -354,10 +372,7 @@ obj:objDate
     if(cont2>=0){
       this.facturaProveedorBus.forEach(element=>{
         this.facturaProveedorBus.splice(0)
-        
       })
-      
-      console.log("mostrando"+this.facturaProveedorBus.length)
     }
     this.asignarValor()
     
@@ -373,27 +388,19 @@ obj:objDate
     })
 
     this.ordenesCompraAprobadas.forEach(element=>{
-      if(this.NordenFact == element.n_orden){
-        //this.totalOrden=element.total-element.costeUnitaTransport-element.otrosCostosGen
+      if(this.NordenFact == element.n_orden)
         this.totalOrden=element.total
-      }
     })
-
-    console.log(this.totalOrden)
-    console.log(this.totalsuma2)
     this.totalsuma=this.totalOrden-this.totalsuma2
     var s = document.getElementById("divestado");
     if(this.totalsuma>0){
       this.estadoOrden= "Incompleto"
-     
       s.style.color= "red"
       s.style.fontSize= "2em"
-     // document.getElementById('error-message').innerHTML = "<div class='error'>Comppleto</div>";
     }else{
       this.estadoOrden= "Completo"
       s.style.color= "green"
       s.style.fontSize= "2em"
-      //document.getElementById('error-message').innerHTML = "<div class'titleOrdenCompra'><p>Saldo Pendiente</p></div>";
     }
 
 
@@ -428,42 +435,29 @@ obj:objDate
 
   obtenerOrdenesAprobadas(){
     this.ordenesCompra.forEach(element=>{
-      if(element.estado=="Aprobado" && element.n_orden>=0){
+      if(element.estado=="Aprobado" && element.n_orden>=0)
         this.ordenesCompraAprobadas.push(element)
-      }
-
     })
     this.mostrarLoading = false;
-   
-
   }
 
 
   ordenesEnProceso(){
     this.ordenesCompra.forEach(element=>{
-      if(element.documento==this.dato){
+      if(element.documento==this.dato)
         this.ordenesCompraPendientes.push(element)
-      }
-     
     })
-
-   
   }
 
 
   mostrarmensaje = (e) =>{
-
     this.popupVisible2 = true;
   }
 
   getLinkedLocations(e: any){  
     let n 
     n = e.row.data
-    console.log(n);  
     e.event.preventDefault(); 
-    //this.mostrarmensaje()
-      
-    
   }
 
   getCourseFile = (e) => {  
@@ -480,7 +474,6 @@ obj:objDate
 
   getCourseFile4 = (e) => {  
     this.verificarFacturas(e.row.data)
-    //this.eliminarPago(e.row.data)  
   }
 
   
@@ -508,7 +501,6 @@ obj:objDate
     }).then((result) => {
       if (result.value) {
         this.facturasProveedorService.updateEstado2(e,"aceptada").subscribe( res => {}, err => {alert("error")})
-        //this.db.collection('/facturasProveedor').doc( e.id+"").update({"estado2" :"aceptada"})
         Swal.fire({
           title: 'Correcto',
           text: 'Se realizó con éxito',
@@ -537,10 +529,8 @@ obj:objDate
     })
 
     this.remisiones.forEach(element=>{
-      if(element.num_FactPro == e.nFactura && element.num_orden== e.nSolicitud && element.estado != "Eliminada"){
+      if(element.num_FactPro == e.nFactura && element.num_orden== e.nSolicitud && element.estado != "Eliminada")
         cont++
-        //alert("entre aquiii" +JSON.stringify(element))
-      }
     })
     
     if(cont ==0){
@@ -558,7 +548,6 @@ obj:objDate
   }
 
   eliminarPago(e:any){
-    var contadoEn=0
     Swal.fire({
       title: 'Eliminar Factura asociada',
       text: "Se eliminará definitivamente el pago #"+e.idF,
@@ -570,34 +559,21 @@ obj:objDate
       if (result.value) {
         this.mostrarMsnsaConf()
         this.facturasProveedorService.deleteFacturasProveedor(e).subscribe( res => {}, err => {alert("error")})
-        //this.db.collection('/facturasProveedor').doc( e.id+"").delete()
-        if( this.facturaProveedorBus.length-1 <=0){
-          this.ordenesCompraService.updateEstadoOrden(e,"PENDIENTE").subscribe( res => {
-            
-          }, err => {alert("error")})
-          //this.db.collection('/ordenesDeCompra').doc(this.num_documento+"").update({"estadoOrden" :"PENDIENTE"})
-        }
+        if( this.facturaProveedorBus.length-1 <=0)
+          this.ordenesCompraService.updateEstadoOrden(e,"PENDIENTE").subscribe( res => {}, err => {alert("error")})
+        
         if(this.contadorF == 1){
-          
           this.ordenesCompra.forEach(element=>{
-            if(element.n_orden == e.nSolicitud){          
+            if(element.n_orden == e.nSolicitud)         
               this.productosCompradosLeidos= element.productosComprados
-             // alert("sdsdsd "+JSON.stringify(this.productosCompradosLeidos))
-            }
           })
           var cont=0
-          //alert("sdsd "+this.productosCompradosLeidos.length)
           this.productosActivos.forEach(element=>{
             this.productosCompradosLeidos.forEach(element2 => {
               if(element.PRODUCTO==element2.nombreComercial.PRODUCTO){
                 element.bodegaProveedor=0
-                //alert("sss "+element.PRODUCTO)
                 this.productoService.updateProductoBodegaProveedor(element).subscribe(
-                  res => {
-                    cont++;
-                    //alert("aqui se va "+cont)
-                   this.contadorValidaciones5(cont)
-                  },
+                  res => {cont++; this.contadorValidaciones5(cont) },
                   err => {
                     Swal.fire({
                       title: err.error,
@@ -606,13 +582,8 @@ obj:objDate
                     })
                   })
               }
-              
             })
           });
-
-
-
-
         } else{
           Swal.close()
           Swal.fire({
@@ -625,10 +596,6 @@ obj:objDate
           })
         }
        
-          
-        
-        
-     
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -638,6 +605,7 @@ obj:objDate
       }
     })
   }
+
 
   eliminarPagocheque(e:any){
     var contadoEn=0
@@ -694,7 +662,6 @@ obj:objDate
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
          this.facturasProveedorService.updateEstado2(e ,"rechazada").subscribe( res => {}, err => {alert("error")})
         
           Swal.fire({
@@ -704,7 +671,6 @@ obj:objDate
             confirmButtonText: 'Ok'
           }).then((result) => {
             window.location.reload()
-            //this.asignarValores()
           })
        
         } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -730,7 +696,6 @@ obj:objDate
         cancelButtonText: 'No'
       }).then((result) => {
         if (result.value) {
-         // this.db.collection('/facturasProveedor').doc(data2).update({"estado2" :"rechazada"})
          this.detallePagoService.updateEstado(e ,"rechazado").subscribe( res => {
           Swal.fire({
             title: 'Correcto',
@@ -759,14 +724,10 @@ obj:objDate
 
   aceptarOrden = (e) => {  
     this.actualizarOrdenPos(e.row.data)
-   
-    //this.cargarOrdenCompra(e.row.data)  
   }
 
   rechazarOrden = (e) => {  
     this.actualizarOrdenRec(e.row.data) 
-    //this.popupVisible2 = true;
-    //console.log("ddddd "+e.documento + " texto"+this,this.textoArea)
   }
 
   actualizarOrdenPos(e){
@@ -837,22 +798,17 @@ obj:objDate
   }
 
   mostrarEliminar(){
-    console.log("entre aqui")
-    if(this.dataGrid2.instance.columnOption("bt2").visible == false){
+    if(this.dataGrid2.instance.columnOption("bt2").visible == false)
       this.dataGrid2.instance.columnOption("bt2", "visible", true);
-    }else{
+    else
       this.dataGrid2.instance.columnOption("bt2", "visible", false);
-    }
-    
   }
 
   mostrarEliminar2(){
-    if(this.dataGrid4.instance.columnOption("bt3").visible == false){
+    if(this.dataGrid4.instance.columnOption("bt3").visible == false)
       this.dataGrid4.instance.columnOption("bt3", "visible", true);
-    }else{
+    else
       this.dataGrid4.instance.columnOption("bt3", "visible", false);
-    }
-    
   }
 
   actualizarOrdenRec(e){
@@ -870,7 +826,6 @@ obj:objDate
       if (result.value) {
         var num:string
         num=e.documento+""
-         //this.db.collection('/ordenesDeCompra').doc(num).update({"estado" :"Rechazado", "msjAdmin":result.value})  
          let timerInterval
          Swal.fire({
            title: 'Guardando !',
@@ -920,7 +875,6 @@ obj:objDate
     console.log("El dto es"+this.datoNsolicitud)
     this.ordenesCompra.forEach(element=>{
       if(element.n_orden==this.datoNsolicitud){
-        //this.ordenesCompraPendientes.push(element)
         this.ordenDeCompra3 = element;
         this.popupVisible = true;
         variab=false
@@ -1019,7 +973,6 @@ anadirDetallePago = (e) => {
       'error'
     )
   }
-
   }
 
 
@@ -1080,7 +1033,6 @@ anadirDetallePago = (e) => {
 
 
   guardarFacturaProveedor(){
-    
     var cont=0
     this.facturaProveedorBus.forEach(element=>{
       cont++
@@ -1123,10 +1075,8 @@ anadirDetallePago = (e) => {
   
     
     this.totalsuma=this.totalOrden-this.totalsuma2
-    console.log("El total suma "+this.totalsuma)
     saldoFaltante=this.totalsuma -this.facturaProveedor.total
-    console.log("El saldo faltante ees "+saldoFaltante)
-    // aqui termina
+
     if(this.selectedRows != undefined){
       if(this.facturaProveedor.total > this.totalsuma){
         Swal.fire(
@@ -1169,12 +1119,9 @@ anadirDetallePago = (e) => {
   actualizarProductosBodega(){
     var cant=0
     var cont=1
-    
-      if(this.ordencompraleida.tipo == "Entregado"){
-        this.confirmar()
-        //alert("pase aqui")
-      }else{
-       // alert("pase aquirrr")
+    if(this.ordencompraleida.tipo == "Entregado")
+      this.confirmar()
+    else{
         this.productosActivos.forEach(element=>{
          
           for (let index = 0; index < this.facturaProveedor.productos.length; index++) {
@@ -1211,8 +1158,7 @@ anadirDetallePago = (e) => {
             }
             
           }
-        });
-      
+        });    
       
     }
 
@@ -1239,7 +1185,6 @@ anadirDetallePago = (e) => {
         window.location.reload()
       })
     }
-
   }
 
   mostrarMsnsaConf(){
@@ -1351,8 +1296,6 @@ anadirDetallePago = (e) => {
                 element.idPago= this.facturaNp2
                 this.detallePagoService.newDetallePago(element).subscribe( res => {cont45++,this.mensajeConfi(cont45)}, err => {alert("error")})
               });       
-       
-        //this.getPagosProveedor()
       });
       
 
@@ -1387,7 +1330,6 @@ anadirDetallePago = (e) => {
 
   rechazarRemisión(e: any) {
     Swal.fire({
-    /*   title: "Advertencia", */
       html: "<h5>Se actualizará el estado del Cheque a <b>Pagado</b></h5>"+
       "<br>Banco : "+e.nombre_banco+
       "<br>Beneficiario : "+e.beneficiario+
@@ -1546,8 +1488,6 @@ anadirDetallePago = (e) => {
 
 
   cargarValoresFactura(){
-   
-
     let products=0
     this.productosComprados2.forEach(element=>{
         products=element.total+products
@@ -1597,8 +1537,6 @@ anadirDetallePago = (e) => {
       default:
   }
 }
-
-
 }
 
 
@@ -1609,6 +1547,8 @@ export class StringifyEmployeesPipe implements PipeTransform {
        
     }
 }
+
+//1611
 
 
 

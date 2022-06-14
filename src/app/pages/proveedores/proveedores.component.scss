@@ -11,8 +11,6 @@
     margin-top: 2em;
 }
 
-
-
 #botones{
     background-color: green($color: #000000);
 }
@@ -43,10 +41,7 @@
   
     text-align: center;
 }
-/*
-::ng-deep #gridContainer /deep/ .dx-button{
-    font-size: 50px;
-} */
+
 
 dx-link{
     color: green($color: #000000);
@@ -178,4 +173,22 @@ h5{
 
 .margen{
     padding: 2em;
+}
+
+.select{
+    text-align: center;
+    background-color: white;
+}
+
+::ng-deep .remiPro .dx-selectbox input {  
+    text-align: center;  
+}  
+::ng-deep .remiPro .dx-selectbox-popup-wrapper .dx-list-item {  
+    text-align: center;  
+} 
+
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
 }

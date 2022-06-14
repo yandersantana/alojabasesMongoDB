@@ -7,6 +7,7 @@ export class FacturaProveedor{
     total:number
     valorAbonado:number
     valorPagado:number
+    valorDescuento:number
     proveedor:string
     productos:string[]
     estado:string
@@ -21,6 +22,7 @@ export class FacturaProveedor{
         this.estado3="Por ingresar"
         this.valorAbonado = 0;
         this.valorPagado = 0;
+        this.valorDescuento = 0;
     }
 }
 

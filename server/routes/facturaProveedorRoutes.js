@@ -98,6 +98,14 @@ router.put('/updateEstadoMasivo/:id/:estado', async (req, res,next) => {
 })
 
 
+router.put('/updateValoresDescuentos/:id', async (req, res,next) => {
+    const { id } = req.params;
+
+    await FacturaProveedor.findByIdAndUpdate(id, {$set: {total:req.body.total, valorDescuento:req.body.valorDescuento}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
 router.put('/updateEstadoFacturaProveedor/:id/:estado/:valorAbonado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
@@ -144,7 +152,8 @@ router.post('/newFacturaProveedor', async (req, res) => {
     estado:req.body.estado,
     estado2:req.body.estado2,
     estado3:req.body.estado3,
-    documento_solicitud:req.body.documento_solicitud
+    documento_solicitud:req.body.documento_solicitud,
+    valorDescuento: req.body.valorDescuento
     });
     await Newfacturas.save();
     res.json({status: 'Factura CREADA'});

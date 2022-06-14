@@ -4,15 +4,17 @@
     <app-loading></app-loading>
 </div>
 
-<div class="row alin2">
-    <div class="col-md-8"><div class="">
-    </div></div>
-    <div class="col-md-4"> <dx-select-box [items]="menu1" 
-        [value]="menu1[0]" 
-        [readOnly]="false" 
-        [disabled]="false"
-        (onValueChanged)="opcionMenu($event)"
-        ></dx-select-box></div>
+<div class="row alin2 remiPro">
+    <div class="col-md-8"></div>
+    <div class="col-md-4" style="text-align: center;"> 
+        <dx-select-box [items]="menu1" 
+            [value]="menu1[0]" 
+            [readOnly]="false" 
+            class="form-control select"
+            [disabled]="false"
+            (onValueChanged)="opcionMenu($event)">
+        </dx-select-box>
+    </div>
 </div>
 <div class="ContFact " *ngIf="op1">
     <div><h4>Facturas / Proveedor</h4></div>
@@ -605,83 +607,53 @@
 
 
 <div *ngIf="op4">
-    <div><h4>Facturas ingresadas</h4></div>
+    <div class="row">
+        <div class="col-md-8"></div>
+        <div class="col-md-4">
+            <div class="dx-field radio">
+               <!--  <div class="dx-field-value">
+                    <dx-radio-group
+                    [items]="tiposRecibo"
+                    [(value)]="tipoRecibo"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadioTipos($event)">
+                    </dx-radio-group>
+                </div> -->
+            </div>
+        </div>
+    </div>
+
     <div class="margen">
         <dx-data-grid #grid
-        id="grid-container"
-        [dataSource]="facturaProveedor2"
-        [showBorders]="true"> 
-        <dxo-filter-row [visible]="true" ></dxo-filter-row>
-        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxo-export [enabled]="true" fileName="Facturas_Ingresadas" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column dataField="idF" caption="ID" sortOrder="desc"></dxi-column>
-        <dxi-column dataField="proveedor" caption="Proveedor" width="15%"></dxi-column>
-        <dxi-column dataField="nFactura" caption="Factura #"></dxi-column>
-        <dxi-column dataField="nSolicitud" caption="Orden" ></dxi-column>
-        <dxi-column dataField="fecha" caption="Fecha" ></dxi-column>
-        <dxi-column dataField="productos" caption="Productos" width="35%"></dxi-column>
-        <dxi-column dataField="fechaExpiracion" caption="Fecha Vencimiento"></dxi-column>
-        <dxi-column dataField="" caption="Estado" ></dxi-column>
-        <dxi-column dataField="total" caption="Total" dataType="number"></dxi-column>
-        <dxo-paging [pageSize]="8"></dxo-paging>
-        <dxo-pager 
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[5, 10, 20]"
-            [showInfo]="true">
-        </dxo-pager>              
-    </dx-data-grid>
+            id="grid-container"
+            [dataSource]="facturaProveedor2"
+            [showBorders]="true"> 
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="Facturas_Ingresadas" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column dataField="idF" caption="ID" sortOrder="desc"></dxi-column>
+            <dxi-column dataField="proveedor" caption="Proveedor" width="15%"></dxi-column>
+            <dxi-column dataField="nFactura" caption="Factura #"></dxi-column>
+            <dxi-column dataField="nSolicitud" caption="Orden" ></dxi-column>
+            <dxi-column dataField="fecha" caption="Fecha" ></dxi-column>
+            <dxi-column dataField="productos" caption="Productos" width="30%"></dxi-column>
+            <dxi-column dataField="fechaExpiracion" caption="Fecha Vencimiento"></dxi-column>
+            <dxi-column dataField="total" caption="Total" dataType="number"></dxi-column>
+            <!-- <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
+                <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+            </dxi-column>
+
+            <dxi-column type="buttons" dataField="bt2" caption="Anular" width="7%" [visible]="true">
+                <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button>   
+            </dxi-column> -->
+            <dxo-paging [pageSize]="8"></dxo-paging>
+            <dxo-pager 
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[5, 10, 20]"
+                [showInfo]="true">
+            </dxo-pager>              
+        </dx-data-grid>
     </div>
-    
-
-
-    <h4>Pendientes de eliminación </h4>
-            
-    <dx-data-grid #datag2
-        id="gridContainer"
-        [dataSource]="facturaProveedorBus2"
-        [showBorders]="true">
-        <dxi-column
-            dataField="idF"
-            caption="Id"
-            [visible]="true"
-            sortOrder="desc">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            dataType="date">
-        </dxi-column>
-        <dxi-column
-            dataField="nFactura"
-            caption="Fact. Proveedor">
-        </dxi-column>
-        <dxi-column
-            dataField="nSolicitud"
-            caption="Orden #">
-        </dxi-column>
-        <dxi-column
-            dataField="productos"
-            caption="Productos"
-            width="40%">
-        </dxi-column>
-    
-        <dxi-column
-            dataField="total"
-            alignment="right"  >
-        </dxi-column>
-        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
-            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
-        </dxi-column>
-
-        <dxi-column type="buttons" dataField="bt2" caption="Anular" width="10%" [visible]="true">
-            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button>   
-        </dxi-column>
-
-        <dxo-paging [pageSize]="5"></dxo-paging>
-                <dxo-pager
-                    [showPageSizeSelector]="true"
-                    [allowedPageSizes]="[8, 12, 20]"
-                ></dxo-pager>
-    </dx-data-grid>
 </div>
 
 
@@ -746,5 +718,7 @@
                         </dx-button>
         </div>
     </dx-popup>
+
+    <!-- --750 -->
 
 

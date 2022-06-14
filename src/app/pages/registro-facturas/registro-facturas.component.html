@@ -100,12 +100,16 @@
     <dxi-column dataField="valorAbonado" caption="Valor Cubierto" dataType="number"></dxi-column>
     <dxi-column dataField="total" caption="Total Factura" dataType="number"></dxi-column>
     <dxi-column dataField="valorPagado" caption="Valores Pagados" dataType="number"></dxi-column>
+    <dxi-column dataField="valorDescuento" caption="Valor Descuento" dataType="number"></dxi-column>
     <dxi-column dataField="estado" caption="Estado Factura" dataType="string"></dxi-column>
-     <dxi-column type="buttons" dataField="bt2" caption="Est.Orden" width="7%">
+    <dxi-column type="buttons" dataField="bt2" caption="Est.Orden" width="6%">
         <dxi-button hint="Estado Orden" icon="fa fa-eye" [onClick]="mostrarEstado"></dxi-button>
     </dxi-column>
-    <dxi-column type="buttons" dataField="bt1" caption="Trans." width="7%">
+    <dxi-column type="buttons" dataField="bt1" caption="Trans." width="6%">
         <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarTransaciones"></dxi-button>
+    </dxi-column>
+    <dxi-column type="buttons" dataField="bt1" caption="Desc." width="6%">
+        <dxi-button hint="Notas" icon="fa fa-pencil-square-o" [onClick]="mostrarSeccionDescuento"></dxi-button>
     </dxi-column>
     <dxo-summary>
         <dxi-total-item
@@ -199,16 +203,105 @@
                     
                 </div>
                 <div class="col-md-1"></div>
-                
-                
             </div>
-           
         </div>
-
-
     </dx-scroll-view>
     </div>
 </dx-popup>
 
+
+
+<dx-popup [width]="850" [height]="450" [showTitle]="true" title="Factura #: {{numeroFactura}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleDescuentos">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row espacio" style="text-align: center;">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <h6>Datos Generales</h6>
+                    <table style="margin-top: 1em;">
+                        <tr>
+                            <th class="text-center">Proveedor</th>
+                            <th class="text-center">Valor Cancelado</th>
+                            <th class="text-center">Total</th>
+                        </tr>
+                        <tr>
+                            <td style="text-align: center;width: 50%;">
+                                {{datosFactura.proveedor}}
+                            </td>
+                            <td style="text-align: center;width: 25%;">
+                                {{datosFactura.valorPagado}}
+                            </td>
+                            <td style="text-align: center;width: 25%;">
+                                {{datosFactura.total}}
+                            </td>                
+                        </tr>
+                    </table>
+                    <br>
+                    
+                    <div class="row" *ngIf="datosFactura.valorDescuento == 0 || datosFactura.valorDescuento == undefined  ">
+                        <div class="col-md-6"><p>Aplicar Descuento?</p></div>
+                        <div class="col-md-6"><dx-check-box [(value)]="mcaDescuento"></dx-check-box></div>
+                    </div>
+
+                    <div *ngIf="mcaDescuento ">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                            <div class="col-md-8">
+                                <table style="margin-top: 1em;">
+                                    <tr>
+                                        <th class="text-center">Valor Factura</th>
+                                        <th class="text-center">Valor Descuento</th>
+                                        <th class="text-center">Total </th>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;width: 50%;">
+                                            {{datosFactura.total}}
+                                        </td>
+                                        <td style="text-align: center;width: 25%;">
+                                            <dx-text-box [(value)]="valorDescuento" (onChange)="calcularTotal()"></dx-text-box>
+                                        </td>
+                                        <td style="text-align: center;width: 25%;">
+                                            {{valorTotalACancelar}}
+                                        </td>                
+                                    </tr>
+                                </table>
+                            </div>
+                            <div class="col-md-2"></div>
+                            <div class="col-md-4"></div>
+                            <div class="col-md-4 btnSearch">
+                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="aplicarDescuento()">Aplicar Descuento</button>
+                            </div>
+                            <div class="col-md-4"></div>
+                        </div>
+                        
+                    </div>
+
+                    <div *ngIf="datosFactura.valorDescuento > 0 ">
+                        <div class="row">
+                            <div class="col-md-2"></div>
+                                <div class="col-md-8">
+                                    <table style="margin-top: 1em;">
+                                        <tr>
+                                            <th class="text-center">Descuento Aplicado</th>
+                                            <th class="text-center">${{datosFactura.valorDescuento}}</th>
+                                            <th class="text-center"> <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="eliminarDescuento()"><i class="fa fa-trash"></i></button></th>
+                                        </tr>
+                                    </table>
+                                </div>
+                            <div class="col-md-2"></div>
+                        </div>
+                    </div>
+                    
+                    
+                    
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        </div>
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 

@@ -1,10 +1,9 @@
-import { THIS_EXPR } from '@angular/compiler/src/output/output_ast';
 import { Component, OnInit } from '@angular/core';
-import { element } from 'protractor';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFacturas.service';
+import Swal from 'sweetalert2';
 import { OrdenDeCompra } from '../compras/compra';
 import { TransaccionChequesGirado, TransaccionesFacturas } from '../comprobante-pago-proveedores/comprobante-pago-proveedores';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
@@ -33,11 +32,16 @@ export class RegistroFacturasComponent implements OnInit {
   obj: objDate;
   busquedaTransaccion : tipoBusquedaTransaccion
   popupVisible = false;
+  popupVisibleDescuentos = false;
+  valorTotalACancelar = 0;
+  valorDescuento = 0;
+  mcaDescuento = false;
   popupVisibleEstado = false;
   mostrarLoading: boolean = false;
   numeroFactura = "";
   estadoOrden = " ";
   numOrden = "";
+  datosFactura : FacturaProveedor = new FacturaProveedor();
   tiposFactura: string[] = [
     'General',
     'Pendiente',
@@ -81,6 +85,54 @@ export class RegistroFacturasComponent implements OnInit {
       },err => {console.log("error")})
     })
     
+  }
+
+  calcularTotal(){
+    this.valorTotalACancelar = this.datosFactura.total - this.valorDescuento
+  }
+
+  aplicarDescuento(){
+    if(this.valorDescuento != 0){
+      this.datosFactura.valorDescuento = this.valorDescuento;
+      this.datosFactura.total = this.valorTotalACancelar;
+      this._facturaProveedorService.updateValoresDescuentos(this.datosFactura).subscribe( res => {
+        this.popupVisibleDescuentos = false;
+        Swal.fire({
+            title: "Correcto",
+            text: "Se realizo su proceso con éxito",
+            icon: 'success'
+          })
+        console.log("correcto")
+      },err => {console.log("error")})
+    }else{
+       alert("No hay un valor de descuento aplicado")
+    }
+
+  }
+
+
+  eliminarDescuento(){
+    this.popupVisibleDescuentos = false;
+    Swal.fire({
+      title: 'Anular Descuento',
+      text: "Estimado usuario esta seguro que desea eliminar el descuento aplicado?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if(result.value) {
+        this.datosFactura.total = this.datosFactura.total + this.datosFactura.valorDescuento;
+        this.datosFactura.valorDescuento = 0;
+        this._facturaProveedorService.updateValoresDescuentos(this.datosFactura).subscribe( res => {
+          Swal.fire({
+            title: "Correcto",
+            text: "Se realizo su proceso con éxito",
+            icon: 'success'
+          })
+        },err => {console.log("error")})
+      }
+    })
   }
 
 
@@ -143,6 +195,16 @@ export class RegistroFacturasComponent implements OnInit {
     this._transaccionFacturaService.obtenerTransaccionesPorFactura(this.busquedaTransaccion).subscribe(res => {
       this.listadoTransaccionesFacturas = res as TransaccionesFacturas[];
     }) 
+  }
+
+  mostrarSeccionDescuento= (e) =>{
+    this.mostrarDescuentos(e.row.data);
+  }
+
+  mostrarDescuentos(e:any){
+    this.numeroFactura = e.nFactura;
+    this.datosFactura = e;
+    this.popupVisibleDescuentos = true;
   }
 
   opcionRadioTipos(e){

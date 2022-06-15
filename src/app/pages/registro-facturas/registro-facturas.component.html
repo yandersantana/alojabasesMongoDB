@@ -243,28 +243,36 @@
                     <div class="row" *ngIf="datosFactura.valorDescuento == 0 || datosFactura.valorDescuento == undefined  ">
                         <div class="col-md-6"><p>Aplicar Descuento?</p></div>
                         <div class="col-md-6"><dx-check-box [(value)]="mcaDescuento"></dx-check-box></div>
-                    </div>
 
-                    <div *ngIf="mcaDescuento ">
+                        <div *ngIf="mcaDescuento ">
                         <div class="row">
                             <div class="col-md-2"></div>
                             <div class="col-md-8">
-                                <table style="margin-top: 1em;">
+                                <table style="margin-top: 1em;" class="inn">
                                     <tr>
                                         <th class="text-center">Valor Factura</th>
                                         <th class="text-center">Valor Descuento</th>
                                         <th class="text-center">Total </th>
                                     </tr>
                                     <tr>
-                                        <td style="text-align: center;width: 50%;">
+                                        <td style="text-align: center;width: 40%;">
                                             {{datosFactura.total}}
                                         </td>
-                                        <td style="text-align: center;width: 25%;">
+                                        <td style="text-align: center;width: 30%;">
                                             <dx-text-box [(value)]="valorDescuento" (onChange)="calcularTotal()"></dx-text-box>
                                         </td>
-                                        <td style="text-align: center;width: 25%;">
+                                        <td style="text-align: center;width: 30%;">
                                             {{valorTotalACancelar}}
                                         </td>                
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: center;width: 40%;" >
+                                            Comentario:
+                                        </td>
+                                        <td style="text-align: center;width: 60%;" colspan="2">
+                                            <dx-text-box [(value)]="comentario"></dx-text-box>
+                                        </td>
+                                                      
                                     </tr>
                                 </table>
                             </div>
@@ -277,6 +285,9 @@
                         </div>
                         
                     </div>
+                    </div>
+
+                    
 
                     <div *ngIf="datosFactura.valorDescuento > 0 ">
                         <div class="row">
@@ -287,6 +298,9 @@
                                             <th class="text-center">Descuento Aplicado</th>
                                             <th class="text-center">${{datosFactura.valorDescuento}}</th>
                                             <th class="text-center"> <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="eliminarDescuento()"><i class="fa fa-trash"></i></button></th>
+                                        </tr>
+                                        <tr>
+                                            <td class="text-center" colspan="3">{{datosFactura.observaciones}}</td>
                                         </tr>
                                     </table>
                                 </div>

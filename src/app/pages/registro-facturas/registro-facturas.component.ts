@@ -35,6 +35,7 @@ export class RegistroFacturasComponent implements OnInit {
   popupVisibleDescuentos = false;
   valorTotalACancelar = 0;
   valorDescuento = 0;
+  comentario = "";
   mcaDescuento = false;
   popupVisibleEstado = false;
   mostrarLoading: boolean = false;
@@ -95,6 +96,7 @@ export class RegistroFacturasComponent implements OnInit {
     if(this.valorDescuento != 0){
       this.datosFactura.valorDescuento = this.valorDescuento;
       this.datosFactura.total = this.valorTotalACancelar;
+      this.datosFactura.observaciones = this.comentario
       this._facturaProveedorService.updateValoresDescuentos(this.datosFactura).subscribe( res => {
         this.popupVisibleDescuentos = false;
         Swal.fire({
@@ -124,6 +126,7 @@ export class RegistroFacturasComponent implements OnInit {
       if(result.value) {
         this.datosFactura.total = this.datosFactura.total + this.datosFactura.valorDescuento;
         this.datosFactura.valorDescuento = 0;
+        this.datosFactura.observaciones = "";
         this._facturaProveedorService.updateValoresDescuentos(this.datosFactura).subscribe( res => {
           Swal.fire({
             title: "Correcto",

@@ -16,6 +16,7 @@ export class FacturaProveedor{
     estadoOrden:string
     idF:number
     documento_solicitud:number
+    observaciones : string
     constructor(){
         this.estado="PENDIENTE"
         this.estado2="Aceptada"
@@ -23,6 +24,7 @@ export class FacturaProveedor{
         this.valorAbonado = 0;
         this.valorPagado = 0;
         this.valorDescuento = 0;
+        this.observaciones = "";
     }
 }
 

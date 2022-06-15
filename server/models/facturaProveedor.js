@@ -17,7 +17,8 @@ const FacturaProveedorSchema = new Schema({
     estado2: { type: String, required: false},
     estado3: { type: String, required: false},
     documento_solicitud: { type: Number, required: false},
-    valorDescuento: { type: Number, required: false}
+    valorDescuento: { type: Number, required: false},
+    observaciones: { type: String, required: false}
 },{
     timestamps:true
 });

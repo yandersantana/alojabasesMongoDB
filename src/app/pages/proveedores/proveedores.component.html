@@ -623,6 +623,7 @@
         </div>
     </div>
 
+     <h4>Facturas Ingresadas </h4>
     <div class="margen">
         <dx-data-grid #grid
             id="grid-container"
@@ -639,11 +640,11 @@
             <dxi-column dataField="productos" caption="Productos" width="30%"></dxi-column>
             <dxi-column dataField="fechaExpiracion" caption="Fecha Vencimiento"></dxi-column>
             <dxi-column dataField="total" caption="Total" dataType="number"></dxi-column>
-            <!-- <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
+          <!--   <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="8%" [visible]="true">
                 <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
             </dxi-column>
 
-            <dxi-column type="buttons" dataField="bt2" caption="Anular" width="7%" [visible]="true">
+            <dxi-column type="buttons" dataField="bt2" caption="Anular" width="8%" [visible]="true">
                 <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button>   
             </dxi-column> -->
             <dxo-paging [pageSize]="8"></dxo-paging>
@@ -654,6 +655,55 @@
             </dxo-pager>              
         </dx-data-grid>
     </div>
+
+    <h4>Pendientes de eliminación </h4>
+            
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="facturasProveedoresPenElim"
+        [showBorders]="true">
+        <dxi-column
+            dataField="idF"
+            caption="Id"
+            [visible]="true"
+            sortOrder="desc">
+        </dxi-column>
+        <dxi-column
+            dataField="fecha"
+            dataType="date">
+        </dxi-column>
+        <dxi-column
+            dataField="nFactura"
+            caption="Fact. Proveedor">
+        </dxi-column>
+        <dxi-column
+            dataField="nSolicitud"
+            caption="Orden #">
+        </dxi-column>
+        <dxi-column
+            dataField="productos"
+            caption="Productos"
+            width="40%">
+        </dxi-column>
+    
+        <dxi-column
+            dataField="total"
+            alignment="right"  >
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="10%" [visible]="true">
+            <dxi-button icon="clear" [onClick]="getCourseFile4"></dxi-button>   
+        </dxi-column>
+
+        <dxi-column type="buttons" dataField="bt2" caption="Anular" width="10%" [visible]="true">
+            <dxi-button text="Anular" [onClick]="getCourseFile5"></dxi-button>   
+        </dxi-column>
+
+        <dxo-paging [pageSize]="5"></dxo-paging>
+                <dxo-pager
+                    [showPageSizeSelector]="true"
+                    [allowedPageSizes]="[8, 12, 20]"
+                ></dxo-pager>
+    </dx-data-grid>
 </div>
 
 

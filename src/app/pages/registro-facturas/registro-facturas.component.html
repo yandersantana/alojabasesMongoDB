@@ -240,11 +240,11 @@
                     </table>
                     <br>
                     
-                    <div class="row" *ngIf="datosFactura.valorDescuento == 0 || datosFactura.valorDescuento == undefined  ">
+                    <div class="row" *ngIf="(datosFactura.valorDescuento == 0 || datosFactura.valorDescuento == undefined) && datosFactura.estado != 'PAGADA'  ">
                         <div class="col-md-6"><p>Aplicar Descuento?</p></div>
                         <div class="col-md-6"><dx-check-box [(value)]="mcaDescuento"></dx-check-box></div>
 
-                        <div *ngIf="mcaDescuento ">
+                        <div *ngIf="mcaDescuento">
                         <div class="row">
                             <div class="col-md-2"></div>
                             <div class="col-md-8">

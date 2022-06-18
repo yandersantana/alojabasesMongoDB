@@ -134,6 +134,7 @@ export class TrasladosComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.traerSucursales();
     this.setearFechaMensual();
     this.traerParametrizaciones();
     this.traerBodegas();
@@ -143,7 +144,7 @@ export class TrasladosComponent implements OnInit {
     this.getIDDocumentos();
     this.traerTransacciones();
     //this.traerTrasladosMensuales()
-    this.traerSucursales();
+    
     this.traerDatosConfiguracion();
   }
 
@@ -164,6 +165,7 @@ export class TrasladosComponent implements OnInit {
           this.usuarioLogueado = res as user;
           this.sucursalUsuario = this.usuarioLogueado[0].sucursal
           localStorage.setItem('sucursal',  this.sucursalUsuario);
+          localStorage.setItem('rol',  this.usuarioLogueado[0].rol);
           if (this.usuarioLogueado[0].rol == "Usuario") {
             var z = document.getElementById("admin1");
             z.style.display = "none";
@@ -184,6 +186,11 @@ export class TrasladosComponent implements OnInit {
 
   isCloneIconDisabled(e) {
     this.sucursalUsuario = localStorage.getItem("sucursal");
+    var rol = localStorage.getItem("rol");
+
+    if(rol == "Administrador")
+      return true;
+
     if(e.row.data.sucursal_destino.nombre == this.sucursalUsuario)
       return true;
     else 
@@ -409,7 +416,6 @@ export class TrasladosComponent implements OnInit {
 
   asignarsucursalD(e) {
     this.variablesucursal = e.value;
-    console.log("Pertenece a " + this.variablesucursal);
     this.sucursal_origen = this.variablesucursal;
   }
 
@@ -429,15 +435,12 @@ export class TrasladosComponent implements OnInit {
   }
 
   obtenerDatosSucursalOrigen(e) {
-    console.log("ssssssss");
     this.locales.forEach((element) => {
-      if (element.nombre == e.value) {
+      if (element.nombre == e.value)
         this.traslados.sucursal_origen = element;
-
-        console.log("siiii " + element);
-      }
+      
     });
-    console.log(this.locales.length);
+
     this.limpiarArreglo5();
     this.bodegas.forEach((element) => {
       if (element.sucursal == e.value) {
@@ -466,8 +469,6 @@ export class TrasladosComponent implements OnInit {
 
   listarProductosSucursal() {
     this.productosSucursal.forEach((element) => {
-      console.log("listando " + JSON.stringify(element));
-      console.log(element.productos);
       for (let index = 0; index < element.productos.length; index++) {
         console.log(element.productos[index]);
       }

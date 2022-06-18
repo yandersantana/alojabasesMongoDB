@@ -64,6 +64,7 @@ export class AuthService {
     await this.afAuth.auth.signOut();
     localStorage.removeItem('user');
     localStorage.removeItem('token');
+    localStorage.removeItem('rol');
     this.loggedIn = false;
     localStorage.setItem("logged", this.loggedIn.toString())
     this.router.navigate(['/login-form']);

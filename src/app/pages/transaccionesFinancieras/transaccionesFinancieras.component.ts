@@ -57,13 +57,16 @@ export class TransaccionesFinancierasComponent implements OnInit {
     e.component.columnOption("beneficiario", "visible", true);
     e.component.columnOption("proveedor", "visible", true);
     e.component.columnOption("centroCosto", "visible", true);
+    e.component.columnOption("ordenCompra", "visible", true);
    
   };
+  
   onExported (e) {
     e.component.columnOption("notas", "visible", false);
     e.component.columnOption("beneficiario", "visible", false);
     e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("centroCosto", "visible", false);
+    e.component.columnOption("ordenCompra", "visible", false);
     e.component.endUpdate();
   }
 

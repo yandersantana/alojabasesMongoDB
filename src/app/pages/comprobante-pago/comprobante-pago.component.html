@@ -193,6 +193,7 @@
                                             </dx-select-box>
                                         </div>
                                     </div>
+                                    
                                 </div>
 
                                 <div class="col-md-4" *ngIf="i==0"> 
@@ -204,9 +205,16 @@
                                                  [(value)]="p.idSubCuenta"
                                                 [searchEnabled]="true"
                                                 valueExpr="_id"
+                                                (onValueChanged)="verificar($event,i)"
                                                 [readOnly]="false" 
                                                 [disabled]="false">
                                             </dx-select-box>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                        <div class="col-md-4"># Orden</div>
+                                        <div class="col-md-8">
+                                             <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>
                                         </div>
                                     </div>
                                 </div>
@@ -220,9 +228,16 @@
                                                  [(value)]="p.idSubCuenta"
                                                 [searchEnabled]="true"
                                                 valueExpr="_id"
+                                                (onValueChanged)="verificar($event,i)"
                                                 [readOnly]="false" 
                                                 [disabled]="false">
                                             </dx-select-box>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                        <div class="col-md-4"># Orden</div>
+                                        <div class="col-md-8">
+                                             <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>
                                         </div>
                                     </div>
                                 </div>
@@ -236,9 +251,16 @@
                                                  [(value)]="p.idSubCuenta"
                                                 [searchEnabled]="true"
                                                 valueExpr="_id"
+                                                (onValueChanged)="verificar($event,i)"
                                                 [readOnly]="false" 
                                                 [disabled]="false">
                                             </dx-select-box>
+                                        </div>
+                                    </div>
+                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                        <div class="col-md-4"># Orden</div>
+                                        <div class="col-md-8">
+                                             <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>
                                         </div>
                                     </div>
                                 </div>
@@ -251,6 +273,7 @@
                                         </div>
                                         <div class="col-md-4"><dx-button icon="clear" (onClick)="eliminarRegistro(i)" ></dx-button></div>
                                     </div>
+                                    
                                 </div>
                             </div>
                         </div>

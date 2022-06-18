@@ -17,7 +17,7 @@ import { ComprobantePago } from './comprobante-pago';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
 import { ProveedoresService } from 'src/app/servicios/proveedores.service';
-import { Proveedor } from '../compras/compra';
+import { OrdenDeCompra, Proveedor } from '../compras/compra';
 import { CentroCostoService } from 'src/app/servicios/centro-costo.service';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
 import { CuentaPorPagar } from '../cuentasPorPagar/cuentasPorPagar';
@@ -29,6 +29,7 @@ import { Prestamos } from '../prestamos/prestamos';
 import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
+import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 
 
 
@@ -151,6 +152,7 @@ export class ComprobantePagoComponent implements OnInit {
     public _cuentaPorPagar: CuentasPorPagarService,
     public _prestamoService: PrestamosService,
     public _notasService: NotasPagoService,
+    public _ordenCompraService: OrdenesCompraService,
     ) {
       this.tipoComprobante = this.tiposComprobantes[0];
    }
@@ -641,6 +643,32 @@ export class ComprobantePagoComponent implements OnInit {
       this.mostrarMensajeGenerico(2,"No se pueden ingresar mas operaciones");
   }
 
+  verificar(e,i){
+    if(this.listadoOperaciones[i].idSubCuenta == '6195b2d0f75a418e9c2eba0a')
+      this.bloquearBoton = true;
+    else
+      this.bloquearBoton = false;
+  }
+
+  buscarOrden(e,i){
+    this.textLoading = "Buscando Orden"
+    this.mostrarLoading = true
+    var orden = new OrdenDeCompra();
+    orden.n_orden = this.listadoOperaciones[i].nOrden
+    this._ordenCompraService.getOrdenEspecifica(orden).subscribe(
+      res => { var ordenes = res as OrdenDeCompra[];
+         this.mostrarLoading = false
+          if(ordenes.length == 0)
+            this.mostrarMensajeGenerico(2,"No se encontró la orden de compra")
+        
+          if(ordenes[0].estadoOrden == "COMPLETO"){
+            this.bloquearBoton = false;
+          }
+       
+      },
+      (err) => { this.mostrarLoading = false});
+  }
+
 
   async guardar(){
     var flag = true;
@@ -898,6 +926,7 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.beneficiario = this.comprobantePago.beneficiario;
       transaccion.centroCosto = this.comprobantePago.centroCosto;
       transaccion.proveedor = this.comprobantePago.proveedor;
+      transaccion.ordenCompra = element.nOrden;
       transaccion.isContabilizada = element.mcaCajaMenor;
 
       if(element.nombreCuenta == "2.1 PRÉSTAMOS"){

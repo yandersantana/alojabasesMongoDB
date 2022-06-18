@@ -40,6 +40,7 @@ export class OperacionComercial{
     idCuenta: string
     nombreSubcuenta: string
     idSubCuenta:string
+    nOrden : number
     mcaCajaMenor: boolean
     valor: number
     array: Array<SubCuenta>

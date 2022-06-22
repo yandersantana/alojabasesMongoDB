@@ -84,6 +84,11 @@ router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorOrdenCompra", async (req, res, next) => {
+  const transacciones = await TransaccionFinanciera.find({ ordenCompra: req.body.ordenCompra});
+  res.json(transacciones);
+});
+
 router.post("/getTransaccionesPorTipoDocumentoYRecibo", async (req, res, next) => {
   const transacciones = await TransaccionFinanciera.find({ numDocumento: req.body.NumDocumento ,rCajaId:req.body.rCajaId, tipoTransaccion : req.body.tipoTransaccion});
   res.json(transacciones);

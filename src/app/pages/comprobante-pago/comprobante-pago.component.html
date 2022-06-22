@@ -202,7 +202,7 @@
                                         <div class="col-md-8">
                                             <dx-select-box [items]="listaSubCuentas" 
                                                 displayExpr="nombre"
-                                                 [(value)]="p.idSubCuenta"
+                                                [(value)]="p.idSubCuenta"
                                                 [searchEnabled]="true"
                                                 valueExpr="_id"
                                                 (onValueChanged)="verificar($event,i)"
@@ -211,7 +211,7 @@
                                             </dx-select-box>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                    <div class="row orden" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
                                         <div class="col-md-4"># Orden</div>
                                         <div class="col-md-8">
                                              <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>
@@ -225,7 +225,7 @@
                                         <div class="col-md-8">
                                             <dx-select-box [items]="listaSubCuentas2" 
                                                 displayExpr="nombre"
-                                                 [(value)]="p.idSubCuenta"
+                                                [(value)]="p.idSubCuenta"
                                                 [searchEnabled]="true"
                                                 valueExpr="_id"
                                                 (onValueChanged)="verificar($event,i)"
@@ -234,9 +234,9 @@
                                             </dx-select-box>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                    <div class="row orden" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
                                         <div class="col-md-4"># Orden</div>
-                                        <div class="col-md-8">
+                                        <div class="col-md-8 ">
                                              <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>
                                         </div>
                                     </div>
@@ -257,7 +257,7 @@
                                             </dx-select-box>
                                         </div>
                                     </div>
-                                    <div class="row" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
+                                    <div class="row orden" *ngIf="p.idSubCuenta == '6195b2d0f75a418e9c2eba0a'" style="margin-top: 0.5em;">
                                         <div class="col-md-4"># Orden</div>
                                         <div class="col-md-8">
                                              <dx-number-box [(value)]="p.nOrden" (onChange)="buscarOrden($event,i)"></dx-number-box>

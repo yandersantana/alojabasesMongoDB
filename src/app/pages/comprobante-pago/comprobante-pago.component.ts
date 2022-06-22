@@ -657,16 +657,41 @@ export class ComprobantePagoComponent implements OnInit {
     orden.n_orden = this.listadoOperaciones[i].nOrden
     this._ordenCompraService.getOrdenEspecifica(orden).subscribe(
       res => { var ordenes = res as OrdenDeCompra[];
-         this.mostrarLoading = false
-          if(ordenes.length == 0)
+          if(ordenes.length == 0){
+            this.mostrarLoading = false;
+            this.bloquearBoton = true;
             this.mostrarMensajeGenerico(2,"No se encontró la orden de compra")
-        
+            return;
+          }
+
           if(ordenes[0].estadoOrden == "COMPLETO"){
             this.bloquearBoton = false;
           }
-       
-      },
+
+          var transaccion = new TransaccionesFinancieras();
+          var flag = false;
+          transaccion.ordenCompra = this.listadoOperaciones[i].nOrden
+          this._transaccionFinancieraService.getTransaccionesPorOrdenCompra(transaccion).subscribe(
+            res => { var transaccion = res as TransaccionesFinancieras[];
+              this.mostrarLoading = false;
+              transaccion.forEach(element => {
+                console.log(element.ordenCompra)
+                if(element.ordenCompra ==  this.listadoOperaciones[i].nOrden ){
+                  flag = true;
+                  this.mostrarLoading = false;
+                  this.bloquearBoton = true;
+                  this.mostrarMensajeGenerico(2,"La orden ya se encuentra ingresada en otro comprobante")
+                }
+              })
+              if(flag == false)
+                this.bloquearBoton = false;
+              },
+            (err) => { this.mostrarLoading = false});
+        
+        },
       (err) => { this.mostrarLoading = false});
+    
+    
   }
 
 
@@ -705,8 +730,8 @@ export class ComprobantePagoComponent implements OnInit {
       }
       
       
-     if(flag)
-        this.obtenerId();
+    /*  if(flag)
+        this.obtenerId(); */
 
     }
     else{

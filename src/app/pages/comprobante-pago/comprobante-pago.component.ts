@@ -730,8 +730,8 @@ export class ComprobantePagoComponent implements OnInit {
       }
       
       
-    /*  if(flag)
-        this.obtenerId(); */
+      if(flag)
+        this.obtenerId();
 
     }
     else{

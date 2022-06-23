@@ -24,6 +24,7 @@ export class TransaccionesFinancieras{
     proveedor : string
     centroCosto : string
     ordenCompra : number
+    numFactura : number
     constructor(){
         this.isContabilizada = true;
     }

@@ -153,7 +153,8 @@ router.post("/newTransaccion", async (req, res) => {
     beneficiario : req.body.beneficiario,
     proveedor : req.body.proveedor,
     centroCosto : req.body.centroCosto,
-    ordenCompra : req.body.ordenCompra
+    ordenCompra : req.body.ordenCompra,
+    numFactura : req.body.numFactura
   });
   await newTransaccion.save();
   res.json({ status: "Sucursal creado" });

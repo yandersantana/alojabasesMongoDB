@@ -30,6 +30,8 @@ import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
+import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
+import { FacturaProveedor } from '../orden-compra/ordencompra';
 
 
 
@@ -128,6 +130,7 @@ export class ComprobantePagoComponent implements OnInit {
   isUser = false
   mostrarNuevaNotas : boolean = false;
   listadoNotas: Nota [] = []
+  mostrarFact = false;
   nota = {
     fecha:"",
     descripcion:"",
@@ -144,6 +147,7 @@ export class ComprobantePagoComponent implements OnInit {
     public _comprobantePagoService: ComprobantePagoService,
     public _parametrizacionService: ParametrizacionesService,
     public _configuracionService: DatosConfiguracionService,
+    public _facturaProvedorService: FacturasProveedorService,
     public _proveedoresService: ProveedoresService,
     public _centroCostoService: CentroCostoService,
     public _beneficiarioService: BeneficiarioService,
@@ -664,9 +668,9 @@ export class ComprobantePagoComponent implements OnInit {
             return;
           }
 
-          if(ordenes[0].estadoOrden == "COMPLETO"){
+         /*  if(ordenes[0].estadoOrden == "COMPLETO"){
             this.bloquearBoton = false;
-          }
+          } */
 
           var transaccion = new TransaccionesFinancieras();
           var flag = false;
@@ -680,11 +684,16 @@ export class ComprobantePagoComponent implements OnInit {
                   flag = true;
                   this.mostrarLoading = false;
                   this.bloquearBoton = true;
+                  this.mostrarFact = false;
                   this.mostrarMensajeGenerico(2,"La orden ya se encuentra ingresada en otro comprobante")
                 }
               })
-              if(flag == false)
-                this.bloquearBoton = false;
+              if(flag == false){
+                //this.bloquearBoton = false;
+                this.mostrarFact = true;
+              }
+              
+                
               },
             (err) => { this.mostrarLoading = false});
         
@@ -693,6 +702,38 @@ export class ComprobantePagoComponent implements OnInit {
     
     
   }
+
+
+
+  buscarFactura(e,i){
+    this.textLoading = "Buscando Factura"
+    this.mostrarLoading = true
+    var orden = new OrdenDeCompra();
+    orden.n_orden = this.listadoOperaciones[i].nOrden
+
+     var busquedaTransaccion = new tipoBusquedaTransaccion();
+      busquedaTransaccion.NumDocumento = this.listadoOperaciones[i].numFactura.toString();
+      this._facturaProvedorService.getFacturaPorNFactura(busquedaTransaccion).subscribe((res) => {
+        var facturas = res as FacturaProveedor[];
+        if(facturas.length == 0){
+          this.bloquearBoton = true;
+          this.mostrarLoading = false;
+          this.mostrarMensajeGenerico(2,"No existe una factura con el numero ingresado")
+        }else{
+          if(facturas[0].nSolicitud == this.listadoOperaciones[i].nOrden){
+            this.bloquearBoton = false;
+            this.mostrarLoading = false;
+          }else{
+            this.bloquearBoton = true;
+            this.mostrarLoading = false;
+            this.mostrarMensajeGenerico(2,"No coincide el numero de factura con la orden")
+          }
+        }
+        
+      },(err) => {});
+
+  }
+
 
 
   async guardar(){
@@ -952,6 +993,7 @@ export class ComprobantePagoComponent implements OnInit {
       transaccion.centroCosto = this.comprobantePago.centroCosto;
       transaccion.proveedor = this.comprobantePago.proveedor;
       transaccion.ordenCompra = element.nOrden;
+      transaccion.numFactura = element.numFactura;
       transaccion.isContabilizada = element.mcaCajaMenor;
 
       if(element.nombreCuenta == "2.1 PRÉSTAMOS"){

@@ -377,7 +377,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.listadoPagos.forEach(element=>{
       valor = valor + element.valor;
     });
-    this.valorTotalCheques = valor;
+    this.valorTotalCheques = Number(valor.toFixed(2));
   }
 
 

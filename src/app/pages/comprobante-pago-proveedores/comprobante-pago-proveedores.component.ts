@@ -521,27 +521,27 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     this.valorTotalFacturas = 0;
 
     this.listadoFacturasPagar.forEach(element=>{
-      this.valorTotalFacturas = this.valorTotalFacturas + element.valorCancelado;
+      this.valorTotalFacturas = Number((this.valorTotalFacturas + element.valorCancelado).toFixed(2));
       if(element.valorFactura == 0 || element.valorCancelado == 0)
         flag = false;
     });
 
     this.listadoPagos.forEach(element=>{
-      this.valorTotalCheques = this.valorTotalCheques + element.valor;
+      this.valorTotalCheques = Number((this.valorTotalCheques + element.valor).toFixed(2));
       if(element.valor == 0 || element.cuenta == null)
         flag = false;
     });
      
 
-    if(this.valorTotalCheques != this.valorTotalFacturas){
+     if(this.valorTotalCheques != this.valorTotalFacturas){
       flag = false;
       this.mostrarMensajeGenerico(2,"El valor total de los cheques no es el mismo de la suma de las facturas");
     }
 
     if(flag == true)
-        this.obtenerId();
+      this.obtenerId();
     else
-      this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
+      this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros"); 
   }
 
   obtenerId(){

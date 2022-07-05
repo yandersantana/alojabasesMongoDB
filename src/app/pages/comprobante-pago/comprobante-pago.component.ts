@@ -685,7 +685,13 @@ export class ComprobantePagoComponent implements OnInit {
                   this.mostrarLoading = false;
                   this.bloquearBoton = true;
                   this.mostrarFact = false;
-                  this.mostrarMensajeGenerico(2,"La orden ya se encuentra ingresada en otro comprobante")
+                  if(this.isUser)
+                    this.mostrarMensajeGenerico(2,"La orden ya se encuentra ingresada en otro comprobante")
+                  else{
+                    flag = false;
+                    this.mostrarMensajeGenerico(2,"La orden ya se encuentra ingresada en otro comprobante")
+                  }
+                    
                 }
               })
               if(flag == false){

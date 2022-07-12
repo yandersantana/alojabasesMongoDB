@@ -47,6 +47,22 @@ export class catalogo{
 }
 
 
+export class ProductoCombo{
+    _id:number
+    PRODUCTO:string
+    CLASIFICA:string
+    precio:number
+    estado : string
+    cantidadProductos : number
+    productosCombo : productosCombo[]
+    constructor(){
+        this.PRODUCTO="",
+        this.CLASIFICA="",
+        this.estado = "ACTIVO"
+    }
+}
+
+
 export class opcionesCatalogo{
     arrayClasificación: []
     arrayUnidades: []
@@ -76,6 +92,7 @@ export class productosCombo{
     precioVenta:number
     calculo:number
     constructor(){
-        this.cantidad=1
+        this.cantidad = 1
+        this.precioCombo = 0
     }
 }

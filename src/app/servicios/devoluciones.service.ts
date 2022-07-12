@@ -21,6 +21,10 @@ export class DevolucionesService {
     return this.http.get(this.URL + "/getDevoluciones");
   }
 
+  getDevolucionesPorRango(objFecha) {
+    return this.http.post(this.URL + "/getDevolucionesPorRango", objFecha);
+  }
+
   updateDevolucion(devolucion) {
     return this.http.put(this.URL + `/update/${devolucion._id}`, devolucion);
   }

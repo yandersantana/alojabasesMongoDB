@@ -1,5 +1,5 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
-import { catalogo, opcionesCatalogo, productosCombo, comboProducto } from './catalogo';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { catalogo, opcionesCatalogo, productosCombo, ProductoCombo, comboProducto } from './catalogo';
 import Swal from 'sweetalert2';
 import { producto } from '../ventas/venta';
 import { DxGalleryComponent } from 'devextreme-angular';
@@ -15,6 +15,8 @@ import { BulkUploadService } from 'src/app/servicios/bulk-upload.service';
 import { user } from '../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { AuthService } from 'src/app/shared/services';
+import DataSource from 'devextreme/data/data_source';
+import { CombosService } from 'src/app/servicios/combos.service';
 
 @Component({
   selector: 'app-catalogo',
@@ -38,6 +40,7 @@ export class CatalogoComponent implements OnInit {
   slideshowDelay=2000
   producto:string
   imagenPrincipal:string
+  bloquearBoton = false;
   menu1: string[] = [
     "Catálogo",
     "Combos de Productos",
@@ -106,8 +109,8 @@ export class CatalogoComponent implements OnInit {
     UNIDAD:"",
     DIM:"0",
     NOMBRE_COMERCIAL:"",
-    P_CAJA:0,
-    M2:0,
+    P_CAJA:1,
+    M2:1,
     CAL:"",
     CASA:"",
     TIPO:"",
@@ -124,14 +127,14 @@ export class CatalogoComponent implements OnInit {
     precio:0,
     notas:""
   }
-  elementRef
+ 
   tempUrl:string=""
   aplicaciones:precios[]=[]
 
   //para el upload
   nombreClase: string
   idClase: string = ""
-  //clase: classDocumentos
+
   contadorImagenes=0
   selectedFiles: FileList;
   progressInfos = [];
@@ -140,21 +143,46 @@ export class CatalogoComponent implements OnInit {
   fileInfos: Observable<any>;
   precioVentaCombo:number=0
   comboProductos: comboProducto
+  combosDeProductos : ProductoCombo[]=[]
   correo:string
   usuarioLogueado:user
+  mostrarLoading = false;
+  mensajeLoading = "";
+  productos22: DataSource;
+  tiposComprobantes: string[] = [
+    'Nuevo Combo',
+    'Lista de Combos',
+  ];
+  tipoComprobante = ""
+  seccionNuevoCombo = true
+  seccionListaCombos = false
+  popupVisibleProductos = false;
+  popupVisibleEdicion = false;
+  nombreCombo = ""
+  productosComboLeidos:  productosCombo[] = []
+  comboProductoLeido : ProductoCombo
 
   @ViewChild("gallery", { static: false }) galleryItem: DxGalleryComponent;
   
   constructor(public catalogoService: CatalogoService ,
     public authService2: AuthService,
-    public authService: AuthenService,public authenService:AuthenService, private uploadService: BulkUploadService,public aplicacionesService:ControlPreciosService, public serviceUpload:UploadService, public opcionesService:OpcionesCatalogoService, public productoService: ProductoService, elementRef: ElementRef) { 
-    this.catalogo2.ESTADO="ACTIVO"
-    this.catalogo2.ORIGEN = "Nacional"
-    this.catalogo2.TIPO= "Original"
-    this.nuevoProducto= new producto()
-    this.comboProductos= new comboProducto()
-    this.nuevoProductoCombo = new productosCombo()
-    this.productosCombo.push(this.nuevoProductoCombo)
+    public authService: AuthenService,
+    public authenService:AuthenService, 
+    private uploadService: BulkUploadService,
+    public aplicacionesService:ControlPreciosService, 
+    public serviceUpload:UploadService, 
+    public opcionesService:OpcionesCatalogoService, 
+    public _combosService : CombosService, 
+    public productoService: ProductoService) { 
+      this.catalogo2.ESTADO="ACTIVO"
+      this.catalogo2.ORIGEN = "Nacional"
+      this.catalogo2.TIPO= "Original"
+      this.nuevoProducto= new producto()
+      this.comboProductos= new comboProducto()
+      this.nuevoProductoCombo = new productosCombo()
+      this.productosCombo.push(this.nuevoProductoCombo)
+      this.mensajeLoading = "Cargando..."
+      this.tipoComprobante = this.tiposComprobantes[0];
 
   }
 
@@ -163,6 +191,23 @@ export class CatalogoComponent implements OnInit {
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
     this.cargarUsuarioLogueado()
+  }
+
+  opcionRadioTipos(e){
+    this.tipoComprobante = e.value;
+    switch (e.value) {
+      case "Nuevo Combo":
+        this.seccionNuevoCombo = true;
+        this.seccionListaCombos = false;
+        break;
+      case "Lista de Combos":
+        this.seccionNuevoCombo = false;
+        this.seccionListaCombos = true;
+        if(this.combosDeProductos.length == 0)
+          this.traerCombosProductos();
+        break;
+      default:    
+    }      
   }
 
   cargarUsuarioLogueado() {
@@ -191,18 +236,27 @@ export class CatalogoComponent implements OnInit {
 
 
   traerProductosCatalogo(){
+    this.mostrarLoading = true;
     this.catalogoService.getCatalogo().subscribe(res => {
-      this.productosCatalogo = res as catalogo[];
-      this.separarProductos()
-   })
+        this.productosCatalogo = res as catalogo[];
+        this.separarProductos()
+    })
   }
 
   traerProductos(){
     this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[]; 
       this.administrarPrecios();
-   })
-   
+    })
+  }
+
+  traerCombosProductos(){
+    this.mensajeLoading = "Cargando.."
+    this.mostrarLoading = true;
+    this._combosService.getComboProductos().subscribe(res => {
+      this.combosDeProductos = res as ProductoCombo[]; 
+      this.mostrarLoading = false;
+    })
   }
 
   traerAplicaciones(){
@@ -224,22 +278,156 @@ export class CatalogoComponent implements OnInit {
       if(element.PRODUCTO == this.productosCombo[i].nombreProducto){
         this.productosCombo[i].producto = element
         this.productosCombo[i].costo = element.precio
-        this.productosCombo[i].precioMin = (element.precio*(element.porcentaje_ganancia/100))+element.precio
+        this.productosCombo[i].precioMin = Number(((element.precio*(element.porcentaje_ganancia/100))+element.precio).toFixed(2))
       }
     })
     this.buscarCoincidencia(i)
   }
 
+
+
   guardarComboProductos(){
-    
+    this.mensajeLoading = "Guardando ..."
+    this.mostrarLoading = true;
+    var flag = true;
+    this.bloquearBoton = true;
+    this.productosCombo.forEach(element=>{
+      if(element.precioCombo == 0 || element.producto == null)
+        flag = false;
+    });
+
+
+    if(flag == true){
+      if(this.productosCombo.length <= 1){
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(2,"El combo debe tener 2 o más productos");
+      }else
+        this.guardarCombo()
+      
+    } 
+    else{
+      this.bloquearBoton = false;
+      this.mostrarLoading = false;
+      this.mostrarMensajeGenerico(2,"Hay campos vacios en los registros");
+    }
   }
+
+  guardarCombo(){
+    this.catalogo4.PRODUCTO = "COMBO - "+ this.catalogo4.NOMBRE_PRODUCTO
+    this.catalogo4.NOMBRE_PRODUCTO = this.catalogo4.PRODUCTO
+    this.catalogo4.precio = this.comboProductos.precioVenta
+    this.productoService.newProducto(this.catalogo4).subscribe(
+      res => { this.guardarProductoCombo()},
+      err => { this.mostrarMensajeGenerico(2,"Error al guardar el combo") })
+  }
+
+  updateCombo(){
+    this.catalogo4.precio = this.precioVentaCombo
+    this.catalogo4.PRODUCTO = this.comboProductoLeido.PRODUCTO
+    this.productoService.updatePrecioProducto(this.catalogo4).subscribe(
+      res => { this.updateProductoCombo()},
+      err => { this.mostrarMensajeGenerico(2,"Error al actualizar el combo") })
+      
+  }
+
+  guardarProductoCombo(){
+    var productoCombo = new ProductoCombo();
+    productoCombo.PRODUCTO = this.catalogo4.PRODUCTO
+    productoCombo.CLASIFICA = this.catalogo4.CLASIFICA
+    productoCombo.estado = this.catalogo4.ESTADO
+    productoCombo.cantidadProductos = this.productosCombo.length
+    productoCombo.productosCombo = this.productosCombo
+    productoCombo.precio = this.catalogo4.precio
+    productoCombo.estado = "ACTIVO"
+    this._combosService.newCombo(productoCombo).subscribe(
+      res => { 
+          this.mostrarLoading = false;
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Se registró correctamente el nuevo combo',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+        },
+      err => { this.mostrarMensajeGenerico(2,"Error al guardar el combo") })
+  }
+
+
+  updateProductoCombo(){
+    var productoCombo = new ProductoCombo();
+    productoCombo._id = this.comboProductoLeido._id
+    productoCombo.PRODUCTO = this.comboProductoLeido.PRODUCTO
+    productoCombo.CLASIFICA = this.comboProductoLeido.CLASIFICA
+    productoCombo.cantidadProductos = this.productosComboLeidos.length
+    productoCombo.productosCombo = this.productosComboLeidos
+    productoCombo.precio = this.precioVentaCombo
+    productoCombo.estado = "ACTIVO"
+    this._combosService.updateCombo(productoCombo).subscribe(
+      res => { 
+        this.popupVisibleEdicion = false;
+          this.mostrarLoading = false;
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Se registró correctamente el nuevo combo',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            window.location.reload()
+          })
+        },
+      err => { this.mostrarMensajeGenerico(2,"Error al guardar el combo") })
+  }
+
+
+  editarCombo = (e) => {  
+    this.mostrarPopupEdicion(e.row.data)  
+  }
+
+  verProductos = (e) => {  
+    this.mostrarPopupProductos(e.row.data)  
+  }
+
+  mostrarPopupProductos(e : ProductoCombo){
+    this.nombreCombo = e.PRODUCTO
+    this.productosComboLeidos = e.productosCombo
+    this.popupVisibleProductos = true;
+  }
+
+  mostrarPopupEdicion(e : ProductoCombo){
+    this.comboProductoLeido = e
+    this.nombreCombo = e.PRODUCTO
+    this.productosComboLeidos = e.productosCombo
+    this.precioVentaCombo = e.precio
+    this.popupVisibleEdicion = true;
+
+  }
+
+
+
+  mostrarMensajeGenerico(tipo:number , texto:string){
+    if(tipo == 1){
+      Swal.fire({
+        title: "Correcto",
+        text: texto,
+        icon: 'success'
+      })
+    }else{
+      Swal.fire({
+        title: "Error",
+        text: texto,
+        icon: 'error'
+      })
+    }
+  }
+
 
   buscarCoincidencia(i:number){
     var cont=0
     this.productosCombo.forEach(element=>{
-      if(element.nombreProducto == this.productosCombo[i].nombreProducto ){
+      if(element.nombreProducto == this.productosCombo[i].nombreProducto )
         cont++
-      }
     })
     if(cont>1){
       Swal.fire({
@@ -281,10 +469,45 @@ export class CatalogoComponent implements OnInit {
     this.productosCombo.push(new productosCombo())
   }
 
+  anadirProducto2(e){
+    this.productosComboLeidos.push(new productosCombo())
+  }
+
   deleteProductoCombo(i:number){
     this.productosCombo.splice(i,1);
     this.calcularTotalCombo()
   }
+
+  deleteProductoCombo2(i:number){
+    this.productosComboLeidos.splice(i,1);
+    this.calcularTotalCombo2()
+  }
+
+  calcularIncremento2(e,i:number){
+    this.productosComboLeidos[i].calculo = Math.round(((this.productosComboLeidos[i].precioCombo/this.productosComboLeidos[i].costo)*100)-100)
+    this.productosComboLeidos[i].precioVenta = this.productosComboLeidos[i].precioCombo * this.productosComboLeidos[i].cantidad
+    if(this.productosComboLeidos[i].precioCombo < this.productosComboLeidos[i].costo){
+      Swal.fire({
+        title: 'Error',
+        text: 'El precio no puede ser menor al costo',
+        icon: 'error'
+      })
+      this.productosComboLeidos[i].precioCombo=0
+      this.productosComboLeidos[i].calculo=0
+      this.productosComboLeidos[i].precioVenta=0
+    }
+    this.calcularTotalCombo2()
+  }
+
+  calcularTotalCombo2(){
+    this.comboProductoLeido.precio=0
+    this.productosComboLeidos.forEach(element=>{
+      this.comboProductoLeido.precio = element.precioVenta +this.comboProductoLeido.precio
+    })
+    this.precioVentaCombo= this.comboProductoLeido.precio
+    console.log(this.precioVentaCombo)
+  }
+
   //----------------------archivos upload ------------------------
 
   selectFiles(event) {
@@ -375,11 +598,7 @@ export class CatalogoComponent implements OnInit {
       
       new Promise<any>((resolve, reject) => {
         this.productoService.newProducto(this.nuevoProducto).subscribe(
-          res => {
-            cont++
-            console.log(res + "entre por si"+ cont);
-            
-          },
+          res => {cont++},
           err => {
             Swal.fire({
               title: err.error,
@@ -389,7 +608,7 @@ export class CatalogoComponent implements OnInit {
           })
       }) 
     })
-    //alert("hay "+this.productosCatalogo.length)
+
   }
 
   upload5(idx, file) {
@@ -415,11 +634,8 @@ export class CatalogoComponent implements OnInit {
   }
 
   validarContador2(cont:number){
-    if(cont == this.contadorArchivos){
+    if(cont == this.contadorArchivos)
       this.continuarGuardando()
-    }else{
-      console.log("aun no ")
-    }
   }
 
   upload4(idx, file) {
@@ -446,11 +662,9 @@ export class CatalogoComponent implements OnInit {
 
 
   validarContador(cont:number){
-    if(cont == this.contadorArchivos){
+    if(cont == this.contadorArchivos)
       this.newProducto()
-    }else{
-      console.log("aun no ")
-    }
+
   }
 
   buscarUnidad(e){
@@ -468,18 +682,16 @@ export class CatalogoComponent implements OnInit {
   }
 
   deleteImagen(i:number){
-    console.log("aaaaaaaaaaaa "+this.catalogo2.IMAGEN[i])
     this.catalogo2.IMAGEN.splice(i,1)
   }
 
 
   separarProductos(){
     this.productosCatalogo.forEach(element=>{
-      if(element.estado2!="Eliminado"){
+      if(element.estado2!="Eliminado")
         this.productosCatalogoUso.push(element)
-      }else{
+      else
         this.productosCatalogoElim.push(element)
-      }
     })
     this.traerProductos()
   }
@@ -492,6 +704,14 @@ export class CatalogoComponent implements OnInit {
         }
       })
     })
+
+
+    this.productos22 = new DataSource({  
+      store: this.productosActivos,  
+      sort: [{ field: "PRODUCTO", asc: true }],    
+    });
+
+    this.mostrarLoading = false;
   }
 
 
@@ -636,10 +856,7 @@ export class CatalogoComponent implements OnInit {
             this.catalogo2.P_CAJA=1
           }
           this.catalogoService.newCatalogo(this.catalogo2).subscribe(
-            res => {
-              console.log(res + "entre por si");
-              this.crearNuevoProducto()
-            },
+            res => { this.crearNuevoProducto() },
             err => {
               Swal.fire({
                 title: err.error,
@@ -756,10 +973,6 @@ export class CatalogoComponent implements OnInit {
     this.serviceUpload.uploadFile(this.uploadedFiles).subscribe((res) => {}, err => {} )
   }
 
-  upload3(){
-    
-  }
-
   fileChange(element) {
     this.uploadedFiles = element.target.files
   }
@@ -871,14 +1084,11 @@ _handleReaderLoaded(readerEvt) {
       this.productoService.updateProductoEstado(producto, "ACTIVO").subscribe(res => {this.mostrarMensajeRestauración()
       },
       err => { console.log(err); this.mensajeError() }
-    )
-      //this.db.collection("/productos").doc(producto).update({"ESTADO":"ACTIVO"}).then(res => {this.mostrarMensajeRestauración()}, err => reject(err));
-    }) 
+    )}) 
   }
 
 
   updateProducto(){
-    console.log("sdddddd "+JSON.stringify(this.catalogo2.IMAGEN.length))
     if(this.selectedFiles!=undefined){
       this.uploadFiles2()
     } else{
@@ -929,13 +1139,9 @@ _handleReaderLoaded(readerEvt) {
               res => { this.mostrarMensaje()},
               err => { console.log(err); this.mensajeError() }
             )
-
-            //this.mostrarMensaje()
           },
           err => { console.log(err); this.mensajeError() }
-        )
-       // this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({ ...this.catalogo2 }).then(res => { this.mostrarMensaje()}, err => reject(err));
-      })
+        )  })
     }else{
       Swal.fire({
         title: 'Error',
@@ -1169,3 +1375,6 @@ _handleReaderLoaded(readerEvt) {
     this.popupvisible2= true
   }
 }
+
+
+//1189

@@ -17,9 +17,10 @@
     text-align: center;
     
 }
-/* h5{
-    font-size: 0.8em;
-} */
+
+.dates dx-date-box{
+    margin-top: 0.05em;
+}
 
 .alinearBoton{
     text-align: left;
@@ -101,4 +102,10 @@
 .select{
     text-align: center;
     background-color: white;
+}
+
+.btnSearch{
+    text-align: center;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
 }

@@ -25,15 +25,16 @@ export class ProformasService {
     return this.http.post(this.URL + "/getProformasMensuales", objFecha);
   }
 
+  getProformaPorId(idComprobante) {
+    return this.http.post(this.URL + "/getProformaPorId", idComprobante);
+  }
+
   updateProformas(proforma) {
     return this.http.put(this.URL + `/update/${proforma._id}`, proforma);
   }
 
   actualizarNota(proforma, nota: string) {
-    return this.http.put(
-      this.URL + `/actualizarNota/${proforma._id}/${nota}`,
-      proforma
-    );
+    return this.http.put(this.URL + `/actualizarNota/${proforma._id}/${nota}`,proforma);
   }
 
   deleteProformas(proforma) {

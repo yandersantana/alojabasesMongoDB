@@ -1012,66 +1012,52 @@ llenarComboProductos(){
 
 
 buscarCotizacion(){
-  if(this.contadorBusqueda==0){
-  var bandera:boolean=false
-  this.proformas.forEach(element=>{
-    if(element.documento_n == this.Ncotizacion ){
-      this.contadorBusqueda++
-      var dia1 = new Date(element.fecha)
-      var dia2 = new Date();
+  this.mensajeLoading = "Buscando Proforma..."
+  this.mostrarLoading = true;
+  var proforma = new factura();
+  proforma.documento_n = this.Ncotizacion
+  this.proformasService.getProformaPorId(proforma).subscribe(res => {
+      var proform = res as factura[];
+      if(proform.length != 0){
+        this.factura.cliente = proform[0].cliente
+        this.factura.cliente.celular= proform[0].cliente.celular
+        this.factura.cliente.cliente_nombre= proform[0].cliente.cliente_nombre
+        this.mensaje= proform[0].cliente.cliente_nombre
+        this.factura.cliente.direccion= proform[0].cliente.direccion
+        this.factura.cliente.ruc= proform[0].cliente.ruc
+        this.factura.tipo_cliente= proform[0].cliente.t_cliente
+        this.factura.tipo_venta= proform[0].cliente.tventa
+        this.factura.cliente.t_cliente= proform[0].cliente.t_cliente
+        this.factura.cliente.tventa= proform[0].cliente.tventa
+        this.factura.total= proform[0].total
+        this.factura.totalDescuento= proform[0].totalDescuento
+        this.factura.coste_transporte= proform[0].coste_transporte
+        this.factura.observaciones= proform[0].observaciones
+        this.factura.cotizacion= proform[0].documento_n
+        this.productosVendidos=  proform[0].productosVendidos  
+        this.nCotizacionFact ="Referecia Cotización: #"+ proform[0].documento_n
+        if(this.productosVendidos.length>=5 && this.productosVendidos.length<=10){
+          this.dataContainer.cssClass="altura1"
+        }else if(this.productosVendidos.length>=11 && this.productosVendidos.length<=15){
+          this.dataContainer.cssClass="altura2"
+        }else if(this.productosVendidos.length>=16 && this.productosVendidos.length<=20){
+          this.dataContainer.cssClass="altura3"
+        }
 
-      var diferencia= this.diferenciaEntreDiasEnDias(dia1,dia2);
-      if(diferencia <=8){
-        bandera=true
-
-      
-      this.factura.cliente=element.cliente
-      this.factura.cliente.celular=element.cliente.celular
-      this.factura.cliente.cliente_nombre=element.cliente.cliente_nombre
-      this.mensaje=element.cliente.cliente_nombre
-      this.factura.cliente.direccion=element.cliente.direccion
-      this.factura.cliente.ruc=element.cliente.ruc
-      this.factura.tipo_cliente=element.cliente.t_cliente
-      this.factura.tipo_venta=element.cliente.tventa
-      this.factura.cliente.t_cliente=element.cliente.t_cliente
-      this.factura.cliente.tventa=element.cliente.tventa
-      this.factura.total=element.total
-      this.factura.totalDescuento=element.totalDescuento
-      this.factura.coste_transporte=element.coste_transporte
-      this.factura.observaciones=element.observaciones
-      this.factura.cotizacion=element.documento_n
-      this.productosVendidos= element.productosVendidos  
-      this.nCotizacionFact ="Referecia Cotización: #"+element.documento_n
-      if(this.productosVendidos.length>=5 && this.productosVendidos.length<=10){
-        this.dataContainer.cssClass="altura1"
-      }else if(this.productosVendidos.length>=11 && this.productosVendidos.length<=15){
-        this.dataContainer.cssClass="altura2"
-      }else if(this.productosVendidos.length>=16 && this.productosVendidos.length<=20){
-        this.dataContainer.cssClass="altura3"
+        this.mostrarLoading = false;
+        this.buscarCantidadesPRODUCTOS()
+        this.newButtonEnabled = false
+        this.costoTr=true
+      }else{
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(2,"No se encontro ningun registro con el número ingresado")
       }
-    }else{
-      this.mostrarMensajeGenerico(2,"Su cotización ya caducó");
-    }
-    }else{
-    }
-  })
+      
+   })
 
-  if(bandera){
-    this.buscarCantidadesPRODUCTOS()
-    this.newButtonEnabled = false
-    this.costoTr=true
-  }
-  
-  
-}else{
-  Swal.fire(
-    'Alerta',
-    'Su cotización se encuentra cargada , si desea hacer otra consulta vuelva a recargar la página',
-    'warning'
-  )
 }
-  
-}
+
+
 
 buscarCantidadesPRODUCTOS(){
   var contP=0

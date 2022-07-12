@@ -34,6 +34,11 @@ export class ProductoService {
     return this.http.put(this.URL + `/update/${producto._id}`, producto);
   }
 
+  updatePrecioProducto(producto) {
+    console.log(producto)
+    return this.http.put(this.URL + `/updatePrecioProducto`, producto);
+  }
+
   deleteProducto(producto) {
     return this.http.delete(this.URL + `/delete/${producto._id}`, producto);
   }

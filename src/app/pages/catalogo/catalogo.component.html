@@ -1,15 +1,21 @@
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+
 <br>
 <div id="admin1" style="display: block;">
     <div class="row remiPro titulos">
-        <div class="col-md-8"><div class="">
-            
-        </div></div>
-        <div class="col-md-4"> <dx-select-box [items]="menu1" 
-            [value]="menu1[0]" 
-            [readOnly]="false" 
-            [disabled]="false"
-            (onValueChanged)="opcionMenu($event)"
-            ></dx-select-box></div>
+        <div class="col-md-8"></div>
+        <div class="col-md-4"> 
+            <dx-select-box [items]="menu1" 
+                [value]="menu1[0]" 
+                [readOnly]="false" 
+                [disabled]="false"
+                class="form-control select"
+                (onValueChanged)="opcionMenu($event)">
+            </dx-select-box>
+        </div>
     </div>
 </div>
 
@@ -47,9 +53,6 @@
     <dxi-column dataField="CANT_MINIMA" caption="Cant.Minima" [visible]="false"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" [visible]="false"></dxi-column>
    
-    <!-- <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
-    </dxi-column> -->
- 
 
     <tbody class="employee dx-row"  *dxTemplate="let employee of 'rowTemplateName'" >
         <tr class="main-row">
@@ -69,16 +72,7 @@
         [allowedPageSizes]="[8, 15, 20]"
     ></dxo-pager>
 </dx-data-grid>
-<!-- <div class="img-zoom-container">
-    <img id="myimage" src="../../../assets/Logo 01.png" width="300" height="240">
-    <div id="myresult" class="img-zoom-result"></div>
-  </div> -->
-  <!-- 
-  <embed width="191" height="207" name="plugin" src="https://fichasdecaligrafia.com/wp-content/uploads/2019/11/ejercicio_de_caligrafia_de_las_vocales_para_imprimir_en_pdf.pdf" type="application/pdf">
- -->
- <!-- <pdf-viewer [src]="src"
-              [original-size]="false"
-  ></pdf-viewer> -->
+
 
 <dx-popup
         [width]="660"
@@ -830,35 +824,37 @@
 
 
 <div id="combos" style="display: none;">
-    <div class="card mb-3">
-        <div class="card-header">
-         Administración de Combos de Productos
-        </div>
-        <div class="card-body">
-    
-            <div class="row">
-                <div class="col-md-2">
-                    <div class="row botones">
-                      
-                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar2(1)">Nuevo Combo</button></div>
-                        <div class="col-md-12"><button class="btn" type="button" (click)="mostrar2(2)">Editar/Eliminar</button></div>
 
-
-                        
-                        
-                    </div>
+    <div class="row">
+        <div class="col-md-7"></div>
+        <div class="col-md-5">
+            <div class="dx-field radio">
+                <div class="dx-field-value">
+                    <dx-radio-group
+                    [items]="tiposComprobantes"
+                    [(value)]="tipoComprobante"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadioTipos($event)">
+                    </dx-radio-group>
                 </div>
-                <div class="col-md-10 card carIn">
-                    <div id="new2" style="display: block;">
-                        <div class="col-md-12">
-                            <div class="row">
-                               
-                                <div class="col-md-12" >
-                                    
-                                    <div class="row">
-                                        <div class="col-md-12" style="text-align: center;"><h5>Nuevo Combo de Productos</h5></div>
-                                    </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="card mb-3" *ngIf="seccionNuevoCombo">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Combo de Productos</h5>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-12" >
+                            <div class="row">
+                                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h5>NUEVO COMBO</h5></div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-1"></div>
+                                <div class="col-md-10">
                                     <div class="row espacio" >
                                         <div class="col-md-3" style="text-align: left;">PRODUCTO</div>
                                         <div class="col-md-7">  <input type="text" [(ngModel)]="catalogo4.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo4.CLASIFICA}} - {{catalogo4.NOMBRE_PRODUCTO}}" disabled="true" autocomplete="producto" required></div>
@@ -868,85 +864,222 @@
                                         <div class="col-md-3" style="text-align: left;">NOMBRE COMBO</div>
                                         <div class="col-md-9">  <input type="text" [(ngModel)]="catalogo4.NOMBRE_PRODUCTO" name="PRODUCTO" class="form-control"   placeholder="Ingrese el nombre del combo" autocomplete="producto" required></div>
                                     </div>
-
-                                    <div class="row espacio">
-                                        <div class="alinearBoton col-md-4" >
-                                            <dx-button icon="plus" [type]="'success'" [disabled]="false" (onClick)="anadirProducto($event)">
-                                        </dx-button>
-                                        <br>
-                                        </div>
-                                        
-                                        <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
-                                           
-                                          <tr>
-                                            <th class="text-center" style="width: 9%;">Cantidad</th>
-                                            <th class="text-center" style="width: 40%;">Producto</th>
-                                            <th class="text-center" style="width: 9%;">Costo</th>
-                                            <th class="text-center" style="width: 9%;">P.Min.</th>
-                                            <th class="text-center" style="width: 9%;">P.Combo</th>
-                                            <th class="text-center" style="width: 9%;">Calculo(%)</th>
-                                            <th class="text-center" style="width: 9%;">P.Venta</th>
-                                            <th class="text-center" style="width: 6%;">Elim</th>
-                                          </tr>
-                                          
-                                          <tr *ngFor="let producto of productosCombo; let id = index">
-                                            <td>
-                                                <dx-number-box [(value)]="producto.cantidad" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
-                                            </td>
-                                            <td>
-                                                <dx-select-box [items]="productosActivos" [(value)]="producto.nombreProducto" [readOnly]="false" [disabled]="false"
-                                            [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, id)">
-                                                </dx-select-box>
-                                            </td>
-                                            <td>
-                                                <dx-number-box [(value)]="producto.costo" [disabled]="false" [readOnly]="true"></dx-number-box>
-                                            </td>
-                                            <td>
-                                                <dx-number-box [(value)]="producto.precioMin" [disabled]="false" [readOnly]="true"></dx-number-box>
-                                            </td>
-                                            <td>
-                                                <dx-number-box [(value)]="producto.precioCombo" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
-                                            </td>
-                                            <td>
-                                                <dx-number-box [(value)]="producto.calculo" [disabled]="false" [readOnly]="true"></dx-number-box>
-                                            </td>
-                                            <td>
-                                                <dx-number-box [(value)]="producto.precioVenta" [disabled]="false" [readOnly]="true"></dx-number-box>
-                                            </td>
-                                            <td>
-                                               <!--  <dx-button icon="clear" color="white" class="bt" (onClick)="deleteProductoCombo(id)"></dx-button>  -->
-                                                <button class="btn btn-primary btn-xs" class="bt" (click)="deleteProductoCombo(id)" >
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                            
-                                            
-                                            <!-- <td>
-                                                <dx-select-box [items]="menuEstadoRecibo" 
-                                                [value]="menuEstadoRecibo[0]" 
-                                                [readOnly]="false" 
-                                                [disabled]="false"
-                                                (onValueChanged)="actualizarEstadoRec(id,$event)"
-                                                ></dx-select-box>
-                                            </td>
-                                            <td>
-                                                <span contenteditable="true" (blur)="actualizarDato(id, 'observaciones', $event)">{{producto.observaciones}}</span>
-                                            </td> -->
-                                          </tr> 
-                                        </table>
+                                    <div style="text-align: right;">
+                                        <dx-button [text]="'Agregar'" [type]="'success'" style="background-color: #ff5722;" (onClick)="anadirProducto($event)"></dx-button>              
                                     </div>
+                                    <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
+                                        <tr>
+                                        <th class="text-center" style="width: 9%;">Cantidad</th>
+                                        <th class="text-center" style="width: 40%;">Producto</th>
+                                        <th class="text-center" style="width: 9%;">Costo</th>
+                                        <th class="text-center" style="width: 9%;">P.Min.</th>
+                                        <th class="text-center" style="width: 9%;">P.Combo</th>
+                                        <th class="text-center" style="width: 9%;">Calculo(%)</th>
+                                        <th class="text-center" style="width: 9%;">P.Venta</th>
+                                        <th class="text-center" style="width: 6%;">Elim</th>
+                                        </tr>
+                                        
+                                        <tr *ngFor="let producto of productosCombo; let id = index">
+                                        <td>
+                                            <dx-number-box [(value)]="producto.cantidad" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <dx-select-box
+                                                [dataSource]="productos22"
+                                                displayExpr="PRODUCTO"
+                                                [searchEnabled]="true"
+                                                valueExpr="PRODUCTO"
+                                                [(value)]="producto.nombreProducto"
+                                                (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, id)"
+                                                itemTemplate="item">
+                                                <div *dxTemplate="let data of 'item'">
+                                                    <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
+                                                </div>
+                                            </dx-select-box>
+                                        </td>
+                                        <td>
+                                            <dx-number-box [(value)]="producto.costo" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <dx-number-box [(value)]="producto.precioMin" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <dx-number-box [(value)]="producto.precioCombo" [disabled]="false" (onValueChanged)="calcularIncremento($event, id)" [readOnly]="false"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <dx-number-box [(value)]="producto.calculo" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <dx-number-box [(value)]="producto.precioVenta" [disabled]="false" [readOnly]="true"></dx-number-box>
+                                        </td>
+                                        <td>
+                                            <!--  <dx-button icon="clear" color="white" class="bt" (onClick)="deleteProductoCombo(id)"></dx-button>  -->
+                                            <button class="btn btn-primary btn-xs" class="bt" (click)="deleteProductoCombo(id)" >
+                                                <i class="fa fa-trash"></i>
+                                            </button>
+                                        </td>
+
+                                        </tr> 
+                                    </table>
                                 </div>
-                               
+                                <div class="col-md-1"></div>
                             </div>
-                        </div>
+                      
+                            <div style="text-align: center;">
+                                <dx-button [text]="'Guardar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="guardarComboProductos()"></dx-button>              
+                            </div>
+                        </div>                            
                     </div>
-
-                    
-
-                    
                 </div>
-                
             </div>
         </div>
     </div>
+
+    <div *ngIf="seccionListaCombos">
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="combosDeProductos"
+            [showBorders]="true"
+            (onExporting)="onExporting($event)"
+            (onExported)="onExported($event)">
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-export [enabled]="true" fileName="Combos_Productos" [allowExportSelectedData]="true"></dxo-export>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxi-column dataField="createdAt" dataType="date" format="dd/MM/yyyy" sortOrder="desc"  [visible]="false"></dxi-column>
+            <dxi-column dataField="PRODUCTO" caption="Nombre"  dataType="string" width="50%"></dxi-column>
+            <dxi-column dataField="cantidadProductos" caption="Cant.Productos" width="15%" dataType="number"></dxi-column>
+            <dxi-column dataField="precio" caption="Precio" width="15%" dataType="number"></dxi-column>
+
+           <dxi-column type="buttons" dataField="bt1" caption="Ver Productos" width="10%">
+                <dxi-button icon="fa fa-eye" [onClick]="verProductos"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt2" caption="Editar" width="10%" [visible]="true">
+                <dxi-button icon="fa fa-pencil-square-o" [onClick]="editarCombo"></dxi-button>   
+            </dxi-column>
+            <!--  <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+                <dxi-button icon="clear" [onClick]="aprobarEliminacion"></dxi-button>   
+            </dxi-column>
+            <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+                <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
+            </dxi-column> -->
+            <dxo-paging [pageSize]="12"></dxo-paging>
+            <dxo-pager
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[8, 12, 20]"
+            ></dxo-pager>
+        </dx-data-grid>
+    </div>
 </div>
+
+
+<dx-popup [width]="700" [height]="500" [showTitle]="true" title="{{nombreCombo}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleProductos">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+            <div style="text-align: center;">
+                <h5>Productos</h5>
+            </div>
+            
+            <dx-data-grid #datag2
+                id="gridContainer"
+                [dataSource]="productosComboLeidos"
+                [showBorders]="true">
+                <dxi-column dataField="cantidad" dataType="number" width="20%"></dxi-column>
+                <dxi-column dataField="nombreProducto" caption="Producto"  dataType="string" width="60%"></dxi-column>
+                <dxi-column dataField="precioVenta" caption="Precio" width="20%" dataType="number"></dxi-column>
+
+                <dxo-paging [pageSize]="12"></dxo-paging>
+                <dxo-pager
+                    [showPageSizeSelector]="true"
+                    [allowedPageSizes]="[8, 12, 20]"
+                ></dxo-pager>
+            </dx-data-grid>
+       
+    </dx-scroll-view>
+    </div>
+</dx-popup>
+
+
+
+
+
+<dx-popup [width]="850" [height]="500" [showTitle]="true" title="{{nombreCombo}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleEdicion">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+            <div class="row">
+                <div class="col-md-1"></div>
+                <div class="col-md-10">
+                    <div class="row espacio" >
+                        <div class="col-md-3" style="text-align: left;">PRODUCTO</div>
+                        <div class="col-md-7">  <input type="text" [(ngModel)]="comboProductoLeido.PRODUCTO"  name="PRODUCTO" class="form-control" value="{{catalogo4.CLASIFICA}} - {{catalogo4.NOMBRE_PRODUCTO}}" disabled="true" autocomplete="producto" required></div>
+                        <div class="col-md-2" class="precioC">$ {{precioVentaCombo}}</div>
+                    </div>
+                  
+                    <br>
+                   
+                    <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1" >
+                        <tr>
+                        <th class="text-center" style="width: 9%;">Cantidad</th>
+                        <th class="text-center" style="width: 40%;">Producto</th>
+                        <th class="text-center" style="width: 9%;">Costo</th>
+                        <th class="text-center" style="width: 9%;">P.Min.</th>
+                        <th class="text-center" style="width: 9%;">P.Combo</th>
+                        <th class="text-center" style="width: 9%;">Calculo(%)</th>
+                        <th class="text-center" style="width: 9%;">P.Venta</th>
+                        <th class="text-center" style="width: 6%;">Elim</th>
+                        </tr>
+                        
+                        <tr *ngFor="let producto of productosComboLeidos; let id = index">
+                        <td>
+                            <dx-number-box [(value)]="producto.cantidad" [disabled]="false" (onValueChanged)="calcularIncremento2($event, id)" [readOnly]="false"></dx-number-box>
+                        </td>
+                        <td>
+                            <dx-select-box
+                                [dataSource]="productos22"
+                                displayExpr="PRODUCTO"
+                                [searchEnabled]="true"
+                                valueExpr="PRODUCTO"
+                                [(value)]="producto.nombreProducto"
+                                (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, id)"
+                                itemTemplate="item">
+                                <div *dxTemplate="let data of 'item'">
+                                    <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
+                                </div>
+                            </dx-select-box>
+                        </td>
+                        <td>
+                            <dx-number-box [(value)]="producto.costo" [disabled]="false" [readOnly]="true"></dx-number-box>
+                        </td>
+                        <td>
+                            <dx-number-box [(value)]="producto.precioMin" [disabled]="false" [readOnly]="true"></dx-number-box>
+                        </td>
+                        <td>
+                            <dx-number-box [(value)]="producto.precioCombo" [disabled]="false" (onValueChanged)="calcularIncremento2($event, id)" [readOnly]="false"></dx-number-box>
+                        </td>
+                        <td>
+                            <dx-number-box [(value)]="producto.calculo" [disabled]="false" [readOnly]="true"></dx-number-box>
+                        </td>
+                        <td>
+                            <dx-number-box [(value)]="producto.precioVenta" [disabled]="false" [readOnly]="true"></dx-number-box>
+                        </td>
+                        <td>
+                            <!--  <dx-button icon="clear" color="white" class="bt" (onClick)="deleteProductoCombo(id)"></dx-button>  -->
+                            <button class="btn btn-primary btn-xs" class="bt" (click)="deleteProductoCombo2(id)" >
+                                <i class="fa fa-trash"></i>
+                            </button>
+                        </td>
+
+                        </tr> 
+                    </table>
+                </div>
+                <div class="col-md-1"></div>
+            </div>
+        
+            <div style="text-align: center;">
+                <dx-button [text]="'Actualizar'" [type]="'success'" [disabled]="bloquearBoton" style="background-color: #ff5722;" (onClick)="updateCombo()"></dx-button>              
+            </div>
+       
+    </dx-scroll-view>
+    </div>
+</dx-popup>

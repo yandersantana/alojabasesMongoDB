@@ -20,6 +20,14 @@ router.post('/getProformasMensuales', async (req, res,next) => {
 })
 
 
+router.post('/getProformaPorId', async (req, res, next) => {
+  const documentos = await Proformas.find({
+    documento_n: req.body.documento_n
+  });
+  res.json(documentos);
+});
+
+
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const proformas = {

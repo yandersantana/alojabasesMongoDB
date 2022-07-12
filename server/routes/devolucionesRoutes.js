@@ -7,6 +7,18 @@ router.get('/getDevoluciones', async (req, res) => {
     res.send(devoluciones)      
 })
 
+router.post("/getDevolucionesPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const comprobantes = await Devoluciones.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(comprobantes);
+});
+
 router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;

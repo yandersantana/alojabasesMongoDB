@@ -1,6 +1,5 @@
 import { Component, OnInit } from "@angular/core";
-import { AngularFirestore } from "angularfire2/firestore";
-import { AngularFireAuth } from "angularfire2/auth";
+
 import {
   devolucion,
   productosDevueltos,
@@ -15,7 +14,7 @@ import {
   productosPendientesEntrega,
 } from "../ventas/venta";
 import Swal from "sweetalert2";
-import { transaccion } from "../transacciones/transacciones";
+import { objDate, transaccion } from "../transacciones/transacciones";
 import { OrdenDeCompra, Sucursal } from "../compras/compra";
 import { parametrizacionsuc } from "../parametrizacion/parametrizacion";
 import { ParametrizacionesService } from "src/app/servicios/parametrizaciones.service";
@@ -38,6 +37,7 @@ import { dataDocumento } from "../reciboCaja/recibo-caja";
 import { CajaMenor } from "../cajaMenor/caja-menor";
 import { CajaMenorService } from "src/app/servicios/cajaMenor.service";
 import { AuthService } from "src/app/shared/services";
+import { AngularFirestore } from "angularfire2/firestore";
 
 @Component({
   selector: "app-devoluciones",
@@ -58,6 +58,7 @@ export class DevolucionesComponent implements OnInit {
   facturas: factura[] = [];
   productosFactura: producto[] = [];
   devoluciones: devolucion[] = [];
+  listadoDevoluciones: devolucion[] = [];
   devolucionesGlobales: devolucion[] = [];
   devolucionesPendientes: devolucion[] = [];
   devolucionesAprobadas: devolucion[] = [];
@@ -82,13 +83,13 @@ export class DevolucionesComponent implements OnInit {
     "Defectos fábrica",
     "Otros",
   ];
-  menu1: string[] = ["Devoluciones", "Aprobaciones", "Devoluciones Aprobadas"];
+  menu1: string[] = ["Devoluciones", "Listado Devoluciones"];
 
-  menu2: string[] = ["Devoluciones", "Devoluciones Aprobadas"];
 
   sucursalesDefault: string[] = ["matriz", "sucursal1", "sucursal2"];
 
   menuPrincipalRoles: string[];
+  valorMenu = ""
 
   imagenLogotipo ="";
 
@@ -113,9 +114,25 @@ export class DevolucionesComponent implements OnInit {
   correo: string = "";
   productos22: DataSource;
   isUsuario = false;
+  mensajeLoading = "Cargando.."
+
+  obj: objDate;
+  mostrarNewDevolucion = true;
+  mostrarListado = false;
+  nowdesde: Date = new Date();
+  nowhasta: Date = new Date();
+  estados: string[] = [
+      'Pendientes',
+      'Aprobadas',
+      'Anuladas',
+      'Rechazadas',
+  ];
+  mostrarAprobacion = false;
+  mostrarAnulacion = false;
+
+
   constructor(
     private db: AngularFirestore,
-    public afAuth: AngularFireAuth,
     public parametrizacionService: ParametrizacionesService,
     public authenService: AuthenService,
     public transaccionesService: TransaccionesService,
@@ -134,11 +151,11 @@ export class DevolucionesComponent implements OnInit {
   ) {
     this.devolucion = new devolucion();
     this.productosDevueltos.push(new productosDevueltos());
-    this.menuPrincipalRoles = this.menu2;
+    this.menuPrincipalRoles = this.menu1;
   }
 
   ngOnInit() {
-    this.traerDevoluciones();
+    this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerContadoresDocumentos();
     this.traerProductos();
     this.traerOrdenesCompra();
@@ -167,13 +184,11 @@ export class DevolucionesComponent implements OnInit {
           this.usuario = this.usuarioLogueado[0].username;
           this.buscarSucursal(this.usuarioLogueado[0].sucursal);
           this.separarRegistrosDevoluciones();
-          if (this.usuarioLogueado[0].rol == "Usuario") {
+          if (this.usuarioLogueado[0].rol == "Usuario")
             this.isUsuario = true;
-            this.menuPrincipalRoles = this.menu2;
-          } else {
-            this.menuPrincipalRoles = this.menu1;
+          else 
             this.isUsuario = false;
-          }
+          
 
           if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
@@ -183,6 +198,68 @@ export class DevolucionesComponent implements OnInit {
       );
     });
   }
+
+  traerComprobantesPagoPorRango() {
+    this.limpiarArrays();
+    this.mostrarLoading = true;
+    this.obj = new objDate();
+    this.obj.fechaActual = this.nowhasta;
+    this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    this.devolucionesService.getDevolucionesPorRango(this.obj).subscribe(res => {
+      this.devoluciones = res as devolucion[];
+      this.cargarDevoluciones();
+    })
+  }
+
+  limpiarArrays(){
+    this.devoluciones = []
+    this.listadoDevoluciones = []
+    this.devolucionesPendientes = []
+    this.devolucionesAprobadas = []
+    this.devolucionesAnuladas = []
+    this.devolucionesRechazadas = []
+  }
+
+
+  opcionRadio(e){
+    this.listadoDevoluciones = [];
+      switch (e.value) {
+        case "Pendientes":
+          this.listadoDevoluciones = this.devolucionesPendientes
+          if(!this.isUsuario){
+            this.mostrarAnulacion = false
+            this.mostrarAprobacion = true
+          }
+          
+          break;
+        case "Aprobadas":
+          this.listadoDevoluciones = this.devolucionesAprobadas
+          if(!this.isUsuario){
+            this.mostrarAnulacion = false
+            this.mostrarAprobacion = false
+          }
+          break;
+        case "Anuladas":
+          this.listadoDevoluciones = this.devolucionesAnuladas
+          if(!this.isUsuario){
+            this.mostrarAnulacion = true
+            this.mostrarAprobacion = false
+          }
+            
+          break;
+        case "Rechazadas":
+          this.listadoDevoluciones = this.devolucionesRechazadas
+          if(!this.isUsuario){
+            this.mostrarAnulacion = false
+            this.mostrarAprobacion = false
+          }
+          break;
+        default:    
+    }   
+  }
+
+
 
   buscarSucursal(sucursal: string) {
     this.locales.forEach((element) => {
@@ -235,9 +312,11 @@ export class DevolucionesComponent implements OnInit {
   }
 
   traerDevoluciones() {
+    this.limpiarArrays();
+    this.mostrarLoading = true;
     this.devolucionesService.getDevoluciones().subscribe((res) => {
-      this.devolucionesGlobales = res as devolucion[];
-      //this.separarRegistrosDevoluciones()
+      this.devoluciones = res as devolucion[];
+      this.cargarDevoluciones();
     });
   }
 
@@ -441,6 +520,8 @@ export class DevolucionesComponent implements OnInit {
         this.devolucionesAnuladas.push(element);
       }
     });
+    this.listadoDevoluciones = this.devolucionesPendientes;
+    this.mostrarLoading = false;
   }
 
   obtenerDetalleProductosNot() {
@@ -1075,32 +1156,19 @@ export class DevolucionesComponent implements OnInit {
   }
 
   opcionMenu(e) {
-    this.contap2++;
-    if (this.contap2 <= 1) {
-      this.cargarDevoluciones();
-    }
-    var x = document.getElementById("devolucion");
-    var y = document.getElementById("admin");
-    var z = document.getElementById("aprobaciones");
     switch (e.value) {
       case "Devoluciones":
-        x.style.display = "block";
-        y.style.display = "none";
-        z.style.display = "none";
+        this.mostrarNewDevolucion = true;
+        this.mostrarListado = false;
         break;
 
-      case "Aprobaciones":
-        x.style.display = "none";
-        y.style.display = "block";
-        z.style.display = "none";
+      case "Listado Devoluciones":
+        this.mostrarNewDevolucion = false;
+        this.mostrarListado = true;
+        if(this.devoluciones.length == 0)
+          this.traerComprobantesPagoPorRango();
         break;
 
-      case "Devoluciones Aprobadas":
-        //this.cargarDevoluciones()
-        x.style.display = "none";
-        y.style.display = "none";
-        z.style.display = "block";
-        break;
       default:
     }
   }

@@ -46,9 +46,12 @@ table, th, td {
     text-align: center;    
   }
 
-  /* #gallery:hover {
-    transform: scale(3.5); 
-  } */
+.select{
+    text-align: center;
+    background-color: white;
+}
+
+
   ::ng-deep  .dx-texteditor-input{
     text-align: center;
 }

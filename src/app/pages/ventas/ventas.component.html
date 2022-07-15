@@ -7,7 +7,7 @@
         <div class="col-md-3"><h6>Sucursal</h6></div>
         <div class="col-md-3"> 
             <dx-select-box [items]="sucursalesDefault" 
-                [value]="sucursalesDefault[0]" 
+                [value]="sucursalUsuario" 
                 [readOnly]="false" 
                 [disabled]="false"
                 (onValueChanged)="asignarsucursalD($event)">
@@ -340,7 +340,7 @@
                         <dx-check-box [(value)]="p.iva" (onValueChanged)="carcularTotalProducto($event, i)" [readOnly]="selectAct"></dx-check-box>
                     </div>
                     <div class="col-md-3" style="text-align: left">
-                        <button class="fondobt" (click)="mostrarPopup($event,i)" >
+                        <button class="fondobt" (click)="mostrarPopup($event,i)">
                             <i class="fa fa-eye"></i>
                         </button>
                     </div>
@@ -692,14 +692,31 @@
                         </table>
                     </div>
                     <div class="col-md-3"></div>
-                   
                 </div>
-                
             </div>
-          
-        </div>
-        
-  
-       
+        </div>  
+</dx-popup>
 
+<dx-popup [width]="700" [height]="500" [showTitle]="true" title="{{nombreCombo}}" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleCombos">
+    <div *dxTemplate="let data of 'content'" style="text-align: center;">
+        <dx-scroll-view width="100%" height="100%">
+            <div style="text-align: center;">
+                <h4>Productos</h4>
+            </div>
+            
+            <dx-data-grid #datag2 id="gridContainer" [dataSource]="productosComboLeidos" [showBorders]="true">
+                <dxi-column dataField="cantidad" dataType="number" width="20%"></dxi-column>
+                <dxi-column dataField="nombreProducto" caption="Producto"  dataType="string" width="60%"></dxi-column>
+                <dxi-column dataField="precioVenta" caption="Precio" width="20%" dataType="number"></dxi-column>
+
+                <dxo-paging [pageSize]="12"></dxo-paging>
+                <dxo-pager
+                    [showPageSizeSelector]="true"
+                    [allowedPageSizes]="[8, 12, 20]"
+                ></dxo-pager>
+            </dx-data-grid>
+       
+    </dx-scroll-view>
+    </div>
 </dx-popup>

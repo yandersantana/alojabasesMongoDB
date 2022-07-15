@@ -20,6 +20,10 @@ export class CombosService {
     return this.http.get(this.URL + "/getComboProductos");
   }
 
+  getComboPorNombre(combo) {
+    return this.http.post(this.URL + "/getComboPorNombre", combo);
+  }
+
   updateCombo(combo) {
     return this.http.put(this.URL + `/update/${combo._id}`, combo);
   }

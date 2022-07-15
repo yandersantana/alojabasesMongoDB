@@ -244,7 +244,7 @@ export class CatalogoComponent implements OnInit {
   }
 
   traerProductos(){
-    this.productoService.getProducto().subscribe(res => {
+    this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[]; 
       this.administrarPrecios();
     })
@@ -277,7 +277,7 @@ export class CatalogoComponent implements OnInit {
     this.productosActivos.forEach(element=>{
       if(element.PRODUCTO == this.productosCombo[i].nombreProducto){
         this.productosCombo[i].producto = element
-        this.productosCombo[i].costo = element.precio
+        this.productosCombo[i].costo = Number(element.precio.toFixed(2))
         this.productosCombo[i].precioMin = Number(((element.precio*(element.porcentaje_ganancia/100))+element.precio).toFixed(2))
       }
     })
@@ -316,6 +316,8 @@ export class CatalogoComponent implements OnInit {
     this.catalogo4.PRODUCTO = "COMBO - "+ this.catalogo4.NOMBRE_PRODUCTO
     this.catalogo4.NOMBRE_PRODUCTO = this.catalogo4.PRODUCTO
     this.catalogo4.precio = this.comboProductos.precioVenta
+    this.catalogo4.UNIDAD = "UNIDAD"
+    this.catalogo4.ESTADO = "ACTIVO"
     this.productoService.newProducto(this.catalogo4).subscribe(
       res => { this.guardarProductoCombo()},
       err => { this.mostrarMensajeGenerico(2,"Error al guardar el combo") })

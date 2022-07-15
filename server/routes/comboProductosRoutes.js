@@ -8,7 +8,7 @@ router.post('/newComboProducto', async (req, res) => {
       PRODUCTO:req.body.PRODUCTO, 
       CLASIFICA:req.body.CLASIFICA, 
       precio:req.body.precio,
-      estado:req.body.estado,
+      estado:"ACTIVO",
       cantidadProductos : req.body.cantidadProductos,
       productosCombo: req.body.productosCombo
     });
@@ -36,6 +36,12 @@ router.get('/getComboProductos', async (req, res) => {
     const combos = await ProductosCombos.find();
     res.send(combos)      
 })
+
+router.post('/getComboPorNombre', async (req, res, next) => {
+    const documentos = await ProductosCombos.find({ PRODUCTO: req.body.PRODUCTO});
+    res.json(documentos);
+});
+
 
 
 

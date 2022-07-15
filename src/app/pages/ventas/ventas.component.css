@@ -139,6 +139,10 @@ table, th, td {
     height: 1000px;
 }
 
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}
 
 .tooltip {
     position: relative;

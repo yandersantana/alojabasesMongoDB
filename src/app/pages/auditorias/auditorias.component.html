@@ -20,14 +20,14 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <div class="col-md-12 card carIn">
+            <div class="col-md-12 ">
                 <div *ngIf="newAud">
                     <div class="row">
                         <div class="col-md-2"></div>
                         <div class="col-md-8">
                             <div class="row">
                                 <br><br>
-                                <div class="col-md-12" style="text-align: center;"><h5>Nueva Auditoria</h5></div>
+                                <div class="col-md-12" style="text-align: center;"><h5 style="font-weight: bold;">NUEVA AUDITORIA</h5></div>
 
                                 <div class="col-md-4" style="padding-top: 0.7em;">ID Auditoria</div>
                                 <div class="col-md-8"><dx-number-box [(value)]="newAuditoria.idAuditoria" [disabled]="false" [readOnly]="false"></dx-number-box></div>
@@ -161,7 +161,7 @@
                     <div id="tabla2" style="display: none;">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar2()">Regresar</button></div>
+                                <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar2()">Regresar</button></div>
                                 <div class="col-md-12">
                                     <dx-data-grid #data2
                                     id="gridContainer"
@@ -220,7 +220,7 @@
                     <div id="tabla4" style="display: none;">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar2()">Regresar</button></div>
+                                <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar2()">Regresar</button></div>
                                 <div class="col-md-12">
                                     <div style="text-align: center;"><h4>Novedades de Auditoría</h4></div>
                                 </div>
@@ -509,7 +509,7 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar()">Regresar</button></div>
+                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">Regresar</button></div>
                                     <div class="col-md-10"></div>
                                 </div>
                                 <div class="col-md-12">
@@ -581,7 +581,7 @@
 
                                     <div class="row">
                                         <div class="col-md-4"></div>
-                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6" (click)="revisarDuplicados()">Actualizar Productos</button></div>
+                                        <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6"  style="background-color: #ff5722;" (click)="revisarDuplicados()">Actualizar Productos</button></div>
                                         <div class="col-md-4"></div>
                                     </div>
 

@@ -20,6 +20,10 @@ export class AuditoriaProductoService {
     return this.http.get(this.URL + "/getAuditorias");
   }
 
+  getAuditoriasProductosPorId(idAuditoria) {
+    return this.http.post(this.URL + "/getAuditoriasPorId", idAuditoria);
+  }
+
   updateAuditoriaProducto(auditoria) {
     return this.http.put(this.URL + `/update/${auditoria._id}`, auditoria);
   }

@@ -44,6 +44,13 @@ router.get('/getAuditorias', async (req, res) => {
 })
 
 
+router.post('/getAuditoriasPorId', async (req, res, next) => {
+  const documentos = await AuditoriaProducto.find({ idPrincipal: req.body.idPrincipal});
+  res.json(documentos);
+});
+
+
+
 router.put('/updateAuditoria/:id/:cantidad', async (req, res,next) => {
     const { id } = req.params;
     const { cantidad } = req.params;

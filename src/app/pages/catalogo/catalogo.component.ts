@@ -316,7 +316,7 @@ export class CatalogoComponent implements OnInit {
     this.catalogo4.PRODUCTO = "COMBO - "+ this.catalogo4.NOMBRE_PRODUCTO
     this.catalogo4.NOMBRE_PRODUCTO = this.catalogo4.PRODUCTO
     this.catalogo4.precio = this.comboProductos.precioVenta
-    this.catalogo4.UNIDAD = "UNIDAD"
+    this.catalogo4.UNIDAD = "Unidad"
     this.catalogo4.ESTADO = "ACTIVO"
     this.productoService.newProducto(this.catalogo4).subscribe(
       res => { this.guardarProductoCombo()},
@@ -387,6 +387,10 @@ export class CatalogoComponent implements OnInit {
     this.mostrarPopupEdicion(e.row.data)  
   }
 
+  eliminarCombo = (e) => {  
+    this.mostrarEliminacion(e.row.data)  
+  }
+
   verProductos = (e) => {  
     this.mostrarPopupProductos(e.row.data)  
   }
@@ -395,6 +399,39 @@ export class CatalogoComponent implements OnInit {
     this.nombreCombo = e.PRODUCTO
     this.productosComboLeidos = e.productosCombo
     this.popupVisibleProductos = true;
+  }
+
+  mostrarEliminacion(e : ProductoCombo){
+    Swal.fire({
+      title: "Eliminar Combo",
+      text: "Está seguro que desea eliminar el siguiente producto: "+ e.PRODUCTO,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Eliminar',
+      cancelButtonText: 'Cancelar'
+    }).then((result) => {
+      if (result.value) {
+        this.mensajeLoading = "Eliminando Combo..."
+        this.mostrarLoading = true;
+        this._combosService.deleteCombos(e).subscribe(
+          res => { 
+            var producto = this.productosActivos.find(element => element.PRODUCTO == e.PRODUCTO)
+            this.productoService.deleteProducto(producto).subscribe(
+            res => { 
+              this.mostrarLoading = false;
+              this.mostrarMensajeGenerico(1,"Se ha eliminado correctamente su combo")
+              this.traerCombosProductos() },
+            err => { 
+              this.mostrarLoading = false;
+              this.mostrarMensajeGenerico(2,"Error al eliminar el combo") })  },
+          err => {
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(2,"Error al eliminar el combo") })
+       
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire('Cancelado!', 'error' )
+      }
+    })
   }
 
   mostrarPopupEdicion(e : ProductoCombo){

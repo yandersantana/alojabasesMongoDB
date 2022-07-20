@@ -85,6 +85,8 @@ export class AudTablaComponent implements OnInit {
     "Ver Auditorias",
     "Novedades registradas"
   ];
+  mostrarLoading = false;
+  mensajeLoading = "Cargando..."
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -107,14 +109,8 @@ export class AudTablaComponent implements OnInit {
     this.traerContadoresDocumentos()
     this.traerAuditorias()
     this.traerAuditoriasProductos()
-    this.traerTransacciones()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos()
-    /* var x = document.getElementById("newAudGlobal");
-    var y = document.getElementById("tabla3");
-    x.style.display= "block"
-    y.style.display= "none" */
-   
   }
 
   traerParametrizaciones(){
@@ -130,6 +126,7 @@ export class AudTablaComponent implements OnInit {
   }
 
   traerAuditorias(){
+    this.mostrarLoading = true;
     this.auditoriasService.getAuditorias().subscribe(res => {
       this.auditoriasBase = res as auditoria[];
       this.separarAuditorias()
@@ -651,6 +648,8 @@ export class AudTablaComponent implements OnInit {
         this.auditoriasAcabadas.push(element)
       }
     })
+
+    this.mostrarLoading = false;
     
   }
 

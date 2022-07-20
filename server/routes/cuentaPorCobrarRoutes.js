@@ -24,8 +24,7 @@ router.post("/getCuentasPorRango", async (req, res, next) => {
     createdAt: {
       $gte: start,
       $lt: end,
-    },
-    estado:"Activa"
+    }
   });
   res.json(cuentas);
 });

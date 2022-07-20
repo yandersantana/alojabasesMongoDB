@@ -1,7 +1,6 @@
 <div *ngIf="mostrarLoading">
-  <app-loading></app-loading>
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
-
 
 <br><br>
  <div class="card">
@@ -62,13 +61,28 @@
     </div>
 </div>
 
+<div class="row">
+    <div class="col-md-7"></div>
+    <div class="col-md-5">
+        <div class="dx-field radio">
+            <div class="dx-field-value">
+                <dx-radio-group
+                [items]="estados"
+                [value]="estado"
+                layout="horizontal"
+                (onValueChanged)="opcionRadio($event)">
+                </dx-radio-group>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <br>
 <dx-data-grid #datag2
     id="gridContainer"
     [dataSource]="listaCuentas"
-    [showBorders]="true"
-    (onExporting)="onExporting($event)"
-    (onExported)="onExported($event)">
+    [showBorders]="true">
     <dxo-filter-row [visible]="true" ></dxo-filter-row>
     <dxo-export [enabled]="true" fileName="Cuentas por Pagar" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
@@ -81,15 +95,16 @@
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
     
-  <!--   <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
-        <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
+    <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
+        <dxi-button icon="clear" [onClick]="deleteCuenta"></dxi-button>   
     </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
-        <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
+    <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+        <dxi-button icon="fa fa-check" [onClick]="aprobarEliminacion"></dxi-button>   
     </dxi-column>
-    <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
-        <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
-    </dxi-column> -->
+    <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+        <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
+    </dxi-column>
+ 
     
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

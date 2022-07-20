@@ -491,7 +491,6 @@ export class AuditoriasComponent implements OnInit {
   }
 
   regresar2(){
-    alert("aqui 2")
     var x = document.getElementById("tabla4");
     var z = document.getElementById("tabla2");
     var y = document.getElementById("tabla3");
@@ -503,28 +502,18 @@ export class AuditoriasComponent implements OnInit {
    verLista(id:number){
     this.mostrarLoading = true;
     this.mostrarTablaAuditoria = true;
-    //var x = document.getElementById("tablaAuditoria");
-    //var y = document.getElementById("newAudGlobal");
     var z = document.getElementById("tabla3");
-     // x.style.display = "block";
-      //y.style.display = "none";
       z.style.display = "none";
       this.newAud = false;
-    var cont=0
-    this.auditoriaProductosleida.forEach(element=>{
-      cont++
+    this.auditoriaProductosleida = []
+
+    var newAuditoria = new auditoriasProductos();
+    newAuditoria.idPrincipal = id;
+    this.auditoriaProductoService.getAuditoriasProductosPorId(newAuditoria).subscribe(res => {
+      var datos =  res as auditoriasProductos[];
+      this.auditoriaProductosleida = datos;
+      this.mostrarLoading = false;
     })
-    if(cont>=0){
-      this.auditoriaProductosleida.forEach(element=>{
-        this.auditoriaProductosleida.splice(0)    
-      })
-    }
-    this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == id)
-         this.auditoriaProductosleida.push(element)
-    })
-    this.mostrarLoading = false;
-     
   }
 
   verLista2(e){

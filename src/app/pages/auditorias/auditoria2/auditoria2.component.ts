@@ -86,6 +86,9 @@ export class Auditoria2Component implements OnInit {
     "Novedades registradas"
   ];
 
+  mostrarLoading = false;
+  mensajeLoading = "Cargando.."
+
   fecha_inicio = new Date()
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -103,10 +106,10 @@ export class Auditoria2Component implements OnInit {
   ngOnInit() {
     this.traerParametrizaciones()
     this.traerSucursales()
+    this.traerAuditoriasProductos()
     this.traerProductos()
     this.traerContadoresDocumentos()
     this.traerAuditorias()
-    this.traerAuditoriasProductos()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos()
   }
@@ -131,6 +134,7 @@ export class Auditoria2Component implements OnInit {
   }
 
   traerAuditoriasProductos(){
+    this.mostrarLoading = true;
     this.auditoriaProductoService.getAuditoriasProductos().subscribe(res => {
       this.auditoriaProductosBase = res as auditoriasProductos[];
       this.dividirAuditorias()
@@ -151,6 +155,8 @@ export class Auditoria2Component implements OnInit {
         this.nodedadesAuditorias.push(element)
       }
     })
+
+    this.mostrarLoading = false;
   }
 
   async getIDDocumentos() {

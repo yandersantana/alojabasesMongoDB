@@ -42,6 +42,12 @@ router.post('/getComboPorNombre', async (req, res, next) => {
     res.json(documentos);
 });
 
+router.delete('/delete/:id', async (req, res,next) => {
+    await ProductosCombos.findByIdAndRemove(req.params.id);
+    res.json({status: 'Combo Eliminado'});
+})
+
+
 
 
 

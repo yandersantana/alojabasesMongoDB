@@ -16,11 +16,23 @@ import { CuentaPorCobrar } from './cuentasPorCobrar';
 
 export class CuentaPorCobrarComponent implements OnInit {
   listaCuentas: CuentaPorCobrar [] = []
+  listaCuentasActivas: CuentaPorCobrar [] = []
+  listaCuentasPendientes: CuentaPorCobrar [] = []
+  listaCuentasAnualadas: CuentaPorCobrar [] = []
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   fechaAnteriorDesde: Date = new Date();
   obj: objDate;
   mostrarLoading: boolean = false;
+  estados: string[] = [
+      'Activos',
+      'Pendientes',
+      'Anulados',
+  ];
+  mostrarDelete = true;
+  mostrarAprobacion = false;
+  mensajeLoading = "Cargando.."
+  estado = "Activos"
 
 
 
@@ -39,16 +51,38 @@ export class CuentaPorCobrarComponent implements OnInit {
   }
 
   traerListaCuentas(){
+    this.estado = "Activos"
     this.listaCuentas = [];
+    this.listaCuentasActivas = [];
+    this.listaCuentasPendientes = [];
+    this.listaCuentasAnualadas = [];
     this.mostrarLoading = true;
-    this._cuentasporCobrarService.getCuentasPorCobrarActivas().subscribe(res => {
+    this._cuentasporCobrarService.getCuentasPorCobrar().subscribe(res => {
       this.listaCuentas = res as CuentaPorCobrar[];
-      this.mostrarLoading = false;
+      this.separarComprobantes();
    })
   }
 
+  separarComprobantes(){
+    this.listaCuentas.forEach(element=> {
+      if(element.estado == "Activa")
+        this.listaCuentasActivas.push(element);
+      else if(element.estado == "Pendiente")
+        this.listaCuentasPendientes.push(element);
+      else if(element.estado == "Anulado")
+        this.listaCuentasAnualadas.push(element);
+    })
+    this.listaCuentas = this.listaCuentasActivas;
+    this.mostrarLoading = false;
+  }
+
+
   traerCuentasPorRango() {
+    this.estado = "Activos"
     this.listaCuentas = [];
+    this.listaCuentasActivas = [];
+    this.listaCuentasPendientes = [];
+    this.listaCuentasAnualadas = [];
     this.mostrarLoading = true;
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
@@ -63,28 +97,118 @@ export class CuentaPorCobrarComponent implements OnInit {
     );
   }
 
-  onExporting (e) {
-/*     e.component.beginUpdate();
-    e.component.columnOption("tipo_documento", "visible", true);
-    e.component.columnOption("celular", "visible", true);
-    e.component.columnOption("valor_unitario", "visible", true);
-    e.component.columnOption("cajas", "visible", true);
-    e.component.columnOption("piezas", "visible", true);
-    e.component.columnOption("cantM2", "visible", true);
-    e.component.columnOption("notas", "visible", true); */
-   
-  };
-  onExported (e) {
-/*     e.component.columnOption("tipo_documento", "visible", false);
-    e.component.columnOption("celular", "visible", false);
-    e.component.columnOption("valor_unitario", "visible", false);
-    e.component.columnOption("cajas", "visible", false);
-    e.component.columnOption("piezas", "visible", false);
-    e.component.columnOption("cantM2", "visible", false);
-    e.component.columnOption("notas", "visible", false);
-    e.component.endUpdate(); */
+  opcionRadio(e){
+    this.listaCuentas = [];
+      switch (e.value) {
+        case "Activos":
+          this.listaCuentas = this.listaCuentasActivas;
+          this.mostrarDelete = true;
+          this.mostrarAprobacion = false;
+          break;
+        case "Pendientes":
+          this.listaCuentas = this.listaCuentasPendientes;
+          this.mostrarDelete= false;
+          this.mostrarAprobacion = true;
+          break;
+        case "Anulados":
+          this.listaCuentas = this.listaCuentasAnualadas;
+          this.mostrarDelete= false;
+          this.mostrarAprobacion = false;
+          break;
+        default:    
+    }    
   }
 
+
+
+  deleteCuenta = (e) => {  
+    this.anularCuenta(e.row.data)  
+  }
+
+  aprobarEliminacion = (e) => {  
+    this.eliminarComp(e.row.data)  
+  }
+
+  rechazarEliminacion = (e) => { 
+    this.rechazarEliminacionComp(e.row.data)  
+  }
+
+  eliminarComp(e){
+    Swal.fire({
+      title: 'Eliminar Cuenta por Cobrar',
+      text: "Eliminar Cuenta por el valor de " + e.valor,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarLoading = true;
+        this._cuentasporCobrarService.updateEstadoCuenta(e,"Anulado").subscribe(
+          res => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")
+            this.traerCuentasPorRango();},
+          err => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+  rechazarEliminacionComp(e){
+    Swal.fire({
+      title: 'Rechazar Eliminacion Cuenta',
+      text: "Está seguro que desea reversar la anulación ",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this.mostrarLoading = true;
+        this._cuentasporCobrarService.updateEstadoCuenta(e,"Activa").subscribe(
+          res => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(1,"Se realizo su proceso correctamente");
+            this.traerCuentasPorRango();},
+          err => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso")
+      }
+    })
+  }
+
+
+  anularCuenta(e:any){ 
+    Swal.fire({
+      title: 'Anular Cuenta',
+      text: "Desea anular la cuenta por cobrar por el valor de "+e.valor,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._cuentasporCobrarService.updateEstadoCuenta( e ,"Pendiente").subscribe( res => {
+          Swal.fire({
+            title: 'Correcto',
+            text: 'Un administrador aprobará su anulación',
+            icon: 'success',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            this.traerCuentasPorRango();
+          })
+        }, err => {alert("error")})
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso");
+      }
+    })
+  }
 
 
 

@@ -45,6 +45,11 @@ router.get('/getCatalogos', async (req, res) => {
     res.json(catalogo); 
 })
 
+router.get('/getCatalogosActivos', async (req, res) => {
+    const catalogo = await Catalogo.find({"ESTADO":"ACTIVO"});
+    res.json(catalogo); 
+})
+
 router.put('/update/:id', async (req, res,next) => {
     console.log("entrando")
     const { id } = req.params;

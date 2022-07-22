@@ -31,6 +31,7 @@ export class CatalogoComponent implements OnInit {
   popupvisible2:boolean=false
   popupVi:boolean=false
   productosCatalogo:catalogo[]=[]
+  productosCatalogoActivos:catalogo[]=[]
   productosCatalogoElim:catalogo[]=[]
   productosCatalogoUso:catalogo[]=[]
   catalogo:catalogo
@@ -188,6 +189,7 @@ export class CatalogoComponent implements OnInit {
 
   ngOnInit() {
     this.traerProductosCatalogo()
+    this.traerProductosCatalogoActivos()
     this.traerOpcionesCatalogo()
     this.traerAplicaciones()
     this.cargarUsuarioLogueado()
@@ -240,6 +242,12 @@ export class CatalogoComponent implements OnInit {
     this.catalogoService.getCatalogo().subscribe(res => {
         this.productosCatalogo = res as catalogo[];
         this.separarProductos()
+    })
+  }
+
+  traerProductosCatalogoActivos(){
+    this.catalogoService.getCatalogoActivos().subscribe(res => {
+        this.productosCatalogoActivos = res as catalogo[];
     })
   }
 
@@ -726,6 +734,8 @@ export class CatalogoComponent implements OnInit {
 
 
   separarProductos(){
+    //1827
+    console.log(this.productosCatalogo.length)
     this.productosCatalogo.forEach(element=>{
       if(element.estado2!="Eliminado")
         this.productosCatalogoUso.push(element)

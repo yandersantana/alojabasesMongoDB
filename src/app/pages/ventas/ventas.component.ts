@@ -3203,41 +3203,6 @@ cambiarestado(e,i:number){
   }
 
 
-  /* validarValorTransaccion(producto: venta){
-    if(producto.producto.precio != producto.precio_venta){
-      var diferencia = producto.precio_venta - producto.producto.precio 
-      this.transaccion = new transaccion()
-      this.transaccion.fecha_mov = new Date().toLocaleString()
-      this.transaccion.fecha_transaccion = this.factura.fecha
-      this.transaccion.sucursal = this.factura.sucursal
-      this.transaccion.totalsuma = diferencia
-      this.transaccion.bodega = "12"
-      this.transaccion.valor = diferencia
-      this.transaccion.cantM2 = 1
-      this.transaccion.costo_unitario = producto.producto.precio
-      this.transaccion.documento = this.factura.documento_n.toString()
-      this.transaccion.rucSucursal = this.factura.rucFactura
-      this.transaccion.factPro = this.factura.documento_n.toString()
-      this.transaccion.maestro = this.factura.maestro
-      this.transaccion.producto = producto.producto.PRODUCTO
-      this.transaccion.cajas = 1
-      this.transaccion.piezas = 0;
-      this.transaccion.observaciones = this.factura.observaciones
-      this.transaccion.tipo_transaccion = this.factura.tipoDocumento == "Factura" ? "venta-fact" : "venta-not"
-      this.transaccion.movimiento = -1
-      this.transaccion.usu_autorizado = this.factura.username
-      this.transaccion.usuario = this.factura.username
-      this.transaccion.idTransaccion = this.number_transaccion++
-      this.transaccion.cliente = this.factura.cliente.cliente_nombre  
-      this.transaccion.mcaEntregado = proV.entregar == true ? "SI":"NO"
-
-      this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-        res => { contVal++, this.contadorGenerico(contVal, productos.length)},
-        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
-    }
-  } */
-
-
   generarTransaccionesComboProductos(nombreCombo : string){
     var combo = new ProductoCombo();
     combo.PRODUCTO = nombreCombo;
@@ -3384,8 +3349,19 @@ cambiarestado(e,i:number){
                 this.transaccion.cliente=this.factura.cliente.cliente_nombre
                 this.transaccion.mcaEntregado = element.entregar == true ? "SI":"NO"
 
-                if(element.producto.CLASIFICA == "COMBO")
+                if(element.producto.CLASIFICA == "COMBO"){
                   this.generarTransaccionesComboProductos(element.producto.PRODUCTO)
+
+                  if(this.transaccion.valor == element.producto.precio){
+                    this.transaccion.valor = 0
+                    this.transaccion.totalsuma = 0
+                  }
+                  else{
+                    this.transaccion.valor = this.transaccion.valor - element.producto.precio
+                    this.transaccion.totalsuma = this.transaccion.valor * this.transaccion.cantM2
+                  }
+
+                }
                 
                 this.transaccionesService.newTransaccion(this.transaccion).subscribe(
                   res => {

@@ -74,6 +74,8 @@
         [showBorders]="true"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
+        <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxi-column
             dataField="producto.PRODUCTO"
             caption="Producto"

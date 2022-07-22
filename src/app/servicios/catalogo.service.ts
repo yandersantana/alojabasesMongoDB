@@ -22,6 +22,10 @@ export class CatalogoService {
     return this.http.get(this.URL + "/getCatalogos");
   }
 
+  getCatalogoActivos() {
+    return this.http.get(this.URL + "/getCatalogosActivos");
+  }
+
   updateCatalogo(catalogo) {
     return this.http.put(this.URL + `/update/${catalogo._id}`, catalogo);
   }

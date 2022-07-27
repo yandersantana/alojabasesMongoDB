@@ -109,7 +109,7 @@ export class CatalogoComponent implements OnInit {
     REFERENCIA:"Sin Referencia",
     UNIDAD:"",
     DIM:"0",
-    NOMBRE_COMERCIAL:"",
+    nombre_comercial:"",
     P_CAJA:1,
     M2:1,
     CAL:"",
@@ -326,6 +326,7 @@ export class CatalogoComponent implements OnInit {
     this.catalogo4.precio = this.comboProductos.precioVenta
     this.catalogo4.UNIDAD = "Unidad"
     this.catalogo4.ESTADO = "ACTIVO"
+    this.catalogo4.nombre_comercial = "COMBO"
     this.productoService.newProducto(this.catalogo4).subscribe(
       res => { this.guardarProductoCombo()},
       err => { this.mostrarMensajeGenerico(2,"Error al guardar el combo") })

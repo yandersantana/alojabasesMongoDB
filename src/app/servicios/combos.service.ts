@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class CombosService {
-  //private URL = "http://159.223.107.115:3000/comboProductos";
-  private URL = "http://104.131.82.174:3000/comboProductos";
+  private URL = "http://159.223.107.115:3000/comboProductos";
+  //private URL = "http://104.131.82.174:3000/comboProductos";
   //private URL = 'http://localhost:3000/comboProductos'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}
@@ -22,6 +22,10 @@ export class CombosService {
 
   getComboPorNombre(combo) {
     return this.http.post(this.URL + "/getComboPorNombre", combo);
+  }
+
+  getComboPorNombreProducto(combo) {
+    return this.http.post(this.URL + "/getComboPorNombreProducto", combo);
   }
 
   updateCombo(combo) {

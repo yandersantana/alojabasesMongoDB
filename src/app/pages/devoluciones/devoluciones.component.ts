@@ -369,7 +369,6 @@ export class DevolucionesComponent implements OnInit {
       .getProductosPendientesEntrega()
       .subscribe((res) => {
         this.productosPendientes = res as productosPendientesEntrega[];
-        //alert(this.productosPendientes.length)
       });
   }
 
@@ -398,24 +397,12 @@ export class DevolucionesComponent implements OnInit {
   validarProductosPendientes(e) {
     var bandera = true;
     this.productosPendientes.forEach((element) => {
-      if (
-        element.documento == this.idDocumento &&
-        element.tipo_documento == e.value
-      ) {
+      if ( element.documento == this.idDocumento &&  element.tipo_documento == e.value ) 
         bandera = false;
-        /*Swal.fire(
-          "ERROR",
-          "Este documento tiene productos pendientes de entrega, eliminelos y vuelva a intentar",
-          "error"
-        );*/
-      }
     });
 
-
     this.obtenerDocumento(e);
-   /* if (bandera) {
-      
-    }*/
+
   }
 
   obtenerDocumento(e) {
@@ -428,11 +415,6 @@ export class DevolucionesComponent implements OnInit {
       this.facturasService.getFacturasDocumento(this.idDocumento).subscribe((res) => {
           this.arrayFacturas = res as factura[];
           this.llenarDatosCombo(this.arrayFacturas);
-          /* this.facturaTraida = arrayFacturas[0];
-          this.productosVendidos2 = arrayFacturas[0].productosVendidos;
-          this.cliente = arrayFacturas[0].cliente.cliente_nombre;
-          this.fecha_transaccion = arrayFacturas[0].fecha2;
-          this.sucursal = arrayFacturas[0].sucursal; */
           bandera = false;
         });
       if (bandera) {
@@ -445,11 +427,6 @@ export class DevolucionesComponent implements OnInit {
       this.notasVentaService.getNotasVemtaDocumento(this.idDocumento).subscribe((res) => {
           this.arrayFacturas = res as factura[];
           this.llenarDatosCombo(this.arrayFacturas);
-          /* this.facturaTraida = arrayFacturas[0];
-          this.productosVendidos2 = arrayFacturas[0].productosVendidos;
-          this.cliente = arrayFacturas[0].cliente.cliente_nombre;
-          this.fecha_transaccion = arrayFacturas[0].fecha2;
-          this.sucursal = arrayFacturas[0].sucursal; */
           bandera = false;
         });
 
@@ -532,7 +509,6 @@ export class DevolucionesComponent implements OnInit {
         element.tipoDocumentoVenta == "Nota de Venta"
       ) {
         this.productosVendidos2.push(element);
-        console.log("el producto " + JSON.stringify(element));
       }
     });
   }
@@ -551,57 +527,35 @@ export class DevolucionesComponent implements OnInit {
 
   obtenerDetallesDoc(e, i: number) {
     var canti = 0;
-    var bandera = true;
-    this.productosPendientes.forEach((element) => {
-      if (element.producto.PRODUCTO == e.value ) {
-        bandera = false;
-        Swal.fire({
-          title: "ERROR",
-          text: "Este producto tiene una entrega pendiente",
-          icon: "error",
-          confirmButtonText: "Ok",
-        }).then((result) => {
-          this.deleteProducto(e,i);
-        });
-      }
-    });
+    this.productosVendidos2.forEach((element) => {
+      if (element.producto.PRODUCTO == e.value) {
+        canti = 0;
 
-    if(bandera){
-      this.productosVendidos2.forEach((element) => {
-        if (element.producto.PRODUCTO == e.value) {
-          canti = 0;
+        this.productosDevueltos[i].producto = element.producto;
+        this.productosDevueltos[i].cantFactCajas = Math.trunc(
+          element.cantidad / element.producto.M2
+        );
+        this.productosDevueltos[i].cantFactPiezas =
+          Math.trunc((element.cantidad * element.producto.P_CAJA) / element.producto.M2) -
+          this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
 
-          this.productosDevueltos[i].producto = element.producto;
-          this.productosDevueltos[i].cantFactCajas = Math.trunc(
-            element.cantidad / element.producto.M2
-          );
-          this.productosDevueltos[i].cantFactPiezas =
-            Math.trunc((element.cantidad * element.producto.P_CAJA) / element.producto.M2) -
-            this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
-
-          this.productosDevueltos[i].valorunitariopiezas =
-            element.total /
-              (element.producto.P_CAJA *
-                this.productosDevueltos[i].cantFactCajas +
-                this.productosDevueltos[i].cantFactPiezas) -
-            (element.total /
-              (element.producto.P_CAJA *
-                this.productosDevueltos[i].cantFactCajas +
-                this.productosDevueltos[i].cantFactPiezas)) *
-              (element.descuento / 100);
-          this.productosDevueltos[i].valorunitario =
-            ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
-              this.productosDevueltos[i].cantFactPiezas) /
-              element.cantidad) *
-            this.productosDevueltos[i].valorunitariopiezas;
-          }
-        });
-
-    }
-
-
-
-
+        this.productosDevueltos[i].valorunitariopiezas =
+          element.total /
+            (element.producto.P_CAJA *
+              this.productosDevueltos[i].cantFactCajas +
+              this.productosDevueltos[i].cantFactPiezas) -
+          (element.total /
+            (element.producto.P_CAJA *
+              this.productosDevueltos[i].cantFactCajas +
+              this.productosDevueltos[i].cantFactPiezas)) *
+            (element.descuento / 100);
+        this.productosDevueltos[i].valorunitario =
+          ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
+            this.productosDevueltos[i].cantFactPiezas) /
+            element.cantidad) *
+          this.productosDevueltos[i].valorunitariopiezas;
+        }
+      });
     
   }
 

@@ -1001,7 +1001,7 @@
 
 
 
-<dx-popup [width]="850" [height]="500" [showTitle]="true" title="{{nombreCombo}}" [dragEnabled]="false"
+<dx-popup [width]="950" [height]="500" [showTitle]="true" title="{{nombreCombo}}" [dragEnabled]="false"
     [closeOnOutsideClick]="true" [(visible)]="popupVisibleEdicion">
     <div *dxTemplate="let data of 'content'">
         <dx-scroll-view width="100%" height="100%">
@@ -1033,18 +1033,7 @@
                             <dx-number-box [(value)]="producto.cantidad" [disabled]="false" (onValueChanged)="calcularIncremento2($event, id)" [readOnly]="false"></dx-number-box>
                         </td>
                         <td>
-                            <dx-select-box
-                                [dataSource]="productos22"
-                                displayExpr="PRODUCTO"
-                                [searchEnabled]="true"
-                                valueExpr="PRODUCTO"
-                                [(value)]="producto.nombreProducto"
-                                (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, id)"
-                                itemTemplate="item">
-                                <div *dxTemplate="let data of 'item'">
-                                    <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}</div>
-                                </div>
-                            </dx-select-box>
+                            {{producto.nombreProducto}}
                         </td>
                         <td>
                             <dx-number-box [(value)]="producto.costo" [disabled]="false" [readOnly]="true"></dx-number-box>

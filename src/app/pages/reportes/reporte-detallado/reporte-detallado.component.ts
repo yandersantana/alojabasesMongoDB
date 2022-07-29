@@ -33,6 +33,7 @@ export class ReporteDetalladoComponent implements OnInit {
   reportesDetBaseNuevo : reporteDetallado;
   nota: string = "";
   arregloNotas: string[] = [];
+  mensajeLoading = "Cargando Datos..."
   
   constructor(
     public transaccionesService: TransaccionesService,
@@ -70,7 +71,6 @@ export class ReporteDetalladoComponent implements OnInit {
     this.obj = new objDate();
     this.obj.fechaActual = fechaHasta;
     this.obj.fechaAnterior = fechaHoy;
-    console.log(this.obj)
     this.transaccionesService.getTransaccionesPorRango(this.obj).subscribe(
       (res) => {
         this.transaccionesGlobales = res as transaccion[];
@@ -115,13 +115,16 @@ export class ReporteDetalladoComponent implements OnInit {
                 sumaN = Number(sumaN) + Number(element.totalsuma);
                 sumaCalculoPCostoMat = Number(element.costo_unitario) * Number (element.cantM2)
                 sumaCalculoPVentaMat = Number(element.valor) * Number (element.cantM2)
-                sumaCalUtilidadMat = Number(sumaCalculoPVentaMat) - Number(sumaCalculoPCostoMat)
+                if(element.producto.substring(0,5)=="COMBO") sumaCalUtilidadMat = Number(element.totalsuma)
+                else sumaCalUtilidadMat = Number(sumaCalculoPVentaMat) - Number(sumaCalculoPCostoMat)
                 sumaTotalCalculoUtilidadMat =  Number(sumaTotalCalculoUtilidadMat) + Number(sumaCalUtilidadMat)
+
               }else if(element.sucursal == "sucursal1"){
                 sumaSuc1 = Number(sumaSuc1) + Number(element.totalsuma);
                 sumaCalculoPCostoSuc1 = Number(element.costo_unitario) * Number (element.cantM2)
                 sumaCalculoPVentaSuc1 = Number(element.valor) * Number (element.cantM2)
-                sumaCalUtilidadSuc1 = Number(sumaCalculoPVentaSuc1) - Number(sumaCalculoPCostoSuc1)
+                if(element.producto.substring(0,5)=="COMBO") sumaCalUtilidadSuc1 = Number(element.totalsuma)
+                else sumaCalUtilidadSuc1 = Number(sumaCalculoPVentaSuc1) - Number(sumaCalculoPCostoSuc1)
                 sumaTotalCalculoUtilidadSuc1 =  Number(sumaTotalCalculoUtilidadSuc1) + Number(sumaCalUtilidadSuc1)
               }
               
@@ -131,13 +134,16 @@ export class ReporteDetalladoComponent implements OnInit {
                 sumaN = Number(sumaN) + Number(element.totalsuma);
                 sumaCalculoPCostoMat = Number(element.costo_unitario) * Number (element.cantM2)
                 sumaCalculoPVentaMat = Number(element.valor) * Number (element.cantM2)
-                sumaCalUtilidadMat = Number(sumaCalculoPVentaMat) - Number(sumaCalculoPCostoMat)
+                if(element.producto.substring(0,5)=="COMBO") sumaCalUtilidadMat = Number(element.totalsuma)
+                else sumaCalUtilidadMat = Number(sumaCalculoPVentaMat) - Number(sumaCalculoPCostoMat)
                 sumaTotalCalculoUtilidadMat =  Number(sumaTotalCalculoUtilidadMat) + Number(sumaCalUtilidadMat)
+
               }else if(element.sucursal == "sucursal1"){
                 sumaSuc1 = Number(sumaSuc1) + Number(element.totalsuma);
                 sumaCalculoPCostoSuc1 = Number(element.costo_unitario) * Number (element.cantM2)
                 sumaCalculoPVentaSuc1 = Number(element.valor) * Number (element.cantM2)
-                sumaCalUtilidadSuc1 = Number(sumaCalculoPVentaSuc1) - Number(sumaCalculoPCostoSuc1)
+                if(element.producto.substring(0,5)=="COMBO") sumaCalUtilidadSuc1 = Number(element.totalsuma)
+                else sumaCalUtilidadSuc1 = Number(sumaCalculoPVentaSuc1) - Number(sumaCalculoPCostoSuc1)
                 sumaTotalCalculoUtilidadSuc1 =  Number(sumaTotalCalculoUtilidadSuc1) + Number(sumaCalUtilidadSuc1)
               }
               

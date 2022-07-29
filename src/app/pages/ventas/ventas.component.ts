@@ -3225,7 +3225,7 @@ cambiarestado(e,i:number){
       this.transaccion.bodega = "12"
       this.transaccion.valor = element.precioCombo
       this.transaccion.cantM2 = proV.cantidad * element.cantidad
-      this.transaccion.costo_unitario = element.precioCombo
+      this.transaccion.costo_unitario = element.precioMin
       this.transaccion.documento = this.factura.documento_n.toString()
       this.transaccion.rucSucursal = this.factura.rucFactura
       this.transaccion.factPro = this.factura.documento_n.toString()

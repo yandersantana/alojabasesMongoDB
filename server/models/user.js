@@ -10,7 +10,8 @@ const UserSchema = new mongoose.Schema({
     rol: { type: String, required: false},
     sucursal: { type: String, required: false},
     status:{ type: String, required: false},
-    imageProfile: { type: String, required: false}
+    imageProfile: { type: String, required: false},
+    codigo: { type: String, required: false}
 },{
     timestamps:true
 });

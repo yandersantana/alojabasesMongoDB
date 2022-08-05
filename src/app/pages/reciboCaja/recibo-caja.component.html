@@ -433,8 +433,8 @@
 </div>
 
 
-
-<div *ngIf="autorizaciones">
+<div class="row" *ngIf="mostrarBloqueo"></div>
+<div *ngIf="autorizaciones && !mostrarBloqueo">
     <div class="card">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">Autorizaciones Recibos</h5>
     </div>

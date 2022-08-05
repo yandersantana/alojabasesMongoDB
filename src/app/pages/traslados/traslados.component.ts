@@ -31,6 +31,8 @@ import { user } from "../user/user";
 import DataSource from "devextreme/data/data_source";
 import { AuthService } from "src/app/shared/services";
 import { DatosConfiguracionService } from "src/app/servicios/datosConfiguracion.service";
+import { ProductoCombo, productosCombo } from "../catalogo/catalogo";
+import { CombosService } from "src/app/servicios/combos.service";
 
 @Component({
   selector: "app-traslados",
@@ -121,6 +123,7 @@ export class TrasladosComponent implements OnInit {
     public productoService: ProductoService,
     public bodegasService: BodegaService,
     public authService: AuthService,
+    public _comboService : CombosService,
     public _configuracionService : DatosConfiguracionService,
     public transaccionesService: TransaccionesService,
     public sucursalesService: SucursalesService
@@ -143,8 +146,6 @@ export class TrasladosComponent implements OnInit {
     this.traerContadoresDocumentos();
     this.getIDDocumentos();
     this.traerTransacciones();
-    //this.traerTrasladosMensuales()
-    
     this.traerDatosConfiguracion();
   }
 
@@ -282,7 +283,6 @@ export class TrasladosComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe((res) => {
       this.productosActivos = res as producto[];
       this.productos = res as producto[];
-      //this.llenarComboProductos2()
       this.llenarC();
     });
   }
@@ -361,8 +361,6 @@ export class TrasladosComponent implements OnInit {
     this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento + 1;
   }
 
-
-
   asignarValores() {
     this.trasladosG.forEach((element) => {
       if (element.estado == "Rechazado") {
@@ -425,7 +423,7 @@ export class TrasladosComponent implements OnInit {
         this.traslados.sucursal_origen = element;
       }
     });
-    this.limpiarArreglo5();
+    this.bodegasorigen = [];
     this.bodegas.forEach((element) => {
       if (element.sucursal == sucursal) {
         this.bodegasorigen.push(element);
@@ -438,14 +436,12 @@ export class TrasladosComponent implements OnInit {
     this.locales.forEach((element) => {
       if (element.nombre == e.value)
         this.traslados.sucursal_origen = element;
-      
     });
 
-    this.limpiarArreglo5();
+    this.bodegasorigen = [];
     this.bodegas.forEach((element) => {
-      if (element.sucursal == e.value) {
+      if (element.sucursal == e.value) 
         this.bodegasorigen.push(element);
-      }
     });
     this.compararlocales();
     this.llenarComboProductos(e);
@@ -460,17 +456,6 @@ export class TrasladosComponent implements OnInit {
         this.identificacion = element.identificacion;
         this.placa = element.placa;
         this.tipo_vehiculo = element.vehiculo;
-        console.log(
-          "acabo de asignar a " + JSON.stringify(this.traslados.transportista)
-        );
-      }
-    });
-  }
-
-  listarProductosSucursal() {
-    this.productosSucursal.forEach((element) => {
-      for (let index = 0; index < element.productos.length; index++) {
-        console.log(element.productos[index]);
       }
     });
   }
@@ -485,7 +470,7 @@ export class TrasladosComponent implements OnInit {
         this.traslados.sucursal_destino = element;
       }
     });
-    this.limpiarArreglo6();
+    this.bodegasdestino = [];
     this.bodegas.forEach((element) => {
       if (element.sucursal == e.value) {
         this.bodegasdestino.push(element);
@@ -493,28 +478,6 @@ export class TrasladosComponent implements OnInit {
     });
   }
 
-  limpiarArreglo5() {
-    var cont = 0;
-    this.bodegasorigen.forEach((element) => {
-      cont++;
-    });
-    if (cont >= 0) {
-      this.bodegasorigen.forEach((element) => {
-        this.bodegasorigen.splice(0);
-      });
-    }
-  }
-  limpiarArreglo6() {
-    var cont = 0;
-    this.bodegasdestino.forEach((element) => {
-      cont++;
-    });
-    if (cont >= 0) {
-      this.bodegasdestino.forEach((element) => {
-        this.bodegasdestino.splice(0);
-      });
-    }
-  }
 
   obtenerDatosBodegaOrigen(e) {
     this.traslados.bodega_origen = e.value;
@@ -536,32 +499,17 @@ export class TrasladosComponent implements OnInit {
   };
 
   cargarDatosRemisión(e: any) {
-    // alert("voy a buscar la remision "+e.id_remision)
-    var cont = 0;
-    this.detalleTraslados.forEach((element) => {
-      cont++;
-    });
-    if (cont >= 0) {
-      this.detalleTraslados.forEach((element) => {
-        this.detalleTraslados.splice(0);
-      });
-    }
-    console.log("quedo el arreglo en " + this.detalleTraslados.length);
-
+    this.detalleTraslados = [];
     this.trasladosG.forEach((element) => {
-      console.log("dddddddd");
       if (e.idT == element.idT) {
         this.traslados = element;
         this.detalleTraslados = element.detalleTraslados;
-        console.log("traje lo siguiente " + JSON.stringify(this.traslados));
       }
     });
 
     this.parametrizaciones.forEach((element) => {
-      if (element.sucursal == this.traslados.sucursal_origen.nombre) {
+      if(element.sucursal == this.traslados.sucursal_origen.nombre)
         this.parametrizacionSucu = element;
-        console.log("ddd es " + this.parametrizacionSucu);
-      }
     });
     this.crearPDF();
   }
@@ -570,22 +518,13 @@ export class TrasladosComponent implements OnInit {
     var x = document.getElementById("traslados");
     var y = document.getElementById("historial");
     var z = document.getElementById("existencias");
-    //var z1 = document.getElementById("admin1");
 
     switch (e.value) {
       case "Traslados":
         x.style.display = "block";
         y.style.display = "none";
         z.style.display = "none";
-        var cont = 0;
-        this.detalleTraslados.forEach((element) => {
-          cont++;
-        });
-        if (cont >= 0) {
-          this.detalleTraslados.forEach((element) => {
-            this.detalleTraslados.splice(0);
-          });
-        }
+        this.detalleTraslados = [];
         this.detalleTraslados.push(new detalleTraslados());
         break;
       case "Traslados Mensuales":
@@ -610,7 +549,6 @@ export class TrasladosComponent implements OnInit {
   }
 
   mostrarEliminar() {
-    console.log("entre aqui");
     if (this.dataGrid2.instance.columnOption("bt2").visible == false) {
       this.dataGrid2.instance.columnOption("bt2", "visible", true);
       this.dataGrid2.instance.columnOption("bt1", "visible", false);
@@ -629,7 +567,6 @@ export class TrasladosComponent implements OnInit {
   };
 
   getCourseRecibido = (e) => {
-    //this.rechazarTraslado(e.row.data)
     this.guardarTrasladoRecpcion(e.row.data);
   };
 
@@ -654,7 +591,6 @@ export class TrasladosComponent implements OnInit {
           confirmButtonText: "Ok",
         }).then((result) => {
           window.location.reload();
-          //this.asignarValores()
         });
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
@@ -675,14 +611,9 @@ export class TrasladosComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.mensajeGuardando();
-        //this.db.collection('/traslados').doc(data).delete()
         this.trasladosService.updateEstadoTraslado(e, "ELIMINADO").subscribe(
-          (res) => {
-            this.eliminarTransacciones(e);
-          },
-          (err) => {
-            alert("error");
-          }
+          (res) => {this.eliminarTransacciones(e);},
+          (err) => { alert("error");}
         );
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
@@ -692,18 +623,10 @@ export class TrasladosComponent implements OnInit {
 
   eliminarTransacciones(e) {
     this.transacciones.forEach((element) => {
-      if (
-        element.documento == e.idT &&
-        (element.tipo_transaccion == "traslado1" ||
-          element.tipo_transaccion == "traslado2")
-      ) {
+      if (element.documento == e.idT && (element.tipo_transaccion == "traslado1" ||element.tipo_transaccion == "traslado2") ) {
         this.transaccionesService.deleteTransaccion(element).subscribe(
-          (res) => {
-            console.log(res + "termine1");
-          },
-          (err) => {
-            alert("error");
-          }
+          (res) => {},
+          (err) => { alert("error");}
         );
       }
     });
@@ -732,20 +655,11 @@ export class TrasladosComponent implements OnInit {
     });
   }
 
-  comprobar(){
-    console.log(this.traslados.transportista._id)
-  }
 
   crearTransportista() {
-    // alert("yo recibi "+JSON.stringify(this.traslados.transportista))
-    console.log(this.traslados.transportista)
     if (this.traslados.transportista._id) {
-      this.transportistasService
-        .updateTransportista(this.traslados.transportista)
-        .subscribe(
-          (res) => {
-            console.log(res + "entre por si");
-          },
+      this.transportistasService.updateTransportista(this.traslados.transportista).subscribe(
+          (res) => {},
           (err) => {
             Swal.fire({
               title: "Error",
@@ -755,12 +669,8 @@ export class TrasladosComponent implements OnInit {
           }
         );
     } else {
-      this.transportistasService
-        .newTransportista(this.traslados.transportista)
-        .subscribe(
-          (res) => {
-            console.log(res + "entre por si");
-          },
+      this.transportistasService.newTransportista(this.traslados.transportista).subscribe(
+          (res) => {},
           (err) => {
             Swal.fire({
               title: "Error",
@@ -775,9 +685,8 @@ export class TrasladosComponent implements OnInit {
   validarGuardar() {
     var bandera = false;
     this.detalleTraslados.forEach((element) => {
-      if (element.cantidadm2 == 0 || element.cantidadm2 == null) {
+      if (element.cantidadm2 == 0 || element.cantidadm2 == null) 
         bandera = true;
-      }
     });
 
     if (bandera) {
@@ -816,35 +725,13 @@ export class TrasladosComponent implements OnInit {
       this.transaccion.usu_autorizado = this.usuarioLogueado[0].username;
       this.transaccion.usuario = this.usuarioLogueado[0].username;
       this.transaccion.idTransaccion = this.number_transaccion++;
-      //this.getIDTransacciones()
+
+      var producto = this.productos.find(element2=> element2.PRODUCTO == element.producto)
+      if(producto.CLASIFICA == "COMBO")
+        this.generarTransaccionesComboProductos(element.producto, 2)
+
       this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-        (res) => {
-          this.contadores[0].transacciones_Ndocumento = this
-            .number_transaccion++;
-          this.contadoresService
-            .updateContadoresIDTransacciones(this.contadores[0])
-            .subscribe(
-              (res) => {
-                this.db
-                  .collection("/consectivosBaseMongoDB")
-                  .doc("base")
-                  .update({ transacciones_Ndocumento: this.number_transaccion })
-                  .then(
-                    (res) => {
-                      contVal++, this.contadorValidacionesRecibidos(e, contVal);
-                    },
-                    (err) => err
-                  );
-              },
-              (err) => {
-                Swal.fire({
-                  title: "Error al guardar",
-                  text: "Revise e intente nuevamente",
-                  icon: "error",
-                });
-              }
-            );
-        },
+        (res) => { contVal++, this.contadorValidacionesRecibidos(e, contVal);},
         (err) => {}
       );
     });
@@ -862,7 +749,6 @@ export class TrasladosComponent implements OnInit {
     this.transportista.celular = this.celular;
     this.transportista.placa = this.placa;
     this.transportista.vehiculo = this.tipo_vehiculo;
-    // aqui termina
     var contVal = 0;
     this.traslados.idT = this.id2;
     this.traslados.transportista = this.transportista;
@@ -872,13 +758,10 @@ export class TrasladosComponent implements OnInit {
     var bandera = true;
     this.detalleTraslados.forEach((element) => {
       if (element.producto == undefined) {
-        if (element.cajas == 0 || element.piezas == 0) {
-          bandera = false;
-          console.log("eeennntree");
-        }
+        if (element.cajas == 0 || element.piezas == 0)
+            bandera = false;
       }
     });
-    //alert("hay antes de guardar "+this.detalleTraslados.length)
     if (
       this.traslados.transportista.identificacion != undefined &&
       this.traslados.transportista.nombre != undefined &&
@@ -891,18 +774,15 @@ export class TrasladosComponent implements OnInit {
       this.traslados.bodega_origen != undefined &&
       bandera == true
     ) {
+      this.mensajeGuardando();
       new Promise<any>((resolve, reject) => {
         this.crearTransportista();
         this.trasladosService.newTraslado(this.traslados).subscribe(
           (res) => {
             this.contadores[0].contTraslados_Ndocumento = this.id2;
-            this.contadoresService
-              .updateContadoresTraslados(this.contadores[0])
-              .subscribe(
-                (res) => {},
-                (err) => {}
-              );
-          },
+            this.contadoresService.updateContadoresTraslados(this.contadores[0]).subscribe(
+                (res) => {contVal++ ; this.contadorValidaciones(contVal)},
+                (err) => {});},
           (err) => {}
         );
         this.detalleTraslados.forEach((element) => {
@@ -925,65 +805,109 @@ export class TrasladosComponent implements OnInit {
           this.transaccion.usu_autorizado = this.usuarioLogueado[0].username;
           this.transaccion.usuario = this.usuarioLogueado[0].username;
           this.transaccion.idTransaccion = this.number_transaccion++;
-          //this.getIDTransacciones()
+          
+          var producto = this.productos.find(element2=> element2.PRODUCTO == element.producto)
+          if(producto.CLASIFICA == "COMBO")
+            this.generarTransaccionesComboProductos(element.producto, 1)
+
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-            (res) => {
-              this.contadores[0].transacciones_Ndocumento = this
-                .number_transaccion++;
-              this.contadoresService
-                .updateContadoresIDTransacciones(this.contadores[0])
-                .subscribe(
-                  (res) => {
-                    this.db
-                      .collection("/consectivosBaseMongoDB")
-                      .doc("base")
-                      .update({
-                        transacciones_Ndocumento: this.number_transaccion,
-                      })
-                      .then(
-                        (res) => {
-                          contVal++, this.contadorValidaciones(contVal);
-                        },
-                        (err) => err
-                      );
-                  },
-                  (err) => {
-                    Swal.fire({
-                      title: "Error al guardar",
-                      text: "Revise e intente nuevamente",
-                      icon: "error",
-                    });
-                  }
-                );
-            },
+            (res) => {this.contadores[0].transacciones_Ndocumento = this.number_transaccion++; },
             (err) => {}
           );
         });
         this.actualizarProductosBase();
       });
-
-      let timerInterval;
-      Swal.fire({
-        title: "Guardando !",
-        html: "Procesando",
-
-        timerProgressBar: true,
-        onBeforeOpen: () => {
-          Swal.showLoading();
-          timerInterval = setInterval(() => {
-            const content = Swal.getContent();
-            if (content) {
-            }
-          }, 100);
-        },
-        onClose: () => {
-          clearInterval(timerInterval);
-        },
-      });
     } else {
       Swal.fire("Error!", "Hay campos vacios", "error");
     }
   }
+
+
+  generarTransaccionesComboProductos(nombreCombo : string, tipo : number){
+    var combo = new ProductoCombo();
+    combo.PRODUCTO = nombreCombo;
+    this._comboService.getComboPorNombre(combo).subscribe(res => {
+      var listado = res as ProductoCombo[];
+      if(listado.length > 0){
+        if(tipo == 1)
+          this.agregarTransacciones(listado[0].productosCombo,nombreCombo)
+        else if(tipo == 2)
+          this.agregarTransaccionesRecepcion(listado[0].productosCombo,nombreCombo)
+      }
+        
+    })
+  }
+
+  agregarTransacciones(productos : productosCombo[], nombreCombo: string){
+    var contVal = 0;
+    productos.forEach(element => {
+      var proV = this.detalleTraslados.find(el => el.producto == nombreCombo)
+      this.transaccion = new transaccion()
+      this.transaccion.fecha_mov = new Date().toLocaleString()
+      this.transaccion.fecha_transaccion = this.traslados.fecha;
+      this.transaccion.sucursal = this.traslados.sucursal_origen.nombre;
+      this.transaccion.totalsuma = 0;
+      this.transaccion.bodega = "12"
+      this.transaccion.valor = element.precioCombo
+      this.transaccion.cantM2 = proV.cantidadm2
+      this.transaccion.costo_unitario = element.precioMin
+      this.transaccion.documento = this.id2 + "";
+      this.transaccion.factPro = this.id2 + "";
+      this.transaccion.producto = element.producto.PRODUCTO
+      this.transaccion.cajas = proV.cantidadm2
+      this.transaccion.piezas = 0;
+      this.transaccion.observaciones = this.traslados.observaciones;
+      this.transaccion.tipo_transaccion = "traslado1";
+      this.transaccion.movimiento = -1
+      this.transaccion.usu_autorizado = this.usuarioLogueado[0].username;
+      this.transaccion.usuario = this.usuarioLogueado[0].username;
+      this.transaccion.idTransaccion = this.number_transaccion++;
+
+      this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+        res => { contVal++, this.contadorGenerico(contVal, productos.length)},
+        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
+    });
+  }
+
+
+  agregarTransaccionesRecepcion(productos : productosCombo[], nombreCombo: string){
+    var contVal = 0;
+    productos.forEach(element => {
+      var proV = this.detalleTraslados.find(el => el.producto == nombreCombo)
+      this.transaccion = new transaccion()
+      this.transaccion.fecha_mov = new Date().toLocaleString()
+      this.transaccion.fecha_transaccion = this.traslados.fecha;
+      this.transaccion.sucursal = this.traslados.sucursal_destino.nombre;
+      this.transaccion.totalsuma = 0;
+      this.transaccion.bodega = this.traslados.bodega_destino;
+      this.transaccion.valor = element.precioCombo
+      this.transaccion.cantM2 = proV.cantidadm2
+      this.transaccion.costo_unitario = element.precioMin
+      this.transaccion.documento = this.traslados.idT + "";
+      this.transaccion.factPro = this.traslados.idT + "";
+      this.transaccion.producto = element.producto.PRODUCTO
+      this.transaccion.cajas = proV.cantidadm2
+      this.transaccion.piezas = 0;
+      this.transaccion.observaciones = this.traslados.observaciones;
+      this.transaccion.tipo_transaccion = "traslado2";
+      this.transaccion.movimiento = 1
+      this.transaccion.usu_autorizado = this.usuarioLogueado[0].username;
+      this.transaccion.usuario = this.usuarioLogueado[0].username;
+      this.transaccion.idTransaccion = this.number_transaccion++;
+
+      this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+        res => { contVal++, this.contadorGenerico(contVal, productos.length)},
+        err => { this.mostrarMensajeGenerico(2,"Revise e intente nuevamente") })
+    });
+  }
+
+
+
+  contadorGenerico(cont1 : number, cont2: number){
+    if(cont1 == cont2)  
+      return true;
+  }
+
 
   buscarDatosSucursal() {
     this.parametrizaciones.forEach((element) => {
@@ -1005,40 +929,25 @@ export class TrasladosComponent implements OnInit {
               sumProd = element.sucursal1 + element2.cantidadm2;
               element.sucursal1 = sumProd;
               this.productoService.updateProductoSucursal1(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
+                (res) => {},
+                (err) => { alert("error");}
               );
-              //this.db.collection('/productos').doc( element2.producto).update({"sucursal1" :sumProd})
               break;
             case "sucursal1":
               sumProd = element.sucursal2 + element2.cantidadm2;
               element.sucursal2 = sumProd;
               this.productoService.updateProductoSucursal2(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
+                (res) => {},
+                (err) => {alert("error"); }
               );
-              // this.db.collection('/productos').doc( element2.producto).update({"sucursal2" :sumProd})
               break;
             case "sucursal2":
               sumProd = element.sucursal3 + element2.cantidadm2;
               element.sucursal3 = sumProd;
               this.productoService.updateProductoSucursal3(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
+                (res) => {},
+                (err) => {}
               );
-            //this.db.collection('/productos').doc( element2.producto).update({"sucursal3" :sumProd})
             default:
           }
         }
@@ -1059,39 +968,24 @@ export class TrasladosComponent implements OnInit {
               restProd = element.sucursal1 - element2.cantidadm2;
               element.sucursal1 = restProd;
               this.productoService.updateProductoSucursal1(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
-              );
+                (res) => {},
+                (err) => { alert("error"); });
               break;
             case "sucursal1":
               restProd = element.sucursal2 - element2.cantidadm2;
               element.sucursal2 = restProd;
               this.productoService.updateProductoSucursal2(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
-              );
+                (res) => { },
+                (err) => { alert("error"); } );
              
               break;
             case "sucursal2":
               restProd = element.sucursal3 - element2.cantidadm2;
               element.sucursal3 = restProd;
               this.productoService.updateProductoSucursal3(element).subscribe(
-                (res) => {
-                  console.log(res + "entre por si");
-                },
-                (err) => {
-                  alert("error");
-                }
+                (res) => {},
+                (err) => { alert("error"); }
               );
-           
             default:
           }
         }
@@ -1105,15 +999,7 @@ export class TrasladosComponent implements OnInit {
     var sumProd = 0;
     var cont = 0;
     var contex = 0;
-    this.detalleTraslados.forEach((element) => {
-      cont++;
-    });
-    if (cont >= 0) {
-      this.detalleTraslados.forEach((element) => {
-        this.detalleTraslados.splice(0);
-      });
-    }
-    console.log("quedo el arreglo en " + this.detalleTraslados.length);
+    this.detalleTraslados = [];
 
     this.trasladosGR.forEach((element) => {
       if (e.idT == element.idT) {
@@ -1121,7 +1007,7 @@ export class TrasladosComponent implements OnInit {
         this.detalleTraslados = element.detalleTraslados;
       }
     });
-    //alert(this.detalleTraslados.length)
+
     for (let index = 0; index < this.productos.length; index++) {
       const element = this.productos[index];
       this.detalleTraslados.forEach((element2) => {
@@ -1283,7 +1169,6 @@ export class TrasladosComponent implements OnInit {
           ).toFixed(2)
         );
         this.detalleTraslados[i].cantidadm2 = cantm2;
-        console.log("la cantidad es... " + this.detalleTraslados[i].cantidadm2);
 
         switch (this.traslados.sucursal_origen.nombre) {
           case "matriz":
@@ -1358,11 +1243,9 @@ export class TrasladosComponent implements OnInit {
   }
 
   contadorValidaciones(i: number) {
-    if (this.detalleTraslados.length == i) {
+    if (this.detalleTraslados.length == i) 
       this.guardarSalidaTraslado();
-    } else {
-      console.log("no he entrado " + i);
-    }
+    
   }
 
   guardarSalidaTraslado() {
@@ -1843,4 +1726,22 @@ export class TrasladosComponent implements OnInit {
       },
     };
   }
+
+  mostrarMensajeGenerico(tipo:number , texto:string){
+    if(tipo == 1){
+      Swal.fire({
+        title: "Correcto",
+        text: texto,
+        icon: 'success'
+      })
+    }else{
+      Swal.fire({
+        title: "Error",
+        text: texto,
+        icon: 'error'
+      })
+    }
+  }
 }
+
+//1784

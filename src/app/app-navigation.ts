@@ -13,6 +13,10 @@ export const navigation = [
         path: "/calculadora",
       },
       {
+        text: "Generador QR",
+        path: "/generador-qr",
+      },
+      {
         text: "Consultas",
         path: "/consultas",
       },

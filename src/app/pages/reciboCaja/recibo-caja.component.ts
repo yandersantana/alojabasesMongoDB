@@ -149,6 +149,8 @@ export class ReciboCajaComponent implements OnInit {
       'Nueva Nota'
   ];
 
+  usuarioLogueado : user
+  mostrarBloqueo = false;
 
   nota = {
     fecha:"",
@@ -446,7 +448,7 @@ export class ReciboCajaComponent implements OnInit {
           res => {
             var usuario = res as user;
             this.reciboCaja.sucursal = usuario[0].sucursal.toString();
-
+            this.usuarioLogueado = usuario[0]
             if(usuario[0].rol == "Usuario")
               this.isUser = true;
             else
@@ -455,6 +457,35 @@ export class ReciboCajaComponent implements OnInit {
         )
     });
   }
+
+
+  
+  mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
   setClienteData(e){
     this.textLoading = "Buscando..";
@@ -1426,6 +1457,8 @@ export class ReciboCajaComponent implements OnInit {
         this.autorizaciones = false;
        break;
       case "Autorizaciones":
+        this.mostrarBloqueo = true;
+        this.mostrarPopupCodigo();
         this.registroRecibos = false;
         this.newRecibo = false;
         this.autorizaciones = true;

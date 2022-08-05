@@ -62,17 +62,17 @@ export class venta {
     sucursal:string
     productosVendidos:ProductoDetalleVenta[]=[]
     constructor() {
-    this.pedir = false
-    this.iva = true
-    this.seleccionado = true
-    this.entregar = false
-    this.cantidad = 0 
-    this.descuento = 0
-    this.total=0
-    //this.precio_venta = 0
-    this.producto = new producto()
+        this.pedir = false
+        this.iva = true
+        this.seleccionado = true
+        this.entregar = false
+        this.cantidad = 0 
+        this.descuento = 0
+        this.total=0
+        this.producto = new producto()
 
     }
+    
 }
 
 export class cliente {

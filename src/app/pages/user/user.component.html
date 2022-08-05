@@ -3,8 +3,9 @@
     <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
+<div class="row" *ngIf="mostrarBloqueo"></div>
 
-<div class="card mb-3">
+<div class="card mb-3" *ngIf="!mostrarBloqueo">
     <div class="card-header">
         <i class="fa fa-lg fa-user  text-danger"></i> Administración de Usuarios
     </div>

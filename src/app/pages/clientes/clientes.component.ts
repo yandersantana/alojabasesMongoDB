@@ -1,14 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
-import { sucursal, cliente } from '../ventas/venta';
+import { cliente } from '../ventas/venta';
 import { Sucursal } from '../compras/compra';
 import { NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { UserService } from 'src/app/servicios/user.service';
 import { user } from '../user/user';
 import { ClienteService } from 'src/app/servicios/cliente.service';
-import { element } from 'protractor';
-import { JsonPipe } from '@angular/common';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-clientes',
@@ -74,16 +73,65 @@ export class ClientesComponent implements OnInit {
   cont1: number = 0
   locales:Sucursal[]=[]
   mensaje:string=""
+  mostrarBloqueo = true;
   menu1: string[] = [
     "Usuario",
     "Administrador"
   ];
 
-  constructor(public sucursalesService:SucursalesService,public clientesService:ClienteService, public userService:UserService) { }
+  constructor(
+    public sucursalesService:SucursalesService,
+    public clientesService:ClienteService, 
+    public _authenService : AuthenService,
+    public userService:UserService) { }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado()
     this.traerSucursales()
     this.traerClientes()
+  }
+
+  cargarUsuarioLogueado() {
+    var correo = "";
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+        correo = localStorage.getItem("maily");
+
+      this._authenService.getUserLogueado(correo).subscribe(
+          res => {
+            var usuario = res as user;
+            this.usuarioLogueado = usuario[0];
+            this.mostrarPopupCodigo();
+          }
+        )
+    });
+  }
+
+
+  mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value)
+          this.mostrarBloqueo = false;
+        else  {
+          Swal.fire({
+            title: 'Error',
+            text: 'El código ingresado no es el correcto',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            this.mostrarPopupCodigo();
+          })
+        }
+    })
   }
 
 

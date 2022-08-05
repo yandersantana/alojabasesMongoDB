@@ -1,5 +1,6 @@
 <br>
-<div class="card mb-3">
+<div class="row" *ngIf="mostrarBloqueo"></div>
+<div class="card mb-3" *ngIf="!mostrarBloqueo">
     <div class="card-header">
         <i class="fa fa-lg fa-user  text-danger"></i> Control de Precios
     </div>

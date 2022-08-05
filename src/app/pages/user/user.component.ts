@@ -5,6 +5,7 @@ import { Sucursal } from '../compras/compra';
 import { NgForm } from '@angular/forms';
 import Swal from 'sweetalert2';
 import { UserService } from 'src/app/servicios/user.service';
+import { AuthenService } from 'src/app/servicios/authen.service';
 
 @Component({
   selector: 'app-user',
@@ -46,6 +47,7 @@ export class UserComponent implements OnInit {
   locales:Sucursal[]=[]
   mostrarLoading = false;
   mensajeLoading = ""
+  mostrarBloqueo = true;
   
   menu1: string[] = [
     "Usuario",
@@ -54,13 +56,60 @@ export class UserComponent implements OnInit {
     "Supervisor"
   ];
 
-  constructor(public sucursalesService:SucursalesService, public userService:UserService) { }
+  constructor(
+    public sucursalesService:SucursalesService, 
+    public _authenService : AuthenService,
+    public userService:UserService) { }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado();
     this.traerSucursales()
     this.traerUsuarios()
+    
   }
 
+  mostrarPopupCodigo(){
+     Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value)
+          this.mostrarBloqueo = false;
+        else  {
+          Swal.fire({
+            title: 'Error',
+            text: 'El código ingresado no es el correcto',
+            icon: 'error',
+            confirmButtonText: 'Ok'
+          }).then((result) => {
+            this.mostrarPopupCodigo();
+          })
+        }
+    })
+  }
+
+
+  cargarUsuarioLogueado() {
+    var correo = "";
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+        correo = localStorage.getItem("maily");
+
+      this._authenService.getUserLogueado(correo).subscribe(
+          res => {
+            var usuario = res as user;
+            this.usuarioLogueado = usuario[0];
+            this.mostrarPopupCodigo();
+          }
+        )
+    });
+  }
 
   traerSucursales(){
     this.sucursalesService.getSucursales().subscribe(res => {

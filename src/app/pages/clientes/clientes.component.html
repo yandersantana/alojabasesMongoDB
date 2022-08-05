@@ -1,5 +1,9 @@
 <br>
-<div class="card mb-3">
+
+<div class="row" *ngIf="mostrarBloqueo"></div>
+
+
+<div class="card mb-3" *ngIf="!mostrarBloqueo">
     <div class="card-header">
         <i class="fa fa-lg fa-user  text-danger"></i> Administración de Clientes
     </div>
@@ -248,36 +252,6 @@
     [closeOnOutsideClick]="true" [(visible)]="popupVisible">
     <div *dxTemplate="let data of 'content'">
         <div class="col-md-12">
-           <!--  <div class="row espacio">
-                <div class="col-md-4" style="text-align: left;">Correo</div>
-                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.email" name="usuario"
-                        class="form-control" placeholder="Correo" autocomplete="email" required></div>
-            </div>
-            <div class="row espacio">
-                <div class="col-md-4" style="text-align: left;">Nombres y Apellidos</div>
-                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.name" name="usuario" class="form-control"
-                        placeholder="Correo" autocomplete="email" required></div>
-            </div>
-            <div class="row espacio">
-                <div class="col-md-4" style="text-align: left;">Contraseña</div>
-                <div class="col-md-8"> <input type="text" [(ngModel)]="usuario.password" name="contrasena"
-                        class="form-control" placeholder="Descripción" required></div>
-            </div>
-            <div class="row espacio" >
-                <div class="col-md-4" style="text-align: left;">Estado</div>
-
-                <div class="col-md-8">
-                    <dx-select-box [items]="menuTipoDatos" [value]="menuTipoDatos[0]" [readOnly]="false"
-                        [disabled]="false" (onValueChanged)="setTipo($event)"></dx-select-box>
-                </div>
-
-            </div> -->
-
-
-
-        </div>
-
-        <div class="col-md-12">
             <div class="row">
                 <div class="col-md-4"></div>
                 <div class="col-md-4"><button class="btn btn2" type="button"
@@ -285,9 +259,5 @@
                 <div class="col-md-4"></div>
             </div>
         </div>
-        <!-- <p>
-            Position:
-            <span>{{currentEmployee.Position}}</span>
-        </p> -->
     </div>
 </dx-popup>

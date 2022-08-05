@@ -2,13 +2,13 @@ import { Component, OnInit } from '@angular/core';
 import { precios, preciosEspeciales, preciosGrupoDefinido } from './controlPrecios';
 import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
 import Swal from 'sweetalert2';
-import { element } from 'protractor';
 import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
 import { catalogo } from '../catalogo/catalogo';
 import { ProductoService } from 'src/app/servicios/producto.service';
 import { CatalogoService } from 'src/app/servicios/catalogo.service';
 import { producto } from '../ventas/venta';
-import { Producto } from '../producto/producto';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 @Component({
   selector: 'app-control-precios',
@@ -34,18 +34,21 @@ export class ControlPreciosComponent implements OnInit {
   nombreGrupo:string=""
   nombrePro2:string=""
   nombrePro:producto
-  constructor(public controlPreciosService:ControlPreciosService, public catalagoService:CatalogoService, public productosService:ProductoService, public preciosEspecialesService:PrecioEspecialService) { 
+  usuarioLogueado : user;
+  mostrarBloqueo = true;
+  constructor(public controlPreciosService:ControlPreciosService, 
+    public catalagoService:CatalogoService, 
+    public _authenService : AuthenService,
+    public productosService:ProductoService, public preciosEspecialesService:PrecioEspecialService) { 
     this.precioespecial = new preciosEspeciales()
-   // alert(JSON.stringify(this.precioespecial))
     this.nuevoPrecio= new precios()
     this.precioLeido2= new precios()
     this.nuevoPrecioAsig= new precios()
     this.precioespecial.precioSocio=0
-    /* this.precioEspecial.precioSocio=0
-    this.precioEspecial.precioDistribuidor=0 */
   }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado()
     this.traerPrecios()
     this.traerProductos()
     this.traerPreciosEspeciales()
@@ -53,6 +56,50 @@ export class ControlPreciosComponent implements OnInit {
    
     //this.registrarPrecio()
   }
+
+  cargarUsuarioLogueado() {
+    var correo = ""
+    new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+        correo = localStorage.getItem("maily");
+
+      this._authenService.getUserLogueado(correo)
+        .subscribe(
+          res => {
+            var usuario = res as user;
+            this.usuarioLogueado = usuario[0]
+            this.mostrarPopupCodigo();
+          }
+        )
+    });
+  }
+
+   mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
   traerPrecios(){
     this.controlPreciosService.getPrecio().subscribe(res => {

@@ -42,6 +42,7 @@ export class CatalogoComponent implements OnInit {
   producto:string
   imagenPrincipal:string
   bloquearBoton = false;
+  mostrarBloqueo = false;
   menu1: string[] = [
     "Catálogo",
     "Combos de Productos",
@@ -235,6 +236,38 @@ export class CatalogoComponent implements OnInit {
         )
     });
   }
+
+  mostrarPopupCodigo(){
+     Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado[0].codigo == result.value){
+        this.mostrarBloqueo = false;
+        setTimeout(function(){
+          var y = document.getElementById("administracion");
+          y.style.display="block";
+        }, 1000);
+       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
 
   traerProductosCatalogo(){
@@ -1278,6 +1311,8 @@ _handleReaderLoaded(readerEvt) {
         z.style.display="none";
        break;
       case "Administrar Productos":
+        this.mostrarPopupCodigo();
+        this.mostrarBloqueo = true;
         x.style.display = "none";
         y.style.display="block";
         z.style.display="none";

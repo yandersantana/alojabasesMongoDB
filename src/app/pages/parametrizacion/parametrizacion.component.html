@@ -1,4 +1,6 @@
-<div id="administracion" style="display: block;">
+
+<div class="row" *ngIf="mostrarBloqueo"></div>
+<div id="administracion" *ngIf="!mostrarBloqueo">
 
 <br>
     <div class="card mb-3">

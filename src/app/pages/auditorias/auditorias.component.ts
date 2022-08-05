@@ -76,6 +76,7 @@ export class AuditoriasComponent implements OnInit {
   mostrarLoading:boolean=false;
   mensajeLoading = "Cargando";
   newAud = true;
+  mostrarBloqueo = false;
   menuValoracion: string[] = [
     "Ok",
     "Roto",
@@ -1120,6 +1121,12 @@ guardarAuditoriaProducto(){
             this.usuarioLogueado = res as user;
             if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
+
+            if(this.usuarioLogueado[0].rol == "Administrador"){
+              this.mostrarBloqueo = true;
+              this.mostrarPopupCodigo();
+            }
+              
             
             this.validarRol()
           },
@@ -1127,6 +1134,34 @@ guardarAuditoriaProducto(){
         )
     });
   }
+
+
+  mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado[0].codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
   validarRol(){
     if(this.usuarioLogueado[0].rol == "Administrador"){

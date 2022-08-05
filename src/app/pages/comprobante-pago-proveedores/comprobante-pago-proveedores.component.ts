@@ -91,6 +91,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
   parametrizaciones: parametrizacionsuc[] = [];
   detallesCostos: CentroCosto[] = [];
   listaProductosIngresados: ProductoDetalleEntrega[] = [];
+  mostrarBloqueo = true;
   
   parametrizacionSucu: parametrizacionsuc;
   obj: objDate;
@@ -120,6 +121,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
 
   imagenLogotipo ="";
   textLoading = "";
+  usuarioLogueado : user;
 
 
   constructor(
@@ -332,11 +334,39 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
         .subscribe(
           res => {
             var usuario = res as user;
+            this.usuarioLogueado = usuario[0]
             this.comprobantePago.usuario = usuario[0].username.toString();
             this.comprobantePago.sucursal = usuario[0].sucursal.toString();
+            this.mostrarPopupCodigo();
           }
         )
     });
+  }
+
+   mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
   }
 
 

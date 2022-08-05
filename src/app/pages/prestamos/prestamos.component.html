@@ -2,81 +2,84 @@
     <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
-<br><br>
- <div class="card">
-    <h5 class="card-header text-center font-weight-bold text-uppercase ">Préstamos</h5>
-    <div class="card-body">
-            <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-4">
-                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
-                <div class="row card">
-                    <div class="col-md-12"> 
-                        <div class="row">
-                            <div class="col-md-3">Desde</div>
-                            <div class="col-md-9">
-                            <dx-date-box
-                                [(value)]="nowdesde"
-                                type="date">
-                            </dx-date-box>
-                            </div>
+<div class="row" *ngIf="mostrarBloqueo"></div>
 
-                            <div class="col-md-3">Hasta</div>
-                            <div class="col-md-9">
-                            <dx-date-box
-                                [(value)]="nowhasta"
-                                type="date">
-                            </dx-date-box>
-                            </div>
+<div *ngIf="!mostrarBloqueo">
+    <br><br>
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Préstamos</h5>
+        <div class="card-body">
+                <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
+                    <div class="row card">
+                        <div class="col-md-12"> 
+                            <div class="row">
+                                <div class="col-md-3">Desde</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowdesde"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
 
-                            <div class="col-md-4"></div>
-                            <div class="col-md-4 btnSearch">
-                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerCuentasPorRango()">Buscar</button>
-                            </div>
-                            <div class="col-md-4"></div>
-                        </div>        
-                    </div>
-                </div>                
-            </div>
-            
-            <div class="col-md-4 " style="margin-left: 1em;">
-                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
-                <div class="row card">
-                    <br><br>
-                    <div class="col-md-12"> 
-                        <div class="row">  
-                    
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6 btnSearch">
-                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerlistaPrestamos()">Buscar Todos</button>
-                            </div>
-                            <div class="col-md-3"></div>
-                        </div>        
-                    </div>
-                    <br>
-                </div>         
+                                <div class="col-md-3">Hasta</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowhasta"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
 
-            </div>
-            <div class="col-md-2"></div>
-        </div>   
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerCuentasPorRango()">Buscar</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>        
+                        </div>
+                    </div>                
+                </div>
+                
+                <div class="col-md-4 " style="margin-left: 1em;">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
+                    <div class="row card">
+                        <br><br>
+                        <div class="col-md-12"> 
+                            <div class="row">  
+                        
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerlistaPrestamos()">Buscar Todos</button>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>        
+                        </div>
+                        <br>
+                    </div>         
+
+                </div>
+                <div class="col-md-2"></div>
+            </div>   
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-6"></div>
-    <div class="col-md-6">
-        <div class="dx-field radio">
-            <div class="dx-field-value">
-                <dx-radio-group
-                [items]="tiposRecibo"
-                [(value)]="tipoRecibo"
-                layout="horizontal"
-                (onValueChanged)="opcionRadioTipos($event)">
-                </dx-radio-group>
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-6">
+            <div class="dx-field radio">
+                <div class="dx-field-value">
+                    <dx-radio-group
+                    [items]="tiposRecibo"
+                    [(value)]="tipoRecibo"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadioTipos($event)">
+                    </dx-radio-group>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
 <br>
 <dx-data-grid #datag2
@@ -104,6 +107,7 @@
         [allowedPageSizes]="[8, 12, 20]"
     ></dxo-pager>
 </dx-data-grid>
+</div>
 
 
 

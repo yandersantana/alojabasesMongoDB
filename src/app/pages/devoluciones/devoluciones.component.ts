@@ -7,11 +7,11 @@ import {
 } from "./devoluciones";
 import pdfMake from "pdfmake/build/pdfmake";
 import {
-  venta,
   factura,
   producto,
   contadoresDocumentos,
   productosPendientesEntrega,
+  venta
 } from "../ventas/venta";
 import Swal from "sweetalert2";
 import { objDate, transaccion } from "../transacciones/transacciones";
@@ -38,6 +38,8 @@ import { CajaMenor } from "../cajaMenor/caja-menor";
 import { CajaMenorService } from "src/app/servicios/cajaMenor.service";
 import { AuthService } from "src/app/shared/services";
 import { AngularFirestore } from "angularfire2/firestore";
+import { ProductoCombo, productosCombo } from "../catalogo/catalogo";
+import { CombosService } from "src/app/servicios/combos.service";
 
 @Component({
   selector: "app-devoluciones",
@@ -146,6 +148,7 @@ export class DevolucionesComponent implements OnInit {
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public productoService: ProductoService,
     public authService: AuthService,
+    public _comboService : CombosService,
     public _cajaMenorService : CajaMenorService,
     public _configuracionService : DatosConfiguracionService
   ) {
@@ -186,8 +189,11 @@ export class DevolucionesComponent implements OnInit {
           this.separarRegistrosDevoluciones();
           if (this.usuarioLogueado[0].rol == "Usuario")
             this.isUsuario = true;
-          else 
+          else {
             this.isUsuario = false;
+            this.mostrarAprobacion = true
+          }
+            
           
 
           if(this.usuarioLogueado[0].status == "Inactivo")
@@ -236,14 +242,14 @@ export class DevolucionesComponent implements OnInit {
         case "Aprobadas":
           this.listadoDevoluciones = this.devolucionesAprobadas
           if(!this.isUsuario){
-            this.mostrarAnulacion = false
+            this.mostrarAnulacion = true
             this.mostrarAprobacion = false
           }
           break;
         case "Anuladas":
           this.listadoDevoluciones = this.devolucionesAnuladas
           if(!this.isUsuario){
-            this.mostrarAnulacion = true
+            this.mostrarAnulacion = false
             this.mostrarAprobacion = false
           }
             
@@ -460,10 +466,34 @@ export class DevolucionesComponent implements OnInit {
   }
 
   asignarDatos(e){
-    console.log(e)
     this.textoDatosFactura = e.value.textoCombo;
     this.facturaTraida = this.arrayFacturas.find(element=> element._id == e.value._id);
     this.productosVendidos2 = this.facturaTraida.productosVendidos;
+    var listadoProductosCombo : productosCombo[];
+    this.productosVendidos2.forEach((element) => {
+      if(element.producto.CLASIFICA == "COMBO" ) {
+        var combo = new ProductoCombo();
+        combo.PRODUCTO = element.producto.PRODUCTO;
+        this.mensajeLoading = "Cargando Productos.."
+        this.mostrarLoading = true;
+        this._comboService.getComboPorNombre(combo).subscribe(res => {
+          var listado = res as ProductoCombo[];
+          listadoProductosCombo = listado[0].productosCombo 
+          listadoProductosCombo.forEach((element2) => {
+            var venta2 = new venta();
+            venta2.cantidad = element.cantidad;
+            venta2.producto = element2.producto;
+            venta2.total = element2.precioVenta * element.cantidad;
+            this.productosVendidos2.push(venta2)
+          });
+          this.mostrarLoading = false;
+        })
+      }
+
+    });
+
+     
+   
     this.cliente = this.facturaTraida.cliente.cliente_nombre;
     this.fecha_transaccion = this.facturaTraida.fecha2;
     this.sucursal = this.facturaTraida.sucursal; 
@@ -475,12 +505,8 @@ export class DevolucionesComponent implements OnInit {
   obtenerDetalleProductosFact() {
     this.limpiarArreglo();
     this.productosVendidos.forEach((element) => {
-      if (
-        element.factura_id == this.idDocumento &&
-        element.tipoDocumentoVenta == "Factura"
-      ) {
+      if (element.factura_id == this.idDocumento && element.tipoDocumentoVenta == "Factura") {
         this.productosVendidos2.push(element);
-        console.log("el producto " + JSON.stringify(element));
       }
     });
   }
@@ -633,20 +659,10 @@ export class DevolucionesComponent implements OnInit {
 
   calcularValores2(e, i: number) {
     this.productosVendidos2.forEach((element) => {
-      if (
-        this.productosDevueltos[i].producto.PRODUCTO ==
-        element.producto.PRODUCTO
-      ) {
+      if ( this.productosDevueltos[i].producto.PRODUCTO == element.producto.PRODUCTO) {
         var cal1 = 0;
-        cal1 =
-          this.productosDevueltos[i].cantDevueltaCajas *
-            element.producto.P_CAJA +
-          this.productosDevueltos[i].cantDevueltaPiezas;
-
-        this.productosDevueltos[i].total =
-          cal1 * this.productosDevueltos[i].valorunitariopiezas;
-        console.log("el total es " + cal1);
-        console.log("el total es " + this.productosDevueltos[i].total);
+        cal1 =  this.productosDevueltos[i].cantDevueltaCajas * element.producto.P_CAJA + this.productosDevueltos[i].cantDevueltaPiezas;
+        this.productosDevueltos[i].total = cal1 * this.productosDevueltos[i].valorunitariopiezas;
       }
     });
     this.calcularTotal();

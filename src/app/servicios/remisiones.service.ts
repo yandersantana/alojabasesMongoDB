@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 })
 export class RemisionesService {
   //private URL = 'http://localhost:3000/remisiones'; //localhost
-  //private URL = "http://159.223.107.115:3000/remisiones";
-  private URL = 'http://104.131.82.174:3000/remisiones';
+  private URL = "http://159.223.107.115:3000/remisiones";
+  //private URL = 'http://104.131.82.174:3000/remisiones';
   constructor(public http: HttpClient, public router: Router) {}
 
   newRemision(remisiones) {

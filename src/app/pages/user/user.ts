@@ -13,6 +13,7 @@ export class user{
     sucursal:String
     status:string
     imageProfile:string
+    codigo : string
     constructor(){
        
     }

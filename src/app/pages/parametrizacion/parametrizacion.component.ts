@@ -8,6 +8,8 @@ import { parametrizacionsuc } from './parametrizacion';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
+import { AuthenService } from 'src/app/servicios/authen.service';
+import { user } from '../user/user';
 
 @Component({
   selector: 'app-parametrizacion',
@@ -38,19 +40,65 @@ export class ParametrizacionComponent implements OnInit {
   contadores:contadoresDocumentos
   contadorFirebase:contadoresDocumentos[]=[]
   nombreSucursal:string=""
-  constructor(private db: AngularFirestore, public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public contadorService:ContadoresDocumentosService, public sucursalesService:SucursalesService) {
+  usuarioLogueado : user
+  mostrarBloqueo = true;
+
+  constructor(private db: AngularFirestore, 
+    public _authenService : AuthenService,
+    public  afAuth:  AngularFireAuth,public parametrizacionService:ParametrizacionesService,public contadorService:ContadoresDocumentosService, public sucursalesService:SucursalesService) {
     this.parametroSuc.sucursal="Matriz"
    }
 
   ngOnInit() {
-    
-
-    //this.getParametrizaciones()
+    this.cargarUsuarioLogueado();
     this.traerSucursales()
     this.traerParametrizaciones()
     this.traerContadoresDocumentos()
     this.getIDDocumentos()
   }
+
+  cargarUsuarioLogueado() {
+    var correo = "";
+    new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+        correo =  localStorage.getItem("maily");
+      this._authenService.getUserLogueado(correo)
+        .subscribe(
+          res => {
+            var usuario = res as user;
+            this.usuarioLogueado = usuario[0]
+            this.mostrarPopupCodigo();
+          }
+        )
+    });
+  }
+
+  mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
  
    traerContadoresDocumentos(){

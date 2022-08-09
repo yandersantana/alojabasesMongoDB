@@ -2,8 +2,10 @@
     <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
+<div class="row" *ngIf="mostrarBloqueo"></div>
 
-<div id="administracion" style="display: block;">
+<div *ngIf="!mostrarBloqueo">
+    <div id="administracion" style="display: block;">
     <br>
     <div class="card mb-3">
         <div class="card-header" style="font-weight: bold;">
@@ -271,8 +273,11 @@
                 
             </div>
         </div>
-        </div>
+    </div>
 </div>
+
+</div>
+
 
 
 

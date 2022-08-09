@@ -1,10 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
+import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { ReciboCajaService } from 'src/app/servicios/reciboCaja.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';
+import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { objDate } from '../transacciones/transacciones';
 import { CuentaPorCobrar } from './cuentasPorCobrar';
 
@@ -19,6 +21,7 @@ export class CuentaPorCobrarComponent implements OnInit {
   listaCuentasActivas: CuentaPorCobrar [] = []
   listaCuentasPendientes: CuentaPorCobrar [] = []
   listaCuentasAnualadas: CuentaPorCobrar [] = []
+  listaCuentasCanceladas: CuentaPorCobrar [] = []
   nowdesde: Date = new Date();
   nowhasta: Date = new Date();
   fechaAnteriorDesde: Date = new Date();
@@ -28,11 +31,28 @@ export class CuentaPorCobrarComponent implements OnInit {
       'Activos',
       'Pendientes',
       'Anulados',
+      'Pagadas'
   ];
   mostrarDelete = true;
   mostrarAprobacion = false;
   mensajeLoading = "Cargando.."
   estado = "Activos"
+  popupVisibleNotas = false;
+  listadoNotas: Nota [] = []
+  mostrarListaNotas : boolean = true;
+  mostrarNuevaNotas : boolean = false;
+  opciones: string[] = [
+      'Lista Notas',
+      'Nueva Nota'
+  ];
+  valorOption = ""
+
+  nota = {
+    fecha:"",
+    descripcion:"",
+    tipo:""
+  }
+        
 
 
 
@@ -42,7 +62,9 @@ export class CuentaPorCobrarComponent implements OnInit {
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _reciboCajaService : ReciboCajaService,
     public _contadoresService: ContadoresDocumentosService,
+    public _notasService: NotasPagoService
     ) {
+      this.valorOption = "Lista Notas";
    }
 
   ngOnInit() {
@@ -59,11 +81,11 @@ export class CuentaPorCobrarComponent implements OnInit {
     this.mostrarLoading = true;
     this._cuentasporCobrarService.getCuentasPorCobrar().subscribe(res => {
       this.listaCuentas = res as CuentaPorCobrar[];
-      this.separarComprobantes();
+      this.separarCuentas();
    })
   }
 
-  separarComprobantes(){
+  separarCuentas(){
     this.listaCuentas.forEach(element=> {
       if(element.estado == "Activa")
         this.listaCuentasActivas.push(element);
@@ -71,11 +93,80 @@ export class CuentaPorCobrarComponent implements OnInit {
         this.listaCuentasPendientes.push(element);
       else if(element.estado == "Anulado")
         this.listaCuentasAnualadas.push(element);
+      else if(element.estado == "Cancelada")
+        this.listaCuentasCanceladas.push(element);
     })
     this.listaCuentas = this.listaCuentasActivas;
+    this.estado = "Activos"
     this.mostrarLoading = false;
   }
 
+  opcionRadio2(e){
+    switch (e.value) {
+      case "Lista Notas":
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+        break;
+      case "Nueva Nota":
+        this.mostrarListaNotas = false;
+        this.mostrarNuevaNotas = true;
+        break;
+      default:    
+    }       
+  }
+
+
+  mostrarPopupNotas(){
+    this.popupVisibleNotas = true;
+    this.traerListadoNotas();
+  }
+
+  traerListadoNotas(){
+    this.mostrarLoading = true,
+    this.listadoNotas = [];
+    this._notasService.getNotasPorTipo("CuentaPorCobrar").subscribe(res => {
+      this.listadoNotas = res as Nota[];
+      this.mostrarLoading = false;
+   })
+  }
+
+  deleteNota = (e) => {  
+    this.eliminarNota(e.row.data)  
+  }
+
+  eliminarNota(e:any){ 
+    this._notasService.deleteNotas(e).subscribe( res => {
+      this.popupVisibleNotas = false;
+      Swal.fire({
+        title: 'Correcto',
+        text: 'Se eliminó la nota con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => { })
+    }, err => {alert("error")})
+  }
+
+
+  guardarNuevaNota(){
+    if(this.nota.descripcion != null){
+      this.popupVisibleNotas = false;
+      this.mostrarLoading = true;
+      this.nota.tipo = "CuentaPorCobrar"
+      this._notasService.newNota(this.nota).subscribe(res => {
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Se registró su nota con éxito");
+        this.nota.descripcion = ""
+        this.valorOption = "Lista Notas"
+        this.mostrarListaNotas = true;
+        this.mostrarNuevaNotas = false;
+        this.traerListadoNotas();
+      })
+    }else{
+      this.mostrarMensajeGenerico(2,"Hay campos vacios");
+    }
+    
+  }
 
   traerCuentasPorRango() {
     this.estado = "Activos"
@@ -91,7 +182,7 @@ export class CuentaPorCobrarComponent implements OnInit {
     this._cuentasporCobrarService.getCuentasPorCobrarPorRango(this.obj).subscribe(
       (res) => {
         this.listaCuentas = res as CuentaPorCobrar[];
-        this.mostrarLoading = false;
+        this.separarCuentas();
       },
       () => {}
     );
@@ -112,6 +203,11 @@ export class CuentaPorCobrarComponent implements OnInit {
           break;
         case "Anulados":
           this.listaCuentas = this.listaCuentasAnualadas;
+          this.mostrarDelete= false;
+          this.mostrarAprobacion = false;
+          break;
+        case "Pagadas":
+          this.listaCuentas = this.listaCuentasCanceladas;
           this.mostrarDelete= false;
           this.mostrarAprobacion = false;
           break;

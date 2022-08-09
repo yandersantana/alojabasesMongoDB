@@ -33,6 +33,7 @@ import { AuthService } from "src/app/shared/services";
 import { DatosConfiguracionService } from "src/app/servicios/datosConfiguracion.service";
 import { ProductoCombo, productosCombo } from "../catalogo/catalogo";
 import { CombosService } from "src/app/servicios/combos.service";
+import { inventario, productoTransaccion } from "../consolidado/consolidado";
 
 @Component({
   selector: "app-traslados",
@@ -73,6 +74,11 @@ export class TrasladosComponent implements OnInit {
   productos: producto[] = [];
   productosActivos: producto[] = [];
   mostrar = false;
+
+  //procesos para inventario
+  proTransaccion: productoTransaccion = new productoTransaccion();
+  invetarioP:inventario[]=[]
+  invetarioProd:inventario
 
   productos2: producto[] = [];
   productosTraslado: producto[] = [];
@@ -1128,8 +1134,7 @@ export class TrasladosComponent implements OnInit {
   obtenerDetallesProducto(e, i: number) {
     this.productos.forEach((element) => {
       if (element.PRODUCTO == e.value) {
-        console.log("2 " + element.UNIDAD);
-
+        this.traerTransaccionesPorProducto(element, i);
         switch (element.UNIDAD) {
           case "Metros":
             this.detalleTraslados[i].tipo = "Cajas / Piezas";
@@ -1138,7 +1143,6 @@ export class TrasladosComponent implements OnInit {
             this.detalleTraslados[i].tipo = "Unidades";
             this.detalleTraslados[i].desPiezas = true;
             break;
-
           default:
             this.detalleTraslados[i].tipo = element.UNIDAD;
             break;
@@ -1146,33 +1150,37 @@ export class TrasladosComponent implements OnInit {
       }
     });
 
-    var cont = 0;
-    this.detalleTraslados.forEach((element) => {
-      if (element.producto == e.value) {
-        cont++;
-      }
-    });
-    if (cont > 1) {
+    var producto = this.detalleTraslados.filter(element=>element.producto == e.value)
+    console.log(producto)
+    if (producto.length > 1) {
       Swal.fire("Alerta", "Ya tiene detallado este producto", "warning");
       this.deleteProducto(i);
     }
   }
 
+
+  traerTransaccionesPorProducto(nombreProducto: producto,numero : number) {
+    this.invetarioP = [];
+    this.mostrarLoading = true;
+    this.proTransaccion.nombre = nombreProducto.PRODUCTO;
+    this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion)
+      .subscribe((res) => {
+        this.transacciones = res as transaccion[];
+        this.cargarDatosProductoUnitario(nombreProducto,numero);
+      });
+  }
+
+
   validarCantidad(i: number) {
     var cantm2 = 0;
     this.productos.forEach((element) => {
       if (element.PRODUCTO == this.detalleTraslados[i].producto) {
-        cantm2 = parseFloat(
-          (
-            element.M2 * this.detalleTraslados[i].cajas +
-            (this.detalleTraslados[i].piezas * element.M2) / element.P_CAJA
-          ).toFixed(2)
-        );
+        cantm2 = parseFloat(( element.M2 * this.detalleTraslados[i].cajas +(this.detalleTraslados[i].piezas * element.M2) / element.P_CAJA ).toFixed(2));
         this.detalleTraslados[i].cantidadm2 = cantm2;
 
         switch (this.traslados.sucursal_origen.nombre) {
           case "matriz":
-            if (cantm2 > element.sucursal1 + element.suc1Pendiente) {
+            if (cantm2 > element.sucursal1) {
               this.detalleTraslados[i].cajas = 0;
               this.detalleTraslados[i].piezas = 0;
               this.detalleTraslados[i].cantidadm2 = 0;
@@ -1180,7 +1188,7 @@ export class TrasladosComponent implements OnInit {
             }
             break;
           case "sucursal1":
-            if (cantm2 > element.sucursal2 + element.suc2Pendiente) {
+            if (cantm2 > element.sucursal2) {
               this.detalleTraslados[i].cajas = 0;
               this.detalleTraslados[i].piezas = 0;
               this.detalleTraslados[i].cantidadm2 = 0;
@@ -1188,7 +1196,7 @@ export class TrasladosComponent implements OnInit {
             }
             break;
           case "sucursal2":
-            if (cantm2 > element.sucursal3 + element.suc3Pendiente) {
+            if (cantm2 > element.sucursal3) {
               this.detalleTraslados[i].cajas = 0;
               this.detalleTraslados[i].piezas = 0;
               this.detalleTraslados[i].cantidadm2 = 0;
@@ -1742,6 +1750,274 @@ export class TrasladosComponent implements OnInit {
       })
     }
   }
+
+
+
+
+
+  //**************PROCESOS PARA CONSULTA DE DATOS ************/
+  cargarDatosProductoUnitario(nombreProducto : producto , numero : number) {
+    var contCajas = 0;
+    var contCajas2 = 0;
+    var contCajas3 = 0;
+    var contPiezas = 0;
+    var contPiezas2 = 0;
+    var contPiezas3 = 0;
+
+    this.transacciones.forEach((element) => {
+      if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "matriz") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas = Number(element.cajas) + contCajas;
+            contPiezas = Number(element.piezas) + contPiezas;
+            break;
+          case "compra-dir":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas = Number(contCajas) - Number(element.cajas);
+            contPiezas = Number(contPiezas) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas = Number(contCajas) + Number(element.cajas);
+            contPiezas = Number(contPiezas) + Number(element.piezas);
+
+            break;
+          default:
+        }
+      } else if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "sucursal1") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas2 = Number(element.cajas) + contCajas2;
+            contPiezas2 = Number(element.piezas) + contPiezas2;
+            break;
+          case "compra-dir":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas2 = Number(contCajas2) - Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas2 = Number(contCajas2) + Number(element.cajas);
+            contPiezas2 = Number(contPiezas2) + Number(element.piezas);
+            break;
+          default:
+        }
+      } else if ( nombreProducto.PRODUCTO == element.producto && element.sucursal == "sucursal2") {
+        switch (element.tipo_transaccion) {
+          case "devolucion":
+            contCajas3 = Number(element.cajas) + contCajas3;
+            contPiezas3 = Number(element.piezas) + contPiezas3;
+            break;
+          case "compra-dir":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "compra":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "compra_obs":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "ajuste-faltante":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "baja":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "venta-fact":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "venta-not":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "traslado1":
+            contCajas3 = Number(contCajas3) - Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) - Number(element.piezas);
+            break;
+          case "traslado2":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+          case "ajuste-sobrante":
+            contCajas3 = Number(contCajas3) + Number(element.cajas);
+            contPiezas3 = Number(contPiezas3) + Number(element.piezas);
+            break;
+
+          default:
+        }
+      }
+    });
+    var cantidadRestante = 0;
+    this.invetarioProd = new inventario();
+    this.invetarioProd.producto = nombreProducto;
+    this.invetarioProd.cantidadCajas = contCajas;
+    this.invetarioProd.cantidadCajas2 = contCajas2;
+    this.invetarioProd.cantidadCajas3 = contCajas3;
+
+    this.invetarioProd.cantidadPiezas = contPiezas;
+    this.invetarioProd.cantidadPiezas2 = contPiezas2;
+    this.invetarioProd.cantidadPiezas3 = contPiezas3;
+    this.invetarioP.push(this.invetarioProd);
+
+
+    contCajas = 0;
+    contPiezas = 0;
+    contCajas2 = 0;
+    contPiezas2 = 0;
+    contCajas3 = 0;
+    contPiezas3 = 0;
+    
+    this.transformarM2_1(numero);
+  }
+
+  transformarM2_1(numero: number) {
+    this.invetarioP.forEach((element) => {
+      element.cantidadM2 = parseFloat( (element.producto.M2 * element.cantidadCajas +(element.cantidadPiezas * element.producto.M2) / element.producto.P_CAJA ).toFixed(2));
+      element.cantidadM2b2 = parseFloat(
+        (
+          element.producto.M2 * element.cantidadCajas2 +
+          (element.cantidadPiezas2 * element.producto.M2) / element.producto.P_CAJA
+        ).toFixed(2)
+      );
+      element.cantidadM2b3 = parseFloat(
+        (
+          element.producto.M2 * element.cantidadCajas3 +
+          (element.cantidadPiezas3 * element.producto.M2) / element.producto.P_CAJA
+        ).toFixed(2)
+      );
+      element.totalb1 = parseFloat( (element.cantidadM2 * element.producto.precio).toFixed(2) );
+      element.totalb2 = parseFloat((element.cantidadM2b2 * element.producto.precio).toFixed(2));
+      element.totalb3 = parseFloat( (element.cantidadM2b3 * element.producto.precio).toFixed(2));
+    });
+    this.cambiarValores2(numero);
+  }
+
+
+  cambiarValores2(numero : number) {
+    this.invetarioP.forEach((element) => {
+      element.cantidadCajas = Math.trunc( element.cantidadM2 / element.producto.M2);
+      element.cantidadPiezas = parseInt(
+        (
+          (element.cantidadM2 * element.producto.P_CAJA) / element.producto.M2 -
+          element.cantidadCajas * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2 = parseFloat(element.cantidadM2.toFixed(2));
+
+      element.cantidadCajas2 = Math.trunc( element.cantidadM2b2 / element.producto.M2);
+      element.cantidadPiezas2 = parseInt(
+        (
+          (element.cantidadM2b2 * element.producto.P_CAJA) /
+            element.producto.M2 -
+          element.cantidadCajas2 * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2b2 = parseFloat(element.cantidadM2b2.toFixed(2));
+
+      element.cantidadCajas3 = Math.trunc( element.cantidadM2b3 / element.producto.M2);
+      element.cantidadPiezas3 = parseInt(
+        (
+          (element.cantidadM2b3 * element.producto.P_CAJA) /
+            element.producto.M2 -
+          element.cantidadCajas3 * element.producto.P_CAJA
+        ).toFixed(0)
+      );
+      element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
+    });
+
+
+/*     var cantidadM2 = 0;
+    switch (this.traslados.sucursal_origen.nombre) {
+      case "matriz":
+        cantidadM2 = this.invetarioP[0].cantidadM2;
+        break;
+      case "sucursal1":
+        cantidadM2 = this.invetarioP[0].cantidadM2b2;
+        break;
+      case "sucursal2":
+        cantidadM2 = this.invetarioP[0].cantidadM2b3;
+        break;
+      default:
+    } */
+
+    this.productos.forEach((element) => {
+      if (element.PRODUCTO == this.detalleTraslados[numero].producto) {
+        element.sucursal1 = this.invetarioP[0].cantidadM2;
+        element.sucursal2 = this.invetarioP[0].cantidadM2b2;
+        element.sucursal3 = this.invetarioP[0].cantidadM2b3;
+        console.log(element)
+      }
+    });
+    this.mostrarLoading = false;
+  }
+
+
 }
 
 //1784

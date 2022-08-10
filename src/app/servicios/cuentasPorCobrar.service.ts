@@ -47,6 +47,10 @@ export class CuentasPorCobrarService {
     return this.http.put(this.URL + `/updateEstado/${objeto._id}/${estado}`, objeto);
   }
 
+  updateNotas(objeto) {
+    return this.http.put(this.URL + `/updateNota/${objeto._id}`, objeto);
+  }
+
   deleteCuenta(cuenta) {
     return this.http.delete(this.URL + `/delete/${cuenta._id}`, cuenta);
   }

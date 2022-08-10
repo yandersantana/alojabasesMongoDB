@@ -108,7 +108,9 @@
     <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
     <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
     
-
+    <dxi-column type="buttons" dataField="bt1" caption="Edi.Not." width="6%">
+        <dxi-button hint="Notas" icon="fa fa-pencil-square-o" [onClick]="mostrarPopupEditNotas"></dxi-button>
+    </dxi-column>
     <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
         <dxi-button icon="clear" [onClick]="deleteCuenta"></dxi-button>   
     </dxi-column>
@@ -118,18 +120,9 @@
     <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
         <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
     </dxi-column>
-    
-    
-  <!--   <dxi-column type="buttons" dataField="bt1" caption="Ver" width="7%">
-        <dxi-button icon="fa fa-eye" [onClick]="getCourseFile"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="7%" [visible]="true">
-        <dxi-button icon="clear" [onClick]="getCourseFile7"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
-        <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
-    </dxi-column> -->
-    
+
+   
+
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager
         [showPageSizeSelector]="true"
@@ -196,6 +189,31 @@
     </div>
 </dx-popup>
 
+
+
+<dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleEditarNotas">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <br>
+            <div class="row">
+                <div class="col-md-3" style="text-align: left;margin-top: 2em;">Nota: </div>
+                <div class="col-md-9" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
+                    name="nombre" class="form-control select"
+                    required></div>
+
+                    <br><br><br>
+                <div class="col-md-4"></div>
+                <div class="col-md-4 btnSearch">
+                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarComentario()">Guardar</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>      
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 
 

@@ -38,6 +38,7 @@ export class CuentaPorCobrarComponent implements OnInit {
   mensajeLoading = "Cargando.."
   estado = "Activos"
   popupVisibleNotas = false;
+  popupVisibleEditarNotas = false;
   listadoNotas: Nota [] = []
   mostrarListaNotas : boolean = true;
   mostrarNuevaNotas : boolean = false;
@@ -46,6 +47,8 @@ export class CuentaPorCobrarComponent implements OnInit {
       'Nueva Nota'
   ];
   valorOption = ""
+
+  CuentaActualizar : CuentaPorCobrar;
 
   nota = {
     fecha:"",
@@ -122,6 +125,14 @@ export class CuentaPorCobrarComponent implements OnInit {
     this.traerListadoNotas();
   }
 
+  mostrarPopupEditNotas = (e) => { 
+    this.popupVisibleEditarNotas = true;
+    this.nota.descripcion = e.row.data.notas;
+    this.CuentaActualizar = e.row.data
+    console.log(e.row.data.notas)
+    
+  }
+
   traerListadoNotas(){
     this.mostrarLoading = true,
     this.listadoNotas = [];
@@ -166,6 +177,20 @@ export class CuentaPorCobrarComponent implements OnInit {
       this.mostrarMensajeGenerico(2,"Hay campos vacios");
     }
     
+  }
+
+  actualizarComentario(){
+    this.mensajeLoading = "Actualizando..."
+    this.mostrarLoading = true;
+    this.CuentaActualizar.notas = this.nota.descripcion;
+    this._cuentasporCobrarService.updateNotas(this.CuentaActualizar).subscribe(res => {
+        this.mostrarMensajeGenerico(1,"Se realizo la actualización con éxito")
+        this.ngOnInit();
+        this.mostrarLoading = false;
+        this.popupVisibleEditarNotas = false;
+        this.nota.descripcion = ""
+    })  
+  
   }
 
   traerCuentasPorRango() {

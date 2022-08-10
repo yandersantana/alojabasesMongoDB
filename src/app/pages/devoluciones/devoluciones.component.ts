@@ -14,7 +14,7 @@ import {
   venta
 } from "../ventas/venta";
 import Swal from "sweetalert2";
-import { objDate, transaccion } from "../transacciones/transacciones";
+import { objDate, tipoBusquedaTransaccion, transaccion } from "../transacciones/transacciones";
 import { OrdenDeCompra, Sucursal } from "../compras/compra";
 import { parametrizacionsuc } from "../parametrizacion/parametrizacion";
 import { ParametrizacionesService } from "src/app/servicios/parametrizaciones.service";
@@ -66,6 +66,7 @@ export class DevolucionesComponent implements OnInit {
   devolucionesAprobadas: devolucion[] = [];
   devolucionesRechazadas: devolucion[] = [];
   devolucionesAnuladas: devolucion[] = [];
+  transaccionesFinancieras: TransaccionesFinancieras [] = []
   devolucioLeida: devolucion;
   productos: producto[] = [];
   facturaTraida: factura;
@@ -77,6 +78,7 @@ export class DevolucionesComponent implements OnInit {
   menuDocumento: string[] = ["Factura", "Nota de Venta"];
   textoDatosFactura=""
   arrayFacturas: factura[] = [];
+  busquedaTransaccion: tipoBusquedaTransaccion; 
 
   menuMotivo: string[] = [
     "Caducidad",
@@ -487,10 +489,15 @@ export class DevolucionesComponent implements OnInit {
             this.productosVendidos2.push(venta2)
           });
           this.mostrarLoading = false;
+          //-----------eliminar repetidos del array
+          let hash = {};
+          this.productosVendidos2 = this.productosVendidos2.filter(o => hash[o.producto.PRODUCTO] ? false : hash[o.producto.PRODUCTO] = true);
         })
       }
 
     });
+
+   
 
      
    
@@ -505,9 +512,9 @@ export class DevolucionesComponent implements OnInit {
   obtenerDetalleProductosFact() {
     this.limpiarArreglo();
     this.productosVendidos.forEach((element) => {
-      if (element.factura_id == this.idDocumento && element.tipoDocumentoVenta == "Factura") {
+      if (element.factura_id == this.idDocumento && element.tipoDocumentoVenta == "Factura") 
         this.productosVendidos2.push(element);
-      }
+
     });
   }
 
@@ -530,10 +537,7 @@ export class DevolucionesComponent implements OnInit {
   obtenerDetalleProductosNot() {
     this.limpiarArreglo();
     this.productosVendidos.forEach((element) => {
-      if (
-        element.factura_id == this.idDocumento &&
-        element.tipoDocumentoVenta == "Nota de Venta"
-      ) {
+      if (element.factura_id == this.idDocumento &&element.tipoDocumentoVenta == "Nota de Venta" ) {
         this.productosVendidos2.push(element);
       }
     });
@@ -595,12 +599,8 @@ export class DevolucionesComponent implements OnInit {
   }
 
   transformarM2(e, i: number) {
-    console.log("rr2444 " + this.productosDevueltos[i].producto);
     this.productosVendidos2.forEach((element) => {
-      if (
-        this.productosDevueltos[i].producto.PRODUCTO ==
-        element.producto.PRODUCTO
-      ) {
+      if (this.productosDevueltos[i].producto.PRODUCTO == element.producto.PRODUCTO) {
         this.productosDevueltos[i].cantDevueltam2 = parseInt(
           (
             element.producto.M2 * this.productosDevueltos[i].cantDevueltaCajas +
@@ -618,8 +618,6 @@ export class DevolucionesComponent implements OnInit {
           ).toFixed(2)
         );
 
-        console.log(this.productosDevueltos[i].cantDevueltam2);
-        console.log(this.productosDevueltos[i].cantDevueltam2Flo);
         var cal1 = 0;
         var cal2 = 0;
         cal1 =
@@ -641,17 +639,10 @@ export class DevolucionesComponent implements OnInit {
 
   calcularValores(e, i: number) {
     this.productosVendidos2.forEach((element) => {
-      if (
-        this.productosDevueltos[i].producto.PRODUCTO ==
-        element.producto.PRODUCTO
-      ) {
+      if(this.productosDevueltos[i].producto.PRODUCTO == element.producto.PRODUCTO) {
         var cal1 = 0;
-        cal1 =
-          element.precio_venta * this.productosDevueltos[i].cantDevueltam2Flo;
-        this.productosDevueltos[i].total =
-          cal1 - cal1 * (element.descuento / 100);
-        console.log("el total es " + cal1);
-        console.log("el total es " + this.productosDevueltos[i].total);
+        cal1 = element.precio_venta * this.productosDevueltos[i].cantDevueltam2Flo;
+        this.productosDevueltos[i].total = cal1 - cal1 * (element.descuento / 100);
       }
     });
     this.calcularTotal();
@@ -750,16 +741,8 @@ export class DevolucionesComponent implements OnInit {
             },
             (err) => {}
           );
-          //this.db.collection('/notas_venta').doc(this.idDocumento+"").update({"observaciones" :text});
         }
 
-        /* this.productosDevueltos.forEach(element => {
-          element.devolucion_id=this.id_devolucion
-          this.db.collection("/productosDevueltos").add({ ...Object.assign({}, element)})
-          .then(resolve => {contV++,this.contadorValidaciones3(contV)}, err => reject(err));
-            
-          }) */
-        //this.actualizarProductos()
       });
     } else {
       Swal.fire({
@@ -772,7 +755,6 @@ export class DevolucionesComponent implements OnInit {
 
   asignarsucursalD(e) {
     this.variablesucursal = e.value;
-    console.log("Pertenece a " + this.variablesucursal);
     this.locales.forEach((element) => {
       if (element.nombre == this.variablesucursal) {
         this.devolucion.sucursal = element;
@@ -840,9 +822,7 @@ export class DevolucionesComponent implements OnInit {
         this.mostrarMensaje();
         new Promise<any>((resolve, reject) => {
           this.devolucionesService.updateEstado(e, "Anulada").subscribe(
-            (res) => {
-              this.buscarProductos(e);
-            },
+            (res) => { this.buscarProductos(e);},
             (err) => {}
           );
         });
@@ -860,7 +840,6 @@ export class DevolucionesComponent implements OnInit {
         this.productosDevueltosCarga = element.productosDevueltos;
       }
     });
-    console.log("pro", this.productosDevueltosCarga);
     this.actualizarProductosAnulacion(e.id_devolucion);
   }
 
@@ -1629,19 +1608,32 @@ export class DevolucionesComponent implements OnInit {
                     alert("error");
                   }
                 );
-              //this.db.collection('/productos').doc(element.producto.PRODUCTO).update({"sucursal3" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
+
               break;
             default:
-
-            //his.db.collection('/productos').doc(element.producto.PRODUCTO).update({"cantidad" :sumaProductos}).then(res => {cont2ing++, this.contadorValidaciones2(cont2ing)}, err => alert(err));
           }
         }
       });
     });
   }
 
+  eliminarTransaccionesFinancieras(){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = this.devolucioLeida.id_devolucion.toString();
+    this.busquedaTransaccion.tipoTransaccion = "devolucion"
+    this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transaccionesFinancieras = res as TransaccionesFinancieras[];
+      if(this.transaccionesFinancieras.length != 0){
+        this.transaccionesFinancieras.forEach(element=>{
+          this._transaccionFinancieraService.deleteTransaccionFinanciera(element).subscribe( res => {}, err => {alert("error")})
+        })
+      }
+    })
+  }
+
   actualizarProductosAnulacion(num) {
     this.eliminarTransacciones(num);
+    this.eliminarTransaccionesFinancieras();
     var sumaProductos = 0;
     var num1: number = 0;
     var num2: number = 0;

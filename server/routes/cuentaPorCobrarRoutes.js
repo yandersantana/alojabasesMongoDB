@@ -54,6 +54,12 @@ router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   res.json({ status: "Cuenta Updated" });
 });
 
+router.put("/updateNota/:id", async (req, res, next) => {
+  const { id } = req.params;
+  await CuentaPorCobrar.findByIdAndUpdate(id,{ $set: { notas: req.body.notas } },{ new: true });
+  res.json({ status: "Cuenta Updated" });
+});
+
 router.delete("/delete/:id", async (req, res, next) => {
   await CuentaPorCobrar.findByIdAndRemove(req.params.id);
   res.json({ status: "Cuenta Eliminada" });

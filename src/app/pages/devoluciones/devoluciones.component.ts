@@ -40,6 +40,7 @@ import { AuthService } from "src/app/shared/services";
 import { AngularFirestore } from "angularfire2/firestore";
 import { ProductoCombo, productosCombo } from "../catalogo/catalogo";
 import { CombosService } from "src/app/servicios/combos.service";
+import { element } from "protractor";
 
 @Component({
   selector: "app-devoluciones",
@@ -133,6 +134,7 @@ export class DevolucionesComponent implements OnInit {
   ];
   mostrarAprobacion = false;
   mostrarAnulacion = false;
+  listadoProductosCombo : productosCombo[];
 
 
   constructor(
@@ -471,7 +473,6 @@ export class DevolucionesComponent implements OnInit {
     this.textoDatosFactura = e.value.textoCombo;
     this.facturaTraida = this.arrayFacturas.find(element=> element._id == e.value._id);
     this.productosVendidos2 = this.facturaTraida.productosVendidos;
-    var listadoProductosCombo : productosCombo[];
     this.productosVendidos2.forEach((element) => {
       if(element.producto.CLASIFICA == "COMBO" ) {
         var combo = new ProductoCombo();
@@ -480,8 +481,8 @@ export class DevolucionesComponent implements OnInit {
         this.mostrarLoading = true;
         this._comboService.getComboPorNombre(combo).subscribe(res => {
           var listado = res as ProductoCombo[];
-          listadoProductosCombo = listado[0].productosCombo 
-          listadoProductosCombo.forEach((element2) => {
+          this.listadoProductosCombo = listado[0].productosCombo 
+          this.listadoProductosCombo.forEach((element2) => {
             var venta2 = new venta();
             venta2.cantidad = element.cantidad;
             venta2.producto = element2.producto;
@@ -556,36 +557,44 @@ export class DevolucionesComponent implements OnInit {
   }
 
   obtenerDetallesDoc(e, i: number) {
-    var canti = 0;
-    this.productosVendidos2.forEach((element) => {
-      if (element.producto.PRODUCTO == e.value) {
-        canti = 0;
+    console.log(this.productosDevueltos)
+    var existeP = this.productosDevueltos.filter(element=>element.REFERENCIA == this.productosDevueltos[i].REFERENCIA)
+    if(existeP.length > 1){
+      Swal.fire("Error", "El producto ya existe", "error");
+      this.deleteProducto(e,i)
+    }else{
+      var canti = 0;
+      this.productosVendidos2.forEach((element) => {
+        if (element.producto.PRODUCTO == e.value) {
+          canti = 0;
 
-        this.productosDevueltos[i].producto = element.producto;
-        this.productosDevueltos[i].cantFactCajas = Math.trunc(
-          element.cantidad / element.producto.M2
-        );
-        this.productosDevueltos[i].cantFactPiezas =
-          Math.trunc((element.cantidad * element.producto.P_CAJA) / element.producto.M2) -
-          this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
+          this.productosDevueltos[i].producto = element.producto;
+          this.productosDevueltos[i].cantFactCajas = Math.trunc(
+            element.cantidad / element.producto.M2
+          );
+          this.productosDevueltos[i].cantFactPiezas =
+            Math.trunc((element.cantidad * element.producto.P_CAJA) / element.producto.M2) -
+            this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA;
 
-        this.productosDevueltos[i].valorunitariopiezas =
-          element.total /
-            (element.producto.P_CAJA *
-              this.productosDevueltos[i].cantFactCajas +
-              this.productosDevueltos[i].cantFactPiezas) -
-          (element.total /
-            (element.producto.P_CAJA *
-              this.productosDevueltos[i].cantFactCajas +
-              this.productosDevueltos[i].cantFactPiezas)) *
-            (element.descuento / 100);
-        this.productosDevueltos[i].valorunitario =
-          ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
-            this.productosDevueltos[i].cantFactPiezas) /
-            element.cantidad) *
-          this.productosDevueltos[i].valorunitariopiezas;
-        }
+          this.productosDevueltos[i].valorunitariopiezas =
+            element.total /
+              (element.producto.P_CAJA *
+                this.productosDevueltos[i].cantFactCajas +
+                this.productosDevueltos[i].cantFactPiezas) -
+            (element.total /
+              (element.producto.P_CAJA *
+                this.productosDevueltos[i].cantFactCajas +
+                this.productosDevueltos[i].cantFactPiezas)) *
+              (element.descuento / 100);
+          this.productosDevueltos[i].valorunitario =
+            ((element.producto.P_CAJA * this.productosDevueltos[i].cantFactCajas +
+              this.productosDevueltos[i].cantFactPiezas) /
+              element.cantidad) *
+            this.productosDevueltos[i].valorunitariopiezas;
+          }
       });
+    }
+    
     
   }
 
@@ -620,13 +629,15 @@ export class DevolucionesComponent implements OnInit {
 
         var cal1 = 0;
         var cal2 = 0;
-        cal1 =
-          this.productosDevueltos[i].cantDevueltaCajas *
-            element.producto.P_CAJA +
-          this.productosDevueltos[i].cantDevueltaPiezas;
-        cal2 =
-          this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA +
-          this.productosDevueltos[i].cantFactPiezas;
+        var prodEncontrado = this.listadoProductosCombo.find(element2=>element2.nombreProducto == element.producto.PRODUCTO)
+
+        cal1 = this.productosDevueltos[i].cantDevueltaCajas * element.producto.P_CAJA + this.productosDevueltos[i].cantDevueltaPiezas;
+        
+        if(prodEncontrado != null)
+          cal2 = (this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA) * prodEncontrado.cantidad + this.productosDevueltos[i].cantFactPiezas;
+        else
+          cal2 = this.productosDevueltos[i].cantFactCajas * element.producto.P_CAJA + this.productosDevueltos[i].cantFactPiezas;
+
         if (cal1 > cal2) {
           alert("la cantidad es mayor");
           this.productosDevueltos[i].cantDevueltaCajas = 0;
@@ -898,7 +909,6 @@ export class DevolucionesComponent implements OnInit {
           element.producto.PRODUCTO == element1.producto.PRODUCTO
         ) {
           bandera = false;
-          //alert("si encontre")
         }
       });
     });

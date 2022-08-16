@@ -4124,8 +4124,6 @@ cambiarestado(e,i:number){
                 element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
               });
 
-              console.log(this.invetarioP)
-
               var disponible = 0;
               switch (this.factura.sucursal) {
                 case "matriz":

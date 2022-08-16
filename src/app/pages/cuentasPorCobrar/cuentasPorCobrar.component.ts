@@ -31,7 +31,7 @@ export class CuentaPorCobrarComponent implements OnInit {
       'Activos',
       'Pendientes',
       'Anulados',
-      'Pagadas'
+      'Canceladas'
   ];
   mostrarDelete = true;
   mostrarAprobacion = false;
@@ -231,7 +231,7 @@ export class CuentaPorCobrarComponent implements OnInit {
           this.mostrarDelete= false;
           this.mostrarAprobacion = false;
           break;
-        case "Pagadas":
+        case "Canceladas":
           this.listaCuentas = this.listaCuentasCanceladas;
           this.mostrarDelete= false;
           this.mostrarAprobacion = false;

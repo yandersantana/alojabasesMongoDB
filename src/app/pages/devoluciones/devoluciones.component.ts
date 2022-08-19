@@ -629,7 +629,7 @@ export class DevolucionesComponent implements OnInit {
 
         var cal1 = 0;
         var cal2 = 0;
-        var prodEncontrado = this.listadoProductosCombo.find(element2=>element2.nombreProducto == element.producto.PRODUCTO)
+        var prodEncontrado = this.listadoProductosCombo?.find(element2=>element2.nombreProducto == element.producto.PRODUCTO)
 
         cal1 = this.productosDevueltos[i].cantDevueltaCajas * element.producto.P_CAJA + this.productosDevueltos[i].cantDevueltaPiezas;
         

@@ -65,6 +65,7 @@ export class VentasComponent implements OnInit {
   formaPago = "Pendiente de Pago";
   listaOperaciones : OperacionComercial[]=[]
   recibosEncontrados : ReciboCaja[]=[]
+  facturasEctdas : factura[]=[]
   newRecibo = new ReciboCaja();
 
   formasPago: string[] = [
@@ -410,50 +411,25 @@ export class VentasComponent implements OnInit {
 
 
   asignarIDdocumentos(){
-    switch (this.factura.sucursal) {
-      case "matriz":
-        this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
-        this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
-        console.log(this.factura.documento_n)
-        break;
-      case "sucursal1":
-        this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
-        this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
-        break;
-      case "sucursal2":
-        this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
-        this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
-        break;
-      default:
-        break;
-    }
-        
-    
-    this.number_transaccion = this.contadores[0].transacciones_Ndocumento 
-  }
-
-  asignarIDdocumentos2(){
     switch (this.factura.tipoDocumento) {
       case "Factura":
         switch (this.factura.sucursal) {
           case "matriz":
-            //normales
             this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+            console.log(this.factura.documento_n)
             break;
           case "sucursal1":
-            //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
             break;
           case "sucursal2":
-            //normales
             this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
             break;
           default:
             break;
-        } 
+        }
         break;
       case "Nota de Venta":
         this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
@@ -464,10 +440,9 @@ export class VentasComponent implements OnInit {
       default:
         break;
     }
-    this.numeroID= this.contadorFirebase[0].contProductosPendientes_Ndocumento+1
-    this.number_transaccion = this.contadorFirebase[0].transacciones_Ndocumento+1
+        
+    this.number_transaccion = this.contadores[0].transacciones_Ndocumento 
   }
-
 
 
   separarClientes(){
@@ -759,7 +734,7 @@ setSelectedProducto(i:number){
     listado.forEach(element => {
       this.productos.forEach(element2 => {
         if(element.nombreProducto == element2.PRODUCTO)
-          this.traerTransaccionesPorProductoCombo2(element2, num , listado.length)
+          this.traerTransaccionesPorProductoCombo2(element2, num , listado.length, element)
       });
     });
   }
@@ -2956,32 +2931,7 @@ cambiarestado(e,i:number){
 
    
 
-    async validarNumeroFactura(factura , tipo){
-      var resultado;
-        switch (tipo) {
-          case "Factura":
-            await this.facturasService.getFacturasDocumentoVenta(factura).subscribe(res => {
-                this.facturas = res as factura[];
-                if(this.facturas.length == 0){
-                  this.facturasService.newFactura(this.factura).subscribe(
-                    res => {this.actualizarFacturero()},
-                    err => {this.mostrarMensajeGenerico(2,"Error al guardar");})
-                }else{
-                  this.factura.documento_n = Number(this.factura.documento_n) + this.contadorVenta
-                  this.numeroFactura2 = this.factura.documento_n
-                  this.generarFactura()
-                }
-            })
-            break;
-          case "NotaVenta":
-            
-            break;
-        
-          default:
-            break;
-        }
-        return resultado;
-    }
+
 
     guardarNotaVenta(){
       this.factura.username= this.username
@@ -3068,11 +3018,11 @@ cambiarestado(e,i:number){
               Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
             }
             else
-              this.generarFactura()
+              this.obtenerIdFactura()
           }else 
-            this.generarFactura()
+            this.obtenerIdFactura()
         }else
-          this.generarFactura()
+          this.obtenerIdFactura()
       },
       (err) => {});
   }
@@ -3090,17 +3040,43 @@ cambiarestado(e,i:number){
               Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
             }
             else
-              this.generarNotaDeVenta()
+              this.obtenerIdNotasVenta()
           }else 
-            this.generarNotaDeVenta()
+            this.obtenerIdNotasVenta()
         }else
-          this.generarNotaDeVenta()
+          this.obtenerIdNotasVenta()
       },
       (err) => {});
   }
 
+  obtenerIdFactura(){
+    this.mostrarLoading = true;
+    var IdNum = new Promise<any>((resolve, reject) => {
+      try {
+        this.facturasService.getFacturasPorIdConsecutivo(this.factura).subscribe(res => {
+         this.facturasEctdas = res as factura[];
+          if(this.facturasEctdas.length == 0){
+            resolve("listo");
+          }else{
+            console.log("entre con", this.factura.documento_n)
+            this.factura.documento_n =  this.factura.documento_n + 1
+            this.obtenerIdFactura();
+          }
+           
+          },(err) => {});
+      } catch (error) {
+      } 
+    })
+
+    IdNum.then((data) => {
+      this.generarFactura();
+    })
+  }
+
+
 
   generarFactura() {
+    this.mostrarLoading = false;
     this.telefonoCliente= this.factura.cliente.celular
     this.factura.cliente.cliente_nombre= this.mensaje
    
@@ -3118,8 +3094,6 @@ cambiarestado(e,i:number){
 
         });
         if(contpro>=1 &&bandera && this.factura.documento_n!=undefined){
-          this.factura.documento_n = this.numeroFactura2
-          console.log(this.factura.documento_n)
           this.factura.dni_comprador= this.factura.cliente.ruc
           this.factura.cliente.cliente_nombre= this.mensaje
           
@@ -3293,8 +3267,34 @@ cambiarestado(e,i:number){
   }
 
 
+  obtenerIdNotasVenta(){
+    this.mostrarLoading = true;
+    var IdNum = new Promise<any>((resolve, reject) => {
+      try {
+        this.notasVentService.getNotasVentaPorIdConsecutivo(this.factura).subscribe(res => {
+         this.facturasEctdas = res as factura[];
+          if(this.facturasEctdas.length == 0){
+            resolve("listo");
+          }else{
+            console.log("entre con", this.factura.documento_n)
+            this.factura.documento_n =  this.factura.documento_n + 1
+            this.obtenerIdNotasVenta();
+          }
+           
+          },(err) => {});
+      } catch (error) {
+      } 
+    })
+
+    IdNum.then((data) => {
+      this.generarNotaDeVenta();
+    })
+  }
+
+
 
   generarNotaDeVenta() {
+    this.mostrarLoading = false;
     this.factura.cliente.cliente_nombre= this.mensaje
     if(this.factura.cliente!=undefined){
       if(this.factura.cliente.cliente_nombre != undefined){
@@ -3894,7 +3894,7 @@ cambiarestado(e,i:number){
 
 
   //**************PROCESOS PARA CONSULTA DE DATOS ************/
-  traerTransaccionesPorProductoCombo2(nombreProducto: producto, num : number, cantidadP: number) {
+  traerTransaccionesPorProductoCombo2(nombreProducto: producto, num : number, cantidadP: number, productoCombo: productosCombo) {
     this.cantidadProductos++;
     this.invetarioP = [];
     this.transacciones = [];
@@ -4141,7 +4141,7 @@ cambiarestado(e,i:number){
               if(disponible < 0)
                 disponible = 0
 
-              this.valor2 = Number(disponible)
+              this.valor2 = Math.trunc(Number(disponible) / productoCombo.cantidad) 
 
               if(this.valor2 < this.productosVendidos[num].disponible)
                 this.productosVendidos[num].disponible = this.valor2
@@ -4152,16 +4152,7 @@ cambiarestado(e,i:number){
             .catch((err) => { resolve(false)});
     });
 
-    Promise.all([p1]).then(values => {
-      /* this.valor2 = Number(values[0])
-      console.log(this.valor2)
-
-      if(this.valor2 < this.productosVendidos[num].disponible)
-        this.productosVendidos[num].disponible = Number(this.valor2)
-
-      if(cantidadP == this.cantidadProductos)
-        this.mostrarLoading = false; */
-    });
+    Promise.all([p1]).then(values => {});
   }
 
 

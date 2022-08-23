@@ -9,12 +9,16 @@ import { factura } from "../pages/ventas/venta";
 export class NotasVentasService {
   facturas: factura[];
   //private URL = "http://localhost:3000/notasVenta"; //localhost
-  //private URL = "http://159.223.107.115:3000/notasVenta";
-  private URL = "http://104.131.82.174:3000/notasVenta";
+  private URL = "http://159.223.107.115:3000/notasVenta";
+  //private URL = "http://104.131.82.174:3000/notasVenta";
   constructor(public http: HttpClient, public router: Router) {}
 
   newNotaVenta(notasVenta) {
     return this.http.post<any>(this.URL + "/newNotaVenta", notasVenta);
+  }
+
+  getNotasVentaPorIdConsecutivo(idRecibo) {
+    return this.http.post(this.URL + "/getNotasVentaPorIdConsecutivo", idRecibo);
   }
 
   getNotasVentas() {

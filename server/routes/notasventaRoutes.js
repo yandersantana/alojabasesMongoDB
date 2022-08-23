@@ -7,6 +7,14 @@ router.get("/getNotasVenta", async (req, res) => {
   res.send(notasVenta);
 });
 
+router.post('/getNotasVentaPorIdConsecutivo', async (req, res, next) => {
+  const documentos = await NotasVenta.find({
+    documento_n: req.body.documento_n
+  });
+  res.json(documentos);
+});
+
+
 router.post("/getNotasVentaMensuales", async (req, res, next) => {
   var start = req.body.fechaAnterior;
   var end = req.body.fechaActual;

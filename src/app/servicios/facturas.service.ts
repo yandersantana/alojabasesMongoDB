@@ -10,8 +10,8 @@ export class FacturasService {
   facturas: factura[];
 
   //private URL = "http://localhost:3000/facturas"; //localhost
-  //private URL = "http://159.223.107.115:3000/facturas";
-  private URL = "http://104.131.82.174:3000/facturas";
+  private URL = "http://159.223.107.115:3000/facturas";
+  //private URL = "http://104.131.82.174:3000/facturas";
   constructor(public http: HttpClient, public router: Router) {}
 
   newFactura(facturas) {
@@ -28,6 +28,10 @@ export class FacturasService {
 
   getFacturasDocumento(documento) {
     return this.http.post( this.URL + `/getFacturasPorDocumento/${documento}`, documento);
+  }
+
+  getFacturasPorIdConsecutivo(idRecibo) {
+    return this.http.post(this.URL + "/getFacturasPorIdConsecutivo", idRecibo);
   }
 
   getFacturasPorRango(objFecha) {

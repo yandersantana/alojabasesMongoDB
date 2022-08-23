@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { AuthenService } from 'src/app/servicios/authen.service';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
@@ -8,6 +9,7 @@ import { TransaccionesFinancierasService } from 'src/app/servicios/transacciones
 import Swal from 'sweetalert2';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { objDate } from '../transacciones/transacciones';
+import { user } from '../user/user';
 import { CuentaPorCobrar } from './cuentasPorCobrar';
 
 @Component({
@@ -39,6 +41,7 @@ export class CuentaPorCobrarComponent implements OnInit {
   estado = "Activos"
   popupVisibleNotas = false;
   popupVisibleEditarNotas = false;
+  mostrarBloqueo = true;
   listadoNotas: Nota [] = []
   mostrarListaNotas : boolean = true;
   mostrarNuevaNotas : boolean = false;
@@ -56,6 +59,7 @@ export class CuentaPorCobrarComponent implements OnInit {
     tipo:""
   }
         
+  usuarioLogueado : user;
 
 
 
@@ -65,15 +69,34 @@ export class CuentaPorCobrarComponent implements OnInit {
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _reciboCajaService : ReciboCajaService,
     public _contadoresService: ContadoresDocumentosService,
-    public _notasService: NotasPagoService
+    public _notasService: NotasPagoService,
+    public _authenService: AuthenService,
     ) {
       this.valorOption = "Lista Notas";
    }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado();
     this.nowdesde.setDate(this.nowdesde.getDate() - 15);
     this.traerCuentasPorRango();
   }
+
+  cargarUsuarioLogueado() {
+    const promesaUser = new Promise((res, err) => {
+      if (localStorage.getItem("maily") != '') 
+      var correo = localStorage.getItem("maily");
+
+      this._authenService.getUserLogueado(correo)
+        .subscribe(
+          res => {
+            var usuario = res as user;
+            this.usuarioLogueado = usuario[0]
+            this.mostrarPopupCodigo();
+          }
+        )
+    });
+  }
+
 
   traerListaCuentas(){
     this.estado = "Activos"
@@ -117,6 +140,32 @@ export class CuentaPorCobrarComponent implements OnInit {
         break;
       default:    
     }       
+  }
+
+  mostrarPopupCodigo(){
+    Swal.fire({
+      title: 'Código de Seguridad',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      if(this.usuarioLogueado.codigo == result.value){
+        this.mostrarBloqueo = false;       
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no es el correcto',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
   }
 
 

@@ -1466,6 +1466,8 @@ export class ReciboCajaComponent implements OnInit {
           this.traerRecibosCajaNoAutorizados()
        break;
       case "Recibos Cajas Generados":
+        this.mostrarBloqueo = true;
+        this.mostrarPopupCodigo();
         this.registroRecibos = true;
         this.newRecibo = false;
         this.autorizaciones = false;

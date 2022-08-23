@@ -2,219 +2,223 @@
     <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
+<div class="row" *ngIf="mostrarBloqueo"></div>
 
-<br><br>
-<div class="card">
-    <h5 class="card-header text-center font-weight-bold text-uppercase ">Cuentas por Cobrar</h5>
-    <div class="card-body">
-            <div class="row">
-            <div class="col-md-2"></div>
-            <div class="col-md-4">
-                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
-                <div class="row card">
-                    <div class="col-md-12"> 
-                        <div class="row">
-                            <div class="col-md-3">Desde</div>
-                            <div class="col-md-9">
-                            <dx-date-box
-                                [(value)]="nowdesde"
-                                type="date">
-                            </dx-date-box>
-                            </div>
+<div  *ngIf="!mostrarBloqueo">
 
-                            <div class="col-md-3">Hasta</div>
-                            <div class="col-md-9">
-                            <dx-date-box
-                                [(value)]="nowhasta"
-                                type="date">
-                            </dx-date-box>
-                            </div>
+    <br><br>
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Cuentas por Cobrar</h5>
+        <div class="card-body">
+                <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
+                    <div class="row card">
+                        <div class="col-md-12"> 
+                            <div class="row">
+                                <div class="col-md-3">Desde</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowdesde"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
 
-                            <div class="col-md-4"></div>
-                            <div class="col-md-4 btnSearch">
-                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerCuentasPorRango()">Buscar</button>
-                            </div>
-                            <div class="col-md-4"></div>
-                        </div>        
-                    </div>
-                </div>                
-            </div>
-            
-            <div class="col-md-4 " style="margin-left: 1em;">
-                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
-                <div class="row card">
-                    <br><br>
-                    <div class="col-md-12"> 
-                        <div class="row">  
-                    
-                            <div class="col-md-3"></div>
-                            <div class="col-md-6 btnSearch">
-                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerListaCuentas()">Buscar Todos</button>
-                            </div>
-                            <div class="col-md-3"></div>
-                        </div>        
-                    </div>
-                    <br>
-                </div>         
+                                <div class="col-md-3">Hasta</div>
+                                <div class="col-md-9">
+                                <dx-date-box
+                                    [(value)]="nowhasta"
+                                    type="date">
+                                </dx-date-box>
+                                </div>
 
-            </div>
-            <div class="col-md-2"></div>
-        </div>   
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerCuentasPorRango()">Buscar</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>        
+                        </div>
+                    </div>                
+                </div>
+                
+                <div class="col-md-4 " style="margin-left: 1em;">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
+                    <div class="row card">
+                        <br><br>
+                        <div class="col-md-12"> 
+                            <div class="row">  
+                        
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerListaCuentas()">Buscar Todos</button>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>        
+                        </div>
+                        <br>
+                    </div>         
+
+                </div>
+                <div class="col-md-2"></div>
+            </div>   
+        </div>
     </div>
-</div>
 
-<div class="row">
-    <div class="col-md-4"></div>
-    <div class="col-md-8">
-        <div class="dx-field radio">
-            <div class="dx-field-value">
-                <dx-radio-group
-                [items]="estados"
-                [(value)]="estado"
-                layout="horizontal"
-                (onValueChanged)="opcionRadio($event)">
-                </dx-radio-group>
+    <div class="row">
+        <div class="col-md-4"></div>
+        <div class="col-md-8">
+            <div class="dx-field radio">
+                <div class="dx-field-value">
+                    <dx-radio-group
+                    [items]="estados"
+                    [(value)]="estado"
+                    layout="horizontal"
+                    (onValueChanged)="opcionRadio($event)">
+                    </dx-radio-group>
+                </div>
             </div>
         </div>
     </div>
-</div>
 
- <div class="row">
-    <div class="col-md-6"></div>
-    <div class="col-md-4"></div>
-    <div class="col-md-2 btnSearch" style="text-align: right;">
-        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="mostrarPopupNotas()">Notas</button>
+    <div class="row">
+        <div class="col-md-6"></div>
+        <div class="col-md-4"></div>
+        <div class="col-md-2 btnSearch" style="text-align: right;">
+            <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="mostrarPopupNotas()">Notas</button>
+        </div>
+        
     </div>
+
+
+    <br>
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="listaCuentas"
+        [showBorders]="true">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" fileName="Cuentas por Cobrar" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="rCajaId" caption="RC" dataType="string" sortOrder="desc"></dxi-column>
+        <dxi-column dataField="fecha_deuda" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
+        <dxi-column dataField="documentoVenta" caption="Documento" dataType="string"></dxi-column>
+        <dxi-column dataField="tipo_doc" caption="Tipo" dataType="string"></dxi-column>
+        <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="valor" caption="Valor Deuda" dataType="string" [visible]="true"></dxi-column>
+        <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="rucCliente" caption="RUC / CI" dataType="string"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
+        <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
+        
+        <dxi-column type="buttons" dataField="bt1" caption="Edi.Not." width="6%">
+            <dxi-button hint="Notas" icon="fa fa-pencil-square-o" [onClick]="mostrarPopupEditNotas"></dxi-button>
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
+            <dxi-button icon="clear" [onClick]="deleteCuenta"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+            <dxi-button icon="fa fa-check" [onClick]="aprobarEliminacion"></dxi-button>   
+        </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+            <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
+        </dxi-column>
+
     
-</div>
+
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
 
 
-<br>
-<dx-data-grid #datag2
-    id="gridContainer"
-    [dataSource]="listaCuentas"
-    [showBorders]="true">
-    <dxo-filter-row [visible]="true" ></dxo-filter-row>
-    <dxo-export [enabled]="true" fileName="Cuentas por Cobrar" [allowExportSelectedData]="true"></dxo-export>
-    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-    <dxi-column dataField="rCajaId" caption="RC" dataType="string" sortOrder="desc"></dxi-column>
-    <dxi-column dataField="fecha_deuda" dataType="date" format="dd/MM/yyyy"  caption="Fecha" ></dxi-column>
-    <dxi-column dataField="documentoVenta" caption="Documento" dataType="string"></dxi-column>
-    <dxi-column dataField="tipo_doc" caption="Tipo" dataType="string"></dxi-column>
-    <dxi-column dataField="valorFactura" caption="Valor Factura" dataType="string" [visible]="true"></dxi-column>
-    <dxi-column dataField="valor" caption="Valor Deuda" dataType="string" [visible]="true"></dxi-column>
-    <dxi-column dataField="cliente" caption="Cliente" dataType="string"></dxi-column>
-    <dxi-column dataField="rucCliente" caption="RUC / CI" dataType="string"></dxi-column>
-    <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
-    <dxi-column dataField="estado" caption="Estado" dataType="string"></dxi-column>
-    <dxi-column dataField="notas" caption="Notas" dataType="string" [visible]="true"></dxi-column>
-    
-    <dxi-column type="buttons" dataField="bt1" caption="Edi.Not." width="6%">
-        <dxi-button hint="Notas" icon="fa fa-pencil-square-o" [onClick]="mostrarPopupEditNotas"></dxi-button>
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Anular" width="6%" [visible]="true" *ngIf="mostrarDelete">
-        <dxi-button icon="clear" [onClick]="deleteCuenta"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
-        <dxi-button icon="fa fa-check" [onClick]="aprobarEliminacion"></dxi-button>   
-    </dxi-column>
-    <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
-        <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
-    </dxi-column>
+    <dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
+        [closeOnOutsideClick]="true" [(visible)]="popupVisibleNotas">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class="col-md-12">
+                <div class="row espacio" style="text-align: right;">
+                    <dx-radio-group
+                        [items]="opciones"
+                        [(value)]="valorOption"
+                        layout="horizontal"
+                        (onValueChanged)="opcionRadio2($event)">
+                    </dx-radio-group>            
+                </div>
 
-   
+                <br>
+                <div *ngIf="mostrarListaNotas">
+                    <dx-data-grid #datag2
+                        id="gridContainer"
+                        [dataSource]="listadoNotas"
+                        [showBorders]="true">
+                        <dxi-column dataField="descripcion" caption="Descripcion" dataType="string"></dxi-column>
 
-    <dxo-paging [pageSize]="12"></dxo-paging>
-    <dxo-pager
-        [showPageSizeSelector]="true"
-        [allowedPageSizes]="[8, 12, 20]"
-    ></dxo-pager>
-</dx-data-grid>
+                        <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="15%" >
+                            <dxi-button icon="clear" [onClick]="deleteNota"></dxi-button>   
+                        </dxi-column>
 
+                        <dxo-paging [pageSize]="12"></dxo-paging>
+                        <dxo-pager
+                            [showPageSizeSelector]="true"
+                            [allowedPageSizes]="[8, 12, 20]"
+                        ></dxo-pager>
+                    </dx-data-grid>
+                    <br><br>
+                </div>
 
+                <div *ngIf="mostrarNuevaNotas">
+                    <div class="row">
+                        <div class="col-md-4" style="text-align: left;margin-top: 2em;">Detalle</div>
+                        <div class="col-md-8" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
+                            name="nombre" class="form-control select" placeholder="Descripcion"
+                            required></div>
 
-<dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
-    [closeOnOutsideClick]="true" [(visible)]="popupVisibleNotas">
-    <div *dxTemplate="let data of 'content'">
-        <dx-scroll-view width="100%" height="100%">
-        <div class="col-md-12">
-            <div class="row espacio" style="text-align: right;">
-                <dx-radio-group
-                    [items]="opciones"
-                    [(value)]="valorOption"
-                    layout="horizontal"
-                    (onValueChanged)="opcionRadio2($event)">
-                </dx-radio-group>            
+                            <br><br><br>
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4 btnSearch">
+                            <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarNuevaNota()">Guardar</button>
+                        </div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
             </div>
 
-            <br>
-            <div *ngIf="mostrarListaNotas">
-                <dx-data-grid #datag2
-                    id="gridContainer"
-                    [dataSource]="listadoNotas"
-                    [showBorders]="true">
-                    <dxi-column dataField="descripcion" caption="Descripcion" dataType="string"></dxi-column>
+        
+        </dx-scroll-view>
+        </div>
+    </dx-popup>
 
-                    <dxi-column type="buttons" dataField="bt2" caption="Eliminar" width="15%" >
-                        <dxi-button icon="clear" [onClick]="deleteNota"></dxi-button>   
-                    </dxi-column>
 
-                    <dxo-paging [pageSize]="12"></dxo-paging>
-                    <dxo-pager
-                        [showPageSizeSelector]="true"
-                        [allowedPageSizes]="[8, 12, 20]"
-                    ></dxo-pager>
-                </dx-data-grid>
-                <br><br>
-            </div>
-
-            <div *ngIf="mostrarNuevaNotas">
+    <dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
+        [closeOnOutsideClick]="true" [(visible)]="popupVisibleEditarNotas">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class="col-md-12">
+                <br>
                 <div class="row">
-                    <div class="col-md-4" style="text-align: left;margin-top: 2em;">Detalle</div>
-                    <div class="col-md-8" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
-                        name="nombre" class="form-control select" placeholder="Descripcion"
+                    <div class="col-md-3" style="text-align: left;margin-top: 2em;">Nota: </div>
+                    <div class="col-md-9" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
+                        name="nombre" class="form-control select"
                         required></div>
 
                         <br><br><br>
                     <div class="col-md-4"></div>
                     <div class="col-md-4 btnSearch">
-                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarNuevaNota()">Guardar</button>
+                        <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarComentario()">Guardar</button>
                     </div>
                     <div class="col-md-4"></div>
                 </div>
-            </div>
+            </div>      
+        </dx-scroll-view>
         </div>
-
-       
-    </dx-scroll-view>
-    </div>
-</dx-popup>
+    </dx-popup>
+</div>
 
 
-
-<dx-popup [width]="700" [height]="500" [showTitle]="true" title="Notas" [dragEnabled]="false"
-    [closeOnOutsideClick]="true" [(visible)]="popupVisibleEditarNotas">
-    <div *dxTemplate="let data of 'content'">
-        <dx-scroll-view width="100%" height="100%">
-        <div class="col-md-12">
-            <br>
-            <div class="row">
-                <div class="col-md-3" style="text-align: left;margin-top: 2em;">Nota: </div>
-                <div class="col-md-9" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
-                    name="nombre" class="form-control select"
-                    required></div>
-
-                    <br><br><br>
-                <div class="col-md-4"></div>
-                <div class="col-md-4 btnSearch">
-                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarComentario()">Guardar</button>
-                </div>
-                <div class="col-md-4"></div>
-            </div>
-        </div>      
-    </dx-scroll-view>
-    </div>
-</dx-popup>
 
 
 

@@ -21,8 +21,6 @@ router.post("/getFacturasMensuales", async (req, res, next) => {
 
 router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
   const { documento } = req.params;
-  console.log(req.params)
-  console.log(documento)
   const documentos = await Factura.find({
     documento_n: documento,
   });
@@ -31,10 +29,16 @@ router.post("/getFacturasPorDocumento/:documento", async (req, res, next) => {
 });
 
 
+router.post('/getFacturasPorIdConsecutivo', async (req, res, next) => {
+  const documentos = await Factura.find({
+    documento_n: req.body.documento_n, sucursal : req.body.sucursal
+  });
+  res.json(documentos);
+});
+
+
 router.post("/getFacturasPorDocumentoVenta/:documento", async (req, res, next) => {
   const { documento } = req.params;
-  console.log(req.params)
-  console.log(documento)
   const documentos = await Factura.find({
     documento_n: documento,
   });
@@ -131,7 +135,6 @@ router.put("/update/:id", async (req, res, next) => {
     rucFactura: req.body.rucFactura,
     productosVendidos: req.body.productosVendidos,
   };
-  console.log("llegue hasta aquu");
   await Factura.findByIdAndUpdate(id, { $set: facturas }, { new: true });
   res.json({ status: "factura Updated" });
 });

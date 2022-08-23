@@ -189,7 +189,7 @@ export class ConsolidadoComponent implements OnInit {
     listado.forEach(element => {
       this.productos.forEach(element2 => {
         if(element.nombreProducto == element2.PRODUCTO)
-          this.traerTransaccionesPorProductoCombo2(element2)
+          this.traerTransaccionesPorProductoCombo2(element2, element)
       });
     });
   }
@@ -1350,7 +1350,7 @@ export class ConsolidadoComponent implements OnInit {
 
 
 
-  traerTransaccionesPorProductoCombo2(nombreProducto: producto) {
+  traerTransaccionesPorProductoCombo2(nombreProducto: producto, productoCombo : productosCombo) {
     this.cantidadProductos++;
     this.transacciones = [];
     this.proTransaccion.nombre = nombreProducto.PRODUCTO;
@@ -1563,28 +1563,29 @@ export class ConsolidadoComponent implements OnInit {
               invetarioP.forEach((element) => {
                 element.cantidadCajas = Math.trunc( element.cantidadM2 / element.producto.M2);
                 element.cantidadPiezas = parseInt( ((element.cantidadM2 * element.producto.P_CAJA) / element.producto.M2 - element.cantidadCajas * element.producto.P_CAJA).toFixed(0));
-                element.cantidadM2 = parseFloat(element.cantidadM2.toFixed(2));
+                element.cantidadM2 = parseFloat(element.cantidadM2.toFixed(2)) / productoCombo.cantidad;
 
                 element.cantidadCajas2 = Math.trunc( element.cantidadM2b2 / element.producto.M2);
                 element.cantidadPiezas2 = parseInt(((element.cantidadM2b2 * element.producto.P_CAJA) / element.producto.M2 - element.cantidadCajas2 * element.producto.P_CAJA).toFixed(0));
-                element.cantidadM2b2 = parseFloat(element.cantidadM2b2.toFixed(2));
+                element.cantidadM2b2 = parseFloat(element.cantidadM2b2.toFixed(2)) / productoCombo.cantidad;;
 
                 element.cantidadCajas3 = Math.trunc( element.cantidadM2b3 / element.producto.M2);
                 element.cantidadPiezas3 = parseInt(((element.cantidadM2b3 * element.producto.P_CAJA) / element.producto.M2 - element.cantidadCajas3 * element.producto.P_CAJA).toFixed(0));
-                element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
+                element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2)) / productoCombo.cantidad;;
 
                 if(element.cantidadM2<0) element.cantidadM2 = 0
                 if(element.cantidadM2b2<0) element.cantidadM2b2 = 0
                 if(element.cantidadM2b3<0) element.cantidadM2b3 = 0
 
+
                 if(element.cantidadM2 < this.valor1)
-                  this.valor1 = element.cantidadM2
+                  this.valor1 = Math.trunc(element.cantidadM2) 
 
                 if(element.cantidadM2b2 < this.valor2 )
-                  this.valor2 = element.cantidadM2b2
+                  this.valor2 = Math.trunc(element.cantidadM2b2)
 
                 if(element.cantidadM2b3 < this.valor3)
-                  this.valor3 = element.cantidadM2b3
+                  this.valor3 = Math.trunc(element.cantidadM2b3)
 
                   console.log(numero)
                 this.invetarioP[numero].cantidadM2 = this.valor1

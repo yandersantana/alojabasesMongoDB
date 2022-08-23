@@ -1161,7 +1161,7 @@ export class TrasladosComponent implements OnInit {
     listado.forEach(element => {
       this.productos.forEach(element2 => {
         if(element.nombreProducto == element2.PRODUCTO)
-          this.traerTransaccionesPorProductoCombo2(element2, num , listado.length)
+          this.traerTransaccionesPorProductoCombo2(element2, num , listado.length, element)
       });
     });
   }
@@ -2007,7 +2007,7 @@ export class TrasladosComponent implements OnInit {
   }
 
   //**************PROCESOS PARA CONSULTA DE DATOS PARA COMBOS ************/
-  traerTransaccionesPorProductoCombo2(nombreProducto: producto, num : number, cantidadP: number) {
+  traerTransaccionesPorProductoCombo2(nombreProducto: producto, num : number, cantidadP: number, productoCombo : productosCombo) {
     this.cantidadProductos++;
     this.invetarioP = [];
     this.transacciones = [];
@@ -2239,7 +2239,7 @@ export class TrasladosComponent implements OnInit {
               if(disponible < 0)
                 disponible = 0
 
-              this.valor2 = Number(disponible)
+              this.valor2 = Math.trunc(Number(disponible) / productoCombo.cantidad) 
 
               if(this.valor2 < this.valor3)
                 this.valor3 = this.valor2

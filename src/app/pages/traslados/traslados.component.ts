@@ -77,6 +77,7 @@ export class TrasladosComponent implements OnInit {
   mostrar = false;
   valor2 = 100;
   valor3 = 100;
+  bloquearBtn = false;
 
   //procesos para inventario
   proTransaccion: productoTransaccion = new productoTransaccion();
@@ -705,6 +706,7 @@ export class TrasladosComponent implements OnInit {
         icon: "error",
       });
     } else {
+      this.bloquearBtn = true;
       this.guardarTraslado();
     }
   }

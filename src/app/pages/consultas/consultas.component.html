@@ -1,12 +1,17 @@
-<br />
+
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+
+<br/>
 
 <div class="row" style="background-color: white">
   <div class="col-md-3"></div>
   <div class="col-md-6">
     <h5
       class="card-header text-center font-weight-bold text-uppercase"
-      style="font-size: 1.2rem"
-    >
+      style="font-size: 1.2rem">
       Gestion Inventario
     </h5>
     <br />
@@ -25,14 +30,13 @@
         </dx-select-box>
       </div>
     </div>
-    <div class="col-md-12" style="text-align: center">
+    <div class="col-md-12" style="text-align: center;margin-top: 1em;">
       <span>
         <button
           class="btn btn-primary btn-xs"
           style="background-color: red; border-color: transparent"
           (click)="mostrarEliminar()"
-        >
-          <!-- <i class="fa fa-trash"></i> -->Limpiar
+        >Limpiar
         </button>
       </span>
     </div>
@@ -65,16 +69,19 @@
         <td colspan="2">{{ infoproducto.fabrica }}</td>
       </tr>
       <tr>
-        <th>Disponibilidad</th>
+        <th>Disponibilidad Matriz</th>
         <td colspan="2">
-          <span style="font-weight: bold">{{ prodSuc1 }}</span
-          ><span style="font-weight: bold; color: #828282">M </span>
-          <span style="font-weight: bold">{{ prodSuc2 }}</span
-          ><span style="font-weight: bold; color: #828282">S1 &nbsp; </span>
-          <span style="font-weight: bold">{{ prodSuc3 }}</span
-          ><span style="font-weight: bold; color: #828282">S2 &nbsp;</span>
-          <span style="font-weight: bold">{{ prodBod }}</span
-          ><span style="font-weight: bold; color: #828282">P &nbsp;</span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Disponibilidad Sucursal 1</th>
+        <td colspan="2">
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2b2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
         </td>
       </tr>
       <tr>
@@ -197,18 +204,6 @@
     </div>
     <div class="col-md-3"></div>
     <br /><br />
-
-    <!--  <div class="col-md-12" style="text-align: center">
-      <span>
-        <button
-          class="btn btn-primary btn-xs"
-          style="background-color: red; border-color: transparent"
-          (click)="traerTransaccionesPorRango()"
-        >
-          Resumen Precios
-        </button>
-      </span>
-    </div> -->
 
     <div *ngIf="mostrarTabla">
       <div class="row">

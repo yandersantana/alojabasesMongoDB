@@ -11,6 +11,7 @@ export class producto {
     P_CAJA: number
     PRODUCTO: string
     REFERENCIA: string
+    DIMENSION: string   //usado para el listado de inventario General, no se guarda en la base
     UNIDAD: string
     APLICACION: string
     cantidad: number
@@ -35,6 +36,7 @@ export class producto {
     precio3:number
     constructor() {
         this.REFERENCIA=""
+        this.DIMENSION = ""
     }
 }
 
@@ -309,6 +311,7 @@ export class contadoresDocumentos{
     contProductosEntregadosSucursal_Ndocumento:number
     pagoProveedor_Ndocumento:number
     auditorias_Ndocumento:number
+    revisionInventario_Ndocumento:number
     reciboCaja_Ndocumento:number
     comprobantePago_Ndocumento:number
     comprobantePagoProveedor_Ndocumento:number

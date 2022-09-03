@@ -52,6 +52,7 @@ import { PrestamosComponent } from "./pages/prestamos/prestamos.component";
 import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-facturas.component";
 import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
+import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
 
 const routes: Routes = [
   {
@@ -301,6 +302,11 @@ const routes: Routes = [
   {
     path: "auditorias2",
     component: AuditoriaClComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "revision-inventario/:id",
+    component: RevionInventarioComponent,
     canActivate: [AuthGuardService],
   },
   {

@@ -28,7 +28,6 @@ import { PrestamosService } from 'src/app/servicios/prestamos.service';
 import { Prestamos } from '../prestamos/prestamos';
 import { Nota } from '../base-pagos-proveedores/base-pago-proveedores';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
-import { element } from 'protractor';
 
 @Component({
   selector: 'app-recibo-caja',
@@ -157,8 +156,6 @@ export class ReciboCajaComponent implements OnInit {
     descripcion:"",
     tipo:""
   }
-        
-
 
 
   constructor(
@@ -178,8 +175,7 @@ export class ReciboCajaComponent implements OnInit {
     public _authenService:AuthenService,
     public _cajaMenorService : CajaMenorService,
     private route: ActivatedRoute,
-    private _notasService : NotasPagoService,
-    private _router: Router) {
+    private _notasService : NotasPagoService) {
       this.factura = new factura()
       this.tipoRecibo = this.tiposRecibo[0];
       this.valorOption = "Lista Notas"

@@ -18,10 +18,12 @@ import { user } from "../user/user";
 import { AuthenService } from "src/app/servicios/authen.service";
 import DataSource from "devextreme/data/data_source";
 import { OpcionesCatalogoService } from "src/app/servicios/opciones-catalogo.service";
-import { opcionesCatalogo, ProductoCombo, productosCombo } from "../catalogo/catalogo";
+import { catalogo, opcionesCatalogo, ProductoCombo, productosCombo } from "../catalogo/catalogo";
 import { AuthService } from "src/app/shared/services";
 import { isGeneratedFile } from "@angular/compiler/src/aot/util";
 import { CombosService } from "src/app/servicios/combos.service";
+import { CatalogoService } from "src/app/servicios/catalogo.service";
+import { element } from "protractor";
 
 @Component({
   selector: "app-consolidado",
@@ -82,6 +84,7 @@ export class ConsolidadoComponent implements OnInit {
   mostrarBusquedaIndividual = true;
   mostrarActualizacion = false;
   opcionesCatalogo: opcionesCatalogo[]=[]
+  productosCatalogo:catalogo[]=[]
 
   tiposBusqueda: string[] = [
       'Normal',
@@ -102,7 +105,8 @@ export class ConsolidadoComponent implements OnInit {
     public productosPendientesService: ProductosPendientesService,
     public productoService: ProductoService,
     public opcionesService : OpcionesCatalogoService,
-    public _comboService : CombosService
+    public _comboService : CombosService,
+    public _catalogoService: CatalogoService
   ) {
     this.proTransaccion = new productoTransaccion();
     this.prodActualizable = new productoActualizable();
@@ -113,12 +117,21 @@ export class ConsolidadoComponent implements OnInit {
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
     this.traerBodegas();
+    
   }
 
   traerOpcionesCatalogo(){
     this.opcionesService.getOpciones().subscribe(res => {
       this.opcionesCatalogo = res as opcionesCatalogo[];
       this.llenarCombos()
+   })
+  }
+
+
+  traerCatalogo(){
+    this._catalogoService.getCatalogoActivos().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
+      this.traerProductos();
    })
   }
 
@@ -141,7 +154,8 @@ export class ConsolidadoComponent implements OnInit {
     this.mostrarLoading = true;
     this.transaccionesService.getTransaccion().subscribe((res) => {
       this.transacciones = res as transaccion[];
-      this.traerProductos();
+      this.traerCatalogo();
+      
     });
   }
 
@@ -199,6 +213,9 @@ export class ConsolidadoComponent implements OnInit {
   traerProductos() {
     this.productoService.getProductosActivos().subscribe((res) => {
       this.productos = res as producto[];
+      this.productos.forEach((element) => {
+        element.DIMENSION = this.productosCatalogo?.find(element2=> element.PRODUCTO == element2.PRODUCTO)?.DIM;
+      } )
       this.cargarDatos();
       this.cargarClasificacion();
     });
@@ -1261,6 +1278,8 @@ export class ConsolidadoComponent implements OnInit {
   onExporting2(e) {
     e.component.beginUpdate();
     e.component.columnOption("producto.CLASIFICA", "visible", true);
+    e.component.columnOption("producto.DIMENSION", "visible", true);
+    e.component.columnOption("producto.REFERENCIA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
@@ -1269,6 +1288,8 @@ export class ConsolidadoComponent implements OnInit {
   }
   onExported2(e) {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
+    e.component.columnOption("producto.DIMENSION", "visible", false);
+    e.component.columnOption("producto.REFERENCIA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);

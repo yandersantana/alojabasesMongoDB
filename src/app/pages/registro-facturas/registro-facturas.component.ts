@@ -255,7 +255,10 @@ export class RegistroFacturasComponent implements OnInit {
         this.listaFacturasPagadas.push(element)
     })
 
-   this.listaFacturas = this.listaFacturasTmp;    
+    this.listaFacturas = this.listaFacturasTmp;    
+    this.listaFacturas.forEach(element=>{
+      element.valorRestante = element.total - (element.valorPagado ?? 0) - (element.valorDescuento ?? 0)
+    })
   }
 
 }

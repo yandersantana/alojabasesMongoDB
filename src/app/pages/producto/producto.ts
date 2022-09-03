@@ -1,4 +1,3 @@
-import { dxNumberBoxOptions } from 'devextreme/ui/number_box'
 import { producto } from '../ventas/venta'
 
 export class Producto{

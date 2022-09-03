@@ -277,8 +277,6 @@ setSelectedProducto(i:number){
   obtenerDatosDeProductoParaUnDetalle(e, i:number) {
     this.productos.forEach(element => {
       if (element.PRODUCTO == e.value) {
-        
-
         this.productosComprados[i].rotacion = 0
         this.productosComprados[i].precio_cos = element.precio
         this.productosComprados[i].nombreComercial = element

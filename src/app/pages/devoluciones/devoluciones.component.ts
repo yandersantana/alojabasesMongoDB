@@ -484,7 +484,7 @@ export class DevolucionesComponent implements OnInit {
           this.listadoProductosCombo = listado[0].productosCombo 
           this.listadoProductosCombo.forEach((element2) => {
             var venta2 = new venta();
-            venta2.cantidad = element.cantidad;
+            venta2.cantidad = element.cantidad * element2.cantidad;
             venta2.producto = element2.producto;
             venta2.total = element2.precioVenta * element.cantidad;
             this.productosVendidos2.push(venta2)
@@ -493,6 +493,7 @@ export class DevolucionesComponent implements OnInit {
           //-----------eliminar repetidos del array
           let hash = {};
           this.productosVendidos2 = this.productosVendidos2.filter(o => hash[o.producto.PRODUCTO] ? false : hash[o.producto.PRODUCTO] = true);
+          this.productosVendidos2.splice(this.productosVendidos2.indexOf(element), 1);
         })
       }
 

@@ -3,8 +3,6 @@
 </div>
 
 
-
-
 <br>
 <div id="admin1" style="display: block;">
     <div class="row remiPro titulos">
@@ -40,7 +38,8 @@
     <dxi-column dataField="P_CAJA" width="15%" caption="Piezas * Caja"></dxi-column>
     <dxi-column dataField="M2" width="15%" caption="Metros * Caja"></dxi-column>
     <dxi-column dataField="DIM" width="10%" caption="Dimensión"></dxi-column>
-    <dxi-column dataField="precio" width="15%" caption="Precio"></dxi-column>
+    <dxi-column dataField="precio" width="10%" caption="Precio"></dxi-column>
+    <dxi-column dataField="estado2" width="10%" caption="Estado" [visible]="true"></dxi-column>
     <dxi-column dataField="porcentaje_ganancia" width="10%" caption="% Ganancia" [visible]="false"></dxi-column>
 
     <dxi-column dataField="UNIDAD" caption="Unidad" [visible]="false"></dxi-column>
@@ -48,7 +47,6 @@
     <dxi-column dataField="CASA" caption="Casa" [visible]="false"></dxi-column>
     <dxi-column dataField="TIPO" caption="Tipo" [visible]="false"></dxi-column>
     <dxi-column dataField="ORIGEN" caption="Origen" [visible]="false"></dxi-column>
-    <dxi-column dataField="ESTADO" caption="Estado" [visible]="false"></dxi-column>
     <dxi-column dataField="APLICACION" caption="Aplicacion" [visible]="false"></dxi-column>
     <dxi-column dataField="VIGENCIA" caption="Vigencia" [visible]="false"></dxi-column>
     <dxi-column dataField="FEC_PRODUCCION" caption="FEC_PRODUCCION" [visible]="false"></dxi-column>
@@ -60,13 +58,13 @@
         <tr class="main-row">
         <td rowspan="2" class="imgProducto" style="text-align: center;"><button (click)="mostrarPopup(employee.data.PRODUCTO)" class="btIm"><img class="imgProducto" [src]="employee.data.IMAGEN_PRINCIPAL"></button>
         </td>
-            <td style="vertical-align: middle;" style="text-align: left;" >{{employee.data.PRODUCTO}}</td>
-            
-            <td style="vertical-align: middle;"  style="text-align: left;">{{employee.data.CLASIFICA}}</td>
+            <td style="vertical-align: middle;text-align: left;">{{employee.data.PRODUCTO}}</td>
+            <td style="vertical-align: middle;text-align: left;">{{employee.data.CLASIFICA}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.P_CAJA}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.M2}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.precio}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.estado2}}</td>
     </tbody>
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager

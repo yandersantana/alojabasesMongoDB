@@ -253,6 +253,7 @@ export class GestionPagoChequesComponent implements OnInit {
       element.estado = this.estadoFacturas;
       valorT = (valorPorcentaje*element.valorCancelado) / 100
       element.valorAbonado = valorT + element.valorAbonado;
+      element.valorCancelado = valorT + element.valorCancelado;
       this._transaccionesFacturasService.updateEstadoFactura(element,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
         this.contadorVal(cont);
       },(err) => {});
@@ -275,8 +276,9 @@ export class GestionPagoChequesComponent implements OnInit {
       this._facturaProveedorService.getFacturaPorNFactura(busquedaTransaccion).subscribe((res) => {
         var facturas = res as FacturaProveedor[];
         var facturaEncontrada = facturas[0];
-        if(facturaEncontrada.estado == "CUBIERTA"  || facturaEncontrada.estado == "ABONADA"){
-          this._facturaProveedorService.updateEstadoFacturaProveedor(facturaEncontrada._id,this.estadoFacturas,element.valorAbonado).subscribe((res) => {
+        //var estado = element.valorCancelado != element.valorFactura ? "ABONADA":"PAGADA"
+        if(facturaEncontrada.estado == "CUBIERTA" || facturaEncontrada.estado == "CUBIERTA PARCIAL" || facturaEncontrada.estado == "ABONADA"){
+          this._facturaProveedorService.updateEstadoFacturaProveedor(facturaEncontrada._id,this.estadoFacturas,element.valorAbonado,element.valorCancelado).subscribe((res) => {
             this.contadorValFacturas(cont);
           },(err) => {});
         }else{

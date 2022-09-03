@@ -345,7 +345,7 @@ export class ComprobantePagoProveedoresDirectoComponent implements OnInit {
     this.comprobantePago.transaccionesFacturas.forEach(element=>{
       var abono = element.valorAbonado + element.valorCancelado
       //updateEstadoFacturaProveedor
-      this._facturaProveedorService.updateEstadoFacturaProveedor(element.idFactura, element.estado, abono).subscribe( res => {
+      this._facturaProveedorService.updateEstadoFacturaProveedor(element.idFactura, element.estado, abono, abono).subscribe( res => {
       },err => {})
     });
   }

@@ -91,7 +91,7 @@ export class CuentaPorCobrarComponent implements OnInit {
           res => {
             var usuario = res as user;
             this.usuarioLogueado = usuario[0]
-            this.mostrarPopupCodigo();
+            //this.mostrarPopupCodigo();
           }
         )
     });

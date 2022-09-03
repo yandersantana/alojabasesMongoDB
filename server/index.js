@@ -71,6 +71,7 @@ app.use('/transaccionesCheques', require('./routes/transaccionesChequesRoutes'))
 app.use('/cuentaBancaria', require('./routes/cuentaBancariaRoutes'));
 app.use('/notas', require('./routes/notasPagoRoutes'));
 app.use('/comboProductos', require('./routes/comboProductosRoutes'));
+app.use('/revisionInventario', require('./routes/revisionInventarioRoutes'));
 
 
 

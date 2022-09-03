@@ -271,6 +271,10 @@ export const navigationAdmin = [
         text: "Bajas",
         path: "/bajas",
       },
+      {
+        text: "Revisiones",
+        path: "/revision-inventario/0",
+      },
     ],
   },
   {

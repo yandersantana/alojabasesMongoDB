@@ -97,6 +97,7 @@
             width="15%"
             [visible]="false">
         </dxi-column>
+        
         <dxi-column caption="Matriz"  dataField="sucursal1">
             <dxi-column
                 dataField="cantidadCajas"
@@ -252,6 +253,21 @@
             caption="Grupo"
             dataType="string"
             sortOrder="asc"
+            width="15%"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="producto.DIMENSION"
+            caption="Dimensión"
+            dataType="string"
+            sortOrder="asc"
+            width="15%"
+            [visible]="false">
+        </dxi-column>
+        <dxi-column
+            dataField="producto.REFERENCIA"
+            caption="Referencia"
+            dataType="string"
             width="15%"
             [visible]="false">
         </dxi-column>

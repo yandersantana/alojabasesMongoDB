@@ -4,7 +4,6 @@ const router = Router();
 const Contadores = require('../models/contadoresIncrementables')
 
 router.post('/newContadores', async (req, res) => {
-    console.log("entre a crearrr")
     const newCont = new Contadores({ 
         facturaMatriz_Ndocumento:req.body.factura_Ndocumento, 
         facturaSucursal1_Ndocumento:req.body.factura_Ndocumento, 
@@ -88,6 +87,12 @@ router.put('/updateIdAuditoria/:id', async (req, res,next) => {
 router.put('/updateIdNotasVenta/:id', async (req, res,next) => {
     const { id } = req.params;
     await Contadores.findByIdAndUpdate(id, {$set: {notasVenta_Ndocumento:req.body.notasVenta_Ndocumento}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+router.put('/updateIdRevisionInventario/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await Contadores.findByIdAndUpdate(id, {$set: {revisionInventario_Ndocumento:req.body.revisionInventario_Ndocumento}}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 

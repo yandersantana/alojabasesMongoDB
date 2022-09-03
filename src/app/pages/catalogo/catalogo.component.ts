@@ -768,8 +768,6 @@ export class CatalogoComponent implements OnInit {
 
 
   separarProductos(){
-    //1827
-    console.log(this.productosCatalogo.length)
     this.productosCatalogo.forEach(element=>{
       if(element.estado2!="Eliminado")
         this.productosCatalogoUso.push(element)
@@ -1271,7 +1269,6 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("CASA", "visible", true);
     e.component.columnOption("TIPO", "visible", true);
     e.component.columnOption("ORIGEN", "visible", true);
-    e.component.columnOption("ESTADO", "visible", true);
     e.component.columnOption("REFERENCIA", "visible", true);
     e.component.columnOption("APLICACION", "visible", true);
     e.component.columnOption("precio", "visible", true);
@@ -1288,7 +1285,6 @@ _handleReaderLoaded(readerEvt) {
     e.component.columnOption("CASA", "visible", false);
     e.component.columnOption("TIPO", "visible", false);
     e.component.columnOption("ORIGEN", "visible", false);
-    e.component.columnOption("ESTADO", "visible", false);
     e.component.columnOption("REFERENCIA", "visible", true);
     e.component.columnOption("APLICACION", "visible", false);
     e.component.columnOption("VIGENCIA", "visible", false);

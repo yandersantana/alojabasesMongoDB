@@ -102,6 +102,7 @@ import { ComprobantePagoProveedoresDirectoComponent } from "./pages/comprobante-
 import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
 import { GestionPagoChequesComponent } from "./pages/gestion-pago-cheques/gestion-pago-cheques.component";
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
+import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
 
 @NgModule({
   declarations: [
@@ -158,7 +159,8 @@ import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/tran
     ComprobantePagoProveedoresDirectoComponent,
     BasePagoProveedoresComponent,
     GestionPagoChequesComponent,
-    TransaccionesNominasComponent
+    TransaccionesNominasComponent,
+    RevionInventarioComponent
   ],
   imports: [
     BrowserModule,

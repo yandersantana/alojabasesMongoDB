@@ -1,6 +1,3 @@
-//import { Producto } from '../producto/producto'
-
-import { producto } from '../ventas/venta'
 import { ProductoDetalleCompra } from '../producto/producto'
 
 export class compra{
@@ -87,22 +84,6 @@ export class Sucursal{
     }
 }
 
-/* export class ProductoDetalleCompra{
-    seleccionado:boolean
-    iva:boolean
-    nombreComercial:producto
-    rotacion:number
-    disponible:number
-    precio_cos:number
-    cantidad:number
-    //precio_compra:number
-    dto:number
-    total:number
-    orden_compra:number
-    constructor() {
-       this.rotacion=0
-    }
-} */
 
 export class Producto {
     _id:string
@@ -114,6 +95,7 @@ export class Producto {
     P_CAJA: number
     PRODUCTO: string
     REFERENCIA: string
+    DIMENSION: string
     UNIDAD: string
     APLICACION: string
     cantidad: number

@@ -17,6 +17,7 @@ export class FacturaProveedor{
     idF:number
     documento_solicitud:number
     observaciones : string
+    valorRestante : number
     constructor(){
         this.estado="PENDIENTE"
         this.estado2="Aceptada"

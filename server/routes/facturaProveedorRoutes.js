@@ -106,10 +106,11 @@ router.put('/updateValoresDescuentos/:id', async (req, res,next) => {
 })
 
 
-router.put('/updateEstadoFacturaProveedor/:id/:estado/:valorAbonado', async (req, res,next) => {
+router.put('/updateEstadoFacturaProveedor/:id/:estado/:valorAbonado/:valorPagado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;
     const { valorAbonado } = req.params;
+    const { valorPagado } = req.params;
 
     await FacturaProveedor.findByIdAndUpdate(id, {$set: {estado:estado,valorPagado:valorAbonado}}, {new: true});
     res.json({status: 'factura Updated'});  

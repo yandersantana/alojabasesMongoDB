@@ -17,9 +17,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services';
 import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.service';
 import { opcionesCatalogo } from '../catalogo/catalogo';
-import { controlInventario } from './revision-inventario';
+import { controlInventario, detalleProductoRevisado } from './revision-inventario';
 import { auditoria, auditoriasProductos, coincidencias } from '../auditorias/auditorias';
 import { RevisionInventarioService } from 'src/app/servicios/revision-inventario.service';
+import { RevisionInventarioProductoService } from 'src/app/servicios/revision-inventario-productos.service';
+import { ThrowStmt } from '@angular/compiler';
 
 @Component({
   selector: 'app-revision-inventario',
@@ -33,12 +35,22 @@ export class RevionInventarioComponent implements OnInit {
   nombreClasificacion = ""
   newControlInventario: controlInventario
   listadoRevisiones: controlInventario[]=[]
+  listadoProductosRevisados: detalleProductoRevisado[]=[]
   listadoRevisionesIniciadas: controlInventario[]=[]
   linkRevision =""
   popupVisible = false;
   idRevision = "";
   mostrarCreacion = false;;
   mostrarSeccionIngresos = false;
+  valoracion = "";
+  productoRevisado : detalleProductoRevisado;
+  bloquearboton = false;
+  newIngreso = true;
+  verListadoIngreso = false;
+  menuIngresos: string[] = [
+    "Nueva Revision",
+    "Ver Listado"
+  ];
 
 
 
@@ -125,15 +137,18 @@ export class RevionInventarioComponent implements OnInit {
   constructor(
     public _opcionesCatalogoService : OpcionesCatalogoService,
     public _revisionInventarioService : RevisionInventarioService,
+    public _revisionInventarioProductoService : RevisionInventarioProductoService,
+    public _contadoresService:ContadoresDocumentosService,
     public authService: AuthService,
     private rutaActiva: ActivatedRoute,
     private router:Router,
     public authenService:AuthenService, 
-    public contadoresService:ContadoresDocumentosService,
+    
     public parametrizacionService: ParametrizacionesService,
     public sucursalesService: SucursalesService , 
     public productoService:ProductoService) { 
       this.newControlInventario = new controlInventario()
+      this.productoRevisado = new detalleProductoRevisado()
       this.menuGlobal= this.menuSupervisor
       this.idRevision = this.rutaActiva.snapshot.paramMap.get("id")
       if(this.idRevision == "0")
@@ -148,10 +163,13 @@ export class RevionInventarioComponent implements OnInit {
     this.traerOpcionesCatalogo()
     this.traerContadoresDocumentos()
     this.traerRevisionesInventario()
-    /* this.traerProductos()
+    this.traerProductos()
+
+    if(this.idRevision != "0")
+      this.traerRevisionesInventarioProductosPorId()
     
     
-    this.traerAuditoriasProductos()
+    /*this.traerAuditoriasProductos()
     this.cargarUsuarioLogueado()
     this.getIDDocumentos() */
   }
@@ -170,6 +188,13 @@ export class RevionInventarioComponent implements OnInit {
     this._revisionInventarioService.getRevisiones().subscribe(res => {
       this.listadoRevisiones = res as controlInventario[];
       this.separarRevisiones()
+    })
+  }
+
+  traerRevisionesInventarioProductosPorId(){
+    this.listadoProductosRevisados = [];
+    this._revisionInventarioProductoService.getRevisionesProductosPorId(this.idRevision).subscribe(res => {
+      this.listadoProductosRevisados = res as detalleProductoRevisado[];
     })
   }
 
@@ -192,16 +217,14 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   obtenerDetallesproducto(e){
-    
+    this.listadoProductosRevisados.forEach(element=>{
+        if(element.producto == e.value){
+          this.bloquearboton = true;
+          this.mostrarMensajeGenerico(2,"El producto ya se encuentra revisado")
+        }
+    })
   }
 
-
-
-  onShown() {
-    setTimeout(() => {
-      this.loadIndicatorVisible = false;
-    }, 3000);
-  }
 
   traerParametrizaciones(){
     this.parametrizacionService.getParametrizacion().subscribe(res => {
@@ -217,7 +240,7 @@ export class RevionInventarioComponent implements OnInit {
 
   
   traerContadoresDocumentos(){
-    this.contadoresService.getContadores().subscribe(res => {
+    this._contadoresService.getContadores().subscribe(res => {
       this.contadores = res as contadoresDocumentos[];
       this.newControlInventario.idDocumento = this.contadores[0].revisionInventario_Ndocumento + 1
     })
@@ -241,12 +264,7 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   llenarComboProductos(){
-    this.productosActivos.forEach(element=>{
-      if(element.ESTADO == "ACTIVO"){
-        this.productos.push(element)
-      }
-    })
-
+    this.productos = this.productosActivos;
     this.productos22 = new DataSource({  
       store: this.productos,  
       sort: [{ field: "PRODUCTO", asc: true }],    
@@ -337,6 +355,25 @@ export class RevionInventarioComponent implements OnInit {
       default:    
     }     
   }
+
+
+
+  opcionMenuIngresos(e){
+    switch (e.value) {
+      case  "Nueva Revision":
+          this.newIngreso = true;
+          this.verListadoIngreso = false;
+       break;
+      case "Ver Listado":
+          this.newIngreso = false;
+          this.verListadoIngreso = true;
+        break;
+      default:    
+    }     
+  }
+
+
+
 
   buscarInformacion(){
     this.invetarioP.forEach(element=>{
@@ -709,9 +746,29 @@ export class RevionInventarioComponent implements OnInit {
     this.newControlInventario.sucursal = this.nameSucursal;
 
     this._revisionInventarioService.newRevisionInventario(this.newControlInventario).subscribe( 
-      res => {  this.mostrarMensajeGenerico(1,"Se ha registrado con éxito")
-                this.mostrarLoading = true;}, 
+      res => {  this.actualizarContador(); }, 
       err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+  }
+
+
+  guardarRegistroProducto(){
+    this.mensajeLoading = "Guardando.."
+    this.mostrarLoading = true;
+    this.productoRevisado.idReferenciaRevision = Number(this.idRevision);
+
+    this._revisionInventarioProductoService.newRevisionInventarioProducto(this.productoRevisado).subscribe( 
+      res => {  this.mostrarLoading = false;
+                this.mostrarMensajeGenerico(1,"Se ha registrado con éxito") }, 
+      err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+  }
+
+
+  actualizarContador(){
+    this.contadores[0].revisionInventario_Ndocumento = this.newControlInventario.idDocumento
+    this._contadoresService.updateIdRevisionInventario(this.contadores[0]).subscribe( res => {
+      this.mostrarMensajeGenerico(1,"Se ha registrado con éxito")
+      this.mostrarLoading = false;
+    },err => {})
   }
 
 

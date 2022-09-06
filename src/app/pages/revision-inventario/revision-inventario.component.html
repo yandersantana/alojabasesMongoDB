@@ -379,13 +379,28 @@
 
 
 <div *ngIf="mostrarSeccionIngresos">
-    <br><br>
+
+    <br>
+    <div class="row remiPro">
+        <div class="col-md-8"></div>
+        <div class="col-md-4"> 
+            <dx-select-box [items]="menuIngresos" 
+            [value]="menuIngresos[0]" 
+            [readOnly]="false" 
+            [disabled]="false"
+            class="form-control select"
+            (onValueChanged)="opcionMenuIngresos($event)"
+            ></dx-select-box>
+        </div>
+    </div>
+    <br>
+
     <div class="card mb-3">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE INVENTARIO</h5>
         <div class="card-body">
             <div class="row">
                 <div class="col-md-12 ">
-                    <div *ngIf="newAud">
+                    <div *ngIf="newIngreso">
                         <div class="row">
                             <div class="col-md-2"></div>
                             <div class="col-md-8">
@@ -394,24 +409,23 @@
 
                                     <div class="col-md-4" style="padding-top: 0.7em;">Seleccione un producto</div>
                                     <div class="col-md-8">
-                                        <dx-select-box  [dataSource]="productos22" [(value)]="productoEntregado" [readOnly]="false" [disabled]="false"
+                                        <dx-select-box  [dataSource]="productos22" [(value)]="productoRevisado.producto" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
                                         </dx-select-box>
                                     </div>
 
                                     <div class="col-md-4" style="padding-top: 0.7em;">Cajas</div>
-                                    <div class="col-md-8"><dx-number-box [(value)]="newControlInventario.responsable" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.cajas" [disabled]="false" [readOnly]="false"></dx-number-box></div>
 
                                     <div class="col-md-4" style="padding-top: 0.7em;">Piezas</div>
-                                    <div class="col-md-8"><dx-number-box [(value)]="newControlInventario.responsable" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.piezas" [disabled]="false" [readOnly]="false"></dx-number-box></div>
 
                                     <div class="col-md-4" style="padding-top: 0.7em;">Detalles</div>
-                                    <div class="col-md-8"><dx-select-box [items]="locales" [(value)]="nameSucursal" [readOnly]="false" [disabled]="false"
-                                        [searchEnabled]="true" valueExpr="nombre" displayExpr="nombre">
-                                    </dx-select-box></div>
+                                    <div class="col-md-8"><dx-select-box [items]="menuValoracion" [(value)]="productoRevisado.detalle" [readOnly]="false" [disabled]="false"
+                                            [searchEnabled]="true"></dx-select-box></div>
 
                                     <div class="col-md-4" style="padding-top: 0.7em;">Novedades</div>
-                                    <div class="col-md-8"><dx-text-box [(value)]="newControlInventario.responsable" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+                                    <div class="col-md-8"><dx-text-box [(value)]="productoRevisado.novedades" [disabled]="false" [readOnly]="false"></dx-text-box></div>
                                 </div>
                             </div>
                             <div class="col-md-2"></div>
@@ -419,7 +433,7 @@
                                 <div class="row">
                                     <div class="col-md-5"></div>
                                     <div class="col-md-2">
-                                    <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistro()">Registrar</button>
+                                    <button class="btn btn-block btn-success espacio" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistroProducto()">Registrar</button>
                                     <br>
                                     <br>
                                     <br>
@@ -428,17 +442,44 @@
                                 </div>
                             </div>
                         </div>
+                    </div> 
 
+
+                    <div *ngIf="verListadoIngreso">
+                        <div class="col-md-12">
+                            <dx-data-grid #datag2
+                                id="gridContainer"
+                                [dataSource]="listadoProductosRevisados"
+                                [showBorders]="true"
+                                (onExporting)="onExporting2($event)"
+                                (onExported)="onExported2($event)">   
+                                <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                                <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
+                                <dxi-column dataField="idReferenciaRevision" sortOrder="desc"></dxi-column>
+                                <dxi-column dataField="producto" [visible]="false"></dxi-column>
+                                <dxi-column dataField="fecha"  [visible]="false"></dxi-column>
+                                <dxi-column dataField="cajas"  dataType="number" caption="Cajas"></dxi-column>
+                                <dxi-column dataField="piezas"  dataType="number" caption="Piezas"></dxi-column>
+                                <dxi-column dataField="detalle" caption="Detalle" [visible]="true"></dxi-column>
+                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true"></dxi-column>
+                            
+                                <dxo-paging [pageSize]="10"></dxo-paging>
+                                <dxo-pager 
+                                    [showPageSizeSelector]="true"
+                                    [allowedPageSizes]="[5, 10, 20]"
+                                    [showInfo]="true">
+                                </dxo-pager>
+                            
+                                <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+                            </dx-data-grid>
+                        </div>
                     </div>
-
-              
-                      
-                </div>
-                
+                </div> 
             </div>
         </div>
     </div>
-</div>>
+</div>
 
 
 

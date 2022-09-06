@@ -11,3 +11,22 @@ export class controlInventario{
   }
 }
 
+
+
+export class detalleProductoRevisado{
+  idReferenciaRevision: number
+  producto: string
+  fecha: Date
+  estado: string
+  detalle : string
+  novedades : string
+  cajas : number
+  piezas : number
+  constructor(){
+    this.fecha = new Date()
+    this.estado="Iniciada"
+    this.cajas = 0
+    this.piezas = 0
+  }
+}
+

@@ -34,6 +34,7 @@ export class CatalogoComponent implements OnInit {
   productosCatalogoActivos:catalogo[]=[]
   productosCatalogoElim:catalogo[]=[]
   productosCatalogoUso:catalogo[]=[]
+  productosCatalogoUsoTmp:catalogo[]=[]
   catalogo:catalogo
   catalogoLeido:catalogo
   imagenes:string[]
@@ -288,8 +289,15 @@ export class CatalogoComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[]; 
       this.administrarPrecios();
+      //this.gestionarProductosCatalogo();
     })
   }
+
+
+  gestionarProductosCatalogo(){
+
+  }
+
 
   traerCombosProductos(){
     this.mensajeLoading = "Cargando.."
@@ -770,7 +778,7 @@ export class CatalogoComponent implements OnInit {
   separarProductos(){
     this.productosCatalogo.forEach(element=>{
       if(element.estado2!="Eliminado")
-        this.productosCatalogoUso.push(element)
+        this.productosCatalogoUsoTmp.push(element)
       else
         this.productosCatalogoElim.push(element)
     })
@@ -778,10 +786,11 @@ export class CatalogoComponent implements OnInit {
   }
 
   administrarPrecios(){
-    this.productosCatalogoUso.forEach(element=>{
+    this.productosCatalogoUsoTmp.forEach(element=>{
       this.productosActivos.forEach(element2=>{
         if(element.PRODUCTO == element2.PRODUCTO){
           element.precio = element2.precio
+          this.productosCatalogoUso.push(element)
         }
       })
     })

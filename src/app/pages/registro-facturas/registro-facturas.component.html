@@ -180,9 +180,10 @@
                     <table style="margin-top: 1em;">
                         <tr>
                             <th class="text-center">Fecha</th>
-                            <th class="text-center">Valor Abonado</th>
-                            <th class="text-center">Valor Saldos</th>
-                            <th class="text-center">Valor</th>
+                            <th class="text-center">Abonos Anteriores</th>
+                            <th class="text-center">Pagos Recibidos</th>
+                            <th class="text-center">Saldos Pendientes</th>
+                            
                         <!--   <th class="text-center">M2</th> -->
                         </tr>
                         <tr *ngFor="let pro of listadoTransaccionesFacturas; let id = index">
@@ -190,10 +191,10 @@
                                 {{pro.fechaFactura | date: 'dd/MM/yyyy'}}
                             </td>
                             <td style="text-align: center;width: 20%;">
-                                {{pro.valorAbonado}}
+                                {{pro.valorSaldos}}
                             </td>
                             <td style="text-align: center;width: 20%;">
-                            {{pro.valorSaldos}}
+                                {{pro.valorAbonado}}
                             </td>
                             <td style="text-align: center;width: 20%;">
                             {{pro.valorCancelado}}

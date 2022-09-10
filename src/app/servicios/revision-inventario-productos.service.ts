@@ -26,11 +26,12 @@ export class RevisionInventarioProductoService {
     return this.http.post(this.URL + `/getRevisionesProductosPorId/${id}`,id);
   }
 
-  /* updateOpciones(opciones) {
-    return this.http.put(this.URL + `/update/${opciones._id}`, opciones);
+  deleteRevisionProducto(opciones) {
+    return this.http.delete(this.URL + `/delete/${opciones._id}`, opciones);
   }
 
-  deleteOpciones(opciones) {
-    return this.http.delete(this.URL + `/delete/${opciones._id}`, opciones);
-  } */
+  updateRevisionProducto(revision) {
+    return this.http.put(this.URL + `/update/${revision._id}`, revision);
+  }
+
 }

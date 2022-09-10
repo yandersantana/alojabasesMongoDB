@@ -30,26 +30,26 @@ router.post('/getRevisionesProductosPorId/:id', async (req, res) => {
 })
 
 
-
+router.delete('/delete/:id', async (req, res,next) => {
+    await RevisionInventarioProducto.findByIdAndRemove(req.params.id);
+    res.json({status: 'Revision Eliminado'});
+})
 
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
     const newCombo ={ 
-        usuario:req.body.usuario, 
-        nombreCombo:req.body.nombreCombo, 
-        cantidadProductos:req.body.cantidadProductos, 
-        arrayProductos:req.body.arrayProductos,
-        precioVenta:req.body.precioVenta};
-    await Combos.findByIdAndUpdate(id, {$set: newCombo}, {new: true});
+            estado:req.body.estado,
+            detalle:req.body.detalle,
+            novedades:req.body.novedades,
+            cajas:req.body.cajas,
+            piezas:req.body.piezas};
+    await RevisionInventarioProducto.findByIdAndUpdate(id, {$set: newCombo}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })
 
 
-router.delete('/delete/:id', async (req, res,next) => {
-    await Combos.findByIdAndRemove(req.params.id);
-    res.json({status: 'Cliente Eliminado'});
-})
+
 
 
 module.exports = router;

@@ -17,11 +17,12 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services';
 import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.service';
 import { opcionesCatalogo } from '../catalogo/catalogo';
-import { controlInventario, detalleProductoRevisado } from './revision-inventario';
+import { comparacionResultadosRevision, controlInventario, detalleProductoRevisado } from './revision-inventario';
 import { auditoria, auditoriasProductos, coincidencias } from '../auditorias/auditorias';
 import { RevisionInventarioService } from 'src/app/servicios/revision-inventario.service';
 import { RevisionInventarioProductoService } from 'src/app/servicios/revision-inventario-productos.service';
-import { ThrowStmt } from '@angular/compiler';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
+import { element } from 'protractor';
 
 @Component({
   selector: 'app-revision-inventario',
@@ -37,6 +38,8 @@ export class RevionInventarioComponent implements OnInit {
   listadoRevisiones: controlInventario[]=[]
   listadoProductosRevisados: detalleProductoRevisado[]=[]
   listadoRevisionesIniciadas: controlInventario[]=[]
+  revisionIniciada: controlInventario = new controlInventario()
+  listadoComparacionResultados : comparacionResultadosRevision[]=[]
   linkRevision =""
   popupVisible = false;
   idRevision = "";
@@ -47,6 +50,10 @@ export class RevionInventarioComponent implements OnInit {
   bloquearboton = false;
   newIngreso = true;
   verListadoIngreso = false;
+  isNew = true;
+  mostrarbtn = false;
+  verListadoComparacion = false;
+  
   menuIngresos: string[] = [
     "Nueva Revision",
     "Ver Listado"
@@ -139,6 +146,7 @@ export class RevionInventarioComponent implements OnInit {
     public _revisionInventarioService : RevisionInventarioService,
     public _revisionInventarioProductoService : RevisionInventarioProductoService,
     public _contadoresService:ContadoresDocumentosService,
+    public _transaccionesService : TransaccionesService,
     public authService: AuthService,
     private rutaActiva: ActivatedRoute,
     private router:Router,
@@ -147,6 +155,7 @@ export class RevionInventarioComponent implements OnInit {
     public parametrizacionService: ParametrizacionesService,
     public sucursalesService: SucursalesService , 
     public productoService:ProductoService) { 
+      this.proTransaccion = new productoTransaccion();
       this.newControlInventario = new controlInventario()
       this.productoRevisado = new detalleProductoRevisado()
       this.menuGlobal= this.menuSupervisor
@@ -163,15 +172,10 @@ export class RevionInventarioComponent implements OnInit {
     this.traerOpcionesCatalogo()
     this.traerContadoresDocumentos()
     this.traerRevisionesInventario()
-    this.traerProductos()
-
+    
     if(this.idRevision != "0")
       this.traerRevisionesInventarioProductosPorId()
-    
-    
-    /*this.traerAuditoriasProductos()
-    this.cargarUsuarioLogueado()
-    this.getIDDocumentos() */
+
   }
 
 
@@ -203,6 +207,7 @@ export class RevionInventarioComponent implements OnInit {
       if(element.estado == "Iniciada")
         this.listadoRevisionesIniciadas.push(element)
     })
+    this.traerProductos()
   }
 
 
@@ -217,12 +222,25 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   obtenerDetallesproducto(e){
+    this.bloquearboton = false;
     this.listadoProductosRevisados.forEach(element=>{
         if(element.producto == e.value){
           this.bloquearboton = true;
           this.mostrarMensajeGenerico(2,"El producto ya se encuentra revisado")
+          return;
         }
     })
+  }
+
+  traerTransaccionesPorProducto(nombreProducto, indice) {
+    this.mensajeLoading = "Buscando datos";
+    this.mostrarLoading = true;
+    this.proTransaccion.nombre = nombreProducto;
+    this._transaccionesService.getTransaccionesPorProducto(this.proTransaccion).subscribe((res) => {
+      this.transacciones = res as transaccion[];
+      this.cargarDatosProductoUnitario(nombreProducto, indice);
+    });
+
   }
 
 
@@ -256,41 +274,22 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
-  traerProductos2(){
-    this.productoService.getProductosActivos().subscribe(res => {
-      this.productos = res as producto[];
-    // this.cargarDatos()
-   })
-  }
-
   llenarComboProductos(){
-    this.productos = this.productosActivos;
-    this.productos22 = new DataSource({  
-      store: this.productos,  
-      sort: [{ field: "PRODUCTO", asc: true }],    
-    });
-    this.mostrarLoading = false;
+    if(this.idRevision != "0"){
+      var categoria = this.listadoRevisiones?.find(element=>element.idDocumento == Number(this.idRevision)).nombreClasificacion;
+      this.productos = this.productosActivos;
+      this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
+      this.productos22 = new DataSource({  
+        store: this.productos,  
+        sort: [{ field: "PRODUCTO", asc: true }],    
+      });
+      this.mostrarLoading = false;
+    }
+    else
+      this.mostrarLoading = false;
   }
 
 
-  clearForm(){
-    this.auditoria.producto = null;
-    this.productoEntregado = "";
-    this.auditoria.cajas_fisico = 0;
-    this.auditoria.cajas_danadas = 0;
-    this.auditoria.cajas_diferencia = 0;
-    this.auditoria.cajas_sistema = 0;
-    this.auditoria.piezas_danadas = 0;
-    this.auditoria.piezas_diferencia = 0;
-    this.auditoria.piezas_fisico = 0;
-    this.auditoria.piezas_sistema = 0;
-    this.auditoria.nombreproducto = "";
-    this.auditoria.ubicacion = "";
-    this.auditoria.observaciones = "";
-    this.auditoria.valoracion= "Ok"
-
-  }
- 
 
   onExporting2 (e) {
     e.component.beginUpdate();
@@ -361,6 +360,7 @@ export class RevionInventarioComponent implements OnInit {
   opcionMenuIngresos(e){
     switch (e.value) {
       case  "Nueva Revision":
+          this.isNew = true;
           this.newIngreso = true;
           this.verListadoIngreso = false;
        break;
@@ -478,35 +478,48 @@ export class RevionInventarioComponent implements OnInit {
     this.newAud = true;
   }
 
-  regresar2(){
-    var x = document.getElementById("tabla4");
-    var z = document.getElementById("tabla2");
-    var y = document.getElementById("tabla3");
-      x.style.display = "none";
-      z.style.display = "none";
-      y.style.display = "block";
+
+  verLista(id:number){
+    this.mostrarbtn = true;
+    //this.mostrarLoading = true;
+    this.verListadoComparacion = true;
+    this.newAud = false;
+    this.listadoProductosRevisados = [];
+    var idP = id;
+    this.revisionIniciada = this.listadoRevisionesIniciadas.find(element=> element.idDocumento == id);
+    this._revisionInventarioProductoService.getRevisionesProductosPorId(id.toString()).subscribe(res => {
+      this.listadoProductosRevisados = res as detalleProductoRevisado[];
+      this.crearListadoComparacion();
+    })
   }
 
-   verLista(id:number){
-    this.mostrarLoading = true;
-    this.mostrarTablaAuditoria = true;
-    var z = document.getElementById("tabla3");
-      z.style.display = "none";
-      this.newAud = false;
-    this.auditoriaProductosleida = []
+  retornar(){
+    this.verListadoComparacion = false;
+    this.newAud = true;
+    this.mostrarbtn = false;
+  }
 
-    var newAuditoria = new auditoriasProductos();
-    newAuditoria.idPrincipal = id;
 
+  crearListadoComparacion(){
+    this.listadoProductosRevisados.forEach((element, index)=>{
+      var newComparacion = new comparacionResultadosRevision();
+      newComparacion.producto = element.producto
+      newComparacion.novedades = element.novedades
+      newComparacion.cajas_conteo = element.cajas
+      newComparacion.piezas_conteo = element.piezas
+      newComparacion.detalle = element.detalle
+      this.traerTransaccionesPorProducto(element.producto , index )
+      this.listadoComparacionResultados.push(newComparacion)
+    })
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    var link = "http://localhost:4200/#/revision-inventario/" + revision.idDocumento
-    window.open('https://api.whatsapp.com/send?text='+link);
+    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
   copiarLink(revision : controlInventario){
-    this.linkRevision = "http://localhost:4200/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
   }
 
@@ -627,11 +640,14 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   eliminarProd = (e) => {
-    this.eliminarAuditoriaProducto(e.row.data)
+    this.eliminarRevisionProducto(e.row.data)
   }
 
   editarPro(e:any){
-    this.editarAuditoriaProducto(e.idAud , e.nombreproducto)
+    this.productoRevisado = e
+    this.newIngreso = true;
+    this.verListadoIngreso = false;
+    this.isNew = false;
   }
 
 
@@ -646,8 +662,6 @@ export class RevionInventarioComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         this.mostrarMensaje()
-       
-        
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -758,8 +772,26 @@ export class RevionInventarioComponent implements OnInit {
 
     this._revisionInventarioProductoService.newRevisionInventarioProducto(this.productoRevisado).subscribe( 
       res => {  this.mostrarLoading = false;
+                this.reiniciarFormulario();
                 this.mostrarMensajeGenerico(1,"Se ha registrado con éxito") }, 
       err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+  }
+
+
+  actualizarRegistroProducto(){
+    this.mensajeLoading = "Guardando.."
+    this.mostrarLoading = true;
+    this._revisionInventarioProductoService.updateRevisionProducto(this.productoRevisado).subscribe( 
+    res => {  this.mostrarLoading = false;
+              this.reiniciarFormulario();
+              this.isNew = true;
+              this.mostrarMensajeGenerico(1,"Se ha actualizado con éxito") }, 
+    err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+  }
+
+  reiniciarFormulario(){
+    this.productoRevisado = new detalleProductoRevisado();
+    this.traerRevisionesInventarioProductosPorId()
   }
 
 
@@ -786,59 +818,20 @@ guardarAuditoriaProducto(){
     
   }
 
-  eliminarAuditoriaProducto(e:any){
-    
-  }
-
-
-  revisarDuplicados(){
-    var matriz = {};
-    var matriz2 = {};
-    
-    
-    this.auditoriaProductosleida.forEach(element=> { 
-      var nombreproducto = element.nombreproducto
-      matriz[nombreproducto] = matriz[nombreproducto] ? (matriz[nombreproducto] + 1) : 1;
-      this.numCoinc = new coincidencias()
-      this.numCoinc.nombreProducto=nombreproducto
-      this.numCoinc.cantidad=matriz[nombreproducto] 
-      this.arreglocoincidencias.push(this.numCoinc)
-    });
-     
-    matriz = Object.keys(matriz).map(function(nombreproducto) {
-      return { nombre: nombreproducto, cant: matriz[nombreproducto] };
-   });
-   
-
-   this.arreglocoincidencias.forEach(element=>{
-     if(element.cantidad>1){
-       this.arreglocoincidencias2.push(element)
-     }
-   })
-
-  
-   if(this.arreglocoincidencias2.length>0){
-    
+  eliminarRevisionProducto(e:any){
     Swal.fire({
-      title: 'ERROR',
-      text: 'Se han encontrado productos duplicados en la auditoria, resuelvalos e intente nuevamente',
-      icon: 'error',
-      confirmButtonText: 'Ok'
-    }).then((result) => {
-      var x = document.getElementById("tablaRepetidos");
-      x.style.display = "block";
-    })
-   }else{
-     Swal.fire({
       title: 'Alerta',
-      text: "Está seguro de realizar la actualización, esto afectará los inventarios de productos",
+      text: "Está seguro de eliminar el producto revisado?",
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
       cancelButtonText: 'No'
     }).then((result) => {
       if (result.value) {
-        this.realizarActualizaciones()
+        this._revisionInventarioProductoService.deleteRevisionProducto(e).subscribe(res => {
+          this.reiniciarFormulario();
+          this.mostrarMensajeGenerico(1,"Se realizó su proceso con éxito")
+        })
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -847,46 +840,11 @@ guardarAuditoriaProducto(){
         )
       }
     })
-   }
+  }
+
+
 
  
-
-  }
-
-
-  realizarActualizaciones(){
-
-  
-  }
-
-  contadorValidaciones(i:number){
-    if(this.auditoriaProductosleida.length==i)
-      this.actualizarProductos()
-  }
-
-  editarAuditoriaProducto(id:string,producto:string){
-    this.auditoriaProductosBase.forEach(element=>{
-      if(element.idAud ==id && element.nombreproducto == producto){
-        this.editAuditoria = element
-        this.editAuditoria.idAud = element.idAud
-        this.productoEntregado= element.nombreproducto
-        this.nombreSucursal= element.sucursal.nombre
-        this.mostrarTablaAuditoria = true;
-       // var x = document.getElementById("editAud");
-          var y = document.getElementById("tablaAuditoria");
-          //x.style.display = "block";
-          y.style.display = "none";
-      }
-    })
-  }
-
-
-  actualizarProductos(){
-
-  }
-
-
-
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
@@ -1271,15 +1229,15 @@ guardarAuditoriaProducto(){
 
 
   //Desde aqui empieza
-  cargarDatosProductoUnitario(nombreProducto) {
+  cargarDatosProductoUnitario(nombreProducto, indice: number) {
     var contCajas = 0;
     var contCajas2 = 0;
     var contCajas3 = 0;
     var contPiezas = 0;
     var contPiezas2 = 0;
     var contPiezas3 = 0;
-    for (let index = 0; index < this.productos.length; index++) {
-      const element2 = this.productos[index];
+    for (let index = 0; index < this.productosActivos.length; index++) {
+      const element2 = this.productosActivos[index];
 
       this.transacciones.forEach((element) => {
         if (element2.PRODUCTO == element.producto &&element.sucursal == "matriz") {
@@ -1448,6 +1406,7 @@ guardarAuditoriaProducto(){
       this.invetarioProd.execute = false;
       if (this.invetarioProd.producto.PRODUCTO == nombreProducto) {
         this.invetarioP.push(this.invetarioProd);
+        console.log(this.invetarioP)
       }
 
       contCajas = 0;
@@ -1457,13 +1416,13 @@ guardarAuditoriaProducto(){
       contCajas3 = 0;
       contPiezas3 = 0;
     }
-    this.transformarM2();
+    this.transformarM2(indice);
   }
 
   //desde aqui comienza seccion de consolidado
 
   
-  transformarM2() {
+  transformarM2(indice) {
     this.invetarioP.forEach((element) => {
       element.cantidadM2 = parseFloat((element.producto.M2 * element.cantidadCajas +(element.cantidadPiezas * element.producto.M2) /element.producto.P_CAJA).toFixed(2));
       element.cantidadM2b2 = parseFloat((element.producto.M2 * element.cantidadCajas2 +(element.cantidadPiezas2 * element.producto.M2) / element.producto.P_CAJA).toFixed(2));
@@ -1472,31 +1431,12 @@ guardarAuditoriaProducto(){
       element.totalb2 = parseFloat((element.cantidadM2b2 * element.producto.precio).toFixed(2));
       element.totalb3 = parseFloat((element.cantidadM2b3 * element.producto.precio).toFixed(2));
     });
-    //this.sumarProductosRestados();
     this.cambiarValores();
-    this.controlarInventario();
+    this.controlarInventario(indice);
   }
 
-  sumarProductosRestados() {
-    for (let index = 0; index < this.productos.length; index++) {
-      const element = this.productos[index];
-      this.invetarioP.forEach((element2) => {
-        if (!element2.execute) {
-          if (element.PRODUCTO == element2.producto.PRODUCTO) {
-            //element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-            //element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
-            //element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
-            element2.cantidadM2 = element2.cantidadM2;
-            element2.cantidadM2b2 = element2.cantidadM2b2;
-            element2.cantidadM2b3 = element2.cantidadM2b3;
-            element2.execute = true;
-          }
-        }
-      });
-    }
-  }
 
-   controlarInventario() {
+  controlarInventario(indice:number) {
     this.invetarioP.forEach((element) => {
       if (element.cantidadM2 < 0) {
         this.invetarioFaltante1 = new invFaltanteSucursal();
@@ -1529,58 +1469,70 @@ guardarAuditoriaProducto(){
         this.invetarioFaltante.push(this.invetarioFaltante1);
       }
     });
-    this.ajustarSaldos();
+    this.ajustarSaldos(indice);
   }
 
-  ajustarSaldos() {
-    var producto = this.productosActivos.find(element=> element.PRODUCTO == this.productoEntregado);
-    console.log(producto)
+  ajustarSaldos(indice:number) {
     this.invetarioP.forEach((element) => {
-     /*  if (element.cantidadM2 <= 0) {
-        element.cantidadCajas = 0;
-        element.cantidadPiezas = 0;
-        element.cantidadM2 = 0;
-        element.totalb1 = 0;
-      }
-      if (element.cantidadM2b2 <= 0) {
-        element.cantidadCajas2 = 0;
-        element.cantidadPiezas2 = 0;
-        element.cantidadM2b2 = 0;
-        element.totalb2 = 0;
-      }
-      if (element.cantidadM2b3 <= 0) {
-        element.cantidadCajas3 = 0;
-        element.cantidadPiezas3 = 0;
-        element.cantidadM2b3 = 0;
-        element.totalb3 = 0;
-      }
-      */
-
-
-      switch (this.auditoria.sucursal.nombre) {
+      this.newControlInventario.sucursal = "matriz"
+      switch (this.newControlInventario.sucursal) {
         case "matriz":
-          this.auditoria.cajas_sistema= element.cantidadCajas;
-          this.auditoria.piezas_sistema=  element.cantidadPiezas;
-          this.auditoria.m2base = element.cantidadM2
-          this.ubicaciones = producto.ubicacionSuc1
+          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas;
+          this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas;
+          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2;
           break;
         case "sucursal1":
-          this.auditoria.cajas_sistema= element.cantidadCajas2;
-          this.auditoria.piezas_sistema=  element.cantidadPiezas2;
-          this.auditoria.m2base = element.cantidadM2b2
-          this.ubicaciones = producto.ubicacionSuc2
+          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas2;
+          this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas2;
+          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2b2;
           break;
         case "sucursal2":
-          this.auditoria.cajas_sistema= element.cantidadCajas3;
-          this.auditoria.piezas_sistema=  element.cantidadPiezas3;
-          this.auditoria.m2base = element.cantidadM2b3
-          this.ubicaciones = producto.ubicacionSuc3
+          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas3;
+          this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas3;
+          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2b3;
           break;
         default:
           break;
       }
     });
-    this.calcularTotalM2();
+
+    var prod = this.productosActivos.find(element=> element.PRODUCTO == this.listadoComparacionResultados[indice].producto)
+    this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
+    
+
+    if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
+      this.listadoComparacionResultados[indice].m2_diferencia=this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
+    }else{
+      if(this.listadoComparacionResultados[indice].m2_conteo < this.listadoComparacionResultados[indice].m2_sistema)
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema - 0.04
+      else
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema + 0.03
+    }
+
+    //if(this.listadoComparacionResultados[indice].m2_diferencia < 0)
+      //this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_diferencia * -1
+
+
+      /* if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){
+        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.04
+      }else{
+        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.03
+      } */
+
+
+    this.listadoComparacionResultados[indice].cajas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia / prod.M2);
+    this.listadoComparacionResultados[indice].piezas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia * prod.P_CAJA /prod.M2) - (this.listadoComparacionResultados[indice].cajas_diferencia * prod.P_CAJA);
+
+    if(this.listadoComparacionResultados[indice].m2_diferencia > 0)
+      this.listadoComparacionResultados[indice].resultado = "SOBRANTE"
+    else if (this.listadoComparacionResultados[indice].m2_diferencia < 0)
+      this.listadoComparacionResultados[indice].resultado = "FALTANTE"
+    else
+      this.listadoComparacionResultados[indice].resultado = "OK"
+
+      console.log(this.listadoComparacionResultados[indice])
+    
+    //this.calcularTotalM2();
     this.mostrarLoading = false;
   }
 

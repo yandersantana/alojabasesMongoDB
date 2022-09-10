@@ -13,7 +13,7 @@
 
 
 <div *ngIf="mostrarCreacion">
-    <div class="col-md-12">
+<!--     <div class="col-md-12">
         <div class="row">
             <div class="col-md-8"> </div>
             <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="menuGlobal" 
@@ -25,9 +25,16 @@
                 ></dx-select-box></div>
                 <div class="col-md-5"></div>
         </div>
-    </div>
+    </div> -->
     <br><br>
 
+    <div class="row" *ngIf="mostrarbtn">
+        <div class="col-md-2">
+            <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="retornar()">Regresar</button>
+        </div>
+        <div class="col-md-10"></div>
+    </div>
+    <br>
     <div class="card mb-3">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE INVENTARIO</h5>
         <div class="card-body">
@@ -114,13 +121,6 @@
                                                 <td>
                                                 <span><button class="btnIcons5" (click)="copiarLink(revision)"><i class="fa fa-eye"></i></button></span>
                                                 </td>
-                                                <!-- <td style="width: 15%;">
-                                                    <span><button class="btn btn-block btn-success " style="background-color: #ff5722;border-color: #ff5722;" (click)="continuarAuditoria(id)">Continuar</button></span>
-                                                </td>
-                                                <td style="width: 15%;">
-                                                    <span><button class="btn btn-block btn-success " style="background-color: #ff5722;border-color: #ff5722;" (click)="seguirAuditoria(id)">Seguir</button></span>
-                                                </td> -->
-                                                
                                             </tr>
                                             </table>
                                         </div>
@@ -129,249 +129,80 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
 
-                    
-                        <div id="tabla3" style="display: none;">
-                            <div  class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-1"></div>
-                                    <div class="col-md-10" >
-                                        <dx-data-grid 
-                                        id="gridContainer"
-                                        [dataSource]="auditoriasAcabadas"
-                                        [showBorders]="true">   
-                                            
-                                            <dxo-filter-row [visible]="true" ></dxo-filter-row>
-                                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-                                            <dxo-export [enabled]="true" fileName="Auditorias" [allowExportSelectedData]="true"></dxo-export>
-                                            <dxi-column dataField="idAuditoria" sortOrder="desc"></dxi-column>
-                                            <dxi-column dataField="sucursal.nombre" ></dxi-column>
-                                            <dxi-column dataField="fecha_inicio"  [visible]="true"></dxi-column>
-                                            <dxi-column dataField="fecha_fin"  ></dxi-column>
-                                            <dxi-column dataField="cantidad_productos"  dataType="number" caption="Prod.Aud"></dxi-column>
-                                            <dxi-column type="buttons"  caption="Ver lista">
-                                                <dxi-button icon="fa fa-list fa-1x" [onClick]="getCourseFile"></dxi-button>     
-                                            </dxi-column>
-                                            <dxi-column type="buttons"  caption="Ver Novedades">
-                                                <dxi-button icon="fa fa-eye" [onClick]="getCourseFile2"></dxi-button>     
-                                            </dxi-column>
-                                            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
-                                            <dxo-paging [pageSize]="10"></dxo-paging>
-                                            <dxo-pager 
-                                                [showPageSizeSelector]="true"
-                                                [allowedPageSizes]="[5, 10, 20]"
-                                                [showInfo]="true">
-                                            </dxo-pager>
-                                        </dx-data-grid>
-                                    </div>
-                                    <div class="col-md-1"></div>
-                                </div>
-                                <br><br>
-                            </div>
-                        </div>
-
-                        <div id="tabla2" style="display: none;">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar2()">Regresar</button></div>
-                                    <div class="col-md-12">
-                                        <dx-data-grid #data2
-                                        id="gridContainer"
-                                        [dataSource]="auditoriaProductosleida"
-                                        [showBorders]="true"
-                                        (onExporting)="onExporting($event)"
-                                        (onExported)="onExported($event)">   
-                                            
-                                            <dxo-filter-row [visible]="true" ></dxo-filter-row>
-                                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-                                            <dxo-export [enabled]="true" fileName="Auditorias" [allowExportSelectedData]="true"></dxo-export>
-                                            <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
-                                            <dxi-column dataField="idPrincipal" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="fecha" dataType="date" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="auditor" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
-                                            <dxi-column caption="Sistema"  dataField="sucursal1">
-                                                <dxi-column dataField="cajas_sistema"  dataType="number" caption="Cajas" ></dxi-column>
-                                                <dxi-column dataField="piezas_sistema"  dataType="number" caption="Piezas"></dxi-column>
-                                            </dxi-column>
-                                            <dxi-column caption="Fisico"  dataField="sucursal1">
-                                                <dxi-column dataField="cajas_fisico"  dataType="number" caption="Cajas"></dxi-column>
-                                                <dxi-column dataField="piezas_fisico"  dataType="number" caption="Piezas"></dxi-column>
-                                            </dxi-column>
-                                            <dxi-column caption="Diferencia"  dataField="sucursal1">
-                                                <dxi-column dataField="cajas_diferencia"  dataType="number" caption="Cajas"></dxi-column>
-                                                <dxi-column dataField="piezas_diferencia"  dataType="number" caption="Piezas"></dxi-column>
-                                                <dxi-column dataField="m2diferencia"  dataType="number" caption="Diferencia" [visible]="false"></dxi-column>
-                                            </dxi-column>
-                                            <dxi-column type="buttons"  caption="Eliminar">
-                                                <dxi-button icon="fa fa-trash" [onClick]="getCourseFile3"></dxi-button>     
-                                            </dxi-column>
-                                            <dxi-column dataField="condicion" caption="Condición" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="impacto" caption="Impacto" [visible]="false"></dxi-column>
-                                        
-                                            <dxi-column dataField="auditado" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="ubicacion" caption="Ubicacion" [visible]="false"></dxi-column>
-                                            <dxo-paging [pageSize]="10"></dxo-paging>
-                                            <dxo-pager 
-                                                [showPageSizeSelector]="true"
-                                                [allowedPageSizes]="[5, 10, 20]"
-                                                [showInfo]="true">
-                                            </dxo-pager>
-                                        
-                                            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
-                                        </dx-data-grid>
-                                    </div>
-                                
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div id="tabla4" style="display: none;">
-                            <div class="col-md-12">
-                                <div class="row">
-                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar2()">Regresar</button></div>
-                                    <div class="col-md-12">
-                                        <div style="text-align: center;"><h4>Novedades de Auditoría</h4></div>
-                                    </div>
-                                    
-                                    <div class="col-md-12">
-                                        <dx-data-grid #datag2
-                                        id="gridContainer"
-                                        [dataSource]="auditoriaProductosleida2"
-                                        [showBorders]="true"
-                                        (onExporting)="onExporting2($event)"
-                                        (onExported)="onExported2($event)">   
-                                            <dxo-filter-row [visible]="true" ></dxo-filter-row>
-                                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-                                            <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
-                                            <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
-                                            <dxi-column dataField="sucursal.nombre" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="fecha"  [visible]="true"></dxi-column>
-                                            <dxi-column dataField="auditor" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="auditado" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="producto.PRODUCTO" caption="Producto" width="30%"></dxi-column>
-                                            <dxi-column dataField="cajas_danadas"  dataType="number" caption="Cajas"></dxi-column>
-                                            <dxi-column dataField="piezas_danadas"  dataType="number" caption="Piezas"></dxi-column>
-                                            <dxi-column dataField="valoracion" caption="Condición" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="impactoDanado" caption="Impacto" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="auditor" caption="Auditor" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="ubicacion" caption="Ubicacion" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="observaciones" caption="Observaciones" [visible]="false"></dxi-column>
-                                            <dxo-paging [pageSize]="10"></dxo-paging>
-                                            <dxo-pager 
-                                                [showPageSizeSelector]="true"
-                                                [allowedPageSizes]="[5, 10, 20]"
-                                                [showInfo]="true">
-                                            </dxo-pager>
-                                        
-                                            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
-                                        </dx-data-grid>
-                                    </div>
-                                
-                                </div>
-                                
-                            </div>
-                        </div>
-                        
-                    
-                    
-
-
-                   
-
-                    <div *ngIf="mostrarTablaAuditoria">
+                    <div *ngIf="verListadoComparacion">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-12">
+                                <div class="col-md-6">
                                     <div class="row">
-                                        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">Regresar</button></div>
-                                        <div class="col-md-10"></div>
+                                        <div class="col-md-3" style="font-weight: bold;">
+                                            <p>Grupo</p>
+                                            <p>Responsable</p>
+                                        </div>
+                                        <div class="col-md-9" >
+                                            <p>{{revisionIniciada.nombreClasificacion}}</p>
+                                            <p>{{revisionIniciada.responsable}}</p>
+                                        </div>
                                     </div>
-                                    <div class="col-md-12">
-                                        <dx-data-grid #datag2
-                                        id="gridContainer"
-                                        [dataSource]="auditoriaProductosleida"
-                                        [showBorders]="true"
-                                        (onExporting)="onExporting3($event)"
-                                        (onExported)="onExported3($event)">   
-                                            <dxo-filter-row [visible]="true" ></dxo-filter-row>
-                                            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-                                            <dxo-export [enabled]="true" fileName=" Productos Auditoria" [allowExportSelectedData]="true"></dxo-export>
-                                            <dxi-column dataField="_id" [visible]="false"></dxi-column>
-                                            <dxi-column dataField="idAud" sortOrder="desc"></dxi-column>
-                                            <dxi-column dataField="fecha" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="nombreproducto" width="25%" [visible]="true"></dxi-column>
-                                            <dxi-column caption="Sistema" width="15%">
-                                                <dxi-column dataField="cajas_sistema" caption="Cajas"></dxi-column>
-                                                <dxi-column dataField="piezas_sistema"  caption="Piezas"></dxi-column>
-                                            </dxi-column>
-                                            <dxi-column caption="Fisico" width="15%">
-                                                <dxi-column dataField="cajas_fisico" caption="Cajas"></dxi-column>
-                                                <dxi-column dataField="piezas_fisico"  caption="Piezas"></dxi-column>
-                                            </dxi-column>
-                                            <dxi-column caption="Diferencia" width="15%">
-                                                <dxi-column dataField="cajas_diferencia" caption="Cajas" dataType="number"></dxi-column>
-                                                <dxi-column dataField="piezas_diferencia"  caption="Piezas" dataType="number"></dxi-column>
-                                            </dxi-column>
-                                        <!--  <dxi-column dataField="valoracion" caption="Valoracion" [visible]="true"></dxi-column> -->
-                                            <dxi-column dataField="condicion" caption="Condicion" width="8%" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="impacto" caption="Impacto" width="8%" [visible]="true"></dxi-column>
-                                            <dxi-column dataField="ubicacion" caption="Ubicacion"  [visible]="false"></dxi-column>
-                                            <dxi-column dataField="observaciones" caption="Observaciones"  [visible]="false"></dxi-column>
-                                            
-                                            
-                                                <dxi-column type="buttons"  caption="Edit." width="6%">
-                                                    <dxi-button icon="fa fa-pencil" [onClick]="verEdit"></dxi-button>     
-                                                </dxi-column>
-                                                <dxi-column type="buttons"  caption="Elim." width="6%">
-                                                    <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd"></dxi-button>     
-                                                </dxi-column>
-                                            
-                                            <dxo-paging [pageSize]="10"></dxo-paging>
-                                            <dxo-pager 
-                                                [showPageSizeSelector]="true"
-                                                [allowedPageSizes]="[5, 10, 20]"
-                                                [showInfo]="true">
-                                            </dxo-pager>
-                                        
-                                            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
-                                        </dx-data-grid>
-
-                                        <div style="margin: 2rem;">
-
-                                        </div>
-
-                                        <div class="row" id="tablaRepetidos" style="display: none;">
-                                            <div class="col-md-12">
-                                                <table class="table table-bordered table-responsive-md table-striped text-center" id="tabla1">
-                                                <tr>
-                                                    <th class="text-center">Productos repetidos</th>
-                                                </tr>                                                 
-                                                <tr *ngFor="let audit of arreglocoincidencias2; let id = index">
-                                                    <td><span>{{audit.nombreProducto}}</span></td>
-                                                </tr>
-                                                </table>
-                                            </div>
-                                        </div>
-
-                                        <div class="row">
-                                            <div class="col-md-4"></div>
-                                            <div class="col-md-4" style="text-align: center;"><button class="btn btnIcons6"  style="background-color: #ff5722;" (click)="revisarDuplicados()">Actualizar Productos</button></div>
-                                            <div class="col-md-4"></div>
-                                        </div>
-
-                                    </div>
+                                    
+                                    
                                 </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <div class="col-md-3" style="font-weight: bold;">
+                                            <p>ID</p>
+                                            <p>Sucursal</p>
+                                        </div>
+                                        <div class="col-md-9">
+                                            <p>{{revisionIniciada.idDocumento}}</p>
+                                            <p>{{revisionIniciada.sucursal}}</p>
+                                        </div>
+                                    </div>
+                                    
+                                </div>                            
                             </div>
+                            <dx-data-grid #datag2
+                                id="gridContainer"
+                                [dataSource]="listadoComparacionResultados"
+                                [showBorders]="true"
+                                (onExporting)="onExporting2($event)"
+                                (onExported)="onExported2($event)">   
+                                <dxo-filter-row [visible]="true" ></dxo-filter-row>
+                                <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+                                <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
+                                <dxi-column dataField="fecha"  [visible]="false" sortOrder="desc"></dxi-column>
+                                <dxi-column dataField="producto" width="42%"></dxi-column>
+                                <dxi-column caption="Sistema">
+                                    <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%"></dxi-column>
+                                    <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%"></dxi-column>
+                                </dxi-column>
+                                <dxi-column caption="Conteo">
+                                    <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%"></dxi-column>
+                                    <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%"></dxi-column>
+                                </dxi-column>
+                                <dxi-column caption="Diferencia">
+                                    <dxi-column dataField="cajas_diferencia"  caption="Cajas" width="8%"></dxi-column>
+                                    <dxi-column dataField="piezas_diferencia" caption="Piezas" width="8%"></dxi-column>
+                                </dxi-column>
+                                
+                                <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
+                                <dxi-column dataField="usuario" [visible]="false" width="10%"></dxi-column>
+                                <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
+                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
+                                
+                                <dxo-paging [pageSize]="10"></dxo-paging>
+                                <dxo-pager 
+                                    [showPageSizeSelector]="true"
+                                    [allowedPageSizes]="[5, 10, 20]"
+                                    [showInfo]="true">
+                                </dxo-pager>
+                            
+                                <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+                            </dx-data-grid>
                         </div>
                     </div>
-                </div>
-                
+                </div> 
             </div>
         </div>
     </div>
@@ -379,7 +210,6 @@
 
 
 <div *ngIf="mostrarSeccionIngresos">
-
     <br>
     <div class="row remiPro">
         <div class="col-md-8"></div>
@@ -433,7 +263,8 @@
                                 <div class="row">
                                     <div class="col-md-5"></div>
                                     <div class="col-md-2">
-                                    <button class="btn btn-block btn-success espacio" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistroProducto()">Registrar</button>
+                                    <button class="btn btn-block btn-success espacio" *ngIf="isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistroProducto()">Registrar</button>
+                                    <button class="btn btn-block btn-success espacio" *ngIf="!isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarRegistroProducto()">Actualizar</button>
                                     <br>
                                     <br>
                                     <br>
@@ -456,14 +287,19 @@
                                 <dxo-filter-row [visible]="true" ></dxo-filter-row>
                                 <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                                 <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
-                                <dxi-column dataField="idReferenciaRevision" sortOrder="desc"></dxi-column>
-                                <dxi-column dataField="producto" [visible]="false"></dxi-column>
-                                <dxi-column dataField="fecha"  [visible]="false"></dxi-column>
-                                <dxi-column dataField="cajas"  dataType="number" caption="Cajas"></dxi-column>
-                                <dxi-column dataField="piezas"  dataType="number" caption="Piezas"></dxi-column>
-                                <dxi-column dataField="detalle" caption="Detalle" [visible]="true"></dxi-column>
-                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true"></dxi-column>
-                            
+                                <dxi-column dataField="fecha"  [visible]="false" sortOrder="desc"></dxi-column>
+                                <dxi-column dataField="producto" width="42%"></dxi-column>
+                                <dxi-column dataField="cajas"  caption="Cajas" width="8%"></dxi-column>
+                                <dxi-column dataField="piezas"  caption="Piezas" width="8%"></dxi-column>
+                                <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
+                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
+                                <dxi-column type="buttons"  caption="Edit." width="6%">
+                                    <dxi-button icon="fa fa-pencil" [onClick]="verEdit"></dxi-button>     
+                                </dxi-column>
+                                <dxi-column type="buttons"  caption="Elim." width="6%">
+                                    <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd"></dxi-button>     
+                                </dxi-column>
+
                                 <dxo-paging [pageSize]="10"></dxo-paging>
                                 <dxo-pager 
                                     [showPageSizeSelector]="true"
@@ -482,11 +318,7 @@
 </div>
 
 
-
-
-
-
- <dx-popup [width]="700" [height]="200" [showTitle]="true" title="Link" [dragEnabled]="false"
+<dx-popup [width]="700" [height]="200" [showTitle]="true" title="Link" [dragEnabled]="false"
     [closeOnOutsideClick]="true" [(visible)]="popupVisible">
     <div *dxTemplate="let data of 'content'">
         <div class="col-md-12">

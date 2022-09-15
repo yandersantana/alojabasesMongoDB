@@ -13,20 +13,20 @@
 
 
 <div *ngIf="mostrarCreacion">
-<!--     <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-8"> </div>
-            <div class="col-md-4" style="text-align: right;"> <dx-select-box [items]="menuGlobal" 
-                [value]="menuGlobal[0]" 
-                [readOnly]="false" 
-                [disabled]="false"
-                class="form-control select"
-                (onValueChanged)="opcionMenu($event)"
-                ></dx-select-box></div>
-                <div class="col-md-5"></div>
+    <br>
+    <div class="row remiPro">
+        <div class="col-md-8"></div>
+        <div class="col-md-4"> 
+            <dx-select-box [items]="menu" 
+            [value]="menu[0]" 
+            [readOnly]="false" 
+            [disabled]="false"
+            class="form-control select"
+            (onValueChanged)="opcionMenuPrincipal($event)"
+            ></dx-select-box>
         </div>
-    </div> -->
-    <br><br>
+    </div>
+    <br>
 
     <div class="row" *ngIf="mostrarbtn">
         <div class="col-md-2">
@@ -35,7 +35,7 @@
         <div class="col-md-10"></div>
     </div>
     <br>
-    <div class="card mb-3">
+    <div class="card mb-3" *ngIf="seccionNew">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE INVENTARIO</h5>
         <div class="card-body">
             <div class="row">
@@ -73,7 +73,7 @@
                                 <div class="row">
                                     <div class="col-md-5"></div>
                                     <div class="col-md-2">
-                                    <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistro()">Registrar</button>
+                                    <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="validarRevision()">Registrar</button>
                                     <br>
                                     <br>
                                     <br>
@@ -170,7 +170,7 @@
                                 (onExported)="onExported2($event)">   
                                 <dxo-filter-row [visible]="true" ></dxo-filter-row>
                                 <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-                                <dxo-export [enabled]="true" fileName="Novedades Productos" [allowExportSelectedData]="true"></dxo-export>
+                                <dxo-export [enabled]="true" fileName="Revision Productos" [allowExportSelectedData]="true"></dxo-export>
                                 <dxi-column dataField="fecha"  [visible]="false" sortOrder="desc"></dxi-column>
                                 <dxi-column dataField="producto" width="42%"></dxi-column>
                                 <dxi-column caption="Sistema">
@@ -187,10 +187,13 @@
                                 </dxi-column>
                                 
                                 <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
-                                <dxi-column dataField="usuario" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
-                                
+                                <dxi-column dataField="idReferenciaRevision" [visible]="false" width="10%"></dxi-column>
+                                <dxi-column dataField="sucursal" [visible]="false" width="10%"></dxi-column>
+                                <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
+                                <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column>
+
                                 <dxo-paging [pageSize]="10"></dxo-paging>
                                 <dxo-pager 
                                     [showPageSizeSelector]="true"
@@ -200,13 +203,69 @@
                             
                                 <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
                             </dx-data-grid>
+
+                            <div class="row">
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4">
+                                    <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="cerrarRevision()">Cerrar Revisión</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>
                         </div>
                     </div>
                 </div> 
             </div>
         </div>
     </div>
+
+    <div *ngIf="verListadoTransacciones">
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="transaccionesProductosRevisados"
+            [showBorders]="true"
+            (onExporting)="onExporting3($event)"
+            (onExported)="onExported3($event)">   
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="Transacciones Revision Productos" [allowExportSelectedData]="true"></dxo-export>
+            <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy" [visible]="true" sortOrder="desc" width="10%"></dxi-column>
+            <dxi-column dataField="idReferenciaRevision" caption="ID_R" [visible]="true" width="8%"></dxi-column>
+            <dxi-column dataField="sucursal" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
+            <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column>
+            <dxi-column dataField="producto" width="42%"></dxi-column>
+            <dxi-column caption="Sistema">
+                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Conteo">
+                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Diferencia">
+                <dxi-column dataField="cajas_diferencia"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_diferencia" caption="Piezas" width="8%"></dxi-column>
+            </dxi-column>
+            
+            <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="detalle" [visible]="false" width="10%"></dxi-column>
+            <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
+            
+
+            <dxo-paging [pageSize]="10"></dxo-paging>
+            <dxo-pager 
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[5, 10, 20]"
+                [showInfo]="true">
+            </dxo-pager>
+        
+            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+        </dx-data-grid>
+    </div>
 </div>
+
+
+
 
 
 <div *ngIf="mostrarSeccionIngresos">

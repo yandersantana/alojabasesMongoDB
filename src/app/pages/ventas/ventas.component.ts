@@ -665,50 +665,47 @@ setSelectedProducto(i:number){
         cont++
     })
 
+    if(cont==0){
+      this.productos.forEach(element => {
+        if (element.PRODUCTO == e.value) {
+          if(element.CLASIFICA == "COMBO")
+            this.buscarCombo(e.value, i)
+          else
+            this.traerTransaccionesPorProducto(element,i);
 
-      if(cont==0){
-        this.productos.forEach(element => {
-          if (element.PRODUCTO == e.value) {
-            if(element.CLASIFICA == "COMBO")
-              this.buscarCombo(e.value, i)
-            else
-              this.traerTransaccionesPorProducto(element,i);
-
-            switch (this.factura.sucursal) {
-              case "matriz":
-                this.productosVendidos[i].disponible = element.sucursal1
-                this.productosVendidos[i].producto = element
-                break;
-              case "sucursal1":
-                this.productosVendidos[i].disponible = element.sucursal2
-                this.productosVendidos[i].producto = element
-                break;
-              case "sucursal2":
-                this.productosVendidos[i].disponible = element.sucursal3
-                this.productosVendidos[i].producto = element
-                break;
-              default:
-            }
-            if(this.productosVendidos[i].disponible < 0 || this.productosVendidos[i].disponible == null ){
-              this.productosVendidos[i].disponible=0
-            }
-            this.productosVendidos[i].precio_min = parseFloat((element.precio * element.porcentaje_ganancia / 100 + element.precio).toFixed(2))
-            this.productosVendidos[i].equivalencia="0C 0P"
-            this.productosVendidos[i].tipoDocumentoVenta= this.tDocumento
+          switch (this.factura.sucursal) {
+            case "matriz":
+              this.productosVendidos[i].disponible = element.sucursal1
+              this.productosVendidos[i].producto = element
+              break;
+            case "sucursal1":
+              this.productosVendidos[i].disponible = element.sucursal2
+              this.productosVendidos[i].producto = element
+              break;
+            case "sucursal2":
+              this.productosVendidos[i].disponible = element.sucursal3
+              this.productosVendidos[i].producto = element
+              break;
+            default:
           }
-        })
-      }else{
-        Swal.fire(
-          'Alerta',
-          'Ya tiene detallado este producto',
-          'warning'
-        )
-        this.deleteProductoVendido(i)
-      } 
-    
-
-    
+          if(this.productosVendidos[i].disponible < 0 || this.productosVendidos[i].disponible == null ){
+            this.productosVendidos[i].disponible=0
+          }
+          this.productosVendidos[i].precio_min = parseFloat((element.precio * element.porcentaje_ganancia / 100 + element.precio).toFixed(2))
+          this.productosVendidos[i].equivalencia="0C 0P"
+          this.productosVendidos[i].tipoDocumentoVenta= this.tDocumento
+        }
+      })
+    }else{
+      Swal.fire(
+        'Alerta',
+        'Ya tiene detallado este producto',
+        'warning'
+      )
+      this.deleteProductoVendido(i)
+    } 
   }
+
 
   getClientNames(){
     let names = []
@@ -954,11 +951,14 @@ setSelectedProducto(i:number){
         this.showModal(e,i)
         this.calcularEquivalencia(e, i)
         this.calcularTotalFactura()
-        this.productosVendidos[i].pedir= true
-      }
+        this.productosVendidos[i].entregar = false
+        this.productosVendidos[i].pedir = true
+        
+      }else
+        this.productosVendidos[i].entregar= true
     }
     
-   this.productosVendidos[i].entregar= true
+    
   }
 
   calcularPrecioMinino(e, i:number){
@@ -1180,7 +1180,6 @@ compararCantidad(nombre:string,i:number,o:number){
                 'Producto solicitado!',
                 'Tu producto ha sido añadido con éxito',
                 'success'
-                
               )
 
             } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -2556,7 +2555,7 @@ cambiarestado(e,i:number){
         },
         table: {
           headerRows: 1,
-          widths: ["8%","6%","55%","10%","16%"],
+          widths: ["8%","6%","55%","10%","6%","10%"],
           alignment:'center',
           body: [
             
@@ -2577,18 +2576,28 @@ cambiarestado(e,i:number){
             },
             {
               text: 'P.UNIT',
-              style: 'tableHeader2'
-              , alignment: 'center'
+              style: 'tableHeader2', 
+              alignment: 'center'
+            },
+            {
+              text: 'EST',
+              style: 'tableHeader2', 
+              alignment: 'center'
             },
             {
               text: 'TOTAL',
-              style: 'tableHeader2'
-              , alignment: 'center'
+              style: 'tableHeader2', 
+              alignment: 'center'
             },
             ],
             
             ...productos2.map(ed =>{
-              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},{text:ed.producto.PRODUCTO,fontSize:8}, {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
+              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },
+              {text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},
+              {text:ed.producto.PRODUCTO,fontSize:8}, 
+              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
+              {text:ed.entregar ? "ENT":"PTE",fontSize:8, alignment:"center"}, 
+              {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
               
             }),
           ]
@@ -2615,7 +2624,7 @@ cambiarestado(e,i:number){
         },
         table: {
           headerRows: 1,
-          widths: ["7%","7%","6%","50%","10%","15%"],
+          widths: ["7%","7%","6%","50%","10%","6%","9%"],
           alignment:'center',
           body: [
             
@@ -2645,6 +2654,11 @@ cambiarestado(e,i:number){
               , alignment: 'center'
             },
             {
+              text: 'EST',
+              style: 'tableHeader2'
+              , alignment: 'center'
+            },
+            {
               text: 'TOTAL',
               style: 'tableHeader2'
               , alignment: 'center'
@@ -2652,7 +2666,13 @@ cambiarestado(e,i:number){
             ],
             
             ...productos2.map(ed =>{
-              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },{text:ed.equivalencia, alignment:"center",fontSize:8},{text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},{text:ed.producto.PRODUCTO,fontSize:8}, {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
+              return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },
+              {text:ed.equivalencia, alignment:"center",fontSize:8},
+              {text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},
+              {text:ed.producto.PRODUCTO,fontSize:8}, 
+              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
+              {text:ed.entregar ? "ENT":"PTE",fontSize:8, alignment:"center"},
+              {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
               
             }),
             /* [

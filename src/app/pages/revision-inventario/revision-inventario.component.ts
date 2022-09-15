@@ -23,6 +23,7 @@ import { RevisionInventarioService } from 'src/app/servicios/revision-inventario
 import { RevisionInventarioProductoService } from 'src/app/servicios/revision-inventario-productos.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 import { element } from 'protractor';
+import { TransaccionesRevisionProductoService } from 'src/app/servicios/transaccionesRevisionProducto.service';
 
 @Component({
   selector: 'app-revision-inventario',
@@ -40,6 +41,7 @@ export class RevionInventarioComponent implements OnInit {
   listadoRevisionesIniciadas: controlInventario[]=[]
   revisionIniciada: controlInventario = new controlInventario()
   listadoComparacionResultados : comparacionResultadosRevision[]=[]
+  transaccionesProductosRevisados : comparacionResultadosRevision[]=[]
   linkRevision =""
   popupVisible = false;
   idRevision = "";
@@ -53,31 +55,29 @@ export class RevionInventarioComponent implements OnInit {
   isNew = true;
   mostrarbtn = false;
   verListadoComparacion = false;
+  bloquearBtn = false;
   
   menuIngresos: string[] = [
     "Nueva Revision",
     "Ver Listado"
   ];
 
+  menu: string[] = [
+    "Nueva Revision",
+    "Ver Transacciones",
+  ];
+
+  verListadoTransacciones = false;
+  seccionNew = true;
 
 
-  sucursal:string
-  now: Date = new Date();
-  productoEntregado:string
-  parametrizaciones: parametrizacionsuc[]=[]
+
   locales: Sucursal[]=[]
   productosActivos: producto[]=[]
   productos: producto[]=[]
   nombreSucursal:string
   number_transaccion:number=0
-  auditoria:auditoriasProductos
-  auditoriaProductosBase:auditoriasProductos[]=[]
-  auditoriaProductosleida:auditoriasProductos[]=[]
-  auditoriaProductosleidarepetidos:auditoriasProductos[]=[]
-  auditoriaProductosleidarepetidos2:auditoriasProductos[]=[]
-  auditoriaProductosleida2:auditoriasProductos[]=[]
-  newAuditoria: auditoria
-  editAuditoria: auditoriasProductos
+
   contadores:contadoresDocumentos[]=[]
   nameSucursal:string=""
   auditoriasBase: auditoria[]=[]
@@ -121,11 +121,7 @@ export class RevionInventarioComponent implements OnInit {
   ];
   fecha_inicio= new Date()
 
-  menu: string[] = [
-    "Nueva Auditoria",
-    "Ver Auditorias",
-    "Novedades registradas"
-  ];
+  
 
   menuSupervisor: string[] = [
     
@@ -147,6 +143,7 @@ export class RevionInventarioComponent implements OnInit {
     public _revisionInventarioProductoService : RevisionInventarioProductoService,
     public _contadoresService:ContadoresDocumentosService,
     public _transaccionesService : TransaccionesService,
+    public _transaccionesRevisionProductoService : TransaccionesRevisionProductoService,
     public authService: AuthService,
     private rutaActiva: ActivatedRoute,
     private router:Router,
@@ -167,15 +164,10 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.traerParametrizaciones()
     this.traerSucursales()
     this.traerOpcionesCatalogo()
     this.traerContadoresDocumentos()
     this.traerRevisionesInventario()
-    
-    if(this.idRevision != "0")
-      this.traerRevisionesInventarioProductosPorId()
-
   }
 
 
@@ -189,9 +181,22 @@ export class RevionInventarioComponent implements OnInit {
 
 
   traerRevisionesInventario(){
-    this._revisionInventarioService.getRevisiones().subscribe(res => {
+    this.listadoRevisiones = [];
+    this._revisionInventarioService.getRevisionesIniciadas().subscribe(res => {
       this.listadoRevisiones = res as controlInventario[];
+      if(this.idRevision != "0"){
+        var revision = this.listadoRevisiones.find(element=> element.idDocumento == Number(this.idRevision))
+        if(revision != null){
+          this.traerRevisionesInventarioProductosPorId()
+        }
+        else{
+          this.bloquearboton = true;
+          this.mostrarMensajeGenerico(2,"El proceso de revision ha culminado")
+        }
+          
+      }
       this.separarRevisiones()
+      
     })
   }
 
@@ -202,7 +207,15 @@ export class RevionInventarioComponent implements OnInit {
     })
   }
 
+  traertransaccionesProductosRevisados(){
+    this.transaccionesProductosRevisados = [];
+    this._transaccionesRevisionProductoService.getTransacciones().subscribe(res => {
+      this.transaccionesProductosRevisados = res as comparacionResultadosRevision[];
+    })
+  }
+
   separarRevisiones(){
+    this.listadoRevisionesIniciadas = [];
     this.listadoRevisiones.forEach(element=>{
       if(element.estado == "Iniciada")
         this.listadoRevisionesIniciadas.push(element)
@@ -244,11 +257,6 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
-  traerParametrizaciones(){
-    this.parametrizacionService.getParametrizacion().subscribe(res => {
-      this.parametrizaciones = res as parametrizacionsuc[];
-   })
-  }
 
   traerSucursales(){
     this.sucursalesService.getSucursales().subscribe(res => {
@@ -266,16 +274,19 @@ export class RevionInventarioComponent implements OnInit {
 
 
   traerProductos(){
-    this.mostrarLoading = true;
-    this.productoService.getProducto().subscribe(res => {
-      this.productosActivos = res as producto[];
-      this.llenarComboProductos()
-   })
+    if(this.productosActivos.length == 0){
+      this.mostrarLoading = true;
+      this.productoService.getProducto().subscribe(res => {
+        this.productosActivos = res as producto[];
+        this.llenarComboProductos()
+      })
+    }
   }
 
 
   llenarComboProductos(){
     if(this.idRevision != "0"){
+      console.log(this.listadoRevisiones)
       var categoria = this.listadoRevisiones?.find(element=>element.idDocumento == Number(this.idRevision)).nombreClasificacion;
       this.productos = this.productosActivos;
       this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
@@ -289,73 +300,83 @@ export class RevionInventarioComponent implements OnInit {
       this.mostrarLoading = false;
   }
 
+  cerrarRevision(){
+    var cont = 0;
+    this.mensajeLoading = "Guardando Transacciones.."
+    this.mostrarLoading = true;
+    this.listadoComparacionResultados.forEach(element=>{
+      
+      this._transaccionesRevisionProductoService.newTransaccion(element).subscribe( 
+        res => { 
+          cont++;
+          this.actualizarEstadoRevision(cont)  }, 
+        err => { this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")
+      })
+    })
+  }
+
+
+  actualizarEstadoRevision(contador : number){
+    console.log(contador)
+    console.log(this.listadoComparacionResultados)
+    if(contador == this.listadoComparacionResultados.length){
+      this._revisionInventarioService.updateEstado(this.revisionIniciada._id , "Finalizada").subscribe( 
+      res => { 
+        this.mostrarLoading = false;
+        Swal.close()
+        Swal.fire({
+          title: 'Correcto',
+          text: 'Se realizó su proceso con éxito',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          window.location.reload()
+        })}, 
+      err => { this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+    }
+    
+  }
 
 
   onExporting2 (e) {
     e.component.beginUpdate();
-    e.component.columnOption("observaciones", "visible", true);
-    e.component.columnOption("auditor", "visible", true);
-    e.component.columnOption("auditado", "visible", true);
-    e.component.columnOption("ubicacion", "visible", true);
-    e.component.columnOption("sucursal.nombre", "visible", true);
-    
+    e.component.columnOption("idReferenciaRevision", "visible", true);
+    e.component.columnOption("sucursal", "visible", true);
+    e.component.columnOption("responsable", "visible", true);
+    e.component.columnOption("nombreClasificacion", "visible", true);
   };
+
+
   onExported2 (e) {
-    e.component.columnOption("observaciones", "visible", false);
-    e.component.columnOption("auditor", "visible", false);
-    e.component.columnOption("auditado", "visible", false);
-    e.component.columnOption("ubicacion", "visible", false);
-    e.component.columnOption("sucursal.nombre", "visible", false);
+    e.component.columnOption("idReferenciaRevision", "visible", false);
+    e.component.columnOption("sucursal", "visible", false);
+    e.component.columnOption("responsable", "visible", false);
+    e.component.columnOption("nombreClasificacion", "visible", false);
     e.component.endUpdate();
   }
 
 
   onExporting3 (e) {
     e.component.beginUpdate();
-    e.component.columnOption("ubicacion", "visible", true);
-    e.component.columnOption("observaciones", "visible", true);
+    e.component.columnOption("responsable", "visible", true);
+    e.component.columnOption("nombreClasificacion", "visible", true);
+    e.component.columnOption("cajas_sistema", "visible", true);
+    e.component.columnOption("piezas_sistema", "visible", true);
+    e.component.columnOption("cajas_conteo", "visible", true);
+    e.component.columnOption("piezas_conteo", "visible", true);
+    e.component.columnOption("detalle", "visible", true);
     
   };
   onExported3 (e) {
-    e.component.columnOption("observacubicacioniones", "visible", false);
-    e.component.columnOption("observaciones", "visible", false);
+    e.component.columnOption("responsable", "visible", false);
+    e.component.columnOption("nombreClasificacion", "visible", false);
+    e.component.columnOption("cajas_sistema", "visible", false);
+    e.component.columnOption("piezas_sistema", "visible", false);
+    e.component.columnOption("cajas_conteo", "visible", false);
+    e.component.columnOption("piezas_conteo", "visible", false);
+    e.component.columnOption("detalle", "visible", false);
     e.component.endUpdate();
   }
-  opcionMenu(e){
-    //var x = document.getElementById("newAudGlobal");
-    var y = document.getElementById("tabla3");
-    var z = document.getElementById("tabla2");
-    var z0 = document.getElementById("tabla4");
-    var z1 = document.getElementById("newAud");
-    var z2 = document.getElementById("editAud");
-    //var z3 = document.getElementById("tablaAuditoria");
-
-    switch (e.value) {
-      case  "Nueva Auditoria":
-        //x.style.display = "block";
-        y.style.display="none";
-        z.style.display="none";
-        z1.style.display="none";
-        z0.style.display="none";
-        z2.style.display="none";
-        this.mostrarTablaAuditoria = false;
-        //z4.style.display="none";
-
-        this.newAud = true;
-       
-       break;
-      case "Ver Auditorias":
-        this.router.navigate(['/auditorias/tabla']);
-        break;
-      case "Novedades registradas":
-        this.router.navigate(['/auditorias/novedades']);
-        
-        break;
-      default:    
-    }     
-  }
-
-
 
   opcionMenuIngresos(e){
     switch (e.value) {
@@ -373,110 +394,26 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
-
-
-  buscarInformacion(){
-    this.invetarioP.forEach(element=>{
-      if(element.producto.PRODUCTO == this.auditoria.producto.PRODUCTO){
-        console.log("suc",this.auditoria)
-        switch (this.auditoria.sucursal.nombre) {
-          case "matriz":
-            this.auditoria.cajas_sistema= element.cantidadCajas
-            this.auditoria.piezas_sistema= element.cantidadPiezas
-            this.ubicaciones= element.producto.ubicacionSuc1
-            this.calcularTotalM2Base()
-            break;
-          case "sucursal1":
-            this.auditoria.cajas_sistema= element.cantidadCajas2
-            this.auditoria.piezas_sistema= element.cantidadPiezas2
-            this.ubicaciones= element.producto.ubicacionSuc2
-            this.calcularTotalM2Base()
-            break;
-          case "sucursal2":
-            this.auditoria.cajas_sistema= element.cantidadCajas3
-            this.auditoria.piezas_sistema= element.cantidadPiezas3
-            this.ubicaciones= element.producto.ubicacionSuc3
-            this.calcularTotalM2Base()
-            break;
-          default:
-            break;
-        }
-        
-      }
-    })
-    this.calcularTotalM2()
+  opcionMenuPrincipal(e){
+    switch (e.value) {
+      case  "Nueva Revision":
+          this.seccionNew = true;
+          this.newAud = true;
+          this.verListadoTransacciones = false;
+       break;
+      case "Ver Transacciones":
+          if(this.transaccionesProductosRevisados.length == 0) 
+            this.traertransaccionesProductosRevisados();
+          this.seccionNew = false;
+          this.newAud = false;
+          this.newIngreso = false;
+          this.verListadoIngreso = false;
+          this.verListadoTransacciones = true;
+        break;
+      default:    
+    }     
   }
 
-  buscarInformacionNuevoProceso(){
-    this.productosActivos.forEach(element=>{
-      if(element.PRODUCTO == this.auditoria.producto.PRODUCTO){
-        switch (this.auditoria.sucursal.nombre) {
-          case "matriz":
-            this.auditoria.cajas_sistema= Math.trunc((element.sucursal1+0.01) / element.M2);
-            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal1+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
-            this.ubicaciones= element.ubicacionSuc1
-            this.auditoria.m2base = element.sucursal1
-            console.log("m2",this.auditoria.m2base)
-            break;
-          case "sucursal1":
-            this.auditoria.cajas_sistema= Math.trunc((element.sucursal2+0.01) / element.M2);
-            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal2+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
-            this.ubicaciones= element.ubicacionSuc2
-            this.auditoria.m2base = element.sucursal2
-            console.log("m2",this.auditoria.m2base)
-            break;
-          case "sucursal2":
-            this.auditoria.cajas_sistema= Math.trunc((element.sucursal3+0.01) / element.M2);
-            this.auditoria.piezas_sistema=  Math.trunc((element.sucursal3+0.01) * element.P_CAJA / element.M2) - (this.auditoria.cajas_sistema * element.P_CAJA);
-            this.ubicaciones= element.ubicacionSuc3
-            this.auditoria.m2base = element.sucursal3
-            console.log("m2",this.auditoria.m2base)
-            break;
-          default:
-            break;
-        }
-        
-      }
-    })
-    this.calcularTotalM2()
-  }
-
-  buscarInformacionEdit(){
-    this.invetarioP.forEach(element=>{
-      if(element.producto.PRODUCTO == this.editAuditoria.producto.PRODUCTO){
-        switch (this.editAuditoria.sucursal.nombre) {
-          case "matriz":
-            this.editAuditoria.cajas_sistema= element.cantidadCajas
-            this.editAuditoria.piezas_sistema= element.cantidadPiezas
-            
-            this.calcularTotalM2BaseEdit()
-            break;
-          case "sucursal1":
-            this.editAuditoria.cajas_sistema= element.cantidadCajas2
-            this.editAuditoria.piezas_sistema= element.cantidadPiezas2
-            
-            this.calcularTotalM2BaseEdit()
-            break;
-          case "sucursal2":
-            this.editAuditoria.cajas_sistema= element.cantidadCajas3
-            this.editAuditoria.piezas_sistema= element.cantidadPiezas3
-            
-            this.calcularTotalM2BaseEdit()
-            break;
-          default:
-            break;
-        }
-        
-      }
-    })
-  }
-
-  
-
-  regresar(){
-    this.mostrarTablaAuditoria = false;
-    this.newAud = true;
-  }
 
 
   verLista(id:number){
@@ -508,6 +445,11 @@ export class RevionInventarioComponent implements OnInit {
       newComparacion.cajas_conteo = element.cajas
       newComparacion.piezas_conteo = element.piezas
       newComparacion.detalle = element.detalle
+      newComparacion.fecha = element.fecha
+      newComparacion.sucursal = this.revisionIniciada.sucursal
+      newComparacion.responsable = this.revisionIniciada.responsable
+      newComparacion.idReferenciaRevision = this.revisionIniciada.idDocumento
+      newComparacion.nombreClasificacion = this.revisionIniciada.nombreClasificacion
       this.traerTransaccionesPorProducto(element.producto , index )
       this.listadoComparacionResultados.push(newComparacion)
     })
@@ -523,117 +465,6 @@ export class RevionInventarioComponent implements OnInit {
     this.popupVisible = true;
   }
 
-
-
-  verLista2(e){
-    var x = document.getElementById("tabla2");
-    var y = document.getElementById("tabla3");
-      x.style.display = "block";
-      y.style.display = "none";
-    var cont=0
-    this.auditoriaProductosleida.forEach(element=>{
-      cont++
-    })
-    if(cont>=0){
-      this.auditoriaProductosleida.forEach(element=>{
-        this.auditoriaProductosleida.splice(0)    
-      })
-    }
-    this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == e.idAuditoria){
-        this.auditoriaProductosleida.push(element)
-      }
-    })
-    
-  }
-
-  verLista3(e){
-    
-    var cont=0
-    this.auditoriaProductosleida2.forEach(element=>{
-      cont++
-    })
-    if(cont>=0){
-      this.auditoriaProductosleida2.forEach(element=>{
-        this.auditoriaProductosleida2.splice(0)    
-      })
-    }
-    this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == e.idAuditoria ){
-        if(element.valoracion!="Ok"){
-          this.auditoriaProductosleida2.push(element)
-        }
-        
-      }
-    })
-
-    if(this.auditoriaProductosleida2.length==0){
-
-    }
-    var x = document.getElementById("tabla4");
-    var y = document.getElementById("tabla3");
-      x.style.display = "block";
-      y.style.display = "none";
-    this.dataGrid2.instance.refresh()
-   
-  }
-
-  llenarLista(id:number){
-    var cont=0
-    this.auditoriaProductosleida.forEach(element=>{
-      cont++
-    })
-    if(cont>=0){
-      this.auditoriaProductosleida.forEach(element=>{
-        this.auditoriaProductosleida.splice(0)    
-      })
-    }
-    this.auditoriaProductosBase.forEach(element=>{
-      if(element.idPrincipal == id){
-        this.auditoriaProductosleida.push(element)
-      }
-    })
-  }
-
-  onExporting (e) {
-    e.component.beginUpdate();
-    e.component.columnOption("condicion", "visible", true);
-    e.component.columnOption("auditor", "visible", true);
-    e.component.columnOption("auditado", "visible", true);
-    e.component.columnOption("impacto", "visible", true);
-    e.component.columnOption("ubicacion", "visible", true);
-    e.component.columnOption("sucursal.nombre", "visible", true);
-    e.component.columnOption("observaciones", "visible", true);
-   
-  };
- 
-  onExported (e) {
-    e.component.columnOption("condicion", "visible", false);
-    e.component.columnOption("impacto", "visible", false);
-    e.component.columnOption("auditor", "visible", false);
-    e.component.columnOption("auditado", "visible", false);
-    e.component.columnOption("ubicacion", "visible", false);
-    e.component.columnOption("sucursal.nombre", "visible", false);
-    e.component.columnOption("observaciones", "visible", false);
-
-    e.component.endUpdate();
-  }
-
-  cambiarEstadoSeleccionado(e){
-    
-  }
-
-  getCourseFile = (e) => {
-    this.verLista2(e.row.data)  
-  }
-
-  getCourseFile2 = (e) => {
-    this.verLista3(e.row.data)  
-  }
-
-  getCourseFile3 = (e) => {
-    this.eliminarAuditoria(e.row.data)  
-  }
 
   verEdit= (e) =>{
     this.editarPro(e.row.data)
@@ -651,117 +482,67 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
-  eliminarAuditoria(e){
-    Swal.fire({
-      title: 'Eliminar Auditoría',
-      text: "Esta seguro que desea eliminar la auditoria #"+e.idAud,
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonText: 'Si',
-      cancelButtonText: 'No'
-    }).then((result) => {
-      if (result.value) {
-        this.mostrarMensaje()
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Cancelado!',
-          'Se ha cancelado su proceso.',
-          'error'
-        )
-      }
-    })
-  }
-
-  actualizarProductoEliminado(e){
-    var sumaProductos=0
-    this.productos.forEach(element=>{
-      if(element.PRODUCTO == e.producto.PRODUCTO){
-        switch (e.sucursal.nombre) {
-          case "matriz":
-            sumaProductos= element.sucursal1- e.m2diferencia
-            this.productoService.updateProductoSucursal1ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
-            break;
-          case "sucursal1":
-            sumaProductos= element.sucursal2- e.m2diferencia
-            this.productoService.updateProductoSucursal2ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
-            break;
-          case "sucursal2":
-            sumaProductos= element.sucursal3- e.m2diferencia
-          this.productoService.updateProductoSucursal3ComD(element,sumaProductos,element.precio).subscribe( res => {this.eliminarTransaccion(e)}, err => {alert("error")})
-              break;
-          default:
-        }
-
-      }
-    })
-  }
-
-  eliminarTransaccion(e){
-   
-  }
-
-  seguirAuditoria(i:number){
-    this.pass = localStorage.getItem("contrasena");
-    if (this.pass == this.auditoriasIniciadas[i].contrasena ) {
-     var x = document.getElementById("newAud");
-      //var y = document.getElementById("newAudGlobal");
-      var z = document.getElementById("tabla3");
-     x.style.display = "block";
-//      y.style.display = "none";
-      z.style.display = "none";
-      this.newAud = false;
-      console.log("pass")
-      this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
-      this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
-      this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
-      this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
-      this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
-      this.idAuditorialeida = this.auditoriasIniciadas[i]
-      this.auditoria.auditor = this.usuarioLogueado[0].name
-      this.numProductos = Number(this.auditoriasIniciadas[i].cantidad_productos+1)
-      this.llenarLista(this.auditoriasIniciadas[i].idAuditoria)
-    }else{
-      Swal.fire(
-        'Error',
-        'Usted no se encuentra realizando esta auditoria, debe primero ingresar el código',
-        'error'
-      )
-    }
-         
-  }
-
-  mensajeOK(){
-    Swal.close()
-    Swal.fire({
-      title: 'Correcto',
-      text: 'Se eliminó con éxito',
-      icon: 'success',
-      confirmButtonText: 'Ok'
-    }).then((result) => {
-      window.location.reload()
-    })
-  }
-
-
-  
 
 
 
-
-  mostrar(i:number){
-
-  }
-
+ 
   guardarRegistro(){
-    this.mensajeLoading = "Guardando.."
-    this.mostrarLoading = true;
+    this._revisionInventarioService.newRevisionInventario(this.newControlInventario).subscribe( 
+      res => {  this.actualizarContador(); }, 
+      err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+  }
+
+  validarRevision(){
+
     this.newControlInventario.fecha_inicio = this.fecha_inicio;
     this.newControlInventario.nombreClasificacion = this.nombreClasificacion;
     this.newControlInventario.sucursal = this.nameSucursal;
 
-    this._revisionInventarioService.newRevisionInventario(this.newControlInventario).subscribe( 
-      res => {  this.actualizarContador(); }, 
-      err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
+    if(this.newControlInventario.responsable == " "){
+      this.mostrarMensajeGenerico(2,"Ingrese un responsable")
+      return;
+    }
+    if(this.newControlInventario.sucursal == ""){
+      this.mostrarMensajeGenerico(2,"Escoja una sucursal")
+      return;
+    }
+    if(this.newControlInventario.nombreClasificacion == ""){
+      this.mostrarMensajeGenerico(2,"Escoja un grupo de producto")
+      return;
+    }
+
+    var data = this.listadoRevisionesIniciadas.find(element => element.sucursal == this.newControlInventario.sucursal && element.nombreClasificacion == this.newControlInventario.nombreClasificacion)
+    console.log(data)
+    if(data != null){
+      this.mostrarMensajeGenerico(2,"Ya hay una revisión iniciada con los mismos datos");
+      return;
+    }
+
+    this.obtenerId();
+      
+  }
+
+  obtenerId(){
+    this.mensajeLoading = "Guardando";
+    this.mostrarLoading = true;
+    var IdNum = new Promise<any>((resolve, reject) => {
+      try {
+        this._revisionInventarioService.getRevisionPorIdConsecutivo(this.newControlInventario).subscribe(res => {
+        var listado = res as controlInventario[];
+          if(listado.length == 0){
+            resolve("listo");
+          }else{
+            this.newControlInventario.idDocumento = this.newControlInventario.idDocumento + 1
+            this.obtenerId();
+          }         
+          },(err) => {});
+      } catch (error) {
+      } 
+    })
+
+    IdNum.then((data) => {
+      this.guardarRegistro();
+    })
   }
 
 
@@ -800,23 +581,11 @@ export class RevionInventarioComponent implements OnInit {
     this._contadoresService.updateIdRevisionInventario(this.contadores[0]).subscribe( res => {
       this.mostrarMensajeGenerico(1,"Se ha registrado con éxito")
       this.mostrarLoading = false;
+      this.newControlInventario.responsable = ""
+      this.traerRevisionesInventario();
     },err => {})
   }
 
-
-
-
-guardarAuditoriaProducto(){
-  
-}
-
- guardarEditAuditoriaProducto(){
-  
-}
-
-  finalizarAuditoria(i:number){
-    
-  }
 
   eliminarRevisionProducto(e:any){
     Swal.fire({
@@ -906,244 +675,8 @@ guardarAuditoriaProducto(){
     } */
   }
 
-  calcularTotalM2BaseEdit(){
-    this.editAuditoria.m2base=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_sistema)+((this.editAuditoria.piezas_sistema*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
-    console.log("editAuditoria "+this.editAuditoria.m2base)
-  }
+  
 
-  calcularTotalM2Base(){
-    this.auditoria.m2base=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_sistema)+((this.auditoria.piezas_sistema*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2base)
-  }
-
-  calcularTotalM2(){
-    this.auditoria.m2fisico=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_fisico)+((this.auditoria.piezas_fisico*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2fisico)
-    this.calculardiferencia()
-  }
-
-  calcularTotalM2Dano(){
-    this.auditoria.m2daño=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_danadas)+((this.auditoria.piezas_danadas*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2daño)
-    this.auditoria.impactoDanado = parseFloat((this.auditoria.m2daño * this.auditoria.producto.precio).toFixed(2))
-  }
-
-  calcularTotalM2Edit(){
-    this.editAuditoria.m2fisico=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_fisico)+((this.editAuditoria.piezas_fisico*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.editAuditoria.m2fisico)
-    this.calculardiferencia2()
-  }
-
-  calcularTotalM2DanoEdit(){
-    this.editAuditoria.m2daño=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_danadas)+((this.editAuditoria.piezas_danadas*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.editAuditoria.m2daño)
-    this.editAuditoria.impactoDanado = parseFloat((this.editAuditoria.m2daño * this.editAuditoria.producto.precio).toFixed(2))
-  }
-
-  calculardiferencia(){
-    var impactoNeto=0
-    impactoNeto=this.auditoria.m2fisico-this.auditoria.m2base
-    console.log("this.auditoria.m2fisico",this.auditoria.m2fisico)
-    console.log("this.auditoria.m2base",this.auditoria.m2base)
-    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" )
-       this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
-    else{
-      if(this.auditoria.m2fisico<this.auditoria.m2base)
-        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
-      else
-        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
-   }
-    
-    console.log("la diferencia es "+this.auditoria.m2diferencia)
-    this.auditoria.cajas_diferencia=Math.trunc(this.auditoria.m2diferencia /  this.auditoria.producto.M2);
-    console.log("cajas diferencia "+this.auditoria.cajas_diferencia)
-    
-    this.auditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
-    console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
-
-    this.auditoria.impacto = parseFloat((impactoNeto * this.auditoria.producto.precio).toFixed(2))
-    if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
-      this.auditoria.condicion= "OK"
-      this.auditoria.impacto=0
-    }else if (this.auditoria.m2diferencia<0){
-      this.auditoria.condicion = "FALTANTE"
-    }else if(this.auditoria.m2diferencia >0){
-      this.auditoria.condicion = "SOBRANTE"
-    } 
-  }
-
-  calculardiferencia2(){
-    var impactoNeto=0
-    impactoNeto=this.editAuditoria.m2fisico-this.editAuditoria.m2base
-    console.log("this.editAuditoria.m2fisico",this.editAuditoria.m2fisico)
-    console.log("this.editAuditoria.m2base",this.editAuditoria.m2base)
-    if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
-      this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
-    }else{
-      if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){
-        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.04
-      }else{
-        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.03
-      }
-    }
-    
-    console.log("la diferencia es "+this.editAuditoria.m2diferencia)
-    this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);
-    console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
-    
-    this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
-    console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
-
-    this.editAuditoria.impacto = parseFloat((impactoNeto * this.editAuditoria.producto.precio).toFixed(2))
-    console.log("sss "+this.editAuditoria.impacto)
-
-    if(this.editAuditoria.m2diferencia >0){
-      this.editAuditoria.condicion = "SOBRANTE"
-    }else if (this.editAuditoria.m2diferencia<0){
-      this.editAuditoria.condicion = "FALTANTE"
-    }else{
-      this.editAuditoria.condicion= "OK"
-    }
-  }
-
-
-
-
-  actualizarUbicacion(){
-     var cont=0
-        switch (this.auditoria.sucursal.nombre) {
-          case "matriz":
-             for (let index = 0; index < this.auditoria.producto.ubicacionSuc1.length; index++) {
-              const element2 = this.auditoria.producto.ubicacionSuc1[index];
-               if(element2 == this.auditoria.ubicacion){
-                cont++
-              }  
-            }
-            
-            if(cont==0){
-              this.auditoria.producto.ubicacionSuc1.push(this.auditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
-            } 
-            break;
-           case "sucursal1":
-            for (let index = 0; index < this.auditoria.producto.ubicacionSuc2.length; index++) {
-              const element2 = this.auditoria.producto.ubicacionSuc2[index];
-              if(element2 == this.auditoria.ubicacion){
-                cont++
-              } 
-            }
-            if(cont==0){
-              this.auditoria.producto.ubicacionSuc2.push(this.auditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
-            }
-            
-            break;
-          case "sucursal2":
-            for (let index = 0; index < this.auditoria.producto.ubicacionSuc3.length; index++) {
-              const element2 = this.auditoria.producto.ubicacionSuc3[index];
-              if(element2 == this.auditoria.ubicacion){
-                cont++
-              } 
-            }
-            if(cont==0){
-              this.auditoria.producto.ubicacionSuc3.push(this.auditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.auditoria.producto).subscribe( res => {}, err => {alert("error")})
-            }
-              break; 
-          default:
-            break;
-        } 
-  }
-
-  actualizarUbicacionEdit(){
-     var cont=0
-        switch (this.editAuditoria.sucursal.nombre) {
-          case "matriz":
-             for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc1.length; index++) {
-              const element2 = this.editAuditoria.producto.ubicacionSuc1[index];
-               if(element2 == this.editAuditoria.ubicacion){
-                cont++
-              }  
-            }
-            
-            if(cont==0){
-              this.editAuditoria.producto.ubicacionSuc1.push(this.editAuditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
-            } 
-            break;
-           case "sucursal1":
-            for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc2.length; index++) {
-              const element2 = this.editAuditoria.producto.ubicacionSuc2[index];
-              if(element2 == this.editAuditoria.ubicacion){
-                cont++
-              } 
-            }
-            if(cont==0){
-              this.editAuditoria.producto.ubicacionSuc2.push(this.editAuditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
-            }
-            
-            break;
-          case "sucursal2":
-            for (let index = 0; index < this.editAuditoria.producto.ubicacionSuc3.length; index++) {
-              const element2 = this.editAuditoria.producto.ubicacionSuc3[index];
-              if(element2 == this.editAuditoria.ubicacion){
-                cont++
-              } 
-            }
-            if(cont==0){
-              this.editAuditoria.producto.ubicacionSuc3.push(this.editAuditoria.ubicacion)
-              this.productoService.updateProductoUbicaciones(this.editAuditoria.producto).subscribe( res => {}, err => {alert("error")})
-            }
-              break; 
-          default:
-            break;
-        } 
-  }
-
-
-
-  continuarAuditoria(i:number){
-    Swal.fire({
-      title: 'Código',
-      showCancelButton: true,
-      inputAttributes: {
-        autocapitalize: 'off'
-      },
-      confirmButtonText: 'Ingresar',
-      cancelButtonText: 'Cancelar',
-      input: 'text',
-    }).then((result) => {
-      if (result.value) {
-        if(result.value == this.auditoriasIniciadas[i].contrasena){
-          var x = document.getElementById("newAud");
-         // var y = document.getElementById("newAudGlobal");
-          var z = document.getElementById("tabla3");
-          x.style.display = "block";
-         // y.style.display = "none";
-          z.style.display = "none";
-          this.newAud = false;
-          localStorage.setItem('contrasena',  result.value);
-          this.auditoria.sucursal = this.auditoriasIniciadas[i].sucursal
-          this.auditoria.idPrincipal = this.auditoriasIniciadas[i].idAuditoria
-          this.auditoria.auditado = this.auditoriasIniciadas[i].auditado
-          this.nombreSucursal =  this.auditoriasIniciadas[i].sucursal.nombre
-          this.auditoria.idAud = this.auditoriasIniciadas[i].idAuditoria +" - "+ Number(this.auditoriasIniciadas[i].cantidad_productos+1)
-          this.idAuditorialeida = this.auditoriasIniciadas[i]
-          this.auditoria.auditor = this.usuarioLogueado[0].name
-          this.numProductos = Number(this.auditoriasIniciadas[i].cantidad_productos+1)
-          this.llenarLista(this.auditoriasIniciadas[i].idAuditoria)
-        }else{ this.mostrarMensajeGenerico(2,"Código incorrecto")}
-       
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Cancelado!',
-          'Se ha cancelado su proceso.',
-          'error'
-        )
-      }
-    })
-  }
 
 
   mostrarMensajeGenerico(tipo:number , texto:string){
@@ -1404,10 +937,8 @@ guardarAuditoriaProducto(){
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
       this.invetarioProd.execute = false;
-      if (this.invetarioProd.producto.PRODUCTO == nombreProducto) {
+      if (this.invetarioProd.producto.PRODUCTO == nombreProducto)
         this.invetarioP.push(this.invetarioProd);
-        console.log(this.invetarioP)
-      }
 
       contCajas = 0;
       contPiezas = 0;
@@ -1530,8 +1061,6 @@ guardarAuditoriaProducto(){
     else
       this.listadoComparacionResultados[indice].resultado = "OK"
 
-      console.log(this.listadoComparacionResultados[indice])
-    
     //this.calcularTotalM2();
     this.mostrarLoading = false;
   }
@@ -1550,6 +1079,22 @@ guardarAuditoriaProducto(){
       element.cantidadCajas3 = Math.trunc(element.cantidadM2b3 / element.producto.M2);
       element.cantidadPiezas3 = parseInt(((element.cantidadM2b3 * element.producto.P_CAJA) /element.producto.M2 - element.cantidadCajas3 * element.producto.P_CAJA).toFixed(0));
       element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
+
+      if(element.cantidadM2 < 0){
+        element.cantidadCajas = 0;
+        element.cantidadPiezas = 0;
+        element.cantidadM2 = 0;
+      }
+      if(element.cantidadM2b2 < 0){
+        element.cantidadCajas2 = 0;
+        element.cantidadPiezas2 = 0;
+        element.cantidadM2b2 = 0;
+      }
+      if(element.cantidadM2b3 < 0){
+        element.cantidadCajas3 = 0;
+        element.cantidadPiezas3 = 0;
+        element.cantidadM2b3 = 0;
+      }
     });
   }
 

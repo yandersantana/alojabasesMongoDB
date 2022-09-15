@@ -21,6 +21,26 @@ router.get('/getRevisiones', async (req, res) => {
     res.send(revisiones)      
 })
 
+router.get('/getRevisionesIniciadas', async (req, res) => {
+    const revisiones = await RevisionInventario.find({"estado":"Iniciada"});
+    res.send(revisiones)      
+})
+
+
+router.post('/getRevisionPorIdConsecutivo', async (req, res, next) => {
+  const documentos = await RevisionInventario.find({idDocumento: req.body.idDocumento});
+  res.json(documentos);
+});
+
+
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await RevisionInventario.findByIdAndUpdate(id, {$set: {estado:estado}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
+
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
@@ -39,6 +59,8 @@ router.delete('/delete/:id', async (req, res,next) => {
     await Combos.findByIdAndRemove(req.params.id);
     res.json({status: 'Cliente Eliminado'});
 })
+
+
 
 
 module.exports = router;

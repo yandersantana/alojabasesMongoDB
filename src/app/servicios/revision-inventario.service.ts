@@ -8,8 +8,8 @@ import { Router } from "@angular/router";
 
 export class RevisionInventarioService {
   //private URL = 'http://localhost:3000/revisionInventario'; //localhost
-  //private URL = "http://159.223.107.115:3000/revisionInventario";
-  private URL = 'http://104.131.82.174:3000/revisionInventario';
+  private URL = "http://159.223.107.115:3000/revisionInventario";
+  //private URL = 'http://104.131.82.174:3000/revisionInventario';
 
 
   constructor(public http: HttpClient, public router: Router) {}
@@ -20,6 +20,18 @@ export class RevisionInventarioService {
 
   getRevisiones() {
     return this.http.get(this.URL + "/getRevisiones");
+  }
+
+  getRevisionesIniciadas() {
+    return this.http.get(this.URL + "/getRevisionesIniciadas");
+  }
+
+  getRevisionPorIdConsecutivo(idRecibo) {
+    return this.http.post(this.URL + "/getRevisionPorIdConsecutivo", idRecibo);
+  }
+
+  updateEstado(IdRevision: string, estado: string) {
+    return this.http.put(this.URL + `/updateEstado/${IdRevision}/${estado}`, IdRevision);
   }
 
   /* updateOpciones(opciones) {

@@ -1,4 +1,5 @@
 export class controlInventario{
+  _id: string
   sucursal: string
   idDocumento: number
   responsable: string
@@ -8,6 +9,9 @@ export class controlInventario{
   constructor(){
     this.fecha_inicio = new Date()
     this.estado="Iniciada"
+    this.responsable = " "
+    this.nombreClasificacion = " "
+    this.sucursal = " "
   }
 }
 
@@ -51,6 +55,9 @@ export class comparacionResultadosRevision{
   piezas_diferencia : number
   m2_diferencia : number
   resultado : string
+  sucursal: string
+  responsable: string
+  nombreClasificacion: string
   constructor(){
     this.cajas_sistema = 0
     this.piezas_sistema = 0

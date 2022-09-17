@@ -80,16 +80,22 @@ export class AuthGuardService implements CanActivate {
     constructor(private router: Router, private authService: AuthService, public authenService:AuthenService) {}
     role = ''
     canActivate(route: ActivatedRouteSnapshot): boolean {
+        const url = route.routeConfig.path;
         const isLoggedIn = this.authService.isLoggedIn;
         const isLoginForm = route.routeConfig.path === 'login-form';
-        if (isLoggedIn && isLoginForm) {
+  
+       // if(url != "revision-inventario/:id"){
+          if (isLoggedIn && isLoginForm) {
             this.router.navigate(['/']);
             return false;
-        }
+          }
 
-        if (!isLoggedIn && !isLoginForm) {
+          if (!isLoggedIn && !isLoginForm) {
             this.router.navigate(['/login-form']);
-        }
+          }
+        //}
+        
+        
 
         return isLoggedIn || isLoginForm;
     }

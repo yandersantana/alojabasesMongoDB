@@ -34,6 +34,10 @@ export class RevisionInventarioService {
     return this.http.put(this.URL + `/updateEstado/${IdRevision}/${estado}`, IdRevision);
   }
 
+  deleteRevision(revision) {
+    return this.http.delete(this.URL + `/delete/${revision._id}`, revision);
+  }
+
   /* updateOpciones(opciones) {
     return this.http.put(this.URL + `/update/${opciones._id}`, opciones);
   }

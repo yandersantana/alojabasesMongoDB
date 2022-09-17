@@ -63,6 +63,16 @@ export class venta {
     subtIva:number
     sucursal:string
     productosVendidos:ProductoDetalleVenta[]=[]
+    cantM2_1 : number
+    cantM2_2 : number
+    cantM2_3 : number
+    cantCajas_1 : number
+    cantPiezas_1 : number
+    cantCajas_2 : number
+    cantPiezas_2 : number
+    cantCajas_3 : number
+    cantPiezas_3 : number
+    
     constructor() {
         this.pedir = false
         this.iva = true

@@ -2,7 +2,6 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { ParametrizacionesService } from 'src/app/servicios/parametrizaciones.service';
 import { SucursalesService } from 'src/app/servicios/sucursales.service';
 import { ProductoService } from 'src/app/servicios/producto.service';
-import { parametrizacionsuc } from '../parametrizacion/parametrizacion';
 import { Sucursal } from '../compras/compra';
 import { producto, contadoresDocumentos } from '../ventas/venta';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
@@ -17,8 +16,8 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services';
 import { OpcionesCatalogoService } from 'src/app/servicios/opciones-catalogo.service';
 import { opcionesCatalogo } from '../catalogo/catalogo';
-import { comparacionResultadosRevision, controlInventario, detalleProductoRevisado } from './revision-inventario';
-import { auditoria, auditoriasProductos, coincidencias } from '../auditorias/auditorias';
+import { comparacionResultadosRevision, controlInventario, controlRevisionProductos, detalleProductoRevisado } from './revision-inventario';
+import { auditoria, coincidencias } from '../auditorias/auditorias';
 import { RevisionInventarioService } from 'src/app/servicios/revision-inventario.service';
 import { RevisionInventarioProductoService } from 'src/app/servicios/revision-inventario-productos.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
@@ -42,6 +41,7 @@ export class RevionInventarioComponent implements OnInit {
   revisionIniciada: controlInventario = new controlInventario()
   listadoComparacionResultados : comparacionResultadosRevision[]=[]
   transaccionesProductosRevisados : comparacionResultadosRevision[]=[]
+  listadoControlesRevisiones : controlRevisionProductos[]=[]
   linkRevision =""
   popupVisible = false;
   idRevision = "";
@@ -65,10 +65,13 @@ export class RevionInventarioComponent implements OnInit {
   menu: string[] = [
     "Nueva Revision",
     "Ver Transacciones",
+    "Listado Productos",
   ];
 
   verListadoTransacciones = false;
+  verListadoProductos = false;
   seccionNew = true;
+  mostrarMenu = true;
 
 
 
@@ -121,6 +124,14 @@ export class RevionInventarioComponent implements OnInit {
   ];
   fecha_inicio= new Date()
 
+  sucursalesLista: string[] = [
+    'Matriz',
+    'Sucursal1',
+    'Sucursal2'
+  ];
+
+  sucursal = "Matriz"
+
   
 
   menuSupervisor: string[] = [
@@ -146,7 +157,6 @@ export class RevionInventarioComponent implements OnInit {
     public _transaccionesRevisionProductoService : TransaccionesRevisionProductoService,
     public authService: AuthService,
     private rutaActiva: ActivatedRoute,
-    private router:Router,
     public authenService:AuthenService, 
     
     public parametrizacionService: ParametrizacionesService,
@@ -211,6 +221,32 @@ export class RevionInventarioComponent implements OnInit {
     this.transaccionesProductosRevisados = [];
     this._transaccionesRevisionProductoService.getTransacciones().subscribe(res => {
       this.transaccionesProductosRevisados = res as comparacionResultadosRevision[];
+    })
+  }
+
+  generarListadoControlInventario(sucursal : string){
+    this.transaccionesProductosRevisados = [];
+    this.listadoControlesRevisiones = [];
+    this._transaccionesRevisionProductoService.getTransacciones().subscribe(res => {
+      this.transaccionesProductosRevisados = res as comparacionResultadosRevision[];
+      this.productosActivos.forEach(element=>{
+        var newControl = new controlRevisionProductos()
+        newControl.producto = element.PRODUCTO
+        var datos = this.transaccionesProductosRevisados.filter(element2=>element2.producto == element.PRODUCTO && element2.sucursal == sucursal);
+        var data = datos[datos?.length-1];
+        let days = new Date().getDay() - new Date(data?.fecha).getDay();
+        console.log(days)
+        newControl.cajas_diferencia = data?.cajas_diferencia ?? 0;
+        newControl.piezas_diferencia = data?.piezas_diferencia ?? 0;
+        newControl.fecha = data?.fecha;
+        newControl.resultado = data?.resultado;
+        newControl.detalle = data?.detalle;
+        newControl.idReferenciaRevision = data?.idReferenciaRevision;
+        newControl.novedades = data?.novedades;
+        newControl.responsable = data?.responsable;
+        newControl.diferenciaDias = days.toString() != "NaN" ? days.toString() : "";
+        this.listadoControlesRevisiones.push(newControl)
+      })
     })
   }
 
@@ -286,18 +322,26 @@ export class RevionInventarioComponent implements OnInit {
 
   llenarComboProductos(){
     if(this.idRevision != "0"){
-      console.log(this.listadoRevisiones)
-      var categoria = this.listadoRevisiones?.find(element=>element.idDocumento == Number(this.idRevision)).nombreClasificacion;
-      this.productos = this.productosActivos;
-      this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
-      this.productos22 = new DataSource({  
-        store: this.productos,  
-        sort: [{ field: "PRODUCTO", asc: true }],    
-      });
+      var rev = this.listadoRevisiones?.find(element=>element.idDocumento == Number(this.idRevision));
+      var categoria = rev?.nombreClasificacion;
+      if(categoria != null){
+        this.productos = this.productosActivos;
+        this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
+        this.productos22 = new DataSource({  
+          store: this.productos,  
+          sort: [{ field: "PRODUCTO", asc: true }],    
+        });
+      }
       this.mostrarLoading = false;
     }
-    else
+    else{
       this.mostrarLoading = false;
+      this.productos22 = new DataSource({  
+        store: this.productosActivos,  
+        sort: [{ field: "PRODUCTO", asc: true }],    
+      });
+    }
+      
   }
 
   cerrarRevision(){
@@ -400,6 +444,7 @@ export class RevionInventarioComponent implements OnInit {
           this.seccionNew = true;
           this.newAud = true;
           this.verListadoTransacciones = false;
+          this.verListadoProductos = false;
        break;
       case "Ver Transacciones":
           if(this.transaccionesProductosRevisados.length == 0) 
@@ -409,6 +454,17 @@ export class RevionInventarioComponent implements OnInit {
           this.newIngreso = false;
           this.verListadoIngreso = false;
           this.verListadoTransacciones = true;
+          this.verListadoProductos = false;
+        break;
+      case "Listado Productos":
+          if(this.listadoControlesRevisiones.length == 0) 
+            this.generarListadoControlInventario("matriz")
+          this.seccionNew = false;
+          this.newAud = false;
+          this.newIngreso = false;
+          this.verListadoIngreso = false;
+          this.verListadoTransacciones = false;
+          this.verListadoProductos = true;
         break;
       default:    
     }     
@@ -440,6 +496,7 @@ export class RevionInventarioComponent implements OnInit {
   crearListadoComparacion(){
     this.listadoProductosRevisados.forEach((element, index)=>{
       var newComparacion = new comparacionResultadosRevision();
+      newComparacion._id = element._id
       newComparacion.producto = element.producto
       newComparacion.novedades = element.novedades
       newComparacion.cajas_conteo = element.cajas
@@ -456,7 +513,7 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
     window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
@@ -470,8 +527,16 @@ export class RevionInventarioComponent implements OnInit {
     this.editarPro(e.row.data)
   }
 
+  verEdit2= (e) =>{
+    this.editarPro2(e.row.data)
+  }
+
   eliminarProd = (e) => {
     this.eliminarRevisionProducto(e.row.data)
+  }
+
+  eliminarProd2 = (e) => {
+    this.eliminarRevisionProducto2(e.row.data)
   }
 
   editarPro(e:any){
@@ -481,8 +546,34 @@ export class RevionInventarioComponent implements OnInit {
     this.isNew = false;
   }
 
+  editarPro2(e:any){
+    this.productoRevisado._id = e._id
+    this.productoRevisado.producto = e.producto
+    this.productoRevisado.cajas = e.cajas_conteo
+    this.productoRevisado.piezas = e.piezas_conteo
+    this.productoRevisado.detalle = e.detalle
+    this.productoRevisado.novedades = e.novedades
+    this.mostrarSeccionIngresos = true;
+    this.seccionNew = false;
+    this.isNew = false;
+    this.mostrarMenu = false;
+  }
 
 
+opcionRadioTipos(e){
+    switch (e.value) {
+      case "Matriz":
+        this.generarListadoControlInventario("matriz")
+        break;
+      case "Sucursal1":
+        this.generarListadoControlInventario("sucursal1")
+        break;
+      case "Sucursal2":
+        this.generarListadoControlInventario("sucursal2")
+        break;
+      default:    
+    }      
+  }
 
 
  
@@ -564,9 +655,16 @@ export class RevionInventarioComponent implements OnInit {
     this.mostrarLoading = true;
     this._revisionInventarioProductoService.updateRevisionProducto(this.productoRevisado).subscribe( 
     res => {  this.mostrarLoading = false;
-              this.reiniciarFormulario();
-              this.isNew = true;
-              this.mostrarMensajeGenerico(1,"Se ha actualizado con éxito") }, 
+              Swal.fire({
+                title: 'Producto Actualizado',
+                text: 'Se ha actualizado con éxito',
+                icon: 'success',
+                confirmButtonText: 'Ok'
+              }).then((result) => {
+                window.location.reload()
+              })
+              }, 
+              //this.mostrarMensajeGenerico(1,"Se ha actualizado con éxito") }, 
     err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
   }
 
@@ -612,6 +710,65 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
+  eliminarRevisionProducto2(e:any){
+    Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro de eliminar el producto revisado?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._revisionInventarioProductoService.deleteRevisionProducto(e).subscribe(res => {
+          this.listadoComparacionResultados = this.listadoComparacionResultados.filter(element=> element._id !== e._id)
+          this.mostrarMensajeGenerico(1,"Se realizó su proceso con éxito")
+        })
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+
+
+  eliminarRevisionIniciada(e : any){
+    this.listadoProductosRevisados = [];
+    this._revisionInventarioProductoService.getRevisionesProductosPorId(e.idDocumento.toString()).subscribe(res => {
+      var listado = res as detalleProductoRevisado[];
+      if(listado.length == 0){
+        Swal.fire({
+          title: 'Alerta',
+          text: "Está seguro de eliminar el proceso de revisión #" + e.idDocumento,
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Si',
+          cancelButtonText: 'No'
+        }).then((result) => {
+          if (result.value) {
+            this._revisionInventarioService.deleteRevision(e).subscribe(res => {
+              this.traerRevisionesInventario();
+              this.mostrarMensajeGenerico(1,"Se realizó su proceso con éxito")
+            })
+          } else if (result.dismiss === Swal.DismissReason.cancel) {
+            Swal.fire(
+              'Cancelado!',
+              'Se ha cancelado su proceso.',
+              'error'
+            )
+          }
+        })
+      }else{
+        this.mostrarMensajeGenerico(2,"Ya hay productos revisados para este item")
+      }
+    })
+  }
+
+
 
  
 
@@ -627,12 +784,9 @@ export class RevionInventarioComponent implements OnInit {
             if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
 
-            if(this.usuarioLogueado[0].rol == "Administrador"){
+            if(this.usuarioLogueado[0].rol == "Administrador")
               this.mostrarBloqueo = true;
-              //this.mostrarPopupCodigo();
-            }
               
-            
             this.validarRol()
           },
           err => {}

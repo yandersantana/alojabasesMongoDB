@@ -210,6 +210,8 @@ export class VentasComponent implements OnInit {
   maestroConstructor:string
   contR=this.numeroID
   disponibilidadProducto:string=""
+  disponibilidadProductoS1:string=""
+  disponibilidadProductoS2:string=""
   parametrizaciones:parametrizacionsuc[]=[]
   usuarios: user[] = []
   parametrizacionSucu:parametrizacionsuc
@@ -611,11 +613,26 @@ mostrarPopup(e,i:number){
         this.catalogoLeido.ubicacion1 = this.productosVendidos[i].producto.ubicacionSuc1
         this.catalogoLeido.ubicacion2 = this.productosVendidos[i].producto.ubicacionSuc2
         this.catalogoLeido.ubicacion3 = this.productosVendidos[i].producto.ubicacionSuc3
-        var suc1=this.productosVendidos[i].producto.sucursal1+this.productosVendidos[i].producto.suc1Pendiente
+        /* var suc1=this.productosVendidos[i].producto.sucursal1+this.productosVendidos[i].producto.suc1Pendiente
         var suc2=this.productosVendidos[i].producto.sucursal2+this.productosVendidos[i].producto.suc2Pendiente
-        var suc3=this.productosVendidos[i].producto.sucursal3+this.productosVendidos[i].producto.suc3Pendiente
-        this.disponibilidadProducto=suc1.toFixed(0)+"M    "+
-        suc2.toFixed(0)+"S1    "+suc3.toFixed(0)+"S2  "+this.productosVendidos[i].producto.bodegaProveedor.toFixed(0)+"P  "
+        var suc3=this.productosVendidos[i].producto.sucursal3+this.productosVendidos[i].producto.suc3Pendiente */
+        this.disponibilidadProducto = "MATRIZ: "+
+                                      this.productosVendidos[i].cantM2_1.toFixed(2)+"M - "+
+                                      this.productosVendidos[i].cantCajas_1.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantPiezas_1.toFixed(0)+"P"
+        this.disponibilidadProductoS1 = "SUC1: "+
+                                      this.productosVendidos[i].cantM2_2.toFixed(2)+"M - "+
+                                      this.productosVendidos[i].cantCajas_2.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantPiezas_2.toFixed(0)+"P"
+        this.disponibilidadProductoS2 = "SUC2: "+
+                                      this.productosVendidos[i].cantM2_3.toFixed(2)+"M - "+
+                                      this.productosVendidos[i].cantCajas_3.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantPiezas_3.toFixed(0)+"P"
+        
+        
+        //this.productosVendidos[i].cantM2_2.toFixed(0)+"S1 - "+
+        //this.productosVendidos[i].cantM2_3.toFixed(0)+"S2 - "
+        //this.productosVendidos[i].producto.bodegaProveedor.toFixed(0)+"P  "
       }
     })
     this.popupvisible=true 
@@ -2555,7 +2572,7 @@ cambiarestado(e,i:number){
         },
         table: {
           headerRows: 1,
-          widths: ["8%","6%","55%","10%","6%","10%"],
+          widths: ["8%","6%","55%","6%","10%","10%"],
           alignment:'center',
           body: [
             
@@ -2574,13 +2591,13 @@ cambiarestado(e,i:number){
               style: 'tableHeader2',
               alignment: 'center'
             },
-            {
-              text: 'P.UNIT',
+             {
+              text: 'EST',
               style: 'tableHeader2', 
               alignment: 'center'
             },
             {
-              text: 'EST',
+              text: 'P.UNIT',
               style: 'tableHeader2', 
               alignment: 'center'
             },
@@ -2595,10 +2612,9 @@ cambiarestado(e,i:number){
               return [ { text: ed.cantidad, alignment: 'center',fontSize:8 },
               {text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},
               {text:ed.producto.PRODUCTO,fontSize:8}, 
-              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
               {text:ed.entregar ? "ENT":"PTE",fontSize:8, alignment:"center"}, 
+              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
               {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
-              
             }),
           ]
         },
@@ -2624,7 +2640,7 @@ cambiarestado(e,i:number){
         },
         table: {
           headerRows: 1,
-          widths: ["7%","7%","6%","50%","10%","6%","9%"],
+          widths: ["7%","7%","6%","50%","6%","10%","9%"],
           alignment:'center',
           body: [
             
@@ -2649,19 +2665,19 @@ cambiarestado(e,i:number){
               alignment: 'center'
             },
             {
-              text: 'P.UNIT',
-              style: 'tableHeader2'
-              , alignment: 'center'
+              text: 'EST',
+              style: 'tableHeader2', 
+              alignment: 'center'
             },
             {
-              text: 'EST',
-              style: 'tableHeader2'
-              , alignment: 'center'
+              text: 'P.UNIT',
+              style: 'tableHeader2', 
+              alignment: 'center'
             },
             {
               text: 'TOTAL',
-              style: 'tableHeader2'
-              , alignment: 'center'
+              style: 'tableHeader2', 
+              alignment: 'center'
             },
             ],
             
@@ -2670,15 +2686,11 @@ cambiarestado(e,i:number){
               {text:ed.equivalencia, alignment:"center",fontSize:8},
               {text:ed.producto.UNIDAD,fontSize:8,alignment:"center"},
               {text:ed.producto.PRODUCTO,fontSize:8}, 
-              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
               {text:ed.entregar ? "ENT":"PTE",fontSize:8, alignment:"center"},
+              {text:ed.precio_venta.toFixed(2),fontSize:8, alignment:"center"}, 
               {text:ed.total.toFixed(2), alignment:"right",fontSize:8}];
               
             }),
-            /* [
-              { text: " -- ", alignment: 'center' }, "Servicios de Transporte", { text: " -- ", alignment: 'center' }, { text: " -- ", alignment: 'center' }, {text:this.factura.coste_transporte.toFixed(2), alignment:"right",style:"totales2"} 
-            ] */
-            
           ]
         },
         layout: 'headerLineOnly',
@@ -3894,6 +3906,26 @@ cambiarestado(e,i:number){
         break;
       default:
     }
+
+    this.productosVendidos[numero].cantM2_1 = this.invetarioP[0].cantidadM2;
+    this.productosVendidos[numero].cantCajas_1 = this.invetarioP[0].cantidadCajas;
+    this.productosVendidos[numero].cantPiezas_1 = this.invetarioP[0].cantidadPiezas;
+    this.productosVendidos[numero].cantM2_2 = this.invetarioP[0].cantidadM2b2;
+    this.productosVendidos[numero].cantCajas_2 = this.invetarioP[0].cantidadCajas2;
+    this.productosVendidos[numero].cantPiezas_2 = this.invetarioP[0].cantidadPiezas2;
+    this.productosVendidos[numero].cantM2_3 = this.invetarioP[0].cantidadM2b3;
+    this.productosVendidos[numero].cantCajas_3 = this.invetarioP[0].cantidadCajas3;
+    this.productosVendidos[numero].cantPiezas_3 = this.invetarioP[0].cantidadPiezas3;
+
+    if(this.productosVendidos[numero].cantM2_1 < 0){
+      this.productosVendidos[numero].cantM2_1 = 0
+      this.productosVendidos[numero].cantCajas_1 = 0
+      this.productosVendidos[numero].cantPiezas_1 = 0
+    } 
+    if(this.productosVendidos[numero].cantM2_2 < 0)
+      this.productosVendidos[numero].cantM2_2 = 0
+    if(this.productosVendidos[numero].cantM2_3 < 0)
+      this.productosVendidos[numero].cantM2_3 = 0
 
     if(this.productosVendidos[numero].disponible < 0)
       this.productosVendidos[numero].disponible = 0

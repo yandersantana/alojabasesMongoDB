@@ -442,7 +442,6 @@
                             id="gallery"
                             [dataSource]="imagenes"
                             [height]="300"
-                            
                             [loop]="true"
                             [showNavButtons]="true"
                             [showIndicator]="true"
@@ -485,6 +484,10 @@
                                     <td>{{catalogoLeido.NOMBRE_COMERCIAL}}</td>
                                 </tr>
                                 <tr>
+                                    <th>PRECIO</th>
+                                    <td>{{catalogoLeido.precio}}</td>
+                                </tr>
+                                <tr>
                                     <th>P_CAJA</th>
                                     <td>{{catalogoLeido.P_CAJA}}</td>
                                 </tr>
@@ -514,7 +517,15 @@
                                 </tr>
                                 <tr>
                                     <th>DISPONIBILIDAD</th>
-                                    <td style="font-weight: bold;">{{disponibilidadProducto}}<span style="text-align: right;"><button style="text-align: right;color: red;border-color: transparent;background-color: transparent;" (click)="mostrarDivUbicaciones()"><i class="fa fa-map-marker"></i></button></span></td>
+                                    <td style="font-weight: bold;">
+                                        <p>{{disponibilidadProducto}}</p>
+                                        <p>{{disponibilidadProductoS1}}</p>
+                                        <p>{{disponibilidadProductoS2}}</p>
+                                        <span style="text-align: right;">
+                                            <button style="text-align: right;color: red;border-color: transparent;background-color: transparent;" (click)="mostrarDivUbicaciones()"><i class="fa fa-map-marker"></i>
+                                            </button>
+                                        </span>
+                                    </td>
                                 </tr>
                               </table>
                               

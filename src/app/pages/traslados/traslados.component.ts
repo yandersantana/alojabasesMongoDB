@@ -738,7 +738,7 @@ export class TrasladosComponent implements OnInit {
       this.transaccion.idTransaccion = this.number_transaccion++;
 
       var producto = this.productos.find(element2=> element2.PRODUCTO == element.producto)
-      if(producto.CLASIFICA == "COMBO")
+      if(producto?.CLASIFICA == "COMBO")
         this.generarTransaccionesComboProductos(element.producto, 2)
 
       this.transaccionesService.newTransaccion(this.transaccion).subscribe(
@@ -818,7 +818,7 @@ export class TrasladosComponent implements OnInit {
           this.transaccion.idTransaccion = this.number_transaccion++;
           
           var producto = this.productos.find(element2=> element2.PRODUCTO == element.producto)
-          if(producto.CLASIFICA == "COMBO")
+          if(producto?.CLASIFICA == "COMBO")
             this.generarTransaccionesComboProductos(element.producto, 1)
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(

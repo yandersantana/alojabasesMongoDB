@@ -29,10 +29,10 @@
     <br>
 
     <div class="row" *ngIf="mostrarbtn">
-        <div class="col-md-2">
+        <!-- <div class="col-md-2">
             <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="retornar()">Regresar</button>
         </div>
-        <div class="col-md-10"></div>
+        <div class="col-md-10"></div> -->
     </div>
     <br>
     <div class="card mb-3" *ngIf="seccionNew">
@@ -101,8 +101,9 @@
                                                 <th class="text-center" >Sucursal</th>
                                                 <th class="text-center" >Grupo</th>
                                                 <th class="text-center" >Ver Lista</th>
-                                                <th class="text-center" >Enviar</th>
+                                                <!-- <th class="text-center" >Enviar</th> -->
                                                 <th class="text-center" >Copiar</th>
+                                                <th class="text-center" >Eliminar</th>
                                                 <!-- <th class="text-center" colspan="2" >Acciones</th> -->
                                                 
                                             </tr>
@@ -113,13 +114,16 @@
                                                 <td><span>{{revision.sucursal}}</span></td>
                                                 <td><span>{{revision.nombreClasificacion}}</span></td>
                                                 <td>
-                                                <span><button class="btnIcons5" (click)="verLista(revision.idDocumento)"><i class="fa fa-list fa-1x"></i></button></span>
+                                                    <span><button class="btnIcons5" (click)="verLista(revision.idDocumento)"><i class="fa fa-list fa-1x"></i></button></span>
+                                                </td>
+                                                <!-- <td>
+                                                    <span><button class="btnIcons5" (click)="enviarMsjWhatsapp(revision)"><i class="fa fa-whatsapp"></i></button></span>
+                                                </td> -->
+                                                <td>
+                                                    <span><button class="btnIcons5" (click)="copiarLink(revision)"><i class="fa fa-eye"></i></button></span>
                                                 </td>
                                                 <td>
-                                                <span><button class="btnIcons5" (click)="enviarMsjWhatsapp(revision)"><i class="fa fa-whatsapp"></i></button></span>
-                                                </td>
-                                                <td>
-                                                <span><button class="btnIcons5" (click)="copiarLink(revision)"><i class="fa fa-eye"></i></button></span>
+                                                    <span><button class="btnIcons5" (click)="eliminarRevisionIniciada(revision)"><i class="fa fa-trash-o"></i></button></span>
                                                 </td>
                                             </tr>
                                             </table>
@@ -188,11 +192,17 @@
                                 
                                 <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
-                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
+                                <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="idReferenciaRevision" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="sucursal" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column>
+                                <dxi-column type="buttons"  caption="Edit." width="5%">
+                                    <dxi-button icon="fa fa-pencil" [onClick]="verEdit2"></dxi-button>     
+                                </dxi-column>
+                                <dxi-column type="buttons"  caption="Elim." width="5%">
+                                    <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd2"></dxi-button>     
+                                </dxi-column>
 
                                 <dxo-paging [pageSize]="10"></dxo-paging>
                                 <dxo-pager 
@@ -250,7 +260,73 @@
             <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
             <dxi-column dataField="detalle" [visible]="false" width="10%"></dxi-column>
             <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="20%"></dxi-column>
+
+            <dxo-paging [pageSize]="10"></dxo-paging>
+            <dxo-pager 
+                [showPageSizeSelector]="true"
+                [allowedPageSizes]="[5, 10, 20]"
+                [showInfo]="true">
+            </dxo-pager>
+        
+            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+        </dx-data-grid>
+    </div>
+
+
+    <div *ngIf="verListadoProductos">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-6"></div>
+                <div class="col-md-6">
+                    <div class="dx-field radio">
+                        <div class="dx-field-value">
+                            <dx-radio-group
+                            [items]="sucursalesLista"
+                            [(value)]="sucursal"
+                            layout="horizontal"
+                            (onValueChanged)="opcionRadioTipos($event)">
+                            </dx-radio-group>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="listadoControlesRevisiones"
+            [showBorders]="true"
+            (onExporting)="onExporting3($event)"
+            (onExported)="onExported3($event)">   
+            <dxo-filter-row [visible]="true" ></dxo-filter-row>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxo-export [enabled]="true" fileName="Transacciones Revision Productos" [allowExportSelectedData]="true"></dxo-export>
+
+           
+            <!-- <dxi-column dataField="sucursal" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
+            <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column> -->
+            <dxi-column dataField="producto" width="42%"></dxi-column>
+            <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy" [visible]="true"  width="10%"></dxi-column>
+            <dxi-column dataField="diferenciaDias" caption="Dias" [visible]="true" width="8%"></dxi-column>
+            <dxi-column dataField="idReferenciaRevision" caption="ID_R" [visible]="true" width="8%"></dxi-column>
+            <dxi-column caption="Sistema">
+                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Conteo">
+                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+            </dxi-column>
+            <dxi-column caption="Diferencia">
+                <dxi-column dataField="cajas_diferencia"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_diferencia" caption="Piezas" width="8%"></dxi-column>
+            </dxi-column>
             
+            <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="10%"></dxi-column>
+            <dxi-column dataField="responsable" caption="Responsable" [visible]="true" width="10%"></dxi-column>
 
             <dxo-paging [pageSize]="10"></dxo-paging>
             <dxo-pager 
@@ -270,7 +346,7 @@
 
 <div *ngIf="mostrarSeccionIngresos">
     <br>
-    <div class="row remiPro">
+    <div class="row remiPro" *ngIf="mostrarMenu">
         <div class="col-md-8"></div>
         <div class="col-md-4"> 
             <dx-select-box [items]="menuIngresos" 

@@ -56,8 +56,8 @@ router.put('/update/:id', async (req, res,next) => {
 
 
 router.delete('/delete/:id', async (req, res,next) => {
-    await Combos.findByIdAndRemove(req.params.id);
-    res.json({status: 'Cliente Eliminado'});
+    await RevisionInventario.findByIdAndRemove(req.params.id);
+    res.json({status: 'RevisionInventario Eliminado'});
 })
 
 

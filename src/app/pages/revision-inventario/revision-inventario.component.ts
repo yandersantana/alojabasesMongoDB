@@ -235,7 +235,6 @@ export class RevionInventarioComponent implements OnInit {
         var datos = this.transaccionesProductosRevisados.filter(element2=>element2.producto == element.PRODUCTO && element2.sucursal == sucursal);
         var data = datos[datos?.length-1];
         let days = new Date().getDay() - new Date(data?.fecha).getDay();
-        console.log(days)
         newControl.cajas_diferencia = data?.cajas_diferencia ?? 0;
         newControl.piezas_diferencia = data?.piezas_diferencia ?? 0;
         newControl.fecha = data?.fecha;
@@ -244,10 +243,19 @@ export class RevionInventarioComponent implements OnInit {
         newControl.idReferenciaRevision = data?.idReferenciaRevision;
         newControl.novedades = data?.novedades;
         newControl.responsable = data?.responsable;
+        newControl.nombreClasificacion = element.CLASIFICA;
         newControl.diferenciaDias = days.toString() != "NaN" ? days.toString() : "";
         this.listadoControlesRevisiones.push(newControl)
       })
     })
+    //this.listadoControlesRevisiones.sort(this.SortArray)
+    
+  }
+
+  SortArray(x, y){
+    if (x.producto < y.producto) {return -1;}
+    if (x.producto > y.producto) {return 1;}
+    return 0;
   }
 
   separarRevisiones(){
@@ -312,7 +320,7 @@ export class RevionInventarioComponent implements OnInit {
   traerProductos(){
     if(this.productosActivos.length == 0){
       this.mostrarLoading = true;
-      this.productoService.getProducto().subscribe(res => {
+      this.productoService.getProductosActivos().subscribe(res => {
         this.productosActivos = res as producto[];
         this.llenarComboProductos()
       })

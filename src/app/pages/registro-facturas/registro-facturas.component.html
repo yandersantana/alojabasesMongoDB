@@ -92,13 +92,14 @@
     <dxo-export [enabled]="true" [(fileName)]="nombreArchivo" [allowExportSelectedData]="true"></dxo-export>
     <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
     <dxi-column dataField="idF" caption="ID" dataType="string" sortOrder="desc"></dxi-column>
-    <dxi-column dataField="fecha" caption="Fecha" format="dd/MM/yyyy" dataType="date"></dxi-column>
+    <dxi-column dataField="fecha" caption="Fecha" format="dd/MM/yyyy" dataType="date" [visible]="false"></dxi-column>
     <dxi-column dataField="fechaExpiracion" caption="Fecha Expiracion" format="dd/MM/yyyy" dataType="date"></dxi-column>
     <dxi-column dataField="nFactura" caption="Factura" dataType="string"></dxi-column>
     <dxi-column dataField="nSolicitud" caption="N/Orden" dataType="string"></dxi-column>
     <dxi-column dataField="proveedor" caption="Proveedor" dataType="string" [visible]="true"></dxi-column>
     <dxi-column dataField="valorAbonado" caption="Valor Cubierto" dataType="number"></dxi-column>
     <dxi-column dataField="total" caption="Total Factura" dataType="number"></dxi-column>
+    <dxi-column dataField="valorConDescuento" caption="Total Con Descuento" dataType="number"></dxi-column>
     <dxi-column dataField="valorPagado" caption="Valores Pagados" dataType="number"></dxi-column>
     <dxi-column dataField="valorDescuento" caption="Valor Descuento" dataType="number"></dxi-column>
     <dxi-column dataField="valorRestante" caption="Valor Restante" dataType="number"></dxi-column>
@@ -191,13 +192,13 @@
                                 {{pro.fechaFactura | date: 'dd/MM/yyyy'}}
                             </td>
                             <td style="text-align: center;width: 20%;">
-                                {{pro.valorSaldos}}
-                            </td>
-                            <td style="text-align: center;width: 20%;">
                                 {{pro.valorAbonado}}
                             </td>
                             <td style="text-align: center;width: 20%;">
-                            {{pro.valorCancelado}}
+                                {{pro.valorCancelado}}
+                            </td>
+                            <td style="text-align: center;width: 20%;">
+                                {{pro.valorSaldos}}
                             </td>
                                                     
                         </tr>

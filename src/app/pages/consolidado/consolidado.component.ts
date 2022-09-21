@@ -20,10 +20,8 @@ import DataSource from "devextreme/data/data_source";
 import { OpcionesCatalogoService } from "src/app/servicios/opciones-catalogo.service";
 import { catalogo, opcionesCatalogo, ProductoCombo, productosCombo } from "../catalogo/catalogo";
 import { AuthService } from "src/app/shared/services";
-import { isGeneratedFile } from "@angular/compiler/src/aot/util";
 import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
-import { element } from "protractor";
 
 @Component({
   selector: "app-consolidado",

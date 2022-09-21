@@ -45,6 +45,7 @@ export class AuditoriasComponent implements OnInit {
   auditoriaProductosleidarepetidos2:auditoriasProductos[]=[]
   auditoriaProductosleida2:auditoriasProductos[]=[]
   newAuditoria: auditoria
+  dataAuditoria: auditoria = new auditoria()
   editAuditoria: auditoriasProductos
   contadores:contadoresDocumentos[]=[]
   nameSucursal:string=""
@@ -500,7 +501,7 @@ export class AuditoriasComponent implements OnInit {
       y.style.display = "block";
   }
 
-   verLista(id:number){
+   verLista(aud :auditoria){
     this.mostrarLoading = true;
     this.mostrarTablaAuditoria = true;
     var z = document.getElementById("tabla3");
@@ -508,8 +509,9 @@ export class AuditoriasComponent implements OnInit {
       this.newAud = false;
     this.auditoriaProductosleida = []
 
+    this.dataAuditoria = aud;
     var newAuditoria = new auditoriasProductos();
-    newAuditoria.idPrincipal = id;
+    newAuditoria.idPrincipal = aud.idAuditoria;
     this.auditoriaProductoService.getAuditoriasProductosPorId(newAuditoria).subscribe(res => {
       var datos =  res as auditoriasProductos[];
       this.auditoriaProductosleida = datos;

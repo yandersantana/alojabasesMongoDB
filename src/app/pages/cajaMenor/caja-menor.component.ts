@@ -12,7 +12,6 @@ import { CajaMenor, DetalleCajaMenor, FormatoImpresion } from './caja-menor';
 import pdfMake from "pdfmake/build/pdfmake";
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import 'jspdf-autotable';
-import { elementEventFullName } from '@angular/compiler/src/view_compiler/view_compiler';
 
 @Component({
   selector: 'app-caja-menor',
@@ -305,9 +304,9 @@ export class CajaMenorComponent implements OnInit {
     this.transaccionesCaja.forEach(element=>{
       if(element.SubCuenta == "1.3.0 Facturacion" || element.SubCuenta == "1.3.1 Nota_Venta")
         this.valorVentaDiarias = this.valorVentaDiarias + element.TotalIngresos
+      else if(element.SubCuenta == "1.4.0 Factura" || element.SubCuenta == "1.4.1 Nota_Venta")
+        this.valorVentaDiarias = this.valorVentaDiarias - element.TotalSalidas
     })
-
-    console.log(this.valorVentaDiarias)
   }
   
   
@@ -831,9 +830,9 @@ export class CajaMenorComponent implements OnInit {
               { text: ed.SubCuenta, alignment: "center", fontSize: 7 },
               { text: ed.Sub1, alignment: "center", fontSize: 7 },
               { text: ed.Sub2, alignment: "center", fontSize: 7 },
-              { text: ed.TotalIngresos, alignment: "center", fontSize: 7 },
-              { text: ed.TotalSalidas, alignment: "center", fontSize: 7 },
-              { text: ed.TotalRC, alignment: "center", fontSize: 7 },
+              { text: ed.TotalIngresos.toFixed(2), alignment: "center", fontSize: 7 },
+              { text: ed.TotalSalidas.toFixed(2), alignment: "center", fontSize: 7 },
+              { text: ed.TotalRC.toFixed(2), alignment: "center", fontSize: 7 },
             ];
           }),
         ],

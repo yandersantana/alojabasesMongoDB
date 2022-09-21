@@ -17,6 +17,7 @@ export class FacturaProveedor{
     idF:number
     documento_solicitud:number
     observaciones : string
+    valorConDescuento : number
     valorRestante : number
     constructor(){
         this.estado="PENDIENTE"
@@ -25,6 +26,7 @@ export class FacturaProveedor{
         this.valorAbonado = 0;
         this.valorPagado = 0;
         this.valorDescuento = 0;
+        this.valorConDescuento = 0;
         this.observaciones = "";
     }
 }

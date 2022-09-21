@@ -503,7 +503,7 @@ export class ComprobantePagoProveedoresComponent implements OnInit {
     var valor = 0;
     var factura = await this.listaFacturas.find(element=> element._id == e.value);
     this.listadoFacturasPagar[i].numFactura = factura.nFactura;
-    this.listadoFacturasPagar[i].valorFactura = Number(factura.total.toFixed(2));
+    this.listadoFacturasPagar[i].valorFactura = Number(factura.total.toFixed(2)) - Number(factura.valorDescuento.toFixed(2));
     this.listadoFacturasPagar[i].fechaFactura = factura.fecha;
     valor =  Number(this.listadoFacturasPagar[i].valorFactura.toFixed(2)) - Number(this.listadoFacturasPagar[i].valorAbonado.toFixed(2));
     this.listadoFacturasPagar[i].valorSaldos = Number(valor.toFixed(2))

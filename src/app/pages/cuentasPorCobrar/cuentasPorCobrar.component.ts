@@ -91,7 +91,11 @@ export class CuentaPorCobrarComponent implements OnInit {
           res => {
             var usuario = res as user;
             this.usuarioLogueado = usuario[0]
-            //this.mostrarPopupCodigo();
+            if(this.usuarioLogueado.rol.toString() == "Usuario"){
+              this.mostrarDelete = false;
+              this.mostrarAprobacion = false;
+            }
+              
           }
         )
     });
@@ -269,26 +273,41 @@ export class CuentaPorCobrarComponent implements OnInit {
           this.listaCuentas = this.listaCuentasActivas;
           this.mostrarDelete = true;
           this.mostrarAprobacion = false;
+          if(this.usuarioLogueado.rol.toString() == "Usuario"){
+            this.mostrarDelete = false;
+            this.mostrarAprobacion = false;
+          }
           break;
         case "Pendientes":
           this.listaCuentas = this.listaCuentasPendientes;
           this.mostrarDelete= false;
           this.mostrarAprobacion = true;
+          if(this.usuarioLogueado.rol.toString() == "Usuario"){
+            this.mostrarDelete = false;
+            this.mostrarAprobacion = false;
+          }
           break;
         case "Anulados":
           this.listaCuentas = this.listaCuentasAnualadas;
           this.mostrarDelete= false;
           this.mostrarAprobacion = false;
+          if(this.usuarioLogueado.rol.toString() == "Usuario"){
+            this.mostrarDelete = false;
+            this.mostrarAprobacion = false;
+          }
           break;
         case "Canceladas":
           this.listaCuentas = this.listaCuentasCanceladas;
           this.mostrarDelete= false;
           this.mostrarAprobacion = false;
+          if(this.usuarioLogueado.rol.toString() == "Usuario"){
+            this.mostrarDelete = false;
+            this.mostrarAprobacion = false;
+          }
           break;
         default:    
     }    
   }
-
 
 
   deleteCuenta = (e) => {  

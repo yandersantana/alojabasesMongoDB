@@ -21,6 +21,7 @@ import { DxDataGridComponent } from 'devextreme-angular';
 import DataSource from 'devextreme/data/data_source';
 import { Router } from '@angular/router';
 import { AuthService } from 'src/app/shared/services';
+import pdfMake from "pdfmake/build/pdfmake";
 
 @Component({
   selector: 'app-auditorias',
@@ -508,6 +509,7 @@ export class AuditoriasComponent implements OnInit {
       z.style.display = "none";
       this.newAud = false;
     this.auditoriaProductosleida = []
+
 
     this.dataAuditoria = aud;
     var newAuditoria = new auditoriasProductos();
@@ -1759,27 +1761,6 @@ guardarAuditoriaProducto(){
     var producto = this.productosActivos.find(element=> element.PRODUCTO == this.productoEntregado);
     console.log(producto)
     this.invetarioP.forEach((element) => {
-     /*  if (element.cantidadM2 <= 0) {
-        element.cantidadCajas = 0;
-        element.cantidadPiezas = 0;
-        element.cantidadM2 = 0;
-        element.totalb1 = 0;
-      }
-      if (element.cantidadM2b2 <= 0) {
-        element.cantidadCajas2 = 0;
-        element.cantidadPiezas2 = 0;
-        element.cantidadM2b2 = 0;
-        element.totalb2 = 0;
-      }
-      if (element.cantidadM2b3 <= 0) {
-        element.cantidadCajas3 = 0;
-        element.cantidadPiezas3 = 0;
-        element.cantidadM2b3 = 0;
-        element.totalb3 = 0;
-      }
-      */
-
-
       switch (this.auditoria.sucursal.nombre) {
         case "matriz":
           this.auditoria.cajas_sistema= element.cantidadCajas;
@@ -1822,6 +1803,262 @@ guardarAuditoriaProducto(){
       element.cantidadPiezas3 = parseInt(((element.cantidadM2b3 * element.producto.P_CAJA) /element.producto.M2 - element.cantidadCajas3 * element.producto.P_CAJA).toFixed(0));
       element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
     });
+  }
+
+
+  exportarPDF(){
+    this.mensajeLoading = "Descargando"
+    this.mostrarLoading = true;
+    const documentDefinition = this.getDocumentDefinition();
+    pdfMake.createPdf(documentDefinition).download("Auditoria " + this.dataAuditoria.idAuditoria, function () {});
+    this.mostrarLoading = false;
+  }
+
+
+  getDocumentDefinition() {
+    sessionStorage.setItem("resume", JSON.stringify("jj"));
+    return {
+      pageSize: "A4",
+      pageOrientation: "portrait",
+      content: [
+        {
+          columns: [
+            [
+              {
+                columns: [
+                  {
+                    width: 320,
+                    text: "AUDITORIA DE INVENTARIO 001 - 000",
+                    bold: true,
+                    fontSize: 18,
+                  },
+                  {
+                    width: 200,
+                    text: "NO 0000" + this.dataAuditoria.idAuditoria,
+                    color: "red",
+                    bold: true,
+                    fontSize: 20,
+                    alignment: "right",
+                  },
+                ],
+              },
+              { text: "Datos Auditoria", alignment: "center", bold: true },
+              {
+                //Desde aqui comienza los datos del cliente
+                style: "tableExample",
+                table: {
+                  widths: [130, 365],
+                  body: [
+                    [
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            bold: true,
+                            fontSize: 9,
+                            ul: [
+                              "Fecha Inicio",
+                              "Sucursal",
+                            ],
+                          },
+                        ],
+                      },
+                      [
+                        {
+                          stack: [
+                            {
+                              type: "none",
+                              fontSize: 9,
+                              ul: [
+                                "" + this.dataAuditoria.fecha_inicio,
+                                "" + this.dataAuditoria.sucursal.nombre,
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    ],
+                  ],
+                },
+              },
+            ],
+            [],
+          ],
+        },
+
+        this.getProductosAuditoria(this.auditoriaProductosleida),
+      ],
+      pageBreakBefore: function (
+        currentNode,
+        followingNodesOnPage,
+        nodesOnNextPage,
+        previousNodesOnPage
+      ) {
+        return (
+          currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
+        );
+      },
+
+      images: {
+        mySuperImage: "data:image/jpeg;base64,...content...",
+      },
+      info: {
+        title: "Auditoria",
+        author: "this.resume.name",
+        subject: "RESUME",
+        keywords: "RESUME, ONLINE RESUME",
+      },
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 20, 0, 10],
+          decoration: "underline",
+        },
+        textoPro: {
+          bold: true,
+          margin: [0, -12, 0, -5],
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15],
+        },
+        tableExample2: {
+          margin: [-13, 5, 10, 15],
+        },
+        tableExample3: {
+          margin: [-13, -10, 10, 15],
+        },
+        tableExample4: {
+          margin: [10, -5, 0, 15],
+        },
+        texto6: {
+          fontSize: 14,
+          bold: true,
+          alignment: "center",
+        },
+        name: {
+          fontSize: 16,
+          bold: true,
+        },
+        jobTitle: {
+          fontSize: 14,
+          bold: true,
+          italics: true,
+        },
+        textFot: {
+          alignment: "center",
+          italics: true,
+          color: "#bebebe",
+          fontSize: 18,
+        },
+        tableHeader: {
+          bold: true,
+        },
+        tableHeader2: {
+          bold: true,
+          fontSize: 10,
+        },
+
+        fondoFooter: {
+          fontSize: 8,
+          alignment: "center",
+        },
+        totales: {
+          margin: [0, 0, 15, 0],
+          alignment: "right",
+        },
+        totales2: {
+          margin: [0, 0, 5, 0],
+          alignment: "right",
+        },
+        detalleTotales: {
+          margin: [15, 0, 0, 0],
+        },
+      },
+    };
+  }
+
+
+  getProductosAuditoria(auditoriaProductosleida: auditoriasProductos[]) {
+    return {
+      table: {
+        widths: ["34%", "7%", "7%", "7%", "7%", "8%", "8%", "11%", "11%"],
+        alignment: "center",
+        fontSize: 7,
+        body: [
+          [
+            {
+              text: "Producto",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Sistema",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Sistema",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Físico",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Físico",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Diferencia",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Diferencia",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Condición",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Impacto",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+          ],
+
+          ...auditoriaProductosleida.map((ed) => {
+            return [
+              { text: ed.nombreproducto, fontSize: 7, alignment: "center" },
+              { text: ed.cajas_sistema, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_sistema, alignment: "center", fontSize: 7 },
+              { text: ed.cajas_fisico, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_fisico, alignment: "center", fontSize: 7 },
+              { text: ed.cajas_diferencia, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_diferencia, alignment: "center", fontSize: 7 },
+              { text: ed.condicion, alignment: "center", fontSize: 7 },
+              { text: ed.impacto, alignment: "center", fontSize: 7 },
+            ];
+          }),
+        ],
+      },
+    };
   }
 
 

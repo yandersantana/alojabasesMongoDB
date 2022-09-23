@@ -53,7 +53,8 @@ export class UserComponent implements OnInit {
     "Usuario",
     "Administrador",
     "Usuario Web",
-    "Supervisor"
+    "Supervisor",
+    "Inspector"
   ];
 
   constructor(

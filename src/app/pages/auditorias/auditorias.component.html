@@ -511,8 +511,11 @@
                         <div class="row">
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">Regresar</button></div>
-                                    <div class="col-md-10"></div>
+                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">
+                                        <i class="fa fa-arrow-left fa-1x"></i>  Regresar</button></div>
+                                    <div class="col-md-8"></div>
+                                    <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="exportarPDF()">
+                                        <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
                                 </div>
                                 <div class="col-md-12">
                                     <div style="text-align: center;">
@@ -521,7 +524,7 @@
                                             <div class="col-md-6">
                                                 <div class="row">
                                                     <div class="col-md-3"><span style="font-weight: bold;">Fecha</span></div>
-                                                    <div class="col-md-9">{{dataAuditoria.fecha_inicio}}</div>
+                                                   
                                                 </div>
                                             </div>
                                             <div class="col-md-6">

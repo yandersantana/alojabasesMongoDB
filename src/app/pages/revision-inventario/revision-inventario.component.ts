@@ -174,12 +174,12 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.cargarUsuarioLogueado();
     this.traerSucursales()
     this.traerOpcionesCatalogo()
     this.traerContadoresDocumentos()
     this.traerRevisionesInventario()
   }
-
 
 
   traerOpcionesCatalogo(){
@@ -782,9 +782,9 @@ opcionRadioTipos(e){
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
-      if (localStorage.getItem("maily") != '') {
+      if (localStorage.getItem("maily") != '')
         this.correo = localStorage.getItem("maily");
-      }
+      
       this.authenService.getUserLogueado(this.correo)
         .subscribe(
           res => {
@@ -794,8 +794,14 @@ opcionRadioTipos(e){
 
             if(this.usuarioLogueado[0].rol == "Administrador")
               this.mostrarBloqueo = true;
+
+            else if(this.usuarioLogueado[0].rol == "Inspector" && this.idRevision == "0"){
+              this.mostrarCreacion = false;
+              this.mostrarLoading = false;
+              this.mostrarMensajeGenerico(2,"Ingrese con una revisión Iniciada")
+            }
               
-            this.validarRol()
+
           },
           err => {}
         )
@@ -829,13 +835,6 @@ opcionRadioTipos(e){
     })
   }
 
-
-  validarRol(){
-    this.menuGlobal = this.menu
-    /* if(this.usuarioLogueado[0].rol == "Administrador"){
-      this.menuGlobal = this.menu
-    } */
-  }
 
   
 

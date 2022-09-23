@@ -728,3 +728,17 @@ export const navigationSupervisor = [
   {},
   {},
 ];
+
+
+export const navigationInspector = [
+  {
+    text: "Inventarios",
+    icon: "contentlayout",
+    items: [
+      {
+        text: "Revisiones",
+        path: "/revision-inventario/0",
+      },
+    ],
+  },
+];

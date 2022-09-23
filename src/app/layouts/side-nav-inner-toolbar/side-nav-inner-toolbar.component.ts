@@ -6,7 +6,7 @@ import { DxScrollViewModule, DxScrollViewComponent } from 'devextreme-angular/ui
 import { DxToolbarModule } from 'devextreme-angular/ui/toolbar';
 import { CommonModule } from '@angular/common';
 
-import { navigation, navigationAdmin, navigationSupervisor, navigationWEB } from '../../app-navigation';
+import { navigation, navigationAdmin, navigationInspector, navigationSupervisor, navigationWEB } from '../../app-navigation';
 import { Router, NavigationEnd } from '@angular/router';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from 'src/app/pages/user/user';
@@ -78,18 +78,21 @@ export class SideNavInnerToolbarComponent implements OnInit {
   }
 
   buscarRol(){
-    if(this.user.rol == "Administrador"){
-      this.menuItems=navigationAdmin
+    if(this.user.rol == "Administrador")
+      this.menuItems = navigationAdmin
      
-    }else if(this.user.rol == "Usuario"){
-      this.menuItems=navigation
+    else if(this.user.rol == "Usuario")
+      this.menuItems = navigation
 
-    }else if(this.user.rol == "Supervisor"){
-      this.menuItems=navigationSupervisor
+    else if(this.user.rol == "Supervisor")
+      this.menuItems = navigationSupervisor
 
-    }else{
-      this.menuItems=navigationWEB
-    }
+    else if(this.user.rol == "Inspector")
+      this.menuItems = navigationInspector
+    
+    else
+      this.menuItems = navigationWEB
+    
   }
 
   updateDrawer() {

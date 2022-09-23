@@ -102,7 +102,7 @@
                                             </td>
                                            
                                             <td>
-                                              <span><button class="btnIcons5" (click)="verLista(audit.idAuditoria)"><i class="fa fa-list fa-1x"></i></button></span>
+                                              <span><button class="btnIcons5" (click)="verLista(audit)"><i class="fa fa-list fa-1x"></i></button></span>
                                             </td>
                                             <td style="width: 15%;">
                                                 <span><button class="btn btn-block btn-success " (click)="continuarAuditoria(id)">Continuar</button></span>
@@ -165,8 +165,32 @@
                     <div id="tabla2" style="display: none;">
                         <div class="col-md-12">
                             <div class="row">
-                                <div class="col-md-2"><button class="btn btnIcons6" (click)="regresar2()">Regresar</button></div>
+                                <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">
+                                    <i class="fa fa-arrow-left fa-1x"></i>  Regresar</button></div>
+                                <div class="col-md-8"></div>
+                                <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="exportarPDF()">
+                                    <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
+
+
                                 <div class="col-md-12">
+                                    <div style="text-align: center;">
+                                        <h2>AUDITORIA DE INVENTARIO</h2>
+                                        <div class="row"  style="text-align: left;">
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-3"><span style="font-weight: bold;">Fecha</span></div>
+                                                    <div class="col-md-9">{{dataAuditoria.fecha_inicio}}</div>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <div class="row">
+                                                    <div class="col-md-3"><span style="font-weight: bold;">Sucursal</span></div>
+                                                    <div class="col-md-9">{{dataAuditoria?.sucursal?.nombre}}</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <dx-data-grid #data2
                                     id="gridContainer"
                                     [dataSource]="auditoriaProductosleida"

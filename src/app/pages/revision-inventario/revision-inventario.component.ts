@@ -436,6 +436,7 @@ export class RevionInventarioComponent implements OnInit {
           this.isNew = true;
           this.newIngreso = true;
           this.verListadoIngreso = false;
+          
        break;
       case "Ver Listado":
           this.newIngreso = false;
@@ -453,6 +454,7 @@ export class RevionInventarioComponent implements OnInit {
           this.newAud = true;
           this.verListadoTransacciones = false;
           this.verListadoProductos = false;
+          this.verListadoComparacion = false;
        break;
       case "Ver Transacciones":
           if(this.transaccionesProductosRevisados.length == 0) 
@@ -1167,8 +1169,9 @@ opcionRadioTipos(e){
   }
 
   ajustarSaldos(indice:number) {
+    console.log(this.revisionIniciada.sucursal)
     this.invetarioP.forEach((element) => {
-      switch (this.newControlInventario.sucursal) {
+      switch (this.revisionIniciada.sucursal) {
         case "matriz":
           this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas;
           this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas;

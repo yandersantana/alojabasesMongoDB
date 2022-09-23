@@ -1168,7 +1168,6 @@ opcionRadioTipos(e){
 
   ajustarSaldos(indice:number) {
     this.invetarioP.forEach((element) => {
-      this.newControlInventario.sucursal = "matriz"
       switch (this.newControlInventario.sucursal) {
         case "matriz":
           this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas;

@@ -25,7 +25,7 @@ import { CombosService } from 'src/app/servicios/combos.service';
 })
 export class CatalogoComponent implements OnInit {
   uploadedFiles: Array<File>;
-  titulo:string="ksjdksjd"
+  titulo:string=""
   base64textString:String="";
   popupvisible:boolean=false
   popupvisible2:boolean=false
@@ -215,7 +215,7 @@ export class CatalogoComponent implements OnInit {
   }
 
   cargarUsuarioLogueado() {
-    const promesaUser = new Promise((res, err) => {
+    new Promise((res, err) => {
       if (localStorage.getItem("maily") != '') {
         this.correo = localStorage.getItem("maily");
       }
@@ -232,8 +232,7 @@ export class CatalogoComponent implements OnInit {
               this.authService2.logOut();
            
           },
-          err => {
-          }
+          err => {}
         )
     });
   }
@@ -289,14 +288,9 @@ export class CatalogoComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe(res => {
       this.productosActivos = res as producto[]; 
       this.administrarPrecios();
-      //this.gestionarProductosCatalogo();
     })
   }
 
-
-  gestionarProductosCatalogo(){
-
-  }
 
 
   traerCombosProductos(){
@@ -759,12 +753,11 @@ export class CatalogoComponent implements OnInit {
   buscarUnidad(e){
     console.log("entr aqui ")
     if(this.catalogo2.UNIDAD == "Metros"){
-      console.log("sii")
       this.varM2=false
       this.varPC=false
-    }else if(this.catalogo2.UNIDAD == "Juego"){
+    }else if(this.catalogo2.UNIDAD == "Juego")
       this.varPC=false
-    }else{
+    else{
       this.varM2=true
       this.varPC=true
     }
@@ -1153,37 +1146,31 @@ _handleReaderLoaded(readerEvt) {
           console.log(btoa(binaryString));
   }
 
-  actualizarEstado(){
-    new Promise<any>((resolve, reject) => {
-      //this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":this.catalogo2.ESTADO}).then(res => { }, err => reject(err));
-    }) 
-  }
 
   cambiarEstado(){
     new Promise<any>((resolve, reject) => {
-      this.productoService.updateProductoEstado(this.catalogo2.PRODUCTO, "INACTIVO").subscribe(res => {this.mostrarMensajeEliminación()
-        },
-        err => { console.log(err); this.mensajeError() }
+      this.productoService.updateProductoEstado(this.catalogo2.PRODUCTO, "INACTIVO").subscribe(
+        res => {this.mostrarMensajeEliminación()},
+        err => {this.mensajeError()}
       )
-      //this.db.collection("/productos").doc(this.catalogo2.PRODUCTO).update({"ESTADO":"INACTIVO"}).then(res => {this.mostrarMensajeEliminación()}, err => reject(err));
     }) 
   }
 
   cambiarEstado2(producto:string){
     new Promise<any>((resolve, reject) => {
-      this.productoService.updateProductoEstado(producto, "ACTIVO").subscribe(res => {this.mostrarMensajeRestauración()
-      },
-      err => { console.log(err); this.mensajeError() }
+      this.productoService.updateProductoEstado(producto, "ACTIVO").subscribe(
+        res => {this.mostrarMensajeRestauración()},
+        err => {this.mensajeError() }
     )}) 
   }
 
 
   updateProducto(){
-    if(this.selectedFiles!=undefined){
+    if(this.selectedFiles!=undefined)
       this.uploadFiles2()
-    } else{
+    else
       this.continuarGuardando()
-    }
+    
   }
 
   continuarGuardando(){
@@ -1196,20 +1183,19 @@ _handleReaderLoaded(readerEvt) {
     if(this.catalogo2.PRODUCTO!="" && this.catalogo2.CLASIFICA!=""  && this.catalogo2.porcentaje_ganancia!=0 &&this.catalogo2.DIM!="" &&this.catalogo2.REFERENCIA!="" ){
       new Promise<any>((resolve, reject) => {
         this.mensajeGuardando()
-        if(this.catalogo2.M2 ==0){
+        if(this.catalogo2.M2 ==0)
           this.catalogo2.M2=1
-        }
-        if(this.catalogo2.P_CAJA ==0){
-          this.catalogo2.P_CAJA=1
-        }
-
-        if(this.catalogo2.IMAGEN.length >0){
-        this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
-        }
         
-        if(this.catalogo2.APLICACION ==null || this.catalogo2.APLICACION==""){
+        if(this.catalogo2.P_CAJA ==0)
+          this.catalogo2.P_CAJA=1
+
+        if(this.catalogo2.IMAGEN.length >0)
+        this.catalogo2.IMAGEN_PRINCIPAL= this.catalogo2.IMAGEN[0]
+        
+        
+        if(this.catalogo2.APLICACION ==null || this.catalogo2.APLICACION=="")
           this.catalogo2.APLICACION="Default"
-        }
+        
 
         this.catalogoService.updateCatalogo(this.catalogo2).subscribe(
           res => {
@@ -1245,10 +1231,10 @@ _handleReaderLoaded(readerEvt) {
   deleteProducto(){
     new Promise<any>((resolve, reject) => {
       this.mensajeGuardando()
-      this.catalogoService.updateCatalogoEliminacion(this.catalogo2,"Eliminado").subscribe(res => {this.cambiarEstado()},
-        err => { console.log(err); this.mensajeError() }
+      this.catalogoService.updateCatalogoEliminacion(this.catalogo2,"Eliminado").subscribe(
+        res => {this.cambiarEstado()},
+        err => {this.mensajeError() }
       )
-      //this.db.collection("/catalogo").doc(this.catalogo2.PRODUCTO).update({"estado2":"Eliminado"}).then(res => { this.cambiarEstado()}, err => reject(err));
     })
   }
 
@@ -1267,7 +1253,6 @@ _handleReaderLoaded(readerEvt) {
     this.catalogo.TIPO = "Original"
     this.catalogo.ORIGEN = "Nacional"
     this.catalogo.ESTADO = "INACTIVO"
-    //this.db.collection("/catalogo").doc(1+"").set({ ...this.catalogo });
   }
 
 
@@ -1363,15 +1348,13 @@ _handleReaderLoaded(readerEvt) {
   }
 
   enviar(num:number){
-    console.log("acabo de recibir "+ num)
     this.imagenPrincipal= this.imagenesData[num]
   }
 
   restaurar(producto:string){
     this.productosCatalogoElim.forEach(element=>{
-      if(element.PRODUCTO == producto){
+      if(element.PRODUCTO == producto)
         this.catalogo3 = element
-      }
     })
     Swal.fire({
       title: 'Alerta',

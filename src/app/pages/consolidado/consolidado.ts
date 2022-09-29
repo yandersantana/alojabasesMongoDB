@@ -51,6 +51,19 @@ export class productoActualizable {
   constructor() {}
 }
 
+export class productoMultiple {
+  array: string[];
+  constructor() {}
+}
+
+
+export class productosPorFiltros {
+  clasificacion: string;
+  nombreCasa: string;
+  nombreReferencia: string;
+  constructor() {}
+}
+
 
 export class clasificacionActualizacion{
   nombreClasificacion : string;

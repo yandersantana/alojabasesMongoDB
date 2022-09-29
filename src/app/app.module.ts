@@ -35,7 +35,6 @@ import {
   DxListModule,
   DxTextAreaModule,
   DxRadioGroupModule,
-  DxToolbarModule,
   DxMenuModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
@@ -103,6 +102,7 @@ import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/bas
 import { GestionPagoChequesComponent } from "./pages/gestion-pago-cheques/gestion-pago-cheques.component";
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
 import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
+import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
 
 @NgModule({
   declarations: [
@@ -160,7 +160,8 @@ import { RevionInventarioComponent } from "./pages/revision-inventario/revision-
     BasePagoProveedoresComponent,
     GestionPagoChequesComponent,
     TransaccionesNominasComponent,
-    RevionInventarioComponent
+    RevionInventarioComponent,
+    StockMinimoComponent
   ],
   imports: [
     BrowserModule,

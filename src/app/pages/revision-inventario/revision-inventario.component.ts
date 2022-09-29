@@ -56,14 +56,21 @@ export class RevionInventarioComponent implements OnInit {
   mostrarbtn = false;
   verListadoComparacion = false;
   bloquearBtn = false;
+  menu: string[] = [];
+
   
   menuIngresos: string[] = [
     "Nueva Revision",
     "Ver Listado"
   ];
 
-  menu: string[] = [
+  menuAdmin: string[] = [
     "Nueva Revision",
+    "Ver Transacciones",
+    "Listado Productos",
+  ];
+
+  menuNormal: string[] = [
     "Ver Transacciones",
     "Listado Productos",
   ];
@@ -237,6 +244,10 @@ export class RevionInventarioComponent implements OnInit {
         let days = new Date().getDay() - new Date(data?.fecha).getDay();
         newControl.cajas_diferencia = data?.cajas_diferencia ?? 0;
         newControl.piezas_diferencia = data?.piezas_diferencia ?? 0;
+        newControl.cajas_conteo = data?.cajas_conteo ?? 0;
+        newControl.piezas_conteo = data?.piezas_conteo ?? 0;
+        newControl.cajas_sistema = data?.cajas_sistema ?? 0;
+        newControl.piezas_sistema = data?.piezas_sistema ?? 0;
         newControl.fecha = data?.fecha;
         newControl.resultado = data?.resultado;
         newControl.detalle = data?.detalle;
@@ -276,6 +287,10 @@ export class RevionInventarioComponent implements OnInit {
         this.listaClasificacion.push(clasi)
       })
     })
+
+    this.listaClasificacion.sort(function(a, b) {
+   return a.nombreClasificacion.localeCompare(b.nombreClasificacion);
+});
   }
 
   obtenerDetallesproducto(e){
@@ -448,6 +463,7 @@ export class RevionInventarioComponent implements OnInit {
 
 
   opcionMenuPrincipal(e){
+    console.log(e)
     switch (e.value) {
       case  "Nueva Revision":
           this.seccionNew = true;
@@ -504,6 +520,7 @@ export class RevionInventarioComponent implements OnInit {
 
 
   crearListadoComparacion(){
+    this.listadoComparacionResultados = [];
     this.listadoProductosRevisados.forEach((element, index)=>{
       var newComparacion = new comparacionResultadosRevision();
       newComparacion._id = element._id
@@ -785,6 +802,7 @@ opcionRadioTipos(e){
  
 
   cargarUsuarioLogueado() {
+    this.menu = this.menuNormal;
     const promesaUser = new Promise((res, err) => {
       if (localStorage.getItem("maily") != '')
         this.correo = localStorage.getItem("maily");
@@ -796,13 +814,27 @@ opcionRadioTipos(e){
             if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
 
-            if(this.usuarioLogueado[0].rol == "Administrador")
+            if(this.usuarioLogueado[0].rol == "Administrador"){
               this.mostrarBloqueo = true;
+              this.menu = this.menuAdmin;
+            }
 
             else if(this.usuarioLogueado[0].rol == "Inspector" && this.idRevision == "0"){
               this.mostrarCreacion = false;
               this.mostrarLoading = false;
               this.mostrarMensajeGenerico(2,"Ingrese con una revisión Iniciada")
+            }
+
+            else{
+              //seccion para usuarios normales
+              if(this.transaccionesProductosRevisados.length == 0) 
+                this.traertransaccionesProductosRevisados();
+              this.seccionNew = false;
+              this.newAud = false;
+              this.newIngreso = false;
+              this.verListadoIngreso = false;
+              this.verListadoTransacciones = true;
+              this.verListadoProductos = false;
             }
               
 
@@ -1169,7 +1201,6 @@ opcionRadioTipos(e){
   }
 
   ajustarSaldos(indice:number) {
-    console.log(this.revisionIniciada.sucursal)
     this.invetarioP.forEach((element) => {
       switch (this.revisionIniciada.sucursal) {
         case "matriz":
@@ -1196,29 +1227,33 @@ opcionRadioTipos(e){
     this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
     
 
-    if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
+    /* if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
       this.listadoComparacionResultados[indice].m2_diferencia=this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
     }else{
       if(this.listadoComparacionResultados[indice].m2_conteo < this.listadoComparacionResultados[indice].m2_sistema)
         this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema - 0.04
       else
         this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema + 0.03
+    } */
+
+    if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
+      if(this.listadoComparacionResultados[indice].m2_sistema < 0)
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema * (-1)
+      else
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
+    }else{
+      console.log(this.listadoComparacionResultados[indice].m2_conteo)
+      console.log(this.listadoComparacionResultados[indice].m2_sistema)
+      /* if(this.listadoComparacionResultados[indice].m2_conteo < this.listadoComparacionResultados[indice].m2_sistema)
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema - 0.04
+      else
+        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema + 0.03 */
     }
-
-    //if(this.listadoComparacionResultados[indice].m2_diferencia < 0)
-      //this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_diferencia * -1
-
-
-      /* if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){
-        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base-0.04
-      }else{
-        this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base+0.03
-      } */
-
 
     this.listadoComparacionResultados[indice].cajas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia / prod.M2);
     this.listadoComparacionResultados[indice].piezas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia * prod.P_CAJA /prod.M2) - (this.listadoComparacionResultados[indice].cajas_diferencia * prod.P_CAJA);
 
+    console.log(this.listadoComparacionResultados[indice].m2_diferencia)
     if(this.listadoComparacionResultados[indice].m2_diferencia > 0)
       this.listadoComparacionResultados[indice].resultado = "SOBRANTE"
     else if (this.listadoComparacionResultados[indice].m2_diferencia < 0)
@@ -1245,7 +1280,7 @@ opcionRadioTipos(e){
       element.cantidadPiezas3 = parseInt(((element.cantidadM2b3 * element.producto.P_CAJA) /element.producto.M2 - element.cantidadCajas3 * element.producto.P_CAJA).toFixed(0));
       element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
 
-      if(element.cantidadM2 < 0){
+      /* if(element.cantidadM2 < 0){
         element.cantidadCajas = 0;
         element.cantidadPiezas = 0;
         element.cantidadM2 = 0;
@@ -1259,7 +1294,7 @@ opcionRadioTipos(e){
         element.cantidadCajas3 = 0;
         element.cantidadPiezas3 = 0;
         element.cantidadM2b3 = 0;
-      }
+      } */
     });
   }
 

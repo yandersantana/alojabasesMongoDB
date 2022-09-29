@@ -6,6 +6,8 @@ import {
   inventario,
   invFaltanteSucursal,
   productoActualizable,
+  productoMultiple,
+  productosPorFiltros,
   productoTransaccion,
 } from "./consolidado";
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
@@ -31,6 +33,7 @@ import { CatalogoService } from "src/app/servicios/catalogo.service";
 export class ConsolidadoComponent implements OnInit {
   menu1: string[] = [
     "Busqueda Individual",
+    "Busqueda Por Filtros",
     "Inventario General",
     "Inventario Contable",
     "Inventario Valorizado",
@@ -58,6 +61,8 @@ export class ConsolidadoComponent implements OnInit {
   productosPendientesNoEN: productosPendientesEntrega[] = [];
   productosPendientesNoENLista: productosPendientesEntrega[] = [];
   listaClasificacion: clasificacionActualizacion[] = [];
+  listadoCategorias: string[] = [];
+  nombreClasificacion : string = ""
   bodegas: bodega[] = [];
   bodegasMatriz: string = "";
   bodegasSucursal1: string = "";
@@ -66,6 +71,8 @@ export class ConsolidadoComponent implements OnInit {
   ubicacion1: string = "";
   ubicacion2: string = "";
   ubicacion3: string = "";
+  nombreReferencia: string = "";
+  nombreCasa: string = "";
   nota: string = "";
   nameProducto: string = "";
   nombreProducto: string = "";
@@ -80,6 +87,7 @@ export class ConsolidadoComponent implements OnInit {
   mostrarUser = false;
   mostrarAdmin = false;
   mostrarBusquedaIndividual = true;
+  mostrarBusquedaPorFiltros = false;
   mostrarActualizacion = false;
   opcionesCatalogo: opcionesCatalogo[]=[]
   productosCatalogo:catalogo[]=[]
@@ -115,6 +123,7 @@ export class ConsolidadoComponent implements OnInit {
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
     this.traerBodegas();
+
     
   }
 
@@ -139,6 +148,7 @@ export class ConsolidadoComponent implements OnInit {
            var clasi = new clasificacionActualizacion()
            clasi.nombreClasificacion = element
            this.listaClasificacion.push(clasi)
+           this.listadoCategorias.push(clasi.nombreClasificacion)
          })
     })
   }
@@ -156,6 +166,115 @@ export class ConsolidadoComponent implements OnInit {
       
     });
   }
+
+  traerTransaccionesMultiples() {
+    this.transacciones = [];
+    this.invetarioP = [];
+    this.invetarioFaltante = [];
+    this.productosPendientes = [];
+    this.productosPendientesNoEN = [];
+    this.mostrarLoading = true;
+    var productoM = new productoMultiple();
+    var arregloProductos = [];
+    this.productos.forEach(element=>{ arregloProductos.push(element.PRODUCTO)})
+    productoM.array = arregloProductos;
+    this.transaccionesService.getTransaccionesPorProductoMultiple(productoM).subscribe((res) => {
+      this.transacciones = res as transaccion[];
+      this.cargarDatos();
+    });
+  }
+
+
+  traerProductosPorFiltros() {
+    var productoFiltro = new productosPorFiltros();
+    productoFiltro.clasificacion = this.nombreClasificacion
+    productoFiltro.nombreCasa = this.nombreCasa
+    productoFiltro.nombreReferencia = this.nombreReferencia
+
+    var filtro1 = productoFiltro.clasificacion == "" ? false : true
+    var filtro2 = productoFiltro.nombreCasa == "" ? false : true
+    var filtro3 = productoFiltro.nombreReferencia == "" ? false : true
+
+    if(productoFiltro.clasificacion == "" && productoFiltro.nombreCasa == "" && productoFiltro.nombreReferencia == ""){
+      Swal.fire("Error!", "No hay ningún filtro para aplicar", "error");
+      return;
+    }
+
+    if(filtro1 == true && filtro2 == false && filtro3 == false)
+      this.traerProductosFiltrados(1, productoFiltro);
+
+    else if(filtro1 == true && filtro2 == true && filtro3 == false)
+      this.traerProductosFiltrados(2, productoFiltro);
+
+    else if(filtro1 == true && filtro2 == true && filtro3 == true)
+      this.traerProductosFiltrados(3, productoFiltro);
+    
+    else if(filtro1 == false && filtro2 == true && filtro3 == false)
+      this.traerProductosFiltrados(4, productoFiltro);
+
+    else if(filtro1 == false && filtro2 == true && filtro3 == true)
+      this.traerProductosFiltrados(5, productoFiltro);
+
+    else if(filtro1 == false && filtro2 == false && filtro3 == true)
+      this.traerProductosFiltrados(6, productoFiltro);
+
+    else if(filtro1 == true && filtro2 == false && filtro3 == true)
+      this.traerProductosFiltrados(7, productoFiltro);
+  
+  }
+
+  traerProductosFiltrados(num : number, productoFiltro : productosPorFiltros){
+    switch (num) {
+        case 1:
+          this.productoService.getProductosPorFiltros1(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 2:
+          this.productoService.getProductosPorFiltros2(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 3:
+          this.productoService.getProductosPorFiltros3(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 4:
+          this.productoService.getProductosPorFiltros4(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 5:
+          this.productoService.getProductosPorFiltros5(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 6:
+          this.productoService.getProductosPorFiltros6(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+        case 7:
+          this.productoService.getProductosPorFiltros7(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+          break;
+
+        default:
+          break;
+      }
+  }
+
+
+
 
   traerTransaccionesPorProducto() {
     var existe = false;
@@ -817,7 +936,6 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.valorProducto = ((element2.porcentaje_ganancia * element2.precio)/100) + element2.precio ;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.notas = element2.notas;
-      console.log(this.invetarioProd);
       this.invetarioP.push(this.invetarioProd);
 
       contCajas = 0;
@@ -921,14 +1039,13 @@ export class ConsolidadoComponent implements OnInit {
         .subscribe(
           (res) => {
             contVal++,
-              this.contadorValidaciones2(contVal),
-              console.log("lo hice");
+              this.contadorValidaciones2(contVal)
+
           },
           (err) => {
 
             contVal++,
-              this.contadorValidaciones2(contVal),
-              console.log("error aqui", this.prodActualizable);
+              this.contadorValidaciones2(contVal)
           }
         );
     });
@@ -936,7 +1053,6 @@ export class ConsolidadoComponent implements OnInit {
 
 
   async actualizarInventarioPorClasificacion(e) {
-    console.log(e.nombreClasificacion)
     var m2s1 = 0;
     var m2s2 = 0;
     var m2s3 = 0;
@@ -947,11 +1063,9 @@ export class ConsolidadoComponent implements OnInit {
       if(element.CLASIFICA == e.nombreClasificacion)
         contador++
     })
-    console.log(contador)
     var cont2=0
     this.invetarioP.forEach(async (element) => {
       if(element.producto.CLASIFICA == e.nombreClasificacion){
-        console.log("actualizare",element)
         cont2++
         m2s1 = parseFloat(element.cantidadM2.toFixed(2));
         m2s2 = parseFloat(element.cantidadM2b2.toFixed(2));
@@ -974,17 +1088,14 @@ export class ConsolidadoComponent implements OnInit {
         this.productoService.updateProductosSucursalesNuevo(this.prodActualizable).subscribe(
           (res) => {
             contVal++,
-            this.contadorValidacionesClasificacion(contVal,contador),
-            console.log("lo hice");
+            this.contadorValidacionesClasificacion(contVal,contador)
           },
           (err) => {
             contVal++,
-            this.contadorValidacionesClasificacion(contVal,contador),
-            console.log("error aqui", this.prodActualizable);
+            this.contadorValidacionesClasificacion(contVal,contador)
           });
         }
       }); 
-      console.log("ttal fueron",cont2)
   }
 
   contadorValidaciones2(i: number) {
@@ -998,8 +1109,6 @@ export class ConsolidadoComponent implements OnInit {
       }).then((result) => {
         window.location.reload();
       });
-    } else {
-      //console.log("no he entrado " + i);
     }
   }
 
@@ -1014,9 +1123,7 @@ export class ConsolidadoComponent implements OnInit {
       }).then((result) => {
         //window.location.reload();
       });
-    } else {
-      //console.log("no he entrado " + i);
-    }
+    } 
   }
 
   opcionMenu(e) {
@@ -1029,6 +1136,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarUser = true;
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = false;
+        this.mostrarBusquedaPorFiltros = false;
         this.mostrarActualizacion = false;
         break;
       case "Inventario Contable":
@@ -1038,6 +1146,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarUser = true;
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = false;
+        this.mostrarBusquedaPorFiltros = false;
         this.mostrarActualizacion = false;
         break;
       case "Inventario Valorizado":
@@ -1046,6 +1155,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarUser = false;
         this.mostrarAdmin = true;
         this.mostrarBusquedaIndividual = false;
+        this.mostrarBusquedaPorFiltros = false;
         this.mostrarActualizacion = false;
         break;
       case "Busqueda Individual":
@@ -1056,6 +1166,18 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarUser = false;
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = true;
+        this.mostrarBusquedaPorFiltros = false;
+        this.mostrarActualizacion = false;
+        break;
+      case "Busqueda Por Filtros":
+        this.tipoBusqueda = "Normal"
+        this.transacciones = [];
+        this.invetarioP = [];
+        this.invetarioFaltante = [];
+        this.mostrarUser = false;
+        this.mostrarAdmin = false;
+        this.mostrarBusquedaIndividual = false;
+        this.mostrarBusquedaPorFiltros = true;
         this.mostrarActualizacion = false;
         break;
       case "Actualizacion Productos":
@@ -1065,6 +1187,7 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarUser = false;
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = false;
+        this.mostrarBusquedaPorFiltros = false;
         this.mostrarActualizacion = true;
       default:
     }
@@ -1146,7 +1269,6 @@ export class ConsolidadoComponent implements OnInit {
   }
 
   ajustarSaldos() {
-    console.log(this.tipoBusqueda)
     if(this.valorMenu != "Inventario Contable"){
       if(this.tipoBusqueda == "Normal"){
         this.invetarioP.forEach((element) => {
@@ -1606,7 +1728,6 @@ export class ConsolidadoComponent implements OnInit {
                 if(element.cantidadM2b3 < this.valor3)
                   this.valor3 = Math.trunc(element.cantidadM2b3)
 
-                  console.log(numero)
                 this.invetarioP[numero].cantidadM2 = this.valor1
                 this.invetarioP[numero].cantidadCajas = this.valor1
                 this.invetarioP[numero].cantidadM2b2 = this.valor2

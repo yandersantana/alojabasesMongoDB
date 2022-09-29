@@ -53,6 +53,7 @@ import { RegistroFacturasComponent } from "./pages/registro-facturas/registro-fa
 import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/base-pagos-proveedores.component";
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
 import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
+import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
 
 const routes: Routes = [
   {
@@ -312,6 +313,11 @@ const routes: Routes = [
   {
     path: "generador-qr",
     component: GenerarQRComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "stock-minimo",
+    component: StockMinimoComponent,
     canActivate: [AuthGuardService],
   },
   {

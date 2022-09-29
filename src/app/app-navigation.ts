@@ -68,6 +68,10 @@ export const navigation = [
         text: "Catalago",
         path: "/catalogo",
       },
+      {
+        text: "Revisiones",
+        path: "/revision-inventario/0",
+      }
     ],
   },
   {

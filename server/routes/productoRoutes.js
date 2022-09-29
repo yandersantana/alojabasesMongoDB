@@ -82,17 +82,6 @@ router.put('/updatePrecioProducto', async (req, res,next) => {
 
 router.put('/updateProductoCatalogo/:id', async (req, res,next) => {
     const { id } = req.params;
-    /*const { producto } = req.body.PRODUCTO;
-    const { referencia } = req.body.REFERENCIA;
-    const { nombre } = req.body.nombre_comercial;
-    const { aplicacion } = req.body.APLICACION;
-    const { m2 } = req.body.M2;
-    const { pcaja } = req.body.P_CAJA;
-    const { ganancia } = req.body.porcentaje_ganancia;
-    const { precio } = req.body.precio;
-    const { estado } = req.body.ESTADO;*/
-    console.log(id)
-    console.log(req.body.M2)
     await Producto.findByIdAndUpdate(id, {$set: {REFERENCIA:req.body.REFERENCIA,
         nombre_comercial:req.body.nombre_comercial,APLICACION:req.body.APLICACION,
         M2:req.body.M2,P_CAJA:req.body.P_CAJA,porcentaje_ganancia:req.body.porcentaje_ganancia,
@@ -101,6 +90,47 @@ router.put('/updateProductoCatalogo/:id', async (req, res,next) => {
 })
 
 
+router.post("/getProductosPorFiltros1", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    CLASIFICA: req.body.clasificacion, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros2", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    CLASIFICA: req.body.clasificacion , CASA: req.body.nombreCasa, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros3", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    CLASIFICA: req.body.clasificacion , REFERENCIA: req.body.nombreReferencia , CASA: req.body.nombreCasa, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros4", async (req, res, next) => {
+  const productos = await Producto.find({ 
+     CASA: req.body.nombreCasa, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros5", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    REFERENCIA: req.body.nombreReferencia , CASA: req.body.nombreCasa, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros6", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    REFERENCIA: req.body.nombreReferencia, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
+
+router.post("/getProductosPorFiltros7", async (req, res, next) => {
+  const productos = await Producto.find({ 
+    CLASIFICA: req.body.clasificacion , REFERENCIA: req.body.nombreReferencia, ESTADO : "ACTIVO"});
+  res.json(productos);
+});
 
 
 router.put('/updateAplicacion/:id/:aplicacion', async (req, res,next) => {

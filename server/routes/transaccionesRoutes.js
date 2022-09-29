@@ -33,6 +33,12 @@ router.post("/getTransaccionesPorProducto", async (req, res, next) => {
   res.json(transacciones);
 });
 
+router.post("/getTransaccionesPorProductoMultiple", async (req, res, next) => {
+  console.log(req.body)
+  const transacciones = await Transacciones.find({ producto: { $in:  req.body.array } });
+  res.json(transacciones);
+});
+
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
   const transacciones = await Transacciones.find({ tipo_transaccion: req.body.tipoTransaccion , documento:req.body.NumDocumento });

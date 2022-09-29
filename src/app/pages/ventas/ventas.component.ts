@@ -610,6 +610,7 @@ mostrarPopup(e,i:number){
         this.imagenes= element.IMAGEN
         this.titulo=element.PRODUCTO
         this.catalogoLeido = element
+        this.catalogoLeido.precio = this.productosVendidos[i].producto.precio
         this.catalogoLeido.ubicacion1 = this.productosVendidos[i].producto.ubicacionSuc1
         this.catalogoLeido.ubicacion2 = this.productosVendidos[i].producto.ubicacionSuc2
         this.catalogoLeido.ubicacion3 = this.productosVendidos[i].producto.ubicacionSuc3
@@ -3101,10 +3102,57 @@ cambiarestado(e,i:number){
     })
 
     IdNum.then((data) => {
-      this.generarFactura();
+      this.validarFechaFactura();
+      //this.generarFactura();
     })
   }
 
+
+  validarFechaFactura(){
+    var fechaActual = new Date();
+    if(fechaActual.toLocaleDateString() != this.now.toLocaleDateString()){
+      this.mostrarLoading = false;
+      Swal.fire({
+        title: 'Alerta',
+        text: "La fecha es distinta a la de hoy",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.generarFactura();
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          console.log("hare algo")
+        }
+      })
+    }
+    else
+      this.generarFactura();
+  }
+
+  validarNotaVenta(){
+    var fechaActual = new Date();
+    if(fechaActual.toLocaleDateString() != this.now.toLocaleDateString()){
+      this.mostrarLoading = false;
+      Swal.fire({
+        title: 'Alerta',
+        text: "La fecha es distinta a la de hoy",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.generarNotaDeVenta();
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          console.log("hare algo")
+        }
+      })
+    }
+    else
+      this.generarNotaDeVenta();
+  }
 
 
   generarFactura() {
@@ -3308,7 +3356,6 @@ cambiarestado(e,i:number){
           if(this.facturasEctdas.length == 0){
             resolve("listo");
           }else{
-            console.log("entre con", this.factura.documento_n)
             this.factura.documento_n =  this.factura.documento_n + 1
             this.obtenerIdNotasVenta();
           }
@@ -3319,7 +3366,8 @@ cambiarestado(e,i:number){
     })
 
     IdNum.then((data) => {
-      this.generarNotaDeVenta();
+      this.validarNotaVenta();
+      //this.generarNotaDeVenta();
     })
   }
 

@@ -288,6 +288,10 @@ export class RevionInventarioComponent implements OnInit {
       })
     })
 
+    //Esto para agregar la inspeccion general
+    var cla = new clasificacionActualizacion();
+    cla.nombreClasificacion = "Todos"
+    this.listaClasificacion.push(cla);
     this.listaClasificacion.sort(function(a, b) {
    return a.nombreClasificacion.localeCompare(b.nombreClasificacion);
 });
@@ -349,7 +353,10 @@ export class RevionInventarioComponent implements OnInit {
       var categoria = rev?.nombreClasificacion;
       if(categoria != null){
         this.productos = this.productosActivos;
-        this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
+        console.log(this.productos)
+        if(categoria != "Todos")
+          this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
+        
         this.productos22 = new DataSource({  
           store: this.productos,  
           sort: [{ field: "PRODUCTO", asc: true }],    
@@ -463,7 +470,6 @@ export class RevionInventarioComponent implements OnInit {
 
 
   opcionMenuPrincipal(e){
-    console.log(e)
     switch (e.value) {
       case  "Nueva Revision":
           this.seccionNew = true;
@@ -540,14 +546,14 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    //this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
-    this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
+    this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
+    //this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
     window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
   copiarLink(revision : controlInventario){
-    //this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
-    this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    //this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
   }
 

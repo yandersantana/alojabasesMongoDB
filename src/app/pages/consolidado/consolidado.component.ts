@@ -81,6 +81,7 @@ export class ConsolidadoComponent implements OnInit {
   proTransaccion: productoTransaccion;
   productos22: DataSource;
   mensajeLoading = "Cargando los datos";
+  imagenPrincipal : string
   totalCajas =0;
   totalPiezas = 0;
   totalM2 = 0;
@@ -91,6 +92,7 @@ export class ConsolidadoComponent implements OnInit {
   mostrarActualizacion = false;
   opcionesCatalogo: opcionesCatalogo[]=[]
   productosCatalogo:catalogo[]=[]
+  catalogoLeido : catalogo
 
   tiposBusqueda: string[] = [
       'Normal',
@@ -98,6 +100,11 @@ export class ConsolidadoComponent implements OnInit {
   ];
   tipoBusqueda = "Normal"
   cantidadProductos = 0;
+  titulo = "";
+  popupVisibleImagenes = false;
+  popupVi = false;
+  imagenes:string[]
+  imagenesData:string[]
 
   valor1 = 100
   valor2 = 100 
@@ -122,9 +129,7 @@ export class ConsolidadoComponent implements OnInit {
     this.cargarUsuarioLogueado();
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
-    this.traerBodegas();
-
-    
+    this.traerBodegas();    
   }
 
   traerOpcionesCatalogo(){
@@ -139,6 +144,13 @@ export class ConsolidadoComponent implements OnInit {
     this._catalogoService.getCatalogoActivos().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
       this.traerProductos();
+   })
+  }
+
+
+  traerCatalogoUnitarios(){
+    this._catalogoService.getCatalogoActivos().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
    })
   }
 
@@ -1179,6 +1191,8 @@ export class ConsolidadoComponent implements OnInit {
         this.mostrarBusquedaIndividual = false;
         this.mostrarBusquedaPorFiltros = true;
         this.mostrarActualizacion = false;
+        if(this.productosCatalogo.length == 0)
+          this.traerCatalogoUnitarios()
         break;
       case "Actualizacion Productos":
         this.tipoBusqueda = "Normal"
@@ -1439,6 +1453,7 @@ export class ConsolidadoComponent implements OnInit {
   };
 
   mostrarPopup(e: any) {
+    console.log(e)
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
       if (element.PRODUCTO == e.producto.PRODUCTO) {
@@ -1489,6 +1504,29 @@ export class ConsolidadoComponent implements OnInit {
   }
 
 
+
+  mostrarPopupImagenes(producto:string){
+    this.titulo = producto
+    this.productosCatalogo.forEach(element=>{
+      if(element.PRODUCTO == producto){
+        this.catalogoLeido= element
+        this.imagenes=element.IMAGEN
+      }
+    })
+    this.popupVisibleImagenes= true
+  }
+
+  enviar(num:number){
+    this.imagenPrincipal= this.imagenesData[num]
+  }
+
+
+  verGaleria(imagenes:string[]){
+    this.popupVisibleImagenes = false
+    this.popupVi=true
+    this.imagenesData = imagenes
+    this.imagenPrincipal = this.imagenesData[0]
+  }
 
 
   traerTransaccionesPorProductoCombo2(nombreProducto: producto, productoCombo : productosCombo) {

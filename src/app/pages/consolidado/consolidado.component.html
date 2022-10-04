@@ -273,16 +273,19 @@
         id="gridContainer"
         [dataSource]="invetarioP"
         [showBorders]="true"
+        [columnAutoWidth]="true"
+        rowTemplate="rowTemplateName"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
         <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column caption="Imagen" width="10%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
         <dxi-column
             dataField="producto.PRODUCTO"
             caption="Producto"
             dataType="string"
             sortOrder="asc"
-            width="30%" >
+            width="40%" >
         </dxi-column>
         <dxi-column
             dataField="producto.precio"
@@ -304,17 +307,20 @@
                 dataField="cantidadCajas"
                 caption="Cajas"
                 dataType="number"
+                width="10%"
                 class="d2">
             </dxi-column>
             <dxi-column
                 dataField="cantidadPiezas"
                 caption="Piezas"
+                width="10%"
                 dataType="number">
             </dxi-column>
             <dxi-column
                 dataField="cantidadM2"
                 caption="m2/unidad"
                 dataType="number"
+                width="10%"
                 [visible]="true">
             </dxi-column>
             <dxi-column
@@ -330,24 +336,26 @@
             <dxi-column
                 dataField="cantidadCajas2"
                 caption="Cajas"
+                width="10%"
                 dataType="number">
             </dxi-column>
             <dxi-column
                 dataField="cantidadPiezas2"
                 caption="Piezas"
+                width="10%"
                 dataType="number">
             </dxi-column>
             <dxi-column
                  dataField="cantidadM2b2"
                 caption="m2/unidad"
                 dataType="number"
+                width="10%"
                 [visible]="true">
             </dxi-column>
             <dxi-column
                 dataField="totalb2"
                 caption="Total"
-                valueFormat="currency"
-               
+                valueFormat="currency"        
                 [visible]="false"
                 width="10%">
             </dxi-column>
@@ -357,24 +365,26 @@
             <dxi-column
                 dataField="cantidadCajas3"
                 caption="Cajas"
+                width="10%"
                 dataType="number">
             </dxi-column>
             <dxi-column
                 dataField="cantidadPiezas3"
                 caption="Piezas"
+                width="10%"
                 dataType="number">
             </dxi-column>
             <dxi-column
                  dataField="cantidadM2b3"
                 caption="m2/unidad"
                 dataType="number"
+                width="10%"
                 [visible]="true">
             </dxi-column>
             <dxi-column
                 dataField="totalb3"
                 caption="Total"
                 valueFormat="currency"
-                
                 [visible]="false"
                 width="10%">
             </dxi-column>
@@ -406,6 +416,35 @@
             <dxi-button hint="Notas" icon="fa fa-list" [onClick]="mostrarProductos"></dxi-button>
         </dxi-column>
         <dxi-column dataField="bodega" caption="Bodegas" dataType="string" [visible]="false"></dxi-column>
+        <tbody class="employee dx-row"  *dxTemplate="let prod of 'rowTemplateName'" >
+            <tr class="main-row">
+                <td rowspan="2" class="imgProducto" style="text-align: center;">
+                    <button (click)="mostrarPopupImagenes(prod.data.producto.PRODUCTO)" class="btIm2">
+                        <img class="imgProducto" [src]="prod.data.IMAGEN_PRINCIPAL">
+                    </button>
+                </td>
+                <td style="vertical-align: middle;text-align: left;" >{{prod.data.producto.PRODUCTO}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadCajas}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadPiezas}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadM2}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadCajas2}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadPiezas2}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadM2b2}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadCajas3}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadPiezas3}}</td>
+                <td style="vertical-align: middle;text-align: center;">{{prod.data.cantidadM2b3}}</td>
+                <td style="vertical-align: middle;text-align: center;">
+                    <button (click)="mostrarPopup(prod.data)" class="btIm"><i class="fa fa-map-marker"></i></button>
+                </td>
+                <td style="vertical-align: middle;text-align: center;">
+                    <button (click)="mostrarPopupNotas(prod.data)" class="btIm"><i class="fa fa-list-alt"></i></button>
+                </td>
+                <td style="vertical-align: middle;text-align: center;">
+                    <button (click)="mostrarPopupProductos(prod.data)" class="btIm"><i class="fa fa-list"></i></button>
+                </td>
+            </tr>
+        </tbody>
+
         <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
     </dx-data-grid>
     </div>
@@ -1043,5 +1082,136 @@
 
 
     </dx-scroll-view>
+    </div>
+</dx-popup>
+
+
+
+<dx-popup
+        [width]="660"
+        [height]="540"
+        [showTitle]="true"
+        [title]="titulo"
+        [closeOnOutsideClick]="true"
+        [(visible)]="popupVisibleImagenes">
+        <div *dxTemplate="let data of 'content'">
+            <dx-scroll-view width="100%" height="100%">
+            <div class='popup-property-details'>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-2"></div>
+                        <div class="col-md-8 " id="gal" ><dx-gallery #gallery
+                            id="gallery"
+                            [dataSource]="imagenes"
+                            [height]="300"
+                            [loop]="true"
+                            [showNavButtons]="true"
+                            [showIndicator]="true"
+                        ></dx-gallery></div>
+                        <div class="col-md-2"></div>
+                    </div>
+                    <div class="col-md-12" style="text-align: center;">
+                        <button class="btn btn-primary " style="background-color: #ff4500;"  (click)="verGaleria(imagenes)" >Ver Galería
+                        </button>
+                    </div>
+                </div>
+                <br><br>
+                <div class="col-md-12">
+                    <div class="row">
+                        <div class="col-md-1"></div>
+                        <div class="col-md-10">
+                            <table style="width:100%">
+                                <tr>
+                                  <th>PRODUCTO</th>
+                                  <td>{{catalogoLeido.PRODUCTO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CLASIFICACIÓN</th>
+                                    <td>{{catalogoLeido.CLASIFICA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>REFERENCIA</th>
+                                    <td>{{catalogoLeido.REFERENCIA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>UNIDAD</th>
+                                    <td>{{catalogoLeido.UNIDAD}}</td>
+                                </tr>
+                                <tr>
+                                    <th>DIMENSIONES</th>
+                                    <td>{{catalogoLeido.DIM}}</td>
+                                </tr>
+                                <tr>
+                                    <th>NOMBRE COMERCIAL</th>
+                                    <td>{{catalogoLeido.NOMBRE_COMERCIAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>P_CAJA</th>
+                                    <td>{{catalogoLeido.P_CAJA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>M2</th>
+                                    <td>{{catalogoLeido.M2}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CAL</th>
+                                    <td>{{catalogoLeido.CAL}}</td>
+                                </tr>
+                                <tr>
+                                    <th>CASA</th>
+                                    <td>{{catalogoLeido.CASA}}</td>
+                                </tr>
+                                <tr>
+                                    <th>TIPO</th>
+                                    <td>{{catalogoLeido.TIPO}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ORIGEN</th>
+                                    <td>{{catalogoLeido.ORIGEN}}</td>
+                                </tr>
+                                <tr>
+                                    <th>ESTADO</th>
+                                    <td>{{catalogoLeido.ESTADO}}</td>
+                                </tr>
+                              </table>
+                        </div>
+                        <div class="col-md-1"></div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
+        </div>
+</dx-popup>
+
+
+<dx-popup
+    [width]="'70%'"
+    [height]="'80%'"
+    [showTitle]="true"
+    [title]="titulo"
+    [closeOnOutsideClick]="true"
+    [(visible)]="popupVi">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view  [scrollByContent]="true" width="100%" height="100%">
+            <div class="col-md-12"> 
+                <div class="row">
+                    <div class="col-md-4">
+                        <div *ngFor="let imagen of imagenesData; let id = index">
+                            <div class="col-md-12 espacio"><button (click)="enviar(id)"><img  class="imgProducto3 " src={{imagen}} alt=""></button></div>
+                        </div>
+                    </div>
+            
+                    <div class="col-md-8">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <pinch-zoom>
+                                    <img  class="imgProducto2 " src={{imagenPrincipal}} alt="">
+                                </pinch-zoom>                    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </dx-scroll-view>
     </div>
 </dx-popup>

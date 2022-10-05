@@ -260,7 +260,7 @@ export class ReporteGlobalComponent implements OnInit {
         if (element.fecha.getMonth() == loop) {
           sumaMesMatriz = Number(sumaMesMatriz)+ Number(element.VDiariaMatriz)
           sumaMesSuc1 = Number(sumaMesSuc1)+ Number(element.VDiariaSucursal1)
-          sumaUtilidad = Number(sumaUtilidad) + Number(element.MatUBruta)+ Number(element.Suc1UBruta)
+          sumaUtilidad = Number(sumaUtilidad ?? 0) + Number(element.MatUBruta ?? 0)+ Number(element.Suc1UBruta ?? 0)
         }
       });
       loop++

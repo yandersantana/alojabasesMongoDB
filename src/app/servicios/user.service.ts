@@ -12,8 +12,8 @@ export class UserService {
   role = "";
   userEmail = "";
   //private URL = 'http://localhost:3000/usuario';
-  //private URL = "http://159.223.107.115:3000/usuario";
-  private URL = 'http://104.131.82.174:3000/usuario';
+  private URL = "http://159.223.107.115:3000/usuario";
+  //private URL = 'http://104.131.82.174:3000/usuario';
   constructor(
     private http: HttpClient,
     private router: Router,
@@ -37,7 +37,6 @@ export class UserService {
   }
 
   updateUser(user) {
-    console.log("aqui es " + this.URL + `/update/${user._id}`);
     return this.http.put(this.URL + `/updateUser/${user._id}`, user);
   }
 
@@ -47,7 +46,6 @@ export class UserService {
 
   signIn(user) {
     this.userEmail = user.email;
-    console.log(user.email + "aqui");
     localStorage.setItem("maily", (this.userEmail = user.email));
     return this.http.post<any>(this.URL + "/signIn", user);
   }

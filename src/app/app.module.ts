@@ -44,6 +44,7 @@ import { TransaccionesComponent } from "./pages/transacciones/transacciones.comp
 import {
   LocationStrategy,
   HashLocationStrategy,
+  DecimalPipe,
 } from "@angular/common";
 
 import { AlertsModule } from "angular-alert-module";
@@ -206,6 +207,7 @@ import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.componen
   providers: [
     AuthService,
     ScreenService,
+    DecimalPipe,
     AppInfoService,
     {
       provide: LocationStrategy,

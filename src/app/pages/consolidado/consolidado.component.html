@@ -599,7 +599,57 @@
 
         <dxi-column
             dataField="ultimaFechaCompra"
+            dataType="date" 
+            format="dd/MM/yyyy"
             caption="Ult.Fech.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaRevisionMatriz"
+            dataType="date" 
+            format="dd/MM/yyyy"
+            caption="Ult.Fech.Rev.Matriz"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+         <dxi-column
+            dataField="diasRestantesMatriz"
+            caption="Dias.Dif.Matriz"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaRevisionSucursal1"
+            dataType="date" 
+            format="dd/MM/yyyy"
+            caption="Ult.Fech.Rev.Suc1"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="diasRestantesSucursal1"
+            caption="Dias.Dif.Suc1"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaRevisionSucursal2"
+            dataType="date" 
+            format="dd/MM/yyyy"
+            caption="Ult.Fech.Rev.Suc2"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="diasRestantesSucursal2"
+            caption="Dias.Dif.Suc2"
             [visible]="false"
             width="10%">
         </dxi-column>

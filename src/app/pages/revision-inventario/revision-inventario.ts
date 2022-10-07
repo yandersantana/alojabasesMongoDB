@@ -27,11 +27,26 @@ export class detalleProductoRevisado{
   novedades : string
   cajas : number
   piezas : number
+  m2_conteo : number
+  cajas_sistema : number
+  piezas_sistema : number
+  m2_sistema : number
+  cajas_diferencia : number
+  piezas_diferencia : number
+  m2_diferencia : number
+  resultado : string
   constructor(){
     this.fecha = new Date()
     this.estado="Iniciada"
     this.cajas = 0
     this.piezas = 0
+    this.m2_conteo = 0
+    this.m2_diferencia = 0
+    this.m2_diferencia = 0
+    this.cajas_diferencia = 0
+    this.cajas_sistema = 0
+    this.piezas_diferencia = 0
+    this.piezas_sistema = 0
   }
 }
 

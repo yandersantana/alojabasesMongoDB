@@ -10,6 +10,7 @@ import { producto } from "../ventas/venta";
 import { productoTransaccion } from "../consolidado/consolidado";
 import { AuthService } from "src/app/shared/services";
 import Swal from "sweetalert2";
+import { DecimalPipe } from "@angular/common";
 
 @Component({
   selector: "app-transacciones",
@@ -39,7 +40,8 @@ export class TransaccionesComponent implements OnInit {
     public transaccionesService: TransaccionesService,
     public authenService: AuthenService,
     public authService: AuthService,
-    public _productoService : ProductoService
+    public _productoService : ProductoService,
+    public _decimalPipe : DecimalPipe
   ) {}
 
   ngOnInit() {
@@ -169,6 +171,11 @@ export class TransaccionesComponent implements OnInit {
       }
     } else {
       this.transacciones = this.transaccionesGlobales;
+      this.transaccionesGlobales.forEach((element) => {
+        //var data = element.totalsuma?.toString()
+        element.totalsuma = Number(this._decimalPipe.transform(element.totalsuma,"1.2-2"))
+       // element.totalsuma = Number(element.totalsuma.toFixed(2).toString())
+      });
       this.terminarLoading();
     }
   }
@@ -240,7 +247,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.beginUpdate();
     e.component.columnOption("fecha_mov", "visible", true);
     e.component.columnOption("bodega", "visible", true);
-    e.component.columnOption("valor", "visible", true);
+    //e.component.columnOption("valor", "visible", true);
     e.component.columnOption("rucSucursal", "visible", true);
     e.component.columnOption("usu_autorizado", "visible", true);
     e.component.columnOption("usuario", "visible", true);
@@ -255,7 +262,7 @@ export class TransaccionesComponent implements OnInit {
   onExported(e) {
     e.component.columnOption("fecha_mov", "visible", false);
     e.component.columnOption("bodega", "visible", false);
-    e.component.columnOption("valor", "visible", false);
+    //e.component.columnOption("valor", "visible", false);
     e.component.columnOption("usu_autorizado", "visible", false);
     e.component.columnOption("usuario", "visible", false);
     e.component.columnOption("rucSucursal", "visible", false);

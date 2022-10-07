@@ -21,8 +21,8 @@ import { auditoria, coincidencias } from '../auditorias/auditorias';
 import { RevisionInventarioService } from 'src/app/servicios/revision-inventario.service';
 import { RevisionInventarioProductoService } from 'src/app/servicios/revision-inventario-productos.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
-import { element } from 'protractor';
 import { TransaccionesRevisionProductoService } from 'src/app/servicios/transaccionesRevisionProducto.service';
+import pdfMake from "pdfmake/build/pdfmake";
 
 @Component({
   selector: 'app-revision-inventario',
@@ -50,6 +50,7 @@ export class RevionInventarioComponent implements OnInit {
   valoracion = "";
   productoRevisado : detalleProductoRevisado;
   bloquearboton = false;
+  isClean = false;
   newIngreso = true;
   verListadoIngreso = false;
   isNew = true;
@@ -204,6 +205,7 @@ export class RevionInventarioComponent implements OnInit {
       if(this.idRevision != "0"){
         var revision = this.listadoRevisiones.find(element=> element.idDocumento == Number(this.idRevision))
         if(revision != null){
+          this.revisionIniciada = revision
           this.traerRevisionesInventarioProductosPorId()
         }
         else{
@@ -298,14 +300,20 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   obtenerDetallesproducto(e){
-    this.bloquearboton = false;
-    this.listadoProductosRevisados.forEach(element=>{
-        if(element.producto == e.value){
-          this.bloquearboton = true;
-          this.mostrarMensajeGenerico(2,"El producto ya se encuentra revisado")
-          return;
-        }
-    })
+    if(this.isClean == true){
+      this.isClean = false;
+    }else{
+      this.bloquearboton = false;
+      this.listadoProductosRevisados.forEach(element=>{
+          if(element.producto == e.value){
+            this.bloquearboton = true;
+            this.mostrarMensajeGenerico(2,"El producto ya se encuentra revisado")
+            return;
+          }
+      })
+      this.traerTransaccionesPorProducto(e.value,1);
+    }
+    
   }
 
   traerTransaccionesPorProducto(nombreProducto, indice) {
@@ -353,7 +361,6 @@ export class RevionInventarioComponent implements OnInit {
       var categoria = rev?.nombreClasificacion;
       if(categoria != null){
         this.productos = this.productosActivos;
-        console.log(this.productos)
         if(categoria != "Todos")
           this.productos = this.productos.filter(element=> element.CLASIFICA == categoria);
         
@@ -391,8 +398,6 @@ export class RevionInventarioComponent implements OnInit {
 
 
   actualizarEstadoRevision(contador : number){
-    console.log(contador)
-    console.log(this.listadoComparacionResultados)
     if(contador == this.listadoComparacionResultados.length){
       this._revisionInventarioService.updateEstado(this.revisionIniciada._id , "Finalizada").subscribe( 
       res => { 
@@ -506,7 +511,6 @@ export class RevionInventarioComponent implements OnInit {
 
   verLista(id:number){
     this.mostrarbtn = true;
-    //this.mostrarLoading = true;
     this.verListadoComparacion = true;
     this.newAud = false;
     this.listadoProductosRevisados = [];
@@ -525,6 +529,20 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
+  regresar(){
+    this.verListadoComparacion = false;
+    this.newAud = true;
+  }
+
+  exportarPDF(){
+    this.mensajeLoading = "Descargando"
+    this.mostrarLoading = true;
+    const documentDefinition = this.getDocumentDefinition();
+    pdfMake.createPdf(documentDefinition).download("Revision Inventario " + this.revisionIniciada.idDocumento, function () {});
+    this.mostrarLoading = false;
+  }
+
+
   crearListadoComparacion(){
     this.listadoComparacionResultados = [];
     this.listadoProductosRevisados.forEach((element, index)=>{
@@ -534,26 +552,34 @@ export class RevionInventarioComponent implements OnInit {
       newComparacion.novedades = element.novedades
       newComparacion.cajas_conteo = element.cajas
       newComparacion.piezas_conteo = element.piezas
+      newComparacion.cajas_sistema = element.cajas_sistema
+      newComparacion.piezas_sistema = element.piezas_sistema
+      newComparacion.cajas_diferencia = element.cajas_diferencia
+      newComparacion.piezas_diferencia = element.piezas_diferencia
+      newComparacion.m2_conteo = element.m2_conteo
+      newComparacion.m2_sistema = element.m2_sistema
+      newComparacion.m2_diferencia = element.m2_diferencia
+      newComparacion.resultado = element.resultado
       newComparacion.detalle = element.detalle
       newComparacion.fecha = element.fecha
       newComparacion.sucursal = this.revisionIniciada.sucursal
       newComparacion.responsable = this.revisionIniciada.responsable
       newComparacion.idReferenciaRevision = this.revisionIniciada.idDocumento
       newComparacion.nombreClasificacion = this.revisionIniciada.nombreClasificacion
-      this.traerTransaccionesPorProducto(element.producto , index )
+      //this.traerTransaccionesPorProducto(element.producto , index )
       this.listadoComparacionResultados.push(newComparacion)
     })
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    //this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
-    this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
+    this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
+    //this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
     window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
   copiarLink(revision : controlInventario){
-    //this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
-    this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    //this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
   }
 
@@ -582,6 +608,7 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   editarPro2(e:any){
+    this.productoRevisado = e
     this.productoRevisado._id = e._id
     this.productoRevisado.producto = e.producto
     this.productoRevisado.cajas = e.cajas_conteo
@@ -638,7 +665,6 @@ opcionRadioTipos(e){
     }
 
     var data = this.listadoRevisionesIniciadas.find(element => element.sucursal == this.newControlInventario.sucursal && element.nombreClasificacion == this.newControlInventario.nombreClasificacion)
-    console.log(data)
     if(data != null){
       this.mostrarMensajeGenerico(2,"Ya hay una revisión iniciada con los mismos datos");
       return;
@@ -646,6 +672,11 @@ opcionRadioTipos(e){
 
     this.obtenerId();
       
+  }
+
+  limpiarFormulario(){
+    this.productoRevisado = new detalleProductoRevisado();
+    this.isClean = true;
   }
 
   obtenerId(){
@@ -704,6 +735,7 @@ opcionRadioTipos(e){
   }
 
   reiniciarFormulario(){
+    this.isClean = true;
     this.productoRevisado = new detalleProductoRevisado();
     this.traerRevisionesInventarioProductosPorId()
   }
@@ -954,6 +986,35 @@ opcionRadioTipos(e){
     })
   }
 
+
+  calcularDiferencia(e){
+    console.log(this.productoRevisado)
+    if(this.productoRevisado.cajas == 0 && this.productoRevisado.piezas == 0){
+      console.log("entre")
+    }else{
+      var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
+      this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
+      
+      this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
+      if(this.productoRevisado.m2_diferencia < 0)
+        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_diferencia *(-1)
+
+      this.productoRevisado.cajas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia / prod.M2);
+      this.productoRevisado.piezas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia * prod.P_CAJA /prod.M2) - (this.productoRevisado.cajas_diferencia * prod.P_CAJA);
+
+      if(this.productoRevisado.m2_diferencia > 0)
+        this.productoRevisado.resultado = "SOBRANTE"
+      else if (this.productoRevisado.m2_diferencia < 0)
+        this.productoRevisado.resultado = "FALTANTE"
+      else
+        this.productoRevisado.resultado = "OK"
+
+        console.log(this.productoRevisado)
+
+      this.mostrarLoading = false;
+    }
+    
+  }
 
 
   
@@ -1210,64 +1271,68 @@ opcionRadioTipos(e){
     this.invetarioP.forEach((element) => {
       switch (this.revisionIniciada.sucursal) {
         case "matriz":
-          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas;
+          /* this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas;
           this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas;
-          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2;
+          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2; */
+          this.productoRevisado.cajas_sistema = element.cantidadCajas;
+          this.productoRevisado.piezas_sistema = element.cantidadPiezas;
+          this.productoRevisado.m2_sistema = element.cantidadM2;
           break;
         case "sucursal1":
-          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas2;
-          this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas2;
-          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2b2;
+          this.productoRevisado.cajas_sistema = element.cantidadCajas2;
+          this.productoRevisado.piezas_sistema = element.cantidadPiezas2;
+          this.productoRevisado.m2_sistema = element.cantidadM2b2;
           break;
         case "sucursal2":
-          this.listadoComparacionResultados[indice].cajas_sistema = element.cantidadCajas3;
-          this.listadoComparacionResultados[indice].piezas_sistema = element.cantidadPiezas3;
-          this.listadoComparacionResultados[indice].m2_sistema = element.cantidadM2b3;
+          this.productoRevisado.cajas_sistema = element.cantidadCajas3;
+          this.productoRevisado.piezas_sistema = element.cantidadPiezas3;
+          this.productoRevisado.m2_sistema = element.cantidadM2b3;
           break;
         default:
           break;
       }
     });
 
-    var prod = this.productosActivos.find(element=> element.PRODUCTO == this.listadoComparacionResultados[indice].producto)
+    //var prod = this.productosActivos.find(element=> element.PRODUCTO == this.listadoComparacionResultados[indice].producto)
+    /* var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
+    //this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
     this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
     
-
-    /* if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
-      this.listadoComparacionResultados[indice].m2_diferencia=this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
-    }else{
-      if(this.listadoComparacionResultados[indice].m2_conteo < this.listadoComparacionResultados[indice].m2_sistema)
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema - 0.04
-      else
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema + 0.03
-    } */
-
     if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
       if(this.listadoComparacionResultados[indice].m2_sistema < 0)
         this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema * (-1)
       else
         this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
-    }else{
-      console.log(this.listadoComparacionResultados[indice].m2_conteo)
-      console.log(this.listadoComparacionResultados[indice].m2_sistema)
-      /* if(this.listadoComparacionResultados[indice].m2_conteo < this.listadoComparacionResultados[indice].m2_sistema)
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema - 0.04
-      else
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema + 0.03 */
     }
 
     this.listadoComparacionResultados[indice].cajas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia / prod.M2);
     this.listadoComparacionResultados[indice].piezas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia * prod.P_CAJA /prod.M2) - (this.listadoComparacionResultados[indice].cajas_diferencia * prod.P_CAJA);
 
-    console.log(this.listadoComparacionResultados[indice].m2_diferencia)
     if(this.listadoComparacionResultados[indice].m2_diferencia > 0)
       this.listadoComparacionResultados[indice].resultado = "SOBRANTE"
     else if (this.listadoComparacionResultados[indice].m2_diferencia < 0)
       this.listadoComparacionResultados[indice].resultado = "FALTANTE"
     else
-      this.listadoComparacionResultados[indice].resultado = "OK"
+      this.listadoComparacionResultados[indice].resultado = "OK" */
 
-    //this.calcularTotalM2();
+    var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
+    this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
+    
+    if(this.productoRevisado.m2_sistema > 0)
+        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema * (-1)
+      else
+        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
+
+    this.productoRevisado.cajas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia / prod.M2);
+    this.productoRevisado.piezas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia * prod.P_CAJA /prod.M2) - (this.productoRevisado.cajas_diferencia * prod.P_CAJA);
+
+    if(this.productoRevisado.m2_diferencia > 0)
+      this.productoRevisado.resultado = "SOBRANTE"
+    else if (this.productoRevisado.m2_diferencia < 0)
+      this.productoRevisado.resultado = "FALTANTE"
+    else
+      this.productoRevisado.resultado = "OK"
+
     this.mostrarLoading = false;
   }
 
@@ -1302,8 +1367,258 @@ opcionRadioTipos(e){
         element.cantidadM2b3 = 0;
       } */
     });
+
+    
   }
 
+
+  getDocumentDefinition() {
+    sessionStorage.setItem("resume", JSON.stringify("jj"));
+    return {
+      pageSize: "A4",
+      pageOrientation: "portrait",
+      content: [
+        {
+          columns: [
+            [
+              {
+                columns: [
+                  {
+                    width: 320,
+                    text: "CONTROL DE INVENTARIO 001 - 000",
+                    bold: true,
+                    fontSize: 18,
+                  },
+                  {
+                    width: 200,
+                    text: "NO 0000" + this.revisionIniciada.idDocumento,
+                    color: "red",
+                    bold: true,
+                    fontSize: 20,
+                    alignment: "right",
+                  },
+                ],
+              },
+              { text: "Datos Revisión", alignment: "center", bold: true },
+              {
+                //Desde aqui comienza los datos del cliente
+                style: "tableExample",
+                table: {
+                  widths: [130, 365],
+                  body: [
+                    [
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            bold: true,
+                            fontSize: 9,
+                            ul: [
+                              "Grupo",
+                              "Responsable",
+                              "Sucursal",
+                            ],
+                          },
+                        ],
+                      },
+                      [
+                        {
+                          stack: [
+                            {
+                              type: "none",
+                              fontSize: 9,
+                              ul: [
+                                "" + this.revisionIniciada.nombreClasificacion,
+                                "" + this.revisionIniciada.responsable,
+                                "" + this.revisionIniciada.sucursal,
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    ],
+                  ],
+                },
+              },
+            ],
+            [],
+          ],
+        },
+
+        this.getProductosRevision(this.listadoComparacionResultados),
+      ],
+      pageBreakBefore: function (
+        currentNode,
+        followingNodesOnPage,
+        nodesOnNextPage,
+        previousNodesOnPage
+      ) {
+        return (
+          currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
+        );
+      },
+
+      images: {
+        mySuperImage: "data:image/jpeg;base64,...content...",
+      },
+      info: {
+        title: "Revision",
+        author: "this.resume.name",
+        subject: "RESUME",
+        keywords: "RESUME, ONLINE RESUME",
+      },
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 20, 0, 10],
+          decoration: "underline",
+        },
+        textoPro: {
+          bold: true,
+          margin: [0, -12, 0, -5],
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15],
+        },
+        tableExample2: {
+          margin: [-13, 5, 10, 15],
+        },
+        tableExample3: {
+          margin: [-13, -10, 10, 15],
+        },
+        tableExample4: {
+          margin: [10, -5, 0, 15],
+        },
+        texto6: {
+          fontSize: 14,
+          bold: true,
+          alignment: "center",
+        },
+        name: {
+          fontSize: 16,
+          bold: true,
+        },
+        jobTitle: {
+          fontSize: 14,
+          bold: true,
+          italics: true,
+        },
+        textFot: {
+          alignment: "center",
+          italics: true,
+          color: "#bebebe",
+          fontSize: 18,
+        },
+        tableHeader: {
+          bold: true,
+        },
+        tableHeader2: {
+          bold: true,
+          fontSize: 10,
+        },
+
+        fondoFooter: {
+          fontSize: 8,
+          alignment: "center",
+        },
+        totales: {
+          margin: [0, 0, 15, 0],
+          alignment: "right",
+        },
+        totales2: {
+          margin: [0, 0, 5, 0],
+          alignment: "right",
+        },
+        detalleTotales: {
+          margin: [15, 0, 0, 0],
+        },
+      },
+    };
+  }
+
+
+  getProductosRevision(listado: comparacionResultadosRevision[]) {
+    return {
+      table: {
+        widths: ["34%", "7%", "7%", "7%", "7%", "8%", "8%", "11%", "11%"],
+        alignment: "center",
+        fontSize: 7,
+        body: [
+          [
+            {
+              text: "Producto",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Sistema",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Sistema",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Físico",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Físico",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas Diferencia",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas Diferencia",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Resultado",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Novedades",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+          ],
+
+          ...listado.map((ed) => {
+            return [
+              { text: ed.producto, fontSize: 7, alignment: "center" },
+              { text: ed.cajas_sistema, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_sistema, alignment: "center", fontSize: 7 },
+              { text: ed.cajas_conteo, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_conteo, alignment: "center", fontSize: 7 },
+              { text: ed.cajas_diferencia, alignment: "center", fontSize: 7 },
+              { text: ed.piezas_diferencia, alignment: "center", fontSize: 7 },
+              { text: ed.resultado, alignment: "center", fontSize: 7 },
+              { text: ed.novedades, alignment: "center", fontSize: 7 },
+            ];
+          }),
+        ],
+      },
+    };
+  }
 
 
 }

@@ -11,7 +11,16 @@ router.post('/newRevisionInventarioProducto', async (req, res) => {
       detalle:req.body.detalle,
       novedades:req.body.novedades,
       cajas:req.body.cajas,
-      piezas:req.body.piezas});
+      piezas:req.body.piezas,
+      m2_conteo:req.body.m2_conteo,
+      cajas_sistema:req.body.cajas_sistema,
+      piezas_sistema:req.body.piezas_sistema,
+      m2_sistema:req.body.m2_sistema,
+      cajas_diferencia:req.body.cajas_diferencia,
+      piezas_diferencia:req.body.piezas_diferencia,
+      m2_diferencia:req.body.m2_diferencia,
+      resultado:req.body.resultado
+    });
     await newRevision.save();
     res.json({status: 'Revision creada'});
 });
@@ -43,7 +52,16 @@ router.put('/update/:id', async (req, res,next) => {
             detalle:req.body.detalle,
             novedades:req.body.novedades,
             cajas:req.body.cajas,
-            piezas:req.body.piezas};
+            piezas:req.body.piezas,
+            m2_conteo:req.body.m2_conteo,
+            cajas_sistema:req.body.cajas_sistema,
+            piezas_sistema:req.body.piezas_sistema,
+            m2_sistema:req.body.m2_sistema,
+            cajas_diferencia:req.body.cajas_diferencia,
+            piezas_diferencia:req.body.piezas_diferencia,
+            m2_diferencia:req.body.m2_diferencia,
+            resultado:req.body.resultado
+        };
     await RevisionInventarioProducto.findByIdAndUpdate(id, {$set: newCombo}, {new: true});
     res.json({status: 'Actualización Exitosa'}); 
 })

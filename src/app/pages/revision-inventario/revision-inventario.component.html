@@ -35,6 +35,15 @@
         <div class="col-md-10"></div> -->
     </div>
     <br>
+
+    <div class="row" *ngIf="verListadoComparacion">
+        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar()">
+            <i class="fa fa-arrow-left fa-1x"></i>  Regresar</button></div>
+        <div class="col-md-8"></div>
+        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="exportarPDF()">
+            <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
+    </div>
+
     <div class="card mb-3" *ngIf="seccionNew">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE INVENTARIO</h5>
         <div class="card-body">
@@ -301,11 +310,6 @@
             <dxo-filter-row [visible]="true" ></dxo-filter-row>
             <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
             <dxo-export [enabled]="true" fileName="Listado Productos" [allowExportSelectedData]="true"></dxo-export>
-
-           
-            <!-- <dxi-column dataField="sucursal" [visible]="true" width="10%"></dxi-column>
-            <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
-            <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column> -->
             <dxi-column dataField="producto" width="42%" sortOrder="asc"></dxi-column>
             <dxi-column dataField="nombreClasificacion" width="12%" ></dxi-column>
             <dxi-column dataField="fecha" dataType="date" format="dd/MM/yyyy" [visible]="true"  width="10%"></dxi-column>
@@ -373,39 +377,44 @@
                                 <div class="row">
                                     <br><br>
 
-                                    <div class="col-md-4" style="padding-top: 0.7em;">Seleccione un producto</div>
+                                    <div class="col-md-4 itemP">Seleccione un producto</div>
                                     <div class="col-md-8">
                                         <dx-select-box  [dataSource]="productos22" [(value)]="productoRevisado.producto" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true" valueExpr="PRODUCTO" displayExpr="PRODUCTO" (onValueChanged)="obtenerDetallesproducto($event)">
                                         </dx-select-box>
                                     </div>
 
-                                    <div class="col-md-4" style="padding-top: 0.7em;">Cajas</div>
-                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.cajas" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                    <div class="col-md-4 itemP">Producto Seleccionado</div>
+                                    <div class="col-md-8" style="padding-top: 0.7em;">{{productoRevisado.producto}}</div>
 
-                                    <div class="col-md-4" style="padding-top: 0.7em;">Piezas</div>
-                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.piezas" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                                    <div class="col-md-4 itemP">Cajas</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.cajas" (onValueChanged)="calcularDiferencia($event)" [disabled]="false" [readOnly]="false"></dx-number-box></div>
 
-                                    <div class="col-md-4" style="padding-top: 0.7em;">Detalles</div>
+                                    <div class="col-md-4 itemP">Piezas</div>
+                                    <div class="col-md-8"><dx-number-box [(value)]="productoRevisado.piezas" (onValueChanged)="calcularDiferencia($event)" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+
+                                    <div class="col-md-4 itemP">Detalles</div>
                                     <div class="col-md-8"><dx-select-box [items]="menuValoracion" [(value)]="productoRevisado.detalle" [readOnly]="false" [disabled]="false"
                                             [searchEnabled]="true"></dx-select-box></div>
 
-                                    <div class="col-md-4" style="padding-top: 0.7em;">Novedades</div>
+                                    <div class="col-md-4 itemP">Novedades</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="productoRevisado.novedades" [disabled]="false" [readOnly]="false"></dx-text-box></div>
                                 </div>
                             </div>
                             <div class="col-md-2"></div>
                             <div class="col-md-12">
                                 <div class="row">
-                                    <div class="col-md-5"></div>
+                                    <div class="col-md-4"></div>
                                     <div class="col-md-2">
-                                    <button class="btn btn-block btn-success espacio" *ngIf="isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistroProducto()">Registrar</button>
-                                    <button class="btn btn-block btn-success espacio" *ngIf="!isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarRegistroProducto()">Actualizar</button>
-                                    <br>
-                                    <br>
-                                    <br>
+                                        <button class="btn btn-block btn-success espacio" *ngIf="isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="guardarRegistroProducto()">Registrar</button>
+                                        <button class="btn btn-block btn-success espacio" *ngIf="!isNew" [disabled]="bloquearboton" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarRegistroProducto()">Actualizar</button>
+                                        <br>
                                     </div>
-                                    <div class="col-md-5"></div>
+                                    <div class="col-md-2">
+                                        <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;" (click)="limpiarFormulario()">Limpiar</button>
+                                        <br>
+                                    </div>
+                                    <div class="col-md-4"></div>
                                 </div>
                             </div>
                         </div>

@@ -2072,7 +2072,7 @@ export class ProductoComponent implements OnInit {
   actualizarDato(id: number, property: string, event: any) {
     this.productosEntregados[id][property] = event.target.textContent;
     this.calcularm2(id);
-    this.evaluarProductoCombo(this.productosEntregados[id].nombreComercial.PRODUCTO)
+    //this.evaluarProductoCombo(this.productosEntregados[id].nombreComercial.PRODUCTO)
   }
 
 

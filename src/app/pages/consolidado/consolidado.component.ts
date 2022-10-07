@@ -24,6 +24,8 @@ import { catalogo, opcionesCatalogo, ProductoCombo, productosCombo } from "../ca
 import { AuthService } from "src/app/shared/services";
 import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
+import { TransaccionesRevisionProductoService } from "src/app/servicios/transaccionesRevisionProducto.service";
+import { comparacionResultadosRevision } from "../revision-inventario/revision-inventario";
 
 @Component({
   selector: "app-consolidado",
@@ -61,6 +63,7 @@ export class ConsolidadoComponent implements OnInit {
   productosPendientesNoEN: productosPendientesEntrega[] = [];
   productosPendientesNoENLista: productosPendientesEntrega[] = [];
   listaClasificacion: clasificacionActualizacion[] = [];
+  transaccionesProductosRevisados : comparacionResultadosRevision[]=[];
   listadoCategorias: string[] = [];
   nombreClasificacion : string = ""
   bodegas: bodega[] = [];
@@ -119,6 +122,7 @@ export class ConsolidadoComponent implements OnInit {
     public productoService: ProductoService,
     public opcionesService : OpcionesCatalogoService,
     public _comboService : CombosService,
+    public _transaccionesRevisionProductoService : TransaccionesRevisionProductoService,
     public _catalogoService: CatalogoService
   ) {
     this.proTransaccion = new productoTransaccion();
@@ -433,14 +437,20 @@ export class ConsolidadoComponent implements OnInit {
     });
   }
 
+
+  traerTransaccionesRevisionesProductos(){
+    this._transaccionesRevisionProductoService.getTransacciones().subscribe(res => {
+      this.transaccionesProductosRevisados = res as comparacionResultadosRevision[];
+    })
+  }
+  
+
   traerProductosPendientesPorNombre() {
     this.productosPendientesService.getPendientesPorProducto(this.proTransaccion).subscribe((res) => {
       this.productosPendientes = res as productosPendientesEntrega[];
       this.separarEntregas();
     });
   }
-
-  buscarProducto() {}
 
   actualizarUbicaciones() {
     this.popupVisible = false;
@@ -947,6 +957,26 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.porUtilidad = element2.porcentaje_ganancia;
       this.invetarioProd.valorProducto = ((element2.porcentaje_ganancia * element2.precio)/100) + element2.precio ;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
+
+      //MATRIZ
+      var datos = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "matriz");
+      var data = datos[datos?.length-1];
+      let days = this.diferenciaEntreDiasEnDias(new Date(data?.fecha), new Date());
+      this.invetarioProd.ultimaFechaRevisionMatriz = data?.fecha;
+      this.invetarioProd.diasRestantesMatriz = days.toString() != "NaN" ? days.toString() : "";
+      //SUCURSAL1
+      var datos2 = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "sucursal1");
+      var data2 = datos[datos2?.length-1];
+      let days2 = this.diferenciaEntreDiasEnDias(new Date(data2?.fecha), new Date());
+      this.invetarioProd.ultimaFechaRevisionSucursal1 = data2?.fecha;
+      this.invetarioProd.diasRestantesSucursal1 = days2.toString() != "NaN" ? days2.toString() : "";
+      //SUCURSAL2
+      var datos3 = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "sucursal2");
+      var data3 = datos[datos3?.length-1];
+      let days3 = this.diferenciaEntreDiasEnDias(new Date(data3?.fecha), new Date());
+      this.invetarioProd.ultimaFechaRevisionSucursal2 = data3?.fecha;
+      this.invetarioProd.diasRestantesSucursal2 = days3.toString() != "NaN" ? days3.toString() : "";
+
       this.invetarioProd.notas = element2.notas;
       this.invetarioP.push(this.invetarioProd);
 
@@ -960,6 +990,15 @@ export class ConsolidadoComponent implements OnInit {
     this.transformarM2();
     this.sumarProductosRestados()
   }
+
+  diferenciaEntreDiasEnDias(a, b){
+    var MILISENGUNDOS_POR_DIA = 1000 * 60 * 60 * 24;
+    var utc1 = Date.UTC(a.getFullYear(), a.getMonth(), a.getDate());
+    var utc2 = Date.UTC(b.getFullYear(), b.getMonth(), b.getDate());
+
+    return Math.floor((utc2 - utc1) / MILISENGUNDOS_POR_DIA);
+  }
+
 
   sumarProductosRestados() {
     for (let index = 0; index < this.productos.length; index++) {
@@ -1155,6 +1194,7 @@ export class ConsolidadoComponent implements OnInit {
         this.tipoBusqueda = "Contable"
         this.traerTransacciones();
         this.traerProductosPendientes();
+        this.traerTransaccionesRevisionesProductos();
         this.mostrarUser = true;
         this.mostrarAdmin = false;
         this.mostrarBusquedaIndividual = false;
@@ -1418,6 +1458,12 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
     e.component.columnOption("ultimaFechaCompra", "visible", true);
+    e.component.columnOption("ultimaFechaRevisionMatriz", "visible", true);
+    e.component.columnOption("diasRestantesMatriz", "visible", true);
+    e.component.columnOption("ultimaFechaRevisionSucursal1", "visible", true);
+    e.component.columnOption("diasRestantesSucursal1", "visible", true);
+    e.component.columnOption("ultimaFechaRevisionSucursal2", "visible", true);
+    e.component.columnOption("diasRestantesSucursal2", "visible", true);
     e.component.columnOption("notas", "visible", true);
   }
   onExported2(e) {
@@ -1428,6 +1474,12 @@ export class ConsolidadoComponent implements OnInit {
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);
     e.component.columnOption("ultimaFechaCompra", "visible", false);
+    e.component.columnOption("ultimaFechaRevisionMatriz", "visible", false);
+    e.component.columnOption("diasRestantesMatriz", "visible", false);
+    e.component.columnOption("ultimaFechaRevisionSucursal1", "visible", false);
+    e.component.columnOption("diasRestantesSucursal1", "visible", false);
+    e.component.columnOption("ultimaFechaRevisionSucursal2", "visible", false);
+    e.component.columnOption("diasRestantesSucursal2", "visible", false);
     e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
   }

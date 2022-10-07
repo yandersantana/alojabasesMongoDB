@@ -6,8 +6,8 @@ import { Router } from "@angular/router";
   providedIn: "root",
 })
 export class CuentasService {
-  //private URL = "http://159.223.107.115:3000/cuentas";
-  private URL = "http://104.131.82.174:3000/cuentas";
+  private URL = "http://159.223.107.115:3000/cuentas";
+  //private URL = "http://104.131.82.174:3000/cuentas";
   //private URL = 'http://localhost:3000/cuentas'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}
@@ -21,7 +21,6 @@ export class CuentasService {
   }
 
   updateCuentas(cuenta) {
-    console.log(cuenta)
     return this.http.put(this.URL + `/update/${cuenta._id}`, cuenta);
   }
 

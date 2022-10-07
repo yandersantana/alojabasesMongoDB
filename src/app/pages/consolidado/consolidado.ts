@@ -18,6 +18,12 @@ export class inventario {
   bodega: string;
   ultimoPrecioCompra: number;
   ultimaFechaCompra: string;
+  ultimaFechaRevisionMatriz: Date;
+  ultimaFechaRevisionSucursal1: Date;
+  ultimaFechaRevisionSucursal2: Date;
+  diasRestantesMatriz: string;
+  diasRestantesSucursal1: string;
+  diasRestantesSucursal2: string;
   notas: string[];
   execute: boolean;
   requiereActualizacion : string;

@@ -38,11 +38,7 @@ export class RevisionInventarioService {
     return this.http.delete(this.URL + `/delete/${revision._id}`, revision);
   }
 
-  /* updateOpciones(opciones) {
-    return this.http.put(this.URL + `/update/${opciones._id}`, opciones);
+  updateNotas(objeto) {
+    return this.http.put(this.URL + `/updateNota/${objeto._id}`, objeto);
   }
-
-  deleteOpciones(opciones) {
-    return this.http.delete(this.URL + `/delete/${opciones._id}`, opciones);
-  } */
 }

@@ -6,12 +6,14 @@ export class controlInventario{
   nombreClasificacion: string
   fecha_inicio: Date
   estado: string
+  notas: string
   constructor(){
     this.fecha_inicio = new Date()
     this.estado="Iniciada"
     this.responsable = " "
     this.nombreClasificacion = " "
     this.sucursal = " "
+    this.notas = " "
   }
 }
 

@@ -279,6 +279,7 @@
         (onExported)="onExported2($event)">
         <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxi-column caption="Imagen" width="10%" [allowFiltering]="false" [allowSorting]="false"></dxi-column>
         <dxi-column
             dataField="producto.PRODUCTO"
@@ -466,8 +467,7 @@
         [showBorders]="true"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
-        <dxo-filter-row 
-        [visible]="true" ></dxo-filter-row>
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
         
         <dxo-search-panel 
         [visible]="true" 
@@ -685,8 +685,7 @@
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
+            [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
     </dx-data-grid>
 </div>
 

@@ -7,7 +7,8 @@ const RevisionInventarioSchema = new Schema({
     idDocumento: { type: Number, required: false},
     estado: { type: String, required: false},
     fecha_inicio: { type: String, required: false},
-    nombreClasificacion: { type: String, required: false}
+    nombreClasificacion: { type: String, required: false},
+    notas: { type: String, required: false}
 },{
     timestamps:true
 });

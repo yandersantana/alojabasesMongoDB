@@ -110,7 +110,7 @@
                                                 <th class="text-center" >Sucursal</th>
                                                 <th class="text-center" >Grupo</th>
                                                 <th class="text-center" >Ver Lista</th>
-                                                <!-- <th class="text-center" >Enviar</th> -->
+                                                <th class="text-center" >Notas</th>
                                                 <th class="text-center" >Copiar</th>
                                                 <th class="text-center" >Eliminar</th>
                                                 <!-- <th class="text-center" colspan="2" >Acciones</th> -->
@@ -125,9 +125,9 @@
                                                 <td>
                                                     <span><button class="btnIcons5" (click)="verLista(revision.idDocumento)"><i class="fa fa-list fa-1x"></i></button></span>
                                                 </td>
-                                                <!-- <td>
-                                                    <span><button class="btnIcons5" (click)="enviarMsjWhatsapp(revision)"><i class="fa fa-whatsapp"></i></button></span>
-                                                </td> -->
+                                                <td>
+                                                    <span><button class="btnIcons5" (click)="mostrarPOPUPNotas(revision)"><i class="fa fa-pencil-square-o"></i></button></span>
+                                                </td>
                                                 <td>
                                                     <span><button class="btnIcons5" (click)="copiarLink(revision)"><i class="fa fa-eye"></i></button></span>
                                                 </td>
@@ -254,12 +254,12 @@
             <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column>
             <dxi-column dataField="producto" width="42%"></dxi-column>
             <dxi-column caption="Sistema">
-                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
-                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%"></dxi-column>
             </dxi-column>
             <dxi-column caption="Conteo">
-                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
-                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%"></dxi-column>
             </dxi-column>
             <dxi-column caption="Diferencia">
                 <dxi-column dataField="cajas_diferencia"  caption="Cajas" width="8%"></dxi-column>
@@ -316,12 +316,12 @@
             <dxi-column dataField="diferenciaDias" caption="Dias" [visible]="true" width="8%"></dxi-column>
             <dxi-column dataField="idReferenciaRevision" caption="ID_R" [visible]="true" width="8%"></dxi-column>
             <dxi-column caption="Sistema">
-                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
-                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%"></dxi-column>
             </dxi-column>
             <dxi-column caption="Conteo">
-                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%" [visible]="false"></dxi-column>
-                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%" [visible]="false"></dxi-column>
+                <dxi-column dataField="cajas_conteo"  caption="Cajas" width="8%"></dxi-column>
+                <dxi-column dataField="piezas_conteo"  caption="Piezas" width="8%"></dxi-column>
             </dxi-column>
             <dxi-column caption="Diferencia">
                 <dxi-column dataField="cajas_diferencia"  caption="Cajas" width="8%"></dxi-column>
@@ -475,7 +475,28 @@
 
 
             
+<dx-popup [width]="700" [height]="300" [showTitle]="true" title="Notas" [dragEnabled]="false"
+    [closeOnOutsideClick]="true" [(visible)]="popupVisibleEditarNotas">
+    <div *dxTemplate="let data of 'content'">
+        <dx-scroll-view width="100%" height="100%">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-3" style="text-align: left;margin-top: 2em;">Nota: </div>
+                <div class="col-md-9" style="margin-top: 1em;"> <input type="text" [(ngModel)]="nota.descripcion"
+                    name="nombre" class="form-control select"
+                    required></div>
 
+                    <br><br><br><br><br>
+                <div class="col-md-4"></div>
+                <div class="col-md-4 btnSearch">
+                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="actualizarComentario()">Guardar</button>
+                </div>
+                <div class="col-md-4"></div>
+            </div>
+        </div>      
+    </dx-scroll-view>
+    </div>
+</dx-popup>
 
 
 

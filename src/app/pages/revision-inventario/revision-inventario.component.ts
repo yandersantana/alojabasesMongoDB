@@ -42,6 +42,7 @@ export class RevionInventarioComponent implements OnInit {
   listadoComparacionResultados : comparacionResultadosRevision[]=[]
   transaccionesProductosRevisados : comparacionResultadosRevision[]=[]
   listadoControlesRevisiones : controlRevisionProductos[]=[]
+  fechaString = ""
   linkRevision =""
   popupVisible = false;
   idRevision = "";
@@ -58,6 +59,13 @@ export class RevionInventarioComponent implements OnInit {
   verListadoComparacion = false;
   bloquearBtn = false;
   menu: string[] = [];
+  popupVisibleEditarNotas = false;
+  CuentaActualizar : controlInventario 
+  nota = {
+    fecha:"",
+    descripcion:"",
+    tipo:""
+  }
 
   
   menuIngresos: string[] = [
@@ -172,6 +180,7 @@ export class RevionInventarioComponent implements OnInit {
     public productoService:ProductoService) { 
       this.proTransaccion = new productoTransaccion();
       this.newControlInventario = new controlInventario()
+      this.CuentaActualizar = new controlInventario()
       this.productoRevisado = new detalleProductoRevisado()
       this.menuGlobal= this.menuSupervisor
       this.idRevision = this.rutaActiva.snapshot.paramMap.get("id")
@@ -439,20 +448,12 @@ export class RevionInventarioComponent implements OnInit {
     e.component.beginUpdate();
     e.component.columnOption("responsable", "visible", true);
     e.component.columnOption("nombreClasificacion", "visible", true);
-    e.component.columnOption("cajas_sistema", "visible", true);
-    e.component.columnOption("piezas_sistema", "visible", true);
-    e.component.columnOption("cajas_conteo", "visible", true);
-    e.component.columnOption("piezas_conteo", "visible", true);
     e.component.columnOption("detalle", "visible", true);
     
   };
   onExported3 (e) {
     e.component.columnOption("responsable", "visible", false);
     e.component.columnOption("nombreClasificacion", "visible", false);
-    e.component.columnOption("cajas_sistema", "visible", false);
-    e.component.columnOption("piezas_sistema", "visible", false);
-    e.component.columnOption("cajas_conteo", "visible", false);
-    e.component.columnOption("piezas_conteo", "visible", false);
     e.component.columnOption("detalle", "visible", false);
     e.component.endUpdate();
   }
@@ -543,6 +544,20 @@ export class RevionInventarioComponent implements OnInit {
   }
 
 
+  actualizarComentario(){
+    this.mensajeLoading = "Actualizando..."
+    this.mostrarLoading = true;
+    this.CuentaActualizar.notas = this.nota.descripcion;
+    this._revisionInventarioService.updateNotas(this.CuentaActualizar).subscribe(res => {
+        this.mostrarMensajeGenerico(1,"Se realizo la actualización con éxito")
+        this.ngOnInit();
+        this.mostrarLoading = false;
+        this.popupVisibleEditarNotas = false;
+        this.nota.descripcion = ""
+    })  
+  }
+
+
   crearListadoComparacion(){
     this.listadoComparacionResultados = [];
     this.listadoProductosRevisados.forEach((element, index)=>{
@@ -581,6 +596,12 @@ export class RevionInventarioComponent implements OnInit {
     this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
     //this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
+  }
+
+  mostrarPOPUPNotas(revision : controlInventario){
+    this.popupVisibleEditarNotas = true;
+    this.nota.descripcion = revision.notas;
+    this.CuentaActualizar = revision;
   }
 
 
@@ -996,8 +1017,8 @@ opcionRadioTipos(e){
       this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
       
       this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
-      if(this.productoRevisado.m2_diferencia < 0)
-        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_diferencia *(-1)
+/*       if(this.productoRevisado.m2_diferencia < 0)
+        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_diferencia *(-1) */
 
       this.productoRevisado.cajas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia / prod.M2);
       this.productoRevisado.piezas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia * prod.P_CAJA /prod.M2) - (this.productoRevisado.cajas_diferencia * prod.P_CAJA);
@@ -1401,10 +1422,9 @@ opcionRadioTipos(e){
               },
               { text: "Datos Revisión", alignment: "center", bold: true },
               {
-                //Desde aqui comienza los datos del cliente
                 style: "tableExample",
                 table: {
-                  widths: [130, 365],
+                  widths: [100, 140, 100, 140],
                   body: [
                     [
                       {
@@ -1412,11 +1432,35 @@ opcionRadioTipos(e){
                           {
                             type: "none",
                             bold: true,
-                            fontSize: 9,
+                            fontSize: 8,
                             ul: [
                               "Grupo",
-                              "Responsable",
+                              "Responsable"
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            fontSize: 8,
+                            ul: [
+                              "" + this.revisionIniciada.nombreClasificacion,
+                              "" + this.revisionIniciada.responsable,
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            bold: true,
+                            fontSize: 8,
+                            ul: [
                               "Sucursal",
+                              "Fecha"
                             ],
                           },
                         ],
@@ -1426,11 +1470,10 @@ opcionRadioTipos(e){
                           stack: [
                             {
                               type: "none",
-                              fontSize: 9,
+                              fontSize: 8,
                               ul: [
-                                "" + this.revisionIniciada.nombreClasificacion,
-                                "" + this.revisionIniciada.responsable,
                                 "" + this.revisionIniciada.sucursal,
+                                "" + this.revisionIniciada.fecha_inicio,
                               ],
                             },
                           ],

@@ -9,7 +9,9 @@ router.post('/newRevisionInventario', async (req, res) => {
       idDocumento:req.body.idDocumento,
       estado:req.body.estado,
       fecha_inicio:req.body.fecha_inicio,
-      nombreClasificacion:req.body.nombreClasificacion});
+      nombreClasificacion:req.body.nombreClasificacion,
+      notas:req.body.notas
+    });
     await newRevision.save();
     res.json({status: 'Revision creada'});
 });
@@ -30,6 +32,13 @@ router.get('/getRevisionesIniciadas', async (req, res) => {
 router.post('/getRevisionPorIdConsecutivo', async (req, res, next) => {
   const documentos = await RevisionInventario.find({idDocumento: req.body.idDocumento});
   res.json(documentos);
+});
+
+
+router.put("/updateNota/:id", async (req, res, next) => {
+  const { id } = req.params;
+  await RevisionInventario.findByIdAndUpdate(id,{ $set: { notas: req.body.notas } },{ new: true });
+  res.json({ status: "Cuenta Updated" });
 });
 
 

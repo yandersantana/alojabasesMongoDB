@@ -587,14 +587,14 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
-    //this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
+    //this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
+    this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
     window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
   copiarLink(revision : controlInventario){
-    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
-    //this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
+    //this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
   }
 

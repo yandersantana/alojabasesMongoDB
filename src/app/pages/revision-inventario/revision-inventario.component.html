@@ -399,6 +399,15 @@
 
                                     <div class="col-md-4 itemP">Novedades</div>
                                     <div class="col-md-8"><dx-text-box [(value)]="productoRevisado.novedades" [disabled]="false" [readOnly]="false"></dx-text-box></div>
+
+                                    <div class="col-md-4 itemP" style="margin-top: 1.5em;">Comentarios Generales</div>
+                                    <div class="col-md-8">
+                                        <dx-text-area
+                                            class="form-control padding-ob"
+                                            [height]="90"
+                                            [(value)]="nota.descripcion">
+                                        </dx-text-area>
+                                    </div>
                                 </div>
                             </div>
                             <div class="col-md-2"></div>

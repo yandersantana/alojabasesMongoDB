@@ -171,11 +171,11 @@ export class TransaccionesComponent implements OnInit {
       }
     } else {
       this.transacciones = this.transaccionesGlobales;
-      this.transaccionesGlobales.forEach((element) => {
+      /* this.transaccionesGlobales.forEach((element) => {
         //var data = element.totalsuma?.toString()
         element.totalsuma = Number(this._decimalPipe.transform(element.totalsuma,"1.2-2"))
        // element.totalsuma = Number(element.totalsuma.toFixed(2).toString())
-      });
+      }); */
       this.terminarLoading();
     }
   }
@@ -254,7 +254,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("observaciones", "visible", true);
    // e.component.columnOption("cliente", "visible", true);
     e.component.columnOption("costo_unitario", "visible", true);
-    e.component.columnOption("cantM2", "visible", true);
+    //e.component.columnOption("cantM2", "visible", true);
    // e.component.columnOption("proveedor", "visible", true);
     e.component.columnOption("maestro", "visible", true);
     e.component.columnOption("movimiento", "visible", true);
@@ -267,7 +267,7 @@ export class TransaccionesComponent implements OnInit {
     e.component.columnOption("usuario", "visible", false);
     e.component.columnOption("rucSucursal", "visible", false);
    // e.component.columnOption("cliente", "visible", false);
-    e.component.columnOption("cantM2", "visible", false);
+    //e.component.columnOption("cantM2", "visible", false);
     e.component.columnOption("costo_unitario", "visible", false);
    // e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("movimiento", "visible", false);

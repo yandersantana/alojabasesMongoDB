@@ -960,19 +960,19 @@ export class ConsolidadoComponent implements OnInit {
 
       //MATRIZ
       var datos = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "matriz");
-      var data = datos[datos?.length-1];
+      var data = datos?.length == 1 ? datos[0] : datos[datos?.length-1] ;
       let days = this.diferenciaEntreDiasEnDias(new Date(data?.fecha), new Date());
       this.invetarioProd.ultimaFechaRevisionMatriz = data?.fecha;
       this.invetarioProd.diasRestantesMatriz = days.toString() != "NaN" ? days.toString() : "";
       //SUCURSAL1
       var datos2 = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "sucursal1");
-      var data2 = datos[datos2?.length-1];
+      var data2 = datos2?.length == 1 ? datos2[0] : datos2[datos2?.length-1] ;
       let days2 = this.diferenciaEntreDiasEnDias(new Date(data2?.fecha), new Date());
       this.invetarioProd.ultimaFechaRevisionSucursal1 = data2?.fecha;
       this.invetarioProd.diasRestantesSucursal1 = days2.toString() != "NaN" ? days2.toString() : "";
       //SUCURSAL2
       var datos3 = this.transaccionesProductosRevisados.filter(element3=>element3.producto == element2.PRODUCTO && element3.sucursal == "sucursal2");
-      var data3 = datos[datos3?.length-1];
+      var data3 = datos3?.length == 1 ? datos3[0] : datos3[datos3?.length-1] ;
       let days3 = this.diferenciaEntreDiasEnDias(new Date(data3?.fecha), new Date());
       this.invetarioProd.ultimaFechaRevisionSucursal2 = data3?.fecha;
       this.invetarioProd.diasRestantesSucursal2 = days3.toString() != "NaN" ? days3.toString() : "";
@@ -1228,6 +1228,7 @@ export class ConsolidadoComponent implements OnInit {
         this.invetarioFaltante = [];
         this.mostrarUser = false;
         this.mostrarAdmin = false;
+        this.traerTransaccionesRevisionesProductos();
         this.mostrarBusquedaIndividual = false;
         this.mostrarBusquedaPorFiltros = true;
         this.mostrarActualizacion = false;

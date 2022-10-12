@@ -89,8 +89,6 @@ export class RevionInventarioComponent implements OnInit {
   seccionNew = true;
   mostrarMenu = true;
 
-
-
   locales: Sucursal[]=[]
   productosActivos: producto[]=[]
   productos: producto[]=[]
@@ -215,6 +213,7 @@ export class RevionInventarioComponent implements OnInit {
         var revision = this.listadoRevisiones.find(element=> element.idDocumento == Number(this.idRevision))
         if(revision != null){
           this.revisionIniciada = revision
+          this.nota.descripcion = this.revisionIniciada.notas;
           this.traerRevisionesInventarioProductosPorId()
         }
         else{
@@ -517,6 +516,7 @@ export class RevionInventarioComponent implements OnInit {
     this.listadoProductosRevisados = [];
     var idP = id;
     this.revisionIniciada = this.listadoRevisionesIniciadas.find(element=> element.idDocumento == id);
+    this.fechaString = new Date(this.revisionIniciada.fecha_inicio).toLocaleString();
     this._revisionInventarioProductoService.getRevisionesProductosPorId(id.toString()).subscribe(res => {
       this.listadoProductosRevisados = res as detalleProductoRevisado[];
       this.crearListadoComparacion();
@@ -587,14 +587,14 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
-    //this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
-    this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
+    this.linkRevision = "Link de revision: "+'http://159.223.107.115:3000/#/revision-inventario/' + revision.idDocumento
+    //this.linkRevision = "Link de revision: "+'http://104.131.82.174:3000/#/revision-inventario/' + revision.idDocumento
     window.open('https://api.whatsapp.com/send?text='+this.linkRevision);
   }
 
   copiarLink(revision : controlInventario){
-    //this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
-    this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
+    this.linkRevision = "http://159.223.107.115:3000/#/revision-inventario/" + revision.idDocumento
+    //this.linkRevision = "http://104.131.82.174:3000/#/revision-inventario/" + revision.idDocumento
     this.popupVisible = true;
   }
 
@@ -728,9 +728,12 @@ opcionRadioTipos(e){
     this.mensajeLoading = "Guardando.."
     this.mostrarLoading = true;
     this.productoRevisado.idReferenciaRevision = Number(this.idRevision);
-
+    this.CuentaActualizar = this.revisionIniciada;
+    this.CuentaActualizar.notas = this.nota.descripcion;
     this._revisionInventarioProductoService.newRevisionInventarioProducto(this.productoRevisado).subscribe( 
       res => {  this.mostrarLoading = false;
+                this.CuentaActualizar.notas = this.nota.descripcion;
+                this._revisionInventarioService.updateNotas(this.CuentaActualizar).subscribe(res => { })  
                 this.reiniciarFormulario();
                 this.mostrarMensajeGenerico(1,"Se ha registrado con éxito") }, 
       err => {  this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")})
@@ -742,6 +745,8 @@ opcionRadioTipos(e){
     this.mostrarLoading = true;
     this._revisionInventarioProductoService.updateRevisionProducto(this.productoRevisado).subscribe( 
     res => {  this.mostrarLoading = false;
+              this.CuentaActualizar.notas = this.nota.descripcion;
+              this._revisionInventarioService.updateNotas(this.CuentaActualizar).subscribe(res => { })  
               Swal.fire({
                 title: 'Producto Actualizado',
                 text: 'Se ha actualizado con éxito',
@@ -1339,11 +1344,11 @@ opcionRadioTipos(e){
     var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
     this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
     
-    if(this.productoRevisado.m2_sistema > 0)
+    /* if(this.productoRevisado.m2_sistema > 0)
         this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema * (-1)
       else
-        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
-
+        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema */
+    this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
     this.productoRevisado.cajas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia / prod.M2);
     this.productoRevisado.piezas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia * prod.P_CAJA /prod.M2) - (this.productoRevisado.cajas_diferencia * prod.P_CAJA);
 
@@ -1473,7 +1478,7 @@ opcionRadioTipos(e){
                               fontSize: 8,
                               ul: [
                                 "" + this.revisionIniciada.sucursal,
-                                "" + this.revisionIniciada.fecha_inicio,
+                                "" + this.fechaString,
                               ],
                             },
                           ],

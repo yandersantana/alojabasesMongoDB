@@ -137,11 +137,11 @@
         <dxi-column dataField="cajas"  dataType="number" [width]="80"></dxi-column>
         <dxi-column dataField="piezas"  dataType="number" [width]="80"></dxi-column>
         <dxi-column dataField="costo_unitario" [visible]="false" ></dxi-column>
-        <dxi-column dataField="cantM2" caption="Cantidad" [visible]="false"  dataType="number"></dxi-column>
+        <dxi-column dataField="cantM2" caption="M2"  [width]="80" dataType="number"></dxi-column>
         <dxi-column dataField="valor" dataType="number" caption="V.Unitario"  [width]="80" ></dxi-column>
         <dxi-column dataField="totalsuma" caption="Total Suma"  dataType="number" [width]="100"></dxi-column>
-       <!--  <dxi-column dataField="totalsuma" caption="Total Suma" alignment="right" [width]="100">
-                <dxo-format type="fixedPoint" [precision]="2"></dxo-format>
+        <!-- <dxi-column dataField="totalsuma" caption="Total Suma" alignment="right" [width]="100">
+                <dxo-value-format type="currency" [precision]="2"></dxo-value-format> 
             </dxi-column> -->
         <dxi-column dataField="usu_autorizado"  [visible]="false"></dxi-column>
         <dxi-column dataField="cliente"  caption="Cliente" [width]="200" [visible]="true"></dxi-column>

@@ -155,8 +155,8 @@
                             </div>
 
                             <div class="padding-tr-5">
-                                <button class="size-icon" *ngIf="p.mcaError == true" (click)="mostrarErrores(p.numeroOrden,i)"><i class="fa fa-exclamation-triangle" style="color: red;"></i></button>
-                                <button class="size-icon" *ngIf="p.mcaError == false"><i class="fa fa-check-square-o" style="color: green;"></i></button>
+                                <button class="size-icon" title="PRODUCTOS DEVUELTOS" *ngIf="p.mcaError == true" (click)="mostrarErrores(p.numeroOrden,i)"><i class="fa fa-exclamation-triangle" style="color: red;"></i></button>
+                                <button class="size-icon" title="PRODUCTOS DEVUELTOS" *ngIf="p.mcaError == false"><i class="fa fa-check-square-o" style="color: green;"></i></button>
                             </div>
 
                         </div>

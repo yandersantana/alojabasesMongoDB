@@ -131,6 +131,7 @@ export class ConsolidadoComponent implements OnInit {
 
   ngOnInit() {
     this.cargarUsuarioLogueado();
+    this.traerCatalogoUnitarios();
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
     this.traerBodegas();    
@@ -145,6 +146,7 @@ export class ConsolidadoComponent implements OnInit {
 
 
   traerCatalogo(){
+    this.productosCatalogo = [];
     this._catalogoService.getCatalogoActivos().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
       this.traerProductos();
@@ -153,6 +155,7 @@ export class ConsolidadoComponent implements OnInit {
 
 
   traerCatalogoUnitarios(){
+    this.productosCatalogo = [];
     this._catalogoService.getCatalogoActivos().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
    })
@@ -348,6 +351,7 @@ export class ConsolidadoComponent implements OnInit {
       this.productos = res as producto[];
       this.productos.forEach((element) => {
         element.DIMENSION = this.productosCatalogo?.find(element2=> element.PRODUCTO == element2.PRODUCTO)?.DIM;
+        element.IMAGEN_PRINCIPAL = this.productosCatalogo?.find(element2=> element.PRODUCTO == element2.PRODUCTO)?.IMAGEN_PRINCIPAL;
       } )
       this.cargarDatos();
       this.cargarClasificacion();
@@ -739,7 +743,6 @@ export class ConsolidadoComponent implements OnInit {
           }
         }
       });
-      var cantidadRestante = 0;
       this.invetarioProd = new inventario();
       this.invetarioProd.producto = element2;
       this.invetarioProd.cantidadCajas = contCajas;
@@ -758,6 +761,7 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
       this.invetarioProd.porUtilidad = element2.porcentaje_ganancia;
+      this.invetarioProd.IMAGEN_PRINCIPAL = this.productosCatalogo?.find(element=> element.PRODUCTO == element2.PRODUCTO)?.IMAGEN_PRINCIPAL;
       this.invetarioProd.valorProducto = (element2.porcentaje_ganancia * element2.precio) + element2.precio ;
       this.invetarioProd.notas = element2.notas;
       this.invetarioProd.execute = false;
@@ -955,6 +959,7 @@ export class ConsolidadoComponent implements OnInit {
 
       this.invetarioProd.ultimoPrecioCompra = element2.ultimoPrecioCompra;
       this.invetarioProd.porUtilidad = element2.porcentaje_ganancia;
+      this.invetarioProd.IMAGEN_PRINCIPAL = this.productosCatalogo?.find(element=> element.PRODUCTO == element2.PRODUCTO)?.IMAGEN_PRINCIPAL;
       this.invetarioProd.valorProducto = ((element2.porcentaje_ganancia * element2.precio)/100) + element2.precio ;
       this.invetarioProd.ultimaFechaCompra = element2.ultimaFechaCompra;
 
@@ -1506,7 +1511,6 @@ export class ConsolidadoComponent implements OnInit {
   };
 
   mostrarPopup(e: any) {
-    console.log(e)
     this.nameProducto = e.producto.PRODUCTO;
     this.productos.forEach((element) => {
       if (element.PRODUCTO == e.producto.PRODUCTO) {

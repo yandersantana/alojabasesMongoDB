@@ -52,6 +52,7 @@ export class ProductoDetalleCompra{
     seleccionado:boolean
     iva:boolean
     nombreComercial:producto
+    IMAGEN_PRINCIPAL: string
     rotacion:number
     disponible:number
     precio_cos:number

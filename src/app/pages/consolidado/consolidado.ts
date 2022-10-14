@@ -29,6 +29,7 @@ export class inventario {
   requiereActualizacion : string;
   porUtilidad : number;
   valorProducto : number;
+  IMAGEN_PRINCIPAL : string;
   constructor() {}
 }
 

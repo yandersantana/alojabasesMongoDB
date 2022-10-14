@@ -99,6 +99,7 @@ export class Producto {
     UNIDAD: string
     APLICACION: string
     cantidad: number
+    IMAGEN_PRINCIPAL: string
     precio: number
     porcentaje_ganancia: number
     nombre_comercial:string

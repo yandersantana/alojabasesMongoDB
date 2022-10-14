@@ -515,6 +515,8 @@ export class RevionInventarioComponent implements OnInit {
     this.newAud = false;
     this.listadoProductosRevisados = [];
     var idP = id;
+    this.mensajeLoading = "Cargando"
+    this.mostrarLoading = true;
     this.revisionIniciada = this.listadoRevisionesIniciadas.find(element=> element.idDocumento == id);
     this.fechaString = new Date(this.revisionIniciada.fecha_inicio).toLocaleString();
     this._revisionInventarioProductoService.getRevisionesProductosPorId(id.toString()).subscribe(res => {
@@ -584,6 +586,7 @@ export class RevionInventarioComponent implements OnInit {
       //this.traerTransaccionesPorProducto(element.producto , index )
       this.listadoComparacionResultados.push(newComparacion)
     })
+    this.mostrarLoading = false;
   }
 
   enviarMsjWhatsapp(revision : controlInventario){
@@ -1014,10 +1017,9 @@ opcionRadioTipos(e){
 
 
   calcularDiferencia(e){
-    console.log(this.productoRevisado)
-    if(this.productoRevisado.cajas == 0 && this.productoRevisado.piezas == 0){
+    /* if(this.productoRevisado.cajas == 0 && this.productoRevisado.piezas == 0){
       console.log("entre")
-    }else{
+    }else{ */
       var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
       this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
       
@@ -1038,7 +1040,7 @@ opcionRadioTipos(e){
         console.log(this.productoRevisado)
 
       this.mostrarLoading = false;
-    }
+    //}
     
   }
 
@@ -1319,28 +1321,6 @@ opcionRadioTipos(e){
       }
     });
 
-    //var prod = this.productosActivos.find(element=> element.PRODUCTO == this.listadoComparacionResultados[indice].producto)
-    /* var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
-    //this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
-    this.listadoComparacionResultados[indice].m2_conteo=parseFloat(((prod.M2*this.listadoComparacionResultados[indice].cajas_conteo)+((this.listadoComparacionResultados[indice].piezas_conteo*prod.M2)/prod.P_CAJA)).toFixed(2))
-    
-    if(prod.CLASIFICA != "Ceramicas" && prod.CLASIFICA != "Porcelanatos" ){
-      if(this.listadoComparacionResultados[indice].m2_sistema < 0)
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema * (-1)
-      else
-        this.listadoComparacionResultados[indice].m2_diferencia = this.listadoComparacionResultados[indice].m2_conteo - this.listadoComparacionResultados[indice].m2_sistema
-    }
-
-    this.listadoComparacionResultados[indice].cajas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia / prod.M2);
-    this.listadoComparacionResultados[indice].piezas_diferencia=Math.trunc(this.listadoComparacionResultados[indice].m2_diferencia * prod.P_CAJA /prod.M2) - (this.listadoComparacionResultados[indice].cajas_diferencia * prod.P_CAJA);
-
-    if(this.listadoComparacionResultados[indice].m2_diferencia > 0)
-      this.listadoComparacionResultados[indice].resultado = "SOBRANTE"
-    else if (this.listadoComparacionResultados[indice].m2_diferencia < 0)
-      this.listadoComparacionResultados[indice].resultado = "FALTANTE"
-    else
-      this.listadoComparacionResultados[indice].resultado = "OK" */
-
     var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
     this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
     
@@ -1494,6 +1474,8 @@ opcionRadioTipos(e){
         },
 
         this.getProductosRevision(this.listadoComparacionResultados),
+        { text: "" },
+        { text: "Notas: "+ this.revisionIniciada.notas, fontSize: 8, alignment: "left", bold: true },
       ],
       pageBreakBefore: function (
         currentNode,

@@ -23,6 +23,7 @@ export class ReporteGlobalComponent implements OnInit {
 
   reporteGlobalCompras : reporteGlobalCompras[] = [];
   reporteIndGlobalCompras: reporteGlobalCompras;
+  mensajeLoading = "Cargando..."
 
   //reporte Global
    reporteGlobalIndicadores: reporteGlobalIndicadores[] = [];
@@ -75,6 +76,10 @@ export class ReporteGlobalComponent implements OnInit {
         this.nowdesde = new Date("01/01/2025");
         this.nowhasta = new Date("12/31/2025");
         break;
+      case "2026":
+        this.nowdesde = new Date("01/01/2026");
+        this.nowhasta = new Date("12/31/2026");
+        break;
       default:
     }
   }
@@ -86,7 +91,6 @@ export class ReporteGlobalComponent implements OnInit {
     this.obj = new objDate();
     this.obj.fechaActual = this.nowhasta;
     this.obj.fechaAnterior = this.nowdesde;
-    console.log(this.obj)
     this.transaccionesService.getTransaccionesPorRango(this.obj).subscribe(
       (res) => {
         this.transaccionesGlobales = res as transaccion[];
@@ -102,7 +106,6 @@ export class ReporteGlobalComponent implements OnInit {
     }  
 
   separarTransacciones() {
-    console.log("global", this.transaccionesGlobales.length);
     var start = this.nowdesde;
     var end = this.nowhasta
 
@@ -198,10 +201,10 @@ export class ReporteGlobalComponent implements OnInit {
       this.reporteDIndividual.VDiariaSucursal1 = Number(sumaSuc1.toFixed(2));
       this.reporteDIndividual.DevDiariaSucursal1 = Number(sumaDevolSuc1.toFixed(2));
       this.reporteDIndividual.VDiariaTotal = Number(sumaTotal.toFixed(2));
-      this.reporteDIndividual.MatUBruta = Number(sumaTotalCalculoUtilidadMat.toFixed(2));
-      this.reporteDIndividual.MatPorcentaje = Number(sumaTotalCalculoUtilidadMat.toFixed(2)) / Number(sumaN.toFixed(2)) ;
-      this.reporteDIndividual.Suc1UBruta = Number(sumaTotalCalculoUtilidadSuc1.toFixed(2));
-      this.reporteDIndividual.Suc1Porcentaje = Number(sumaTotalCalculoUtilidadSuc1.toFixed(2)) / Number(sumaSuc1.toFixed(2)) ;
+      this.reporteDIndividual.MatUBruta = sumaN == 0 ? 0 : Number(sumaTotalCalculoUtilidadMat.toFixed(2));
+      this.reporteDIndividual.MatPorcentaje = sumaN == 0 ? 0 : Number(sumaTotalCalculoUtilidadMat.toFixed(2)) / Number(sumaN.toFixed(2)) ;
+      this.reporteDIndividual.Suc1UBruta = sumaSuc1 == 0 ? 0 : Number(sumaTotalCalculoUtilidadSuc1.toFixed(2));
+      this.reporteDIndividual.Suc1Porcentaje =  sumaSuc1 == 0 ? 0 : Number(sumaTotalCalculoUtilidadSuc1.toFixed(2)) / Number(sumaSuc1.toFixed(2)) ;
       this.reporteDIndividual.validacionMatriz = 0;
       this.reporteDIndividual.validacionSucursal1 = 0;
       if(isNaN(this.reporteDIndividual.MatPorcentaje ))
@@ -274,7 +277,6 @@ export class ReporteGlobalComponent implements OnInit {
       this.reporteGlobalInd.PorcentajeMes = Number(sumaUtilidad.toFixed(2)) / Number(sumaTotalMes.toFixed(2));
       if(isNaN(this.reporteGlobalInd.PorcentajeMes))
         this.reporteGlobalInd.PorcentajeMes = 0
-      console.log(this.reporteGlobalInd)
 
       if(this.reporteGlobalInd.VMesTotal!=0){
         this.reporteGlobal.push(this.reporteGlobalInd)
@@ -355,7 +357,6 @@ export class ReporteGlobalComponent implements OnInit {
       this.reporteIndvIndicadores.ventasTotales = sumaVentas;
       this.reporteIndvIndicadores.comprasTotales = sumaCompras;
       this.reporteIndvIndicadores.indDiferencia = Number(indDiferencia);
-      console.log(this.reporteIndvIndicadores)
       if(this.reporteIndvIndicadores.ventasTotales!=0 || this.reporteIndvIndicadores.comprasTotales!=0){
         this.reporteGlobalIndicadores.push(this.reporteIndvIndicadores)
       }

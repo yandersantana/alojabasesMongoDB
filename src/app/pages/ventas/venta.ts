@@ -12,6 +12,7 @@ export class producto {
     PRODUCTO: string
     REFERENCIA: string
     DIMENSION: string   //usado para el listado de inventario General, no se guarda en la base
+    IMAGEN_PRINCIPAL: string   //usado para el listado de inventario General, no se guarda en la base
     UNIDAD: string
     APLICACION: string
     cantidad: number

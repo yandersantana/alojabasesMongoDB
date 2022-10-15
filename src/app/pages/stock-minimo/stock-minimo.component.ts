@@ -32,9 +32,20 @@ export class StockMinimoComponent implements OnInit {
 
   valorMenu = "Stock Por Filtros"
   mostrarLoading: boolean = false;
-  popupVisible: boolean = false;
-  popupVisibleNotas: boolean = false;
-  popupVisiblePendientes: boolean = false;
+  mostrarStockMinimoGeneral = false;
+  mostrarBusquedaPorFiltros = true;
+  dataMatriz = true;
+  dataSucursal1 = false;
+  dataSucursal2 = false;
+
+  sucursales: string[] = [
+    'Matriz',
+    'Sucursal1',
+    'Sucursal2'
+  ];
+
+  sucursalSeleccionada = "Matriz"
+
   productos: producto[] = [];
   arregloUbicaciones1: string[] = [];
   arregloUbicaciones2: string[] = [];
@@ -42,6 +53,10 @@ export class StockMinimoComponent implements OnInit {
   arregloNotas: string[] = [];
   transacciones: transaccion[] = [];
   invetarioP: inventario[] = [];
+  invetarioMinimoProductos: inventario[] = [];
+  invetarioMinimoProductosMatriz: inventario[] = [];
+  invetarioMinimoProductosSucursal1: inventario[] = [];
+  invetarioMinimoProductosSucursal2: inventario[] = [];
   invetarioFaltante1: invFaltanteSucursal;
   invetarioFaltante: invFaltanteSucursal[] = [];
   invetarioProd: inventario;
@@ -72,11 +87,7 @@ export class StockMinimoComponent implements OnInit {
   totalCajas =0;
   totalPiezas = 0;
   totalM2 = 0;
-  mostrarUser = false;
-  mostrarAdmin = false;
-  mostrarBusquedaIndividual = true;
-  mostrarBusquedaPorFiltros = false;
-  mostrarActualizacion = false;
+  
   opcionesCatalogo: opcionesCatalogo[]=[]
   productosCatalogo:catalogo[]=[]
 
@@ -111,7 +122,7 @@ export class StockMinimoComponent implements OnInit {
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
     this.traerBodegas();
-
+    this.traerCatalogoUnitario();
     
   }
 
@@ -127,6 +138,13 @@ export class StockMinimoComponent implements OnInit {
     this._catalogoService.getCatalogoActivos().subscribe(res => {
       this.productosCatalogo = res as catalogo[];
       this.traerProductos();
+   })
+  }
+
+
+  traerCatalogoUnitario(){
+    this._catalogoService.getCatalogoActivos().subscribe(res => {
+      this.productosCatalogo = res as catalogo[];
    })
   }
 
@@ -259,6 +277,34 @@ export class StockMinimoComponent implements OnInit {
         default:
           break;
       }
+  }
+
+
+
+  opcionRadioTipos(e){
+    this.invetarioMinimoProductosMatriz = [];
+    this.sucursalSeleccionada = e.value;
+    switch (e.value) {
+      case "Matriz":
+        this.dataMatriz = true;
+        this.dataSucursal1 = false;
+        this.dataSucursal2 = false;
+        this.invetarioMinimoProductosMatriz = this.invetarioMinimoProductosMatriz;
+        break;
+      case "Sucursal1":
+        this.dataMatriz = false;
+        this.dataSucursal1 = true;
+        this.dataSucursal2 = false;
+        this.invetarioMinimoProductosMatriz = this.invetarioMinimoProductosSucursal1;
+        break;
+      case "Sucursal2":
+        this.dataMatriz = false;
+        this.dataSucursal1 = false;
+        this.dataSucursal2 = true;
+        this.invetarioMinimoProductosMatriz = this.invetarioMinimoProductosSucursal2;
+        break;
+      default:    
+    }      
   }
 
 
@@ -418,55 +464,9 @@ export class StockMinimoComponent implements OnInit {
 
   buscarProducto() {}
 
-  actualizarUbicaciones() {
-    this.popupVisible = false;
-    this.productos.forEach((element) => {
-      if (element.PRODUCTO == this.nameProducto) {
-        element.ubicacionSuc1 = this.arregloUbicaciones1;
-        element.ubicacionSuc2 = this.arregloUbicaciones2;
-        element.ubicacionSuc3 = this.arregloUbicaciones3;
-        this.productoService.updateProductoUbicaciones(element).subscribe(
-          (res) => {
-            Swal.fire({
-              title: "Correcto",
-              text: "Su proceso se realizó con éxito",
-              icon: "success",
-              confirmButtonText: "Ok",
-            }).then((result) => {
-              window.location.reload();
-            });
-          },
-          (err) => {
-            alert("error");
-          }
-        );
-      }
-    });
-  }
+  
 
-  actualizarNotas() {
-    this.popupVisibleNotas = false;
-    this.productos.forEach((element) => {
-      if (element.PRODUCTO == this.nameProducto) {
-        element.notas = this.arregloNotas;
-        this.productoService.updateProductoNotas(element).subscribe(
-          (res) => {
-            Swal.fire({
-              title: "Correcto",
-              text: "Su proceso se realizó con éxito",
-              icon: "success",
-              confirmButtonText: "Ok",
-            }).then((result) => {
-              window.location.reload();
-            });
-          },
-          (err) => {
-            alert("error");
-          }
-        );
-      }
-    });
-  }
+ 
 
   separarEntregas() {
     this.productosPendientes.forEach((element) => {
@@ -943,10 +943,6 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioP.forEach((element2) => {
         if (!element2.execute) {
           if (element.PRODUCTO == element2.producto.PRODUCTO) {
-            //element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-            //element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
-            //element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
-
             element2.cantidadM2 = element2.cantidadM2;
             element2.cantidadM2b2 = element2.cantidadM2b2;
             element2.cantidadM2b3 = element2.cantidadM2b3;
@@ -1117,66 +1113,21 @@ export class StockMinimoComponent implements OnInit {
   opcionMenu(e) {
     this.valorMenu = e.value;
     switch (e.value) {
-      case "Inventario General":
+      case "Stock General":
         this.tipoBusqueda = "Normal"
         this.traerTransacciones();
         this.traerProductosPendientes();
-        this.mostrarUser = true;
-        this.mostrarAdmin = false;
-        this.mostrarBusquedaIndividual = false;
+        this.mostrarStockMinimoGeneral = true;
         this.mostrarBusquedaPorFiltros = false;
-        this.mostrarActualizacion = false;
-        break;
-      case "Inventario Contable":
-        this.tipoBusqueda = "Contable"
-        this.traerTransacciones();
-        this.traerProductosPendientes();
-        this.mostrarUser = true;
-        this.mostrarAdmin = false;
-        this.mostrarBusquedaIndividual = false;
-        this.mostrarBusquedaPorFiltros = false;
-        this.mostrarActualizacion = false;
-        break;
-      case "Inventario Valorizado":
-        this.traerTransacciones();
-        this.traerProductosPendientes();
-        this.mostrarUser = false;
-        this.mostrarAdmin = true;
-        this.mostrarBusquedaIndividual = false;
-        this.mostrarBusquedaPorFiltros = false;
-        this.mostrarActualizacion = false;
-        break;
-      case "Busqueda Individual":
-        this.tipoBusqueda = "Normal"
-        this.transacciones = [];
-        this.invetarioP = [];
-        this.invetarioFaltante = [];
-        this.mostrarUser = false;
-        this.mostrarAdmin = false;
-        this.mostrarBusquedaIndividual = true;
-        this.mostrarBusquedaPorFiltros = false;
-        this.mostrarActualizacion = false;
         break;
       case "Stock Por Filtros":
         this.tipoBusqueda = "Normal"
         this.transacciones = [];
         this.invetarioP = [];
         this.invetarioFaltante = [];
-        this.mostrarUser = false;
-        this.mostrarAdmin = false;
-        this.mostrarBusquedaIndividual = false;
+        this.mostrarStockMinimoGeneral = false;
         this.mostrarBusquedaPorFiltros = true;
-        this.mostrarActualizacion = false;
         break;
-      case "Actualizacion Productos":
-        this.tipoBusqueda = "Normal"
-        this.traerTransacciones();
-        this.traerProductosPendientes();
-        this.mostrarUser = false;
-        this.mostrarAdmin = false;
-        this.mostrarBusquedaIndividual = false;
-        this.mostrarBusquedaPorFiltros = false;
-        this.mostrarActualizacion = true;
       default:
     }
   }
@@ -1281,19 +1232,26 @@ export class StockMinimoComponent implements OnInit {
         });
       }
 
-
-
       if(this.valorMenu == "Busqueda Individual"){
         var producto = this.productos.find(element=> element.PRODUCTO == this.nombreProducto)
         if(producto.CLASIFICA == "COMBO")
           this.buscarCombo(this.nombreProducto)
       }
-      
-      
-    }
 
-    
-     
+      this.invetarioP.forEach((element) => {
+        var catal = this.productosCatalogo.find(p=> p.PRODUCTO == element.producto.PRODUCTO);
+        if(catal != null){
+          if (element.cantidadM2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
+              this.invetarioMinimoProductosMatriz.push(element)
+          else if (element.cantidadM2b2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
+              this.invetarioMinimoProductosSucursal1.push(element)
+          else if (element.cantidadM2b3 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
+              this.invetarioMinimoProductosSucursal2.push(element)
+        }
+      });
+      
+      this.invetarioMinimoProductos = this.invetarioMinimoProductosMatriz
+    }
     
     this.mostrarLoading = false;
 
@@ -1391,8 +1349,6 @@ export class StockMinimoComponent implements OnInit {
     e.component.columnOption("producto.precio", "visible", true);
     e.component.columnOption("bodega", "visible", true);
     e.component.columnOption("ultimoPrecioCompra", "visible", true);
-    e.component.columnOption("ultimaFechaCompra", "visible", true);
-    e.component.columnOption("notas", "visible", true);
   }
   onExported2(e) {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
@@ -1401,81 +1357,12 @@ export class StockMinimoComponent implements OnInit {
     e.component.columnOption("producto.precio", "visible", false);
     e.component.columnOption("bodega", "visible", false);
     e.component.columnOption("ultimoPrecioCompra", "visible", false);
-    e.component.columnOption("ultimaFechaCompra", "visible", false);
-    e.component.columnOption("notas", "visible", false);
     e.component.endUpdate();
-  }
-
-  mostrarUbicacion = (e) => {
-    this.mostrarPopup(e.row.data);
-  };
-
-  mostrarNotas = (e) => {
-    this.mostrarPopupNotas(e.row.data);
-  };
-
-  mostrarProductos = (e) => {
-    this.mostrarPopupProductos(e.row.data);
-  }
-
-  mostrarProductosGeneral = (e) => {
-    this.mostrarPopupProductos(e.row.data);
   }
 
   updateInventarioClasificacion = (e) => {
     this.actualizarInventarioPorClasificacion(e.row.data);
   };
-
-  mostrarPopup(e: any) {
-    this.nameProducto = e.producto.PRODUCTO;
-    this.productos.forEach((element) => {
-      if (element.PRODUCTO == e.producto.PRODUCTO) {
-        this.arregloUbicaciones1 = element.ubicacionSuc1;
-        this.arregloUbicaciones2 = element.ubicacionSuc2;
-        this.arregloUbicaciones3 = element.ubicacionSuc3;
-      }
-    });
-    this.popupVisible = true;
-  }
-
-  mostrarPopupNotas(e: any) {
-    this.nameProducto = e.producto.PRODUCTO;
-    this.productos.forEach((element) => {
-      if (element.PRODUCTO == e.producto.PRODUCTO) {
-        this.arregloNotas = element.notas;
-      }
-    });
-    this.popupVisibleNotas = true;
-  }
-
-  mostrarPopupProductos(e: any) {
-    this.arregloNotas = [];
-    this.totalCajas = 0;
-    this.totalPiezas = 0;
-    this.totalM2 = 0;
-    this.productosPendientesNoENLista = [];
-    this.nameProducto = e.producto.PRODUCTO;
-    this.productos.forEach((element) => {
-      if (element.PRODUCTO == e.producto.PRODUCTO) {
-        this.arregloNotas = element.notas;
-      }
-    });
-
-    this.productosPendientesNoEN.forEach((element) => {
-      if (element.producto.PRODUCTO == e.producto.PRODUCTO) 
-        this.productosPendientesNoENLista.push(element);
-    });
-
-    this.productosPendientesNoENLista.forEach((element) => {
-      this.totalCajas += element.cajas;
-      this.totalPiezas += element.piezas;
-      this.totalM2 += element.cantM2;
-    });
-
-    
-    this.popupVisiblePendientes = true;
-  }
-
 
 
 

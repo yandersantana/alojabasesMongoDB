@@ -279,6 +279,10 @@ export const navigationAdmin = [
         text: "Revisiones",
         path: "/revision-inventario/0",
       },
+      {
+        text: "Stock Minimo",
+        path: "/stock-minimo",
+      },
     ],
   },
   {

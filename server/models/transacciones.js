@@ -27,7 +27,9 @@ const TransaccionesSchema = new Schema({
     orden_compra: { type: String, required: false},
     cantM2: { type: String, required: false},
     movimiento: { type: String, required: false},
-    mcaEntregado: { type: String, required: false}
+    mcaEntregado: { type: String, required: false},
+    nombreUsuario: { type: String, required: false},
+    nombreVendedor: { type: String, required: false}
     
 },{
     timestamps:true

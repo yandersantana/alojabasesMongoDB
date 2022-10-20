@@ -25,6 +25,8 @@ export class transaccion {
   movimiento: number;
   createdAt: Date;
   mcaEntregado : string;
+  nombreUsuario : string;
+  nombreVendedor : string;
   constructor() {
     this.valor = 0;
     this.mcaEntregado = "SI";

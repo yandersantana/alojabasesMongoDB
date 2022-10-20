@@ -44,6 +44,13 @@
             <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
     </div>
 
+    <div class="row" *ngIf="mostrarRegresar">
+        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="regresar2()">
+            <i class="fa fa-arrow-left fa-1x"></i>  Regresar</button></div>
+        <div class="col-md-10"></div>
+        
+    </div>
+
     <div class="card mb-3" *ngIf="seccionNew">
         <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE INVENTARIO</h5>
         <div class="card-body">

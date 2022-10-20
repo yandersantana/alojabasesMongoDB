@@ -89,7 +89,7 @@ export class RegistroFacturasComponent implements OnInit {
   }
 
   calcularTotal(){
-    this.valorTotalACancelar = this.datosFactura.total - this.valorDescuento
+    this.valorTotalACancelar = this.datosFactura.total //- this.valorDescuento
   }
 
   aplicarDescuento(){
@@ -257,7 +257,7 @@ export class RegistroFacturasComponent implements OnInit {
 
     this.listaFacturas = this.listaFacturasTmp;    
     this.listaFacturas.forEach(element=>{
-      element.total = element.total + (element.valorDescuento ?? 0)
+      element.total = element.total //+ (element.valorDescuento ?? 0)
       element.valorConDescuento = element.total - (element.valorDescuento ?? 0)
       element.valorRestante = element.total - (element.valorPagado ?? 0) - (element.valorDescuento ?? 0)
     })

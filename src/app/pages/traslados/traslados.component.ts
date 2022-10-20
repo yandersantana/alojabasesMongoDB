@@ -746,7 +746,7 @@ export class TrasladosComponent implements OnInit {
         (err) => {}
       );
     });
-    this.actualizarProductosBaseRecibios();
+    //this.actualizarProductosBaseRecibios();
   }
 
   guardarTraslado() {
@@ -792,7 +792,7 @@ export class TrasladosComponent implements OnInit {
           (res) => {
             this.contadores[0].contTraslados_Ndocumento = this.id2;
             this.contadoresService.updateContadoresTraslados(this.contadores[0]).subscribe(
-                (res) => {contVal++ ; this.contadorValidaciones(contVal)},
+                (res) => {},
                 (err) => {});},
           (err) => {}
         );
@@ -822,11 +822,12 @@ export class TrasladosComponent implements OnInit {
             this.generarTransaccionesComboProductos(element.producto, 1)
 
           this.transaccionesService.newTransaccion(this.transaccion).subscribe(
-            (res) => {this.contadores[0].transacciones_Ndocumento = this.number_transaccion++; },
+            (res) => {this.contadores[0].transacciones_Ndocumento = this.number_transaccion++;
+                      contVal++ ; this.contadorValidaciones(contVal) },
             (err) => {}
           );
         });
-        this.actualizarProductosBase();
+        //this.actualizarProductosBase();
       });
     } else {
       Swal.fire("Error!", "Hay campos vacios", "error");
@@ -1119,6 +1120,14 @@ export class TrasladosComponent implements OnInit {
   }
 
   obtenerDetallesProducto(e, i: number) {
+    var producto = this.detalleTraslados.filter(element=>element.producto == e.value)
+    if (producto.length > 1) {
+      Swal.fire("Alerta", "Ya tiene detallado este producto", "warning");
+      this.deleteProducto(i);
+      return;
+    }
+
+
     this.productos.forEach((element) => {
       if (element.PRODUCTO == e.value) {
         if(element.CLASIFICA == "COMBO")
@@ -1141,11 +1150,6 @@ export class TrasladosComponent implements OnInit {
       }
     });
 
-    var producto = this.detalleTraslados.filter(element=>element.producto == e.value)
-    if (producto.length > 1) {
-      Swal.fire("Alerta", "Ya tiene detallado este producto", "warning");
-      this.deleteProducto(i);
-    }
   }
 
   buscarCombo(nombreCombo, num){
@@ -1251,38 +1255,38 @@ export class TrasladosComponent implements OnInit {
             window.location.reload();
           });
         },
-        (err) => {
-          alert("error");
-        }
+        (err) => { alert("error")}
       );
     } 
   }
 
+
   contadorValidaciones(i: number) {
-    if (this.detalleTraslados.length == i) 
-      this.guardarSalidaTraslado();
-    
+    if(this.detalleTraslados.length == i) 
+      this.guardarSalidaTraslado(); 
   }
 
+  
   guardarSalidaTraslado() {
     this.buscarDatosSucursal();
     this.crearPDF();
-    Swal.close();
-    Swal.fire({
-      title: "Traslado generado",
-      text: "Se ha guardado con éxito",
-      icon: "success",
-      confirmButtonText: "Ok",
-    }).then((result) => {
-      window.location.reload();
-    });
   }
 
   crearPDF() {
     const documentDefinition = this.getDocumentDefinition();
     pdfMake
       .createPdf(documentDefinition)
-      .download("Traslado " + this.traslados.idT, function () {});
+      .download("Traslado " + this.traslados.idT, function(response) { 
+          Swal.close();
+          Swal.fire({
+            title: "Traslado generado",
+            text: "Se ha guardado con éxito",
+            icon: "success",
+            confirmButtonText: "Ok",
+          }).then((result) => {
+            window.location.reload();
+          });
+        });
   }
 
   compararlocales() {

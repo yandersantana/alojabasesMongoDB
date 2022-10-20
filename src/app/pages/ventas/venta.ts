@@ -154,12 +154,13 @@ export class factura {
     rucFactura:string
     productosVendidos:venta[]=[]
     nota:string
-    
+    nombreUsuario : string
+    nombreVendedor : string
     constructor() { 
-        this.estado="CONTABILIZADA"
-        this.mensaje=" "
-        this.maestro=""
-        this.nota=""
+        this.estado  = "CONTABILIZADA"
+        this.mensaje = " "
+        this.maestro = ""
+        this.nota    = ""
     }
 }
 

@@ -1,4 +1,3 @@
-
 import { Component, OnInit } from '@angular/core';
 import { factura, venta } from '../ventas/venta';
 import pdfMake from 'pdfmake/build/pdfmake';
@@ -416,7 +415,6 @@ export class RegistrosVentasComponent implements OnInit {
     })
     this.tDocumento="Factura"
     this.crearPDF(e)
-    this.mostrarDatos()
   }
 
   //cargar Nota de Venta
@@ -437,7 +435,6 @@ export class RegistrosVentasComponent implements OnInit {
     })
     this.tDocumento="NOTA DE VENTA 001"
     this.crearPDF(e)
-    //this.mostrarDatos()
   }
 
 
@@ -459,7 +456,6 @@ export class RegistrosVentasComponent implements OnInit {
     })
     this.tDocumento="PROFORMA 000 001"
     this.crearPDF(e)
-    this.mostrarDatos()
   }
   
 
@@ -481,11 +477,6 @@ export class RegistrosVentasComponent implements OnInit {
     }     
   }
 
-  
-
-  mostrarDatos(){
-    console.log(JSON.stringify(this.factura))
-  }
 
   mostrarMensaje(){
     let timerInterval
@@ -513,7 +504,8 @@ export class RegistrosVentasComponent implements OnInit {
 
 
   crearPDF(e){
-    var tipoDoc:boolean=false
+    this.factura.username = this.factura.nombreUsuario == undefined ? this.factura.username : this.factura.nombreUsuario
+    this.factura.nombreVendedor = this.factura.nombreVendedor == undefined ? " " : this.factura.nombreVendedor
     if(this.tDocumento == "Factura"){
       const documentDefinition = this.getDocumentDefinition();
       var generacion = new Promise<any>((resolve, reject) => {
@@ -548,16 +540,15 @@ export class RegistrosVentasComponent implements OnInit {
           icon: 'success',
         })
       });
-
     }
   }
+
 
   limpiarArregloPFact(){
     var cont=0
     this.productosVendidos2.forEach(element=>{
       cont++
     })
-    console.log("mostrando antes"+this.productosVendidos2.length)
     if(cont>=0){
       this.productosVendidos2.forEach(element=>{
         this.productosVendidos2.splice(0)
@@ -694,7 +685,7 @@ export class RegistrosVentasComponent implements OnInit {
             },
             {
               width:215,
-              text: "Vendedor: "+this.factura.username,
+              text: "Usuario: "+ this.factura.username,
               alignment:"right"
             },
             ]
@@ -768,23 +759,32 @@ export class RegistrosVentasComponent implements OnInit {
         {
           //absolutePosition: {x: 40, y: 600},
           columns: [{
-
             type: 'none',
             style: 'tableExample',
-                    table: {
-                      widths: [250],
-                      heights:70,
-                      body: [
-                        [
-                          {text: 'Observaciones:  ' +this.factura.observaciones+ " / "},
+            table: {
+              widths: [250],
+              heights:70,
+              body: [
+                [
+                  {
+                    stack: [
+                      {
+                        type: 'none',
+                        fontSize: 9,
+                        ul: [
+                          {text:'Vendedor: ' + this.factura.nombreVendedor, alignment:'left'},
+                          {text: 'Observaciones: '+this.factura.observaciones+ " / "}
                         ]
-                      ]
-                    },    
+                      }
+                    ]
+                  }
+                ]
+              ]
+            },    
         },
         {
           //Desde aqui comienza los datos del cliente
           style: 'tableExample4',
-         
           table: {
             widths: [125,100],
             body: [
@@ -1018,7 +1018,7 @@ export class RegistrosVentasComponent implements OnInit {
             },
             {
               width:215,
-              text: "Vendedor: "+this.factura.username,
+              text: "Usuario: "+ this.factura.username,
               alignment:"right"
             },
             ]
@@ -1101,7 +1101,18 @@ export class RegistrosVentasComponent implements OnInit {
                       heights:70,
                       body: [
                         [
-                          {text: 'Observaciones: '+this.factura.observaciones+ " / "},
+                          {
+                            stack: [
+                              {
+                                type: 'none',
+                                fontSize: 9,
+                                ul: [
+                                  {text:'Vendedor: ' + this.factura.nombreVendedor, alignment:'left'},
+                                  {text: 'Observaciones: '+this.factura.observaciones+ " / "}
+                                ]
+                              }
+                            ]
+                          }
                         ]
                       ]
                     },
@@ -1254,8 +1265,6 @@ export class RegistrosVentasComponent implements OnInit {
 
 
   getDocumentDefinitionNotaVenta() {
-    //var fecha2 = this.datePipe.transform(new Date(),"dd-MM-yyyy");
-  //console.log("holaaaa"+fecha2); 
     this.setearNFactura()
     this.calcularValoresFactura()
     sessionStorage.setItem('resume', JSON.stringify("jj"));
@@ -1322,7 +1331,7 @@ export class RegistrosVentasComponent implements OnInit {
             },
             {
               width:215,
-              text: "Vendedor: "+this.factura.username,
+              text: "Usuario: " + this.factura.username,
               alignment:"right"
             },
             ]
@@ -1402,8 +1411,18 @@ export class RegistrosVentasComponent implements OnInit {
                       heights:70,
                       body: [
                         [
-                          {text: 'Observaciones:  ' +this.factura.observaciones+ " / "
-                        },
+                          {
+                            stack: [
+                              {
+                                type: 'none',
+                                fontSize: 9,
+                                ul: [
+                                  {text:'Vendedor: ' + this.factura.nombreVendedor, alignment:'left'},
+                                  {text: 'Observaciones: '+this.factura.observaciones+ " / "}
+                                ]
+                              }
+                            ]
+                          }
                         ]
                       ]
                     },    

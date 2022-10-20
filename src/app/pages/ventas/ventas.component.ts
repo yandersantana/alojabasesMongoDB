@@ -165,6 +165,7 @@ export class VentasComponent implements OnInit {
   titulo:string=""
   catalogoLeido:catalogo
   username:string
+  nombreUsuario : string
 
   @ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
   @ViewChild("data2", { static: false }) dataGrid: dxAutocomplete;
@@ -305,9 +306,11 @@ export class VentasComponent implements OnInit {
           res => {
             this.usuarioLogueado = res as user;
             this.factura.username = this.usuarioLogueado[0].username
-            this.username =this.factura.username
+            this.username = this.factura.username
+            this.nombreUsuario = this.usuarioLogueado[0].name
+            this.factura.nombreUsuario = this.usuarioLogueado[0].name
             this.sucursalUsuario = this.usuarioLogueado[0].sucursal
-            this.factura.sucursal=this.usuarioLogueado[0].sucursal
+            this.factura.sucursal = this.usuarioLogueado[0].sucursal
             if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
             this.buscarDatosSucursal()
@@ -315,6 +318,47 @@ export class VentasComponent implements OnInit {
           err => {})
     });
   }
+
+
+  mostrarPopupCodigo(){
+     Swal.fire({
+      title: 'Vendedor',
+      allowOutsideClick: false,
+      showCancelButton: false,
+      inputAttributes: {
+        autocapitalize: 'off'
+      },
+      confirmButtonText: 'Ingresar',
+      input: 'password',
+    }).then((result) => {
+      var usuarioClave = this.usuarios.find(el => el.codigo == result.value);
+      if(usuarioClave != null){
+        this.factura.nombreVendedor = usuarioClave.name
+        switch (this.factura.tipoDocumento) {
+          case "Factura":
+            this.validarEstadoCajaFactura();
+            break;
+          case "Nota de Venta":
+            this.validarEstadoCajaNotaVenta();
+            break;
+          case "Cotización":
+            break;
+          default:
+            break;
+        }
+      }else{
+        Swal.fire({
+          title: 'Error',
+          text: 'El código ingresado no corresponde a ningun usuario',
+          icon: 'error',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+          this.mostrarPopupCodigo();
+        })
+      }
+    })
+  }
+
 
   traerUsuarios(){
     this.userService.getUsers().subscribe(res => {
@@ -1562,9 +1606,9 @@ cambiarestado(e,i:number){
                             bold: true,
                             fontSize:7,
                             ul: [
-                              'RUC      : '+this.factura.cliente.ruc,
-                              'Sucursal : '+this.factura.sucursal, 
-                              'Vendedor : '+this.factura.username, 
+                              'RUC      : '+ this.factura.cliente.ruc,
+                              'Sucursal : '+ this.factura.sucursal, 
+                              'Usuario : ' + this.nombreUsuario, 
                             ]
                           }
                         ]
@@ -1619,6 +1663,7 @@ cambiarestado(e,i:number){
                         fontSize:6,
                         ul: [
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
+                          "Vendedor: " + this.factura.nombreVendedor,
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -1694,9 +1739,9 @@ cambiarestado(e,i:number){
                             bold: true,
                             fontSize:7,
                             ul: [
-                              'RUC      : '+this.factura.cliente.ruc,
-                              'Sucursal : '+this.factura.sucursal, 
-                              'Vendedor : '+this.factura.username, 
+                              'RUC      : '+ this.factura.cliente.ruc,
+                              'Sucursal : '+ this.factura.sucursal, 
+                              'Usuario :  '+ this.nombreUsuario, 
                             ]
                           }
                         ]
@@ -1750,6 +1795,7 @@ cambiarestado(e,i:number){
                           fontSize:6,
                           ul: [
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
+                            "Vendedor: " + this.factura.nombreVendedor,
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -1955,7 +2001,7 @@ cambiarestado(e,i:number){
               },
               {
                 width:215,
-                text: "Vendedor: "+this.factura.username,
+                text: "Usuario: "+ this.nombreUsuario,
                 alignment:"right"
               },
               ]
@@ -2197,9 +2243,9 @@ cambiarestado(e,i:number){
                             bold: true,
                             fontSize:7,
                             ul: [
-                              'RUC      : '+this.factura.cliente.ruc,
-                              'Sucursal : '+this.factura.sucursal, 
-                              'Vendedor : '+this.factura.username, 
+                              'RUC      : '+ this.factura.cliente.ruc,
+                              'Sucursal : '+ this.factura.sucursal, 
+                              'Usuario : ' + this.nombreUsuario, 
                             ]
                           }
                         ]
@@ -2254,6 +2300,7 @@ cambiarestado(e,i:number){
                         fontSize:6,
                         ul: [
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
+                          "Vendedor: " + this.factura.nombreVendedor,
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -2329,9 +2376,9 @@ cambiarestado(e,i:number){
                             bold: true,
                             fontSize:7,
                             ul: [
-                              'RUC      : '+this.factura.cliente.ruc,
-                              'Sucursal : '+this.factura.sucursal, 
-                              'Vendedor : '+this.factura.username, 
+                              'RUC      : '+ this.factura.cliente.ruc,
+                              'Sucursal : '+ this.factura.sucursal, 
+                              'Usuario : ' + this.nombreUsuario, 
                             ]
                           }
                         ]
@@ -2385,6 +2432,7 @@ cambiarestado(e,i:number){
                           fontSize:6,
                           ul: [
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
+                            "Vendedor: " + this.factura.nombreVendedor,
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -3030,12 +3078,14 @@ cambiarestado(e,i:number){
 
   registrarFactura(){
     this.botonFactura = true;
-    this.validarEstadoCajaFactura()
+    this.mostrarPopupCodigo();
+    //this.validarEstadoCajaFactura()
   }
 
   registrarNotaVenta(){
     this.botonNotaVenta = true;
-    this.validarEstadoCajaNotaVenta()
+    this.mostrarPopupCodigo();
+    //this.validarEstadoCajaNotaVenta()
   }
 
   validarEstadoCajaFactura(){
@@ -3215,6 +3265,8 @@ cambiarestado(e,i:number){
                 this.transaccion.usuario=this.factura.username
                 this.transaccion.idTransaccion=this.number_transaccion++
                 this.transaccion.cliente=this.factura.cliente.cliente_nombre  
+                this.transaccion.nombreUsuario = this.factura.nombreUsuario  
+                this.transaccion.nombreVendedor = this.factura.nombreVendedor  
                 this.transaccion.mcaEntregado = element.entregar == true ? "SI":"NO"
 
                 if(element.producto.CLASIFICA == "COMBO"){
@@ -3294,6 +3346,8 @@ cambiarestado(e,i:number){
       this.transaccion.usuario = this.factura.username
       this.transaccion.idTransaccion = this.number_transaccion++
       this.transaccion.cliente = this.factura.cliente.cliente_nombre  
+      this.transaccion.nombreUsuario = this.factura.nombreUsuario  
+      this.transaccion.nombreVendedor = this.factura.nombreVendedor
       this.transaccion.mcaEntregado = proV.entregar == true ? "SI":"NO"
 
       this.transaccionesService.newTransaccion(this.transaccion).subscribe(
@@ -3420,13 +3474,15 @@ cambiarestado(e,i:number){
                 this.transaccion.cantM2=element.cantidad
                 this.transaccion.cajas=Math.trunc((element.cantidad+0.01) / element.producto.M2)
                 this.transaccion.piezas=(Math.trunc((element.cantidad+0.01) *element.producto.P_CAJA / element.producto.M2) - (Math.trunc((element.cantidad+0.01) / element.producto.M2) * element.producto.P_CAJA));
-                this.transaccion.observaciones=this.factura.observaciones
-                this.transaccion.tipo_transaccion="venta-not"
-                this.transaccion.movimiento=-1
-                this.transaccion.usu_autorizado=this.factura.username
-                this.transaccion.usuario=this.factura.username
-                this.transaccion.idTransaccion=this.number_transaccion++
-                this.transaccion.cliente=this.factura.cliente.cliente_nombre
+                this.transaccion.observaciones = this.factura.observaciones
+                this.transaccion.tipo_transaccion = "venta-not"
+                this.transaccion.movimiento = -1
+                this.transaccion.usu_autorizado = this.factura.username
+                this.transaccion.usuario = this.factura.username
+                this.transaccion.idTransaccion = this.number_transaccion++
+                this.transaccion.cliente = this.factura.cliente.cliente_nombre
+                this.transaccion.nombreUsuario = this.factura.nombreUsuario  
+                this.transaccion.nombreVendedor = this.factura.nombreVendedor
                 this.transaccion.mcaEntregado = element.entregar == true ? "SI":"NO"
 
                 if(element.producto.CLASIFICA == "COMBO"){

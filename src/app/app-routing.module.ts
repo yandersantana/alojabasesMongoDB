@@ -54,6 +54,7 @@ import { BasePagoProveedoresComponent } from "./pages/base-pagos-proveedores/bas
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
 import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
 import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
+import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
 
 const routes: Routes = [
   {
@@ -318,6 +319,11 @@ const routes: Routes = [
   {
     path: "stock-minimo",
     component: StockMinimoComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "stock-locales",
+    component: StockLocalesComponent,
     canActivate: [AuthGuardService],
   },
   {

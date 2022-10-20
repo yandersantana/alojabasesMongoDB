@@ -104,6 +104,7 @@ import { GestionPagoChequesComponent } from "./pages/gestion-pago-cheques/gestio
 import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/transaccionesNominas.component";
 import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
 import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
+import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
 
 @NgModule({
   declarations: [
@@ -162,7 +163,8 @@ import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.componen
     GestionPagoChequesComponent,
     TransaccionesNominasComponent,
     RevionInventarioComponent,
-    StockMinimoComponent
+    StockMinimoComponent,
+    StockLocalesComponent
   ],
   imports: [
     BrowserModule,

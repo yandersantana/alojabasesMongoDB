@@ -57,6 +57,7 @@ export class RevionInventarioComponent implements OnInit {
   isNew = true;
   mostrarbtn = false;
   verListadoComparacion = false;
+  mostrarRegresar = false;
   bloquearBtn = false;
   menu: string[] = [];
   popupVisibleEditarNotas = false;
@@ -216,6 +217,7 @@ export class RevionInventarioComponent implements OnInit {
         if(revision != null){
           this.revisionIniciada = revision
           this.nota.descripcion = this.revisionIniciada.notas;
+          this.CuentaActualizar = this.revisionIniciada;
           this.traerRevisionesInventarioProductosPorId()
         }
         else{
@@ -237,9 +239,11 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   traertransaccionesProductosRevisados(){
+    this.mostrarLoading = true;
     this.transaccionesProductosRevisados = [];
     this._transaccionesRevisionProductoService.getTransacciones().subscribe(res => {
       this.transaccionesProductosRevisados = res as comparacionResultadosRevision[];
+      this.mostrarLoading = false;
     })
   }
 
@@ -310,15 +314,30 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   obtenerDetallesproducto(e){
-    if(this.isClean == true){
+    if(this.isClean == true)
       this.isClean = false;
-    }else{
+    else{
       this.bloquearboton = false;
       this.listadoProductosRevisados.forEach(element=>{
           if(element.producto == e.value){
-            this.bloquearboton = true;
-            this.mostrarMensajeGenerico(2,"El producto ya se encuentra revisado")
-            return;
+            Swal.fire({
+              title: 'Alerta',
+              text: 'El producto ya ha sido revisado, desea editarlo?',
+              icon: 'warning',
+              confirmButtonText: 'SI',
+              cancelButtonText : 'NO'
+            }).then((result) => {
+              if (result.value) {
+                this.productoRevisado = element
+                this.isNew = false;
+              } else if (result.dismiss === Swal.DismissReason.cancel) {
+                Swal.fire(
+                  'Cancelado!',
+                  'Se ha cancelado su proceso.',
+                  'error'
+                )
+              }
+            })
           }
       })
       this.traerTransaccionesPorProducto(e.value,1);
@@ -494,6 +513,7 @@ export class RevionInventarioComponent implements OnInit {
           this.verListadoIngreso = false;
           this.verListadoTransacciones = true;
           this.verListadoProductos = false;
+          this.verListadoComparacion = false;
         break;
       case "Listado Productos":
           if(this.listadoControlesRevisiones.length == 0) 
@@ -504,6 +524,7 @@ export class RevionInventarioComponent implements OnInit {
           this.verListadoIngreso = false;
           this.verListadoTransacciones = false;
           this.verListadoProductos = true;
+          this.verListadoComparacion = false;
         break;
       default:    
     }     
@@ -537,6 +558,21 @@ export class RevionInventarioComponent implements OnInit {
   regresar(){
     this.verListadoComparacion = false;
     this.newAud = true;
+  }
+
+
+  regresar2(){
+    //this.verListadoComparacion = true;
+    //this.mostrarSeccionIngresos = false;
+    this.mostrarRegresar = false;
+    this.mostrarbtn = true;
+    this.verListadoComparacion = true;
+
+    this.mostrarSeccionIngresos = false;
+    this.seccionNew = true;
+    //this.isNew = true;
+    //this.verListadoComparacion = true;
+
   }
 
   exportarPDF(){
@@ -645,6 +681,8 @@ export class RevionInventarioComponent implements OnInit {
     this.seccionNew = false;
     this.isNew = false;
     this.mostrarMenu = false;
+    this.verListadoComparacion = false;
+    this.mostrarRegresar = true;
   }
 
 
@@ -1019,19 +1057,12 @@ opcionRadioTipos(e){
 
 
   calcularDiferencia(e){
-    /* if(this.productoRevisado.cajas == 0 && this.productoRevisado.piezas == 0){
-      console.log("entre")
-    }else{ */
       var prod = this.productosActivos.find(element=> element.PRODUCTO == this.productoRevisado.producto)
       this.productoRevisado.m2_conteo=parseFloat(((prod.M2*this.productoRevisado.cajas)+((this.productoRevisado.piezas*prod.M2)/prod.P_CAJA)).toFixed(2))
-      
       this.productoRevisado.m2_diferencia = this.productoRevisado.m2_conteo - this.productoRevisado.m2_sistema
-/*       if(this.productoRevisado.m2_diferencia < 0)
-        this.productoRevisado.m2_diferencia = this.productoRevisado.m2_diferencia *(-1) */
-
       this.productoRevisado.cajas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia / prod.M2);
       this.productoRevisado.piezas_diferencia=Math.trunc(this.productoRevisado.m2_diferencia * prod.P_CAJA /prod.M2) - (this.productoRevisado.cajas_diferencia * prod.P_CAJA);
-
+      console.log(this.productoRevisado)
       if(this.productoRevisado.m2_diferencia > 0)
         this.productoRevisado.resultado = "SOBRANTE"
       else if (this.productoRevisado.m2_diferencia < 0)
@@ -1042,8 +1073,7 @@ opcionRadioTipos(e){
         console.log(this.productoRevisado)
 
       this.mostrarLoading = false;
-    //}
-    
+
   }
 
 

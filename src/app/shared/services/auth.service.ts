@@ -18,7 +18,8 @@ export class AuthService {
       localStorage.setItem("logged", false.toString())
     }
     this.loggedIn = JSON.parse(localStorage.getItem("logged"));
-    
+    //this.loggedIn = true;
+    console.log(this.loggedIn)
     this.afAuth.auth.onAuthStateChanged(user => {
       if (user){
         this.user = user;
@@ -83,19 +84,15 @@ export class AuthGuardService implements CanActivate {
         const url = route.routeConfig.path;
         const isLoggedIn = this.authService.isLoggedIn;
         const isLoginForm = route.routeConfig.path === 'login-form';
-  
-       // if(url != "revision-inventario/:id"){
-          if (isLoggedIn && isLoginForm) {
-            this.router.navigate(['/']);
-            return false;
-          }
 
-          if (!isLoggedIn && !isLoginForm) {
-            this.router.navigate(['/login-form']);
-          }
-        //}
-        
-        
+        if (isLoggedIn && isLoginForm) {
+          this.router.navigate(['/']);
+          return false;
+        }
+
+        if (!isLoggedIn && !isLoginForm) {
+          this.router.navigate(['/login-form']);
+        }
 
         return isLoggedIn || isLoginForm;
     }

@@ -150,7 +150,9 @@ router.post("/newTransaccion", async (req, res) => {
     orden_compra: req.body.orden_compra,
     cantM2: req.body.cantM2,
     movimiento: req.body.movimiento,
-    mcaEntregado: req.body.mcaEntregado
+    mcaEntregado: req.body.mcaEntregado,
+    nombreUsuario: req.body.nombreUsuario,
+    nombreVendedor: req.body.nombreVendedor
   });
   await newTransaccion.save();
   res.json({ status: "Transaccion creada" });

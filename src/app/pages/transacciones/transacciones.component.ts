@@ -243,36 +243,35 @@ export class TransaccionesComponent implements OnInit {
 
   onRowPrepared(e) {}
 
+  
   onExporting(e) {
     e.component.beginUpdate();
     e.component.columnOption("fecha_mov", "visible", true);
     e.component.columnOption("bodega", "visible", true);
-    //e.component.columnOption("valor", "visible", true);
     e.component.columnOption("rucSucursal", "visible", true);
     e.component.columnOption("usu_autorizado", "visible", true);
     e.component.columnOption("usuario", "visible", true);
     e.component.columnOption("observaciones", "visible", true);
-   // e.component.columnOption("cliente", "visible", true);
     e.component.columnOption("costo_unitario", "visible", true);
-    //e.component.columnOption("cantM2", "visible", true);
-   // e.component.columnOption("proveedor", "visible", true);
     e.component.columnOption("maestro", "visible", true);
     e.component.columnOption("movimiento", "visible", true);
+    e.component.columnOption("nombreUsuario", "visible", true);
+    e.component.columnOption("nombreVendedor", "visible", true);
   }
+
+
   onExported(e) {
     e.component.columnOption("fecha_mov", "visible", false);
     e.component.columnOption("bodega", "visible", false);
-    //e.component.columnOption("valor", "visible", false);
     e.component.columnOption("usu_autorizado", "visible", false);
     e.component.columnOption("usuario", "visible", false);
     e.component.columnOption("rucSucursal", "visible", false);
-   // e.component.columnOption("cliente", "visible", false);
-    //e.component.columnOption("cantM2", "visible", false);
     e.component.columnOption("costo_unitario", "visible", false);
-   // e.component.columnOption("proveedor", "visible", false);
     e.component.columnOption("movimiento", "visible", false);
     e.component.columnOption("maestro", "visible", false);
     e.component.columnOption("observaciones", "visible", false);
+    e.component.columnOption("nombreUsuario", "visible", false);
+    e.component.columnOption("nombreVendedor", "visible", false);
     e.component.endUpdate();
   }
 }

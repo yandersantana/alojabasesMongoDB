@@ -1,0 +1,368 @@
+<div>
+   <div class="row remiPro titulos">
+    <div class="col-md-8"></div>
+    <div class="col-md-4"> 
+            <dx-select-box [items]="menu1" 
+            [(value)]="opMenu" 
+            [readOnly]="false" 
+            [disabled]="false"
+            (onValueChanged)="opcionMenu($event)"
+            ></dx-select-box>
+        </div>
+   </div>
+   
+</div>
+
+<div class="col-md-12"  *ngIf="!mostrarAdministracion">
+    <div class="row">
+        <div class="col-md-7"></div>
+        <div class="col-md-5">
+            <div class="dx-field radio">
+                <div class="dx-field-value">
+                    <dx-radio-group
+                        [items]="sucursales"
+                        [(value)]="sucursalSeleccionada"
+                        layout="horizontal"
+                        (onValueChanged)="opcionRadioTipos($event)">
+                    </dx-radio-group>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+
+<div id="busquedaProducto" *ngIf="mostrarAdministracion">
+    <div class="grilla">
+        <dx-data-grid #datag2
+            id="gridContainer"
+            [dataSource]="productos"
+            [showBorders]="true"
+            [(selectedRowKeys)]="selectedRows"
+            (onExporting)="onExporting2($event)"
+            (onExported)="onExported2($event)">
+            <dxo-selection
+                [selectAllMode]="'allPages'"
+                mode="multiple">
+            </dxo-selection>
+            <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
+            <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+            <dxi-column
+                dataField="PRODUCTO"
+                caption="Producto"
+                dataType="string"
+                sortOrder="asc"
+                width="40%">
+            </dxi-column>
+            <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+    </dx-data-grid>
+    </div>   
+    <div class="row" style="margin-top: 1rem;">
+        <div class="col-md-4"></div>
+        <div class="col-md-4" style="padding-right: 6em;padding-left: 6em;"><button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="mensajeActualizar()">Guardar</button></div>
+        <div class="col-md-4"></div>
+    </div>
+     
+</div>
+
+
+<div id="busquedaProducto" *ngIf="mostrarBusquedaPorFiltros">
+    <div class="row">
+        <div class="col-md-12 card carIn">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-8">
+                    <div class="row"  style="margin-top: 0.7rem">
+                        <div class="col-md-12" style="text-align: center;">
+                            <h5 style="font-weight: bold;">Filtros de Búsqueda</h5>
+                        </div>
+                        <div class="col-md-4" style="padding-top: 0.7em;">GRUPO PRODUCTO</div>
+                        <div class="col-md-6">
+                            <dx-select-box [items]="listadoCategorias" 
+                                [(value)]="nombreClasificacion" 
+                                [readOnly]="false" 
+                                [disabled]="false"
+                                ></dx-select-box>
+                        </div>
+                        <div class="col-md-4" style="padding-top: 0.7em;">REFERENCIA</div>
+                        <div class="col-md-6">
+                            <dx-text-box [(value)]="nombreReferencia" [disabled]="false" [readOnly]="false"></dx-text-box>
+                        </div>
+                        <div class="col-md-4" style="padding-top: 0.7em;">CASA</div>
+                        <div class="col-md-6">
+                            <dx-text-box [(value)]="nombreCasa" [disabled]="false" [readOnly]="false"></dx-text-box>
+                        </div>
+                        
+                    </div>
+
+                    <div class="row" style="margin-top: 0.5rem;margin-bottom: 1rem;">
+                        <div class="col-md-4"></div>
+                        <div class="col-md-4"><button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerProductosPorFiltros()">Buscar</button></div>
+                        <div class="col-md-4"></div>
+                    </div>
+                </div>
+                <div class="col-md-2"></div>
+            </div>     
+        </div>
+    </div>
+
+    <div class="grilla">
+        <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="invetarioMinimoProductos"
+        [showBorders]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column
+            dataField="producto.PRODUCTO"
+            caption="Producto"
+            dataType="string"
+            sortOrder="asc"
+            width="40%" >
+        </dxi-column>
+        <dxi-column
+            dataField="producto.CASA"
+            caption="Proveedor"
+            dataType="string"
+            width="15%"
+            [visible]="true">
+        </dxi-column>
+        
+        <dxi-column caption="Matriz"  dataField="sucursal1" *ngIf="dataMatriz">
+            <dxi-column
+                dataField="cantidadCajas"
+                caption="Cajas"
+                dataType="number"
+                class="d2">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadM2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb1"
+                caption="Total"
+                format="currency"
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 1" *ngIf="dataSucursal1">
+            <dxi-column
+                dataField="cantidadCajas2"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas2"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb2"
+                caption="Total"
+                valueFormat="currency"
+               
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 2" *ngIf="dataSucursal2">
+            <dxi-column
+                dataField="cantidadCajas3"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas3"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b3"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb3"
+                caption="Total"
+                valueFormat="currency"
+                
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+         <dxi-column
+            dataField="ultimoPrecioCompra"
+            caption="Ult.Pre.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaCompra"
+            caption="Ult.Fech.Compra"
+            [visible]="true"
+            width="15%">
+        </dxi-column>
+        <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+    </dx-data-grid>
+    </div>    
+</div>
+
+
+<div id="user" class="remiPro" *ngIf="mostrarStockMinimoGeneral">
+    <dx-data-grid #datag2
+        id="gridContainer"
+        [dataSource]="invetarioMinimoProductos"
+        [showBorders]="true"
+        (onExporting)="onExporting2($event)"
+        (onExported)="onExported2($event)">
+        <dxo-filter-row 
+        [visible]="true" ></dxo-filter-row>
+        
+        <dxo-search-panel 
+        [visible]="true" 
+        [width]="240" 
+        placeholder="Buscar..."></dxo-search-panel>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
+        <dxo-export [enabled]="true" fileName="Inventario Productos" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column
+            dataField="producto.PRODUCTO"
+            caption="Producto"
+            dataType="string"
+            sortOrder="asc"
+            width="40%" >
+        </dxi-column>
+        <dxi-column
+            dataField="producto.CASA"
+            caption="Proveedor"
+            dataType="string"
+            width="15%"
+            [visible]="true">
+        </dxi-column>
+        <dxi-column caption="Matriz"  dataField="sucursal1" *ngIf="dataMatriz">
+            <dxi-column
+                dataField="cantidadCajas"
+                caption="Cajas"
+                dataType="number"
+                class="d2">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadM2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb1"
+                caption="Total"
+                format="currency"
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 1" *ngIf="dataSucursal1">
+            <dxi-column
+                dataField="cantidadCajas2"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas2"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b2"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb2"
+                caption="Total"
+                valueFormat="currency"
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+
+         <dxi-column caption="Sucursal 2" *ngIf="dataSucursal2">
+            <dxi-column
+                dataField="cantidadCajas3"
+                caption="Cajas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                dataField="cantidadPiezas3"
+                caption="Piezas"
+                dataType="number">
+            </dxi-column>
+            <dxi-column
+                 dataField="cantidadM2b3"
+                caption="m2/unidad"
+                dataType="number"
+                [visible]="true">
+            </dxi-column>
+            <dxi-column
+                dataField="totalb3"
+                caption="Total"
+                valueFormat="currency"
+                
+                [visible]="false"
+                width="10%">
+            </dxi-column>
+         </dxi-column>
+         <dxi-column
+            dataField="ultimoPrecioCompra"
+            caption="Ult.Pre.Compra"
+            [visible]="false"
+            width="10%">
+        </dxi-column>
+
+        <dxi-column
+            dataField="ultimaFechaCompra"
+            caption="Ult.Fech.Compra"
+            format="dd/MM/yyyy" 
+            dataType="date" 
+            [visible]="true"
+            width="15%">
+        </dxi-column>
+        
+        <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+        <dxo-paging [pageSize]="12"></dxo-paging>
+        <dxo-pager
+            [showPageSizeSelector]="true"
+            [allowedPageSizes]="[8, 12, 20]"
+        ></dxo-pager>
+    </dx-data-grid>
+</div>

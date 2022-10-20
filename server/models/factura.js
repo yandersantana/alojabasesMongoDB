@@ -2,8 +2,6 @@ const mongoose = require('mongoose');
 const { Schema } = mongoose;
 const CientesSchema = require('../models/clientes').schema;
 
-
-
 const FacturaSchema = new Schema({
     id: { type: Number, required: false},
     documento_n: { type: Number, required: false},
@@ -12,6 +10,8 @@ const FacturaSchema = new Schema({
     fecha2: { type: String, required: false},
     total: { type: Number, required: false},
     username: { type: String, required: false},
+    nombreUsuario : { type: String, required: false},
+    nombreVendedor : { type: String, required: false},
     cliente: { type: CientesSchema, required: false},
     tipo_venta: { type: String, required: false},
     tipo_cliente: { type: String, required: false},

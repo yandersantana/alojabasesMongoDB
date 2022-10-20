@@ -98,13 +98,6 @@
         </div>
     </div>
 
-
-    <!-- <div class="mover">
-        <button class="btn btn-primary colbot" (click)="mostrarpopup()" >
-            <i class="fa fa-question"></i>
-        </button>
-    </div> -->
-
    <br>
     <dx-data-grid #data2
         id="gridContainer"
@@ -140,15 +133,14 @@
         <dxi-column dataField="cantM2" caption="M2"  [width]="80" dataType="number"></dxi-column>
         <dxi-column dataField="valor" dataType="number" caption="V.Unitario"  [width]="80" ></dxi-column>
         <dxi-column dataField="totalsuma" caption="Total Suma"  dataType="number" [width]="100"></dxi-column>
-        <!-- <dxi-column dataField="totalsuma" caption="Total Suma" alignment="right" [width]="100">
-                <dxo-value-format type="currency" [precision]="2"></dxo-value-format> 
-            </dxi-column> -->
         <dxi-column dataField="usu_autorizado"  [visible]="false"></dxi-column>
         <dxi-column dataField="cliente"  caption="Cliente" [width]="200" [visible]="true"></dxi-column>
         <dxi-column dataField="proveedor" caption="Proveedor" [width]="200" [visible]="true"></dxi-column>
         <dxi-column dataField="movimiento"  [visible]="false"></dxi-column>
-        <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
         <dxi-column dataField="maestro"  [visible]="false"></dxi-column>
+        <dxi-column dataField="usuario"  [visible]="false"></dxi-column>
+        <dxi-column dataField="nombreUsuario"  [visible]="false"></dxi-column>
+        <dxi-column dataField="nombreVendedor"  [visible]="false"></dxi-column>
         <dxi-column dataField="observaciones"  [visible]="false"></dxi-column>
         <dxi-column dataField="mcaEntregado" caption="Entregado" [width]="90" [visible]="true"></dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Notas" [width]="90">

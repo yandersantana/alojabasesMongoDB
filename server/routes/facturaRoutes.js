@@ -65,6 +65,7 @@ router.put("/update2/:id/:observaciones", async (req, res, next) => {
   res.json({ status: "factura Updated" });
 });
 
+
 router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   const { id } = req.params;
   const { estado } = req.params;
@@ -75,6 +76,7 @@ router.put("/updateEstado/:id/:estado", async (req, res, next) => {
   );
   res.json({ status: "factura Updated" });
 });
+
 
 router.put("/updateEstadoMensaje/:id/:estado/:mensaje",async (req, res, next) => {
     const { id } = req.params;
@@ -153,6 +155,8 @@ router.post("/newFactura", async (req, res) => {
     fecha2: req.body.fecha2,
     total: req.body.total,
     username: req.body.username,
+    nombreUsuario: req.body.nombreUsuario,
+    nombreVendedor: req.body.nombreVendedor,
     cliente: req.body.cliente,
     tipo_venta: req.body.tipo_venta,
     observaciones: req.body.observaciones,

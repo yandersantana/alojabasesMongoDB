@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { Schema } = mongoose;
 
 const UserSchema = new mongoose.Schema({
     id: { type: Number, required: false},
@@ -11,7 +10,8 @@ const UserSchema = new mongoose.Schema({
     sucursal: { type: String, required: false},
     status:{ type: String, required: false},
     imageProfile: { type: String, required: false},
-    codigo: { type: String, required: false}
+    codigo: { type: String, required: false},
+    codigoFacturacion: { type: String, required: false}
 },{
     timestamps:true
 });

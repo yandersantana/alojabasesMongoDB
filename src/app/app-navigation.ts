@@ -283,6 +283,10 @@ export const navigationAdmin = [
         text: "Stock Minimo",
         path: "/stock-minimo",
       },
+      {
+        text: "Stock Productos",
+        path: "/stock-locales",
+      },
     ],
   },
   {
@@ -568,6 +572,10 @@ export const navigationSupervisor = [
         text: "Catalago",
         path: "/catalogo",
       },
+      {
+        text: "Stock Productos",
+        path: "/stock-locales",
+      },
     ],
   },
   {
@@ -746,6 +754,20 @@ export const navigationInspector = [
       {
         text: "Revisiones",
         path: "/revision-inventario/0",
+      },
+    ],
+  },
+];
+
+
+export const navigationDistribuidor = [
+  {
+    text: "Inventarios",
+    icon: "contentlayout",
+    items: [
+      {
+        text: "Stock Productos",
+        path: "/stock-locales",
       },
     ],
   },

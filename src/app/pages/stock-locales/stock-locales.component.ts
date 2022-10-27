@@ -16,6 +16,8 @@ import { AuthService } from "src/app/shared/services";
 import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { clasificacionActualizacion, inventario, invFaltanteSucursal, productoActualizable, productoMultiple, productosPorFiltros, productoTransaccion } from "../consolidado/consolidado";
+import { stockLocal } from "./stock-locales";
+import { ProductosStockLocalesService } from "src/app/servicios/productoStock.service";
 
 @Component({
   selector: "app-stock-locales",
@@ -23,8 +25,15 @@ import { clasificacionActualizacion, inventario, invFaltanteSucursal, productoAc
   styleUrls: ["./stock-locales.component.scss"],
 })
 export class StockLocalesComponent implements OnInit {
-  menu1: string[] = [
+  menu1: string[] = [];
+
+  menuAdministracion: string[] = [
     "Administracion",
+    "Stock Por Filtros",
+    "Stock General"
+  ];
+
+  menuUsuario: string[] = [
     "Stock Por Filtros",
     "Stock General"
   ];
@@ -39,7 +48,7 @@ export class StockLocalesComponent implements OnInit {
   dataMatriz = true;
   dataSucursal1 = false;
   dataSucursal2 = false;
-  selectedRows: string[];
+  selectedRows: stockLocal[];
 
   sucursales: string[] = [
     'Matriz',
@@ -49,7 +58,9 @@ export class StockLocalesComponent implements OnInit {
 
   sucursalSeleccionada = "Matriz"
 
+  productosTraidos: producto[] = [];
   productos: producto[] = [];
+  productosStockTraidos: stockLocal[] = [];
   arregloUbicaciones1: string[] = [];
   arregloUbicaciones2: string[] = [];
   arregloUbicaciones3: string[] = [];
@@ -93,6 +104,8 @@ export class StockLocalesComponent implements OnInit {
   
   opcionesCatalogo: opcionesCatalogo[]=[]
   productosCatalogo:catalogo[]=[]
+  listadoStockLocales : stockLocal[]=[]
+  listaProductosStock : stockLocal[]=[]
 
   tiposBusqueda: string[] = [
       'Normal',
@@ -114,7 +127,8 @@ export class StockLocalesComponent implements OnInit {
     public productoService: ProductoService,
     public opcionesService : OpcionesCatalogoService,
     public _comboService : CombosService,
-    public _catalogoService: CatalogoService
+    public _catalogoService: CatalogoService,
+    public _productosLocalesStockService : ProductosStockLocalesService
   ) {
     this.proTransaccion = new productoTransaccion();
     this.prodActualizable = new productoActualizable();
@@ -126,6 +140,7 @@ export class StockLocalesComponent implements OnInit {
     this.traerOpcionesCatalogo();
     this.traerBodegas();
     this.traerCatalogoUnitario();
+    this.traerStockProductosLocales();
     
   }
 
@@ -197,90 +212,39 @@ export class StockLocalesComponent implements OnInit {
   traerProductosPorFiltros() {
     var productoFiltro = new productosPorFiltros();
     productoFiltro.clasificacion = this.nombreClasificacion
-    productoFiltro.nombreCasa = this.nombreCasa
-    productoFiltro.nombreReferencia = this.nombreReferencia
 
-    var filtro1 = productoFiltro.clasificacion == "" ? false : true
-    var filtro2 = productoFiltro.nombreCasa == "" ? false : true
-    var filtro3 = productoFiltro.nombreReferencia == "" ? false : true
-
-    if(productoFiltro.clasificacion == "" && productoFiltro.nombreCasa == "" && productoFiltro.nombreReferencia == ""){
-      Swal.fire("Error!", "No hay ningún filtro para aplicar", "error");
+    if(productoFiltro.clasificacion == ""){
+      Swal.fire("Error!", "No hay ninguna clasificación seleccionada", "error");
       return;
     }
 
-    if(filtro1 == true && filtro2 == false && filtro3 == false)
-      this.traerProductosFiltrados(1, productoFiltro);
-
-    else if(filtro1 == true && filtro2 == true && filtro3 == false)
-      this.traerProductosFiltrados(2, productoFiltro);
-
-    else if(filtro1 == true && filtro2 == true && filtro3 == true)
-      this.traerProductosFiltrados(3, productoFiltro);
-    
-    else if(filtro1 == false && filtro2 == true && filtro3 == false)
-      this.traerProductosFiltrados(4, productoFiltro);
-
-    else if(filtro1 == false && filtro2 == true && filtro3 == true)
-      this.traerProductosFiltrados(5, productoFiltro);
-
-    else if(filtro1 == false && filtro2 == false && filtro3 == true)
-      this.traerProductosFiltrados(6, productoFiltro);
-
-    else if(filtro1 == true && filtro2 == false && filtro3 == true)
-      this.traerProductosFiltrados(7, productoFiltro);
-  
+    this.productoService.getProductosPorFiltros1(productoFiltro).subscribe((res) => {
+      this.productosTraidos = res as producto[];
+      this.traerProductosStockLocal();
+      //this.traerTransaccionesMultiples();
+    });
   }
 
-  traerProductosFiltrados(num : number, productoFiltro : productosPorFiltros){
-    switch (num) {
-        case 1:
-          this.productoService.getProductosPorFiltros1(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 2:
-          this.productoService.getProductosPorFiltros2(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 3:
-          this.productoService.getProductosPorFiltros3(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 4:
-          this.productoService.getProductosPorFiltros4(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 5:
-          this.productoService.getProductosPorFiltros5(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 6:
-          this.productoService.getProductosPorFiltros6(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
-        case 7:
-          this.productoService.getProductosPorFiltros7(productoFiltro).subscribe((res) => {
-            this.productos = res as producto[];
-            this.traerTransaccionesMultiples();
-          });
-          break;
 
-        default:
-          break;
-      }
+  traerProductosStockLocal(){
+    this.productos = [];
+    var productoFiltro = new productosPorFiltros();
+    productoFiltro.clasificacion = this.nombreClasificacion
+    this._productosLocalesStockService.getProductosPorFiltros(productoFiltro).subscribe((res) => {
+      this.productosStockTraidos = res as stockLocal[];
+      var cont = 0;
+      this.productosStockTraidos.forEach((element2) => {
+        cont++;
+        var prod = this.productosTraidos.find(x=>x.PRODUCTO == element2.PRODUCTO)
+        if (prod != null)   
+          this.productos.push(prod)
+        
+        if(cont == this.productosStockTraidos.length)
+          this.traerTransaccionesMultiples();
+      });
+    });
   }
+ 
 
 
 
@@ -387,20 +351,67 @@ export class StockLocalesComponent implements OnInit {
   }
 
   traerProductosUnitarios() {
+    this.mensajeLoading = "Cargando"
     this.mostrarLoading = true;
     this.productos = [];
     this.productoService.getProductosActivos().subscribe((res) => {
       this.productos = res as producto[];
       this.separarProducto();
+    });
+  }
+
+  traerStockProductosLocales() {
+    this.mostrarLoading = true;
+    this.listaProductosStock = [];
+    this._productosLocalesStockService.getProductosStock().subscribe((res) => {
+      this.listaProductosStock = res as stockLocal[];
       this.mostrarLoading = false;
     });
   }
 
-  separarProducto() {
-    this.productos22 = new DataSource({
-      store: this.productos,
-      sort: [{ field: "PRODUCTO", asc: true }],
+  traerTransaccionesStockGeneral(){
+    this.mostrarLoading = true;
+    this.productosStockTraidos = [];
+    this._productosLocalesStockService.getProductosStock().subscribe((res) => {
+      this.productosStockTraidos = res as stockLocal[];
+
+      var prodTmp = this.productos;
+      this.productos = [];
+      var cont = 0 ;
+      prodTmp.forEach((element) => {
+        cont++;
+        var prod = this.productosStockTraidos.find(x=>x.PRODUCTO == element.PRODUCTO)
+        if (prod != null)   
+          this.productos.push(element)
+        
+        if(cont == prodTmp.length)
+          this.traerTransaccionesMultiples();
+      });
     });
+  }
+
+  cargarSeleccion(){
+    this.listadoStockLocales.forEach((element) => {
+      var data = this.listaProductosStock.find(el => el.PRODUCTO == element.PRODUCTO);
+      element.isSelected = data == null ? false : true;
+      element.porcentaje = data?.porcentaje ?? 0;
+    });
+
+    this.selectedRows = this.listadoStockLocales.filter(el => el.isSelected == true)
+    this.mostrarLoading = false;
+    
+  }
+
+  separarProducto() {
+    this.productos.forEach((element) => {
+      var producto = new stockLocal();
+      producto.PRODUCTO = element.PRODUCTO
+      producto.CLASIFICA = element.CLASIFICA
+      producto.precio = element.precio
+      producto.porcentaje = 0
+      this.listadoStockLocales.push(producto)
+    });
+    this.cargarSeleccion();
   }
 
   traerBodegas() {
@@ -412,12 +423,24 @@ export class StockLocalesComponent implements OnInit {
 
   cargarUsuarioLogueado() {
     const promesaUser = new Promise((res, err) => {
-      if (localStorage.getItem("maily") != "") {
+      if (localStorage.getItem("maily") != "")
         this.correo = localStorage.getItem("maily");
-      }
+
       this.authenService.getUserLogueado(this.correo).subscribe(
         (res) => {
           this.usuarioLogueado = res as user;
+          if(this.usuarioLogueado[0].rol == "Administrador"){
+            this.menu1 = this.menuAdministracion
+            this.opMenu = "Administracion"
+            this.mostrarAdministracion = true;
+          }else{
+            this.menu1 = this.menuUsuario
+            this.opMenu = "Stock Por Filtros"
+            this.mostrarAdministracion = false;
+            this.mostrarBusquedaPorFiltros = true;
+          }
+            
+
           if(this.usuarioLogueado[0].status == "Inactivo")
               this.authService.logOut();
         },
@@ -425,6 +448,7 @@ export class StockLocalesComponent implements OnInit {
       );
     });
   }
+
 
   clearForm(){
     this.nombreProducto = "";
@@ -978,11 +1002,11 @@ export class StockLocalesComponent implements OnInit {
     });
   }
 
-  mensajeActualizar() {
-    console.log(this.selectedRows)
-    /* Swal.fire({
+
+  guardarProductosStockLocal(){
+    Swal.fire({
       title: "Alerta",
-      text: "Está seguro de realizar la actualización, este proceso actualizará los productos existentes ",
+      text: "Está seguro de guardar los cambios",
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Si",
@@ -990,11 +1014,93 @@ export class StockLocalesComponent implements OnInit {
       cancelButtonText: "No",
     }).then((result) => {
       if (result.value) {
-        this.actualizarInventario();
+        this.actualizarStock();
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
       }
-    }); */
+    });
+  }
+
+  actualizarStock() {
+    this.mensajeLoading = "Comparando informacion..."
+    this.mostrarLoading = true;
+    var arrayNuevos : stockLocal[] = [];
+    var arrayModificar : stockLocal[]  = [];
+    var arrayEliminar : stockLocal[]  = [];
+    this.selectedRows.forEach((element) => {
+      var producto = this.listaProductosStock.find(x=> x.PRODUCTO == element.PRODUCTO);
+      if(producto == null)
+        arrayNuevos.push(element)
+      else{
+        if(producto.porcentaje != element.porcentaje){
+          producto.porcentaje = element.porcentaje
+          arrayModificar.push(producto)
+        }
+      }
+    });
+
+    this.listaProductosStock.forEach((element) => {
+      var producto = this.selectedRows.find(x=> x.PRODUCTO == element.PRODUCTO);
+      if(producto == null)
+        arrayEliminar.push(element)
+    });
+
+    //Guardo los productos nuevos
+    var p1 = new Promise((resolve, reject) => {
+      var cont1 = 0;
+      if(arrayNuevos.length == 0) resolve(true)
+      arrayNuevos.forEach((element) => {
+      this._productosLocalesStockService.newStockProductoLocal(element).subscribe(
+        (res) => { cont1++;if(cont1 == arrayNuevos.length)resolve(true)},
+        (err) => { alert("error al guardar")}
+        );
+      });
+    });
+    
+
+    //Edito los productos que han sufrido alteracion
+    var p2 = new Promise((resolve, reject) => {
+      var cont2 = 0;
+      if(arrayModificar.length == 0) resolve(true)
+      arrayModificar.forEach((element) => {
+        this._productosLocalesStockService.updateProductoStock(element).subscribe(
+          (res) => { cont2++;if(cont2 == arrayModificar.length)resolve(true)},
+          (err) => { alert("error al guardar")}
+        );
+      });
+    });
+
+    //Elimino los productos que ya no estan disponibles
+    var p3 = new Promise((resolve, reject) => {
+      var cont3 = 0;
+      if(arrayEliminar.length == 0) resolve(true)
+      arrayEliminar.forEach((element) => {
+        this._productosLocalesStockService.deleteProductoStock(element).subscribe(
+          (res) => { cont3++;if(cont3 == arrayEliminar.length)resolve(true)},
+          (err) => { alert("error al guardar")}
+        );
+      });
+    });
+
+    
+
+    if(arrayNuevos.length == 0 && arrayModificar.length == 0 && arrayNuevos.length == 0){
+      this.mostrarLoading = false;
+      Swal.fire("Cancelado!", "No existe información que actualizar", "error"); 
+    }else {
+      Promise.all([p1, p2, p3]).then(values => {
+        console.log(values)
+        this.mostrarLoading = false;
+        Swal.fire("Correcto!", "Se guardaron sus cambios con éxito", "success"); 
+      });
+    }
+      
+
+  }
+
+
+  validarActualizaciones(){
+
   }
 
   async actualizarInventario() {
@@ -1123,9 +1229,10 @@ export class StockLocalesComponent implements OnInit {
         this.mostrarBusquedaPorFiltros = false;
         break;
       case "Stock General":
+        this.invetarioMinimoProductos = [];
         this.tipoBusqueda = "Normal"
-        this.traerTransacciones();
-        this.traerProductosPendientes();
+        this.traerTransaccionesStockGeneral();
+        this.mostrarAdministracion = false;
         this.mostrarStockMinimoGeneral = true;
         this.mostrarBusquedaPorFiltros = false;
         break;
@@ -1134,6 +1241,8 @@ export class StockLocalesComponent implements OnInit {
         this.transacciones = [];
         this.invetarioP = [];
         this.invetarioFaltante = [];
+        this.invetarioMinimoProductos = [];
+        this.mostrarAdministracion = false;
         this.mostrarStockMinimoGeneral = false;
         this.mostrarBusquedaPorFiltros = true;
         break;
@@ -1247,17 +1356,15 @@ export class StockLocalesComponent implements OnInit {
           this.buscarCombo(this.nombreProducto)
       }
 
-      /* this.invetarioP.forEach((element) => {
-        var catal = this.productosCatalogo.find(p=> p.PRODUCTO == element.producto.PRODUCTO);
-        if(catal != null){
-          if (element.cantidadM2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
-              this.invetarioMinimoProductosMatriz.push(element)
-          else if (element.cantidadM2b2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
-              this.invetarioMinimoProductosSucursal1.push(element)
-          else if (element.cantidadM2b3 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
-              this.invetarioMinimoProductosSucursal2.push(element)
-        }
-      }); */
+      this.invetarioP.forEach((element) => {
+        element.cantidadM2 = element.cantidadM2 + element.cantidadM2b2 + element.cantidadM2b3;
+        element.cantidadCajas = Math.trunc( element.cantidadM2 / element.producto.M2);
+        element.cantidadPiezas = parseInt((
+          (element.cantidadM2 * element.producto.P_CAJA) / element.producto.M2 -
+          element.cantidadCajas * element.producto.P_CAJA
+        ).toFixed(0));
+        element.valorProducto = parseFloat(((element.producto.precio * (this.productosStockTraidos.find(x=>x.PRODUCTO == element.producto.PRODUCTO).porcentaje / 100)) + element.producto.precio).toFixed(2))
+      });
       
       this.invetarioMinimoProductos = this.invetarioP
     }

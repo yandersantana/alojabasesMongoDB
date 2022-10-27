@@ -14,6 +14,7 @@ export class user{
     status:string
     imageProfile:string
     codigo : string
+    codigoFacturacion : string
     constructor(){
        
     }

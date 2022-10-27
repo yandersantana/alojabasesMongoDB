@@ -8,12 +8,10 @@ router.get('/', (req, res) => res.send('Holly Molly'))
 
 router.post('/register', async (req, res) => {
 	if(req.body.password){}
-    const { email, password, name, lastname, status } = req.body;
-    const newUser = new User({ email, password, name, lastname , status});
-    console.log(newUser);
+    const { email, password, name, lastname, status, codigoFacturacion } = req.body;
+    const newUser = new User({ email, password, name, lastname , status, codigoFacturacion});
     await newUser.save();
     res.send("Registrado");
-
 });
 
 
@@ -22,7 +20,6 @@ router.post('/signInGoogle', async (req, res) => {
 
     const user = await User.findOne({ email });
     if (!user) return res.status(401).send('Correo no existe');
-   // if (user.password !== password) return res.status(401).send('Wrong Password');
     const token = jwt.sign({ _id: user.token }, 'secretkey');
 
     return res.status(200).json({ token });
@@ -81,15 +78,14 @@ router.get('/getUsers1/:correo', async (req, res) => {
 
 
 router.post('/newUser', async (req, res) => {
-    const { email, password, name, rol,grupo,sucursal,numUsuarios,username, status } = req.body;
+    const { email, password, name, rol,grupo,sucursal,numUsuarios,username, status,codigoFacturacion } = req.body;
     const emailExiste = await User.findOne({ email });
-    console.log("Mail exiw"+emailExiste);
     if (emailExiste){
         return  res.status(401).send('Correo ya está asociado a otra cuenta');
     } 
     else{
-        const { email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status } = req.body;
-        const newUser = new User({ email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status});
+        const { email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status, codigoFacturacion } = req.body;
+        const newUser = new User({ email, password, name, rol,sucursal,numUsuarios,username,imageProfile, status, codigoFacturacion});
         await newUser.save();
         res.json({status: 'user creado'});
     }
@@ -100,7 +96,6 @@ router.post('/signIn', async (req, res) => {
     const { email, password } = req.body;
     const user = await User.findOne({ email });
     if (!user) return res.status(401).send('La cuenta no existe');
-    console.log(user)
     if (user.password !== password) return res.status(401).send('Contraseña Incorrecta');
     if (user.status !== "Activo") return res.status(404).send('Usuario bloqueado');
     const token = jwt.sign({ _id: user._id }, 'secretkey');
@@ -119,6 +114,7 @@ router.put('/updateUser/:id', async (req, res,next) => {
         empresa: req.body.empresa,
         status:req.body.status,
         imageProfile: req.body.imageProfile,
+        codigoFacturacion: req.body.codigoFacturacion
     };
     await User.findByIdAndUpdate(id, {$set: user}, {new: true});
     res.json({status: 'Perfil Actualizado'});  
@@ -127,8 +123,6 @@ router.put('/updateUser/:id', async (req, res,next) => {
 
 router.put('/update/:id', async (req, res,next) => {
     const { id } = req.params;
-    /* const { email, password, name, rol,grupo,empresa,numUsuarios } = req.body;
-    const newUser = new User({ email, password, name, rol ,grupo,empresa,numUsuarios}); */
     const usuario = {
         name: req.body.name,
         password: req.body.password,
@@ -136,10 +130,9 @@ router.put('/update/:id', async (req, res,next) => {
         username: req.body.username,
         grupo: req.body.grupo,
         empresa: req.body.empresa,
-        status:req.body.status
-        //numUsuarios: req.body.numUsuarios,
+        status:req.body.status,
+        codigoFacturacion: req.body.codigoFacturacion
     };
-    console.log(usuario)
     await User.findByIdAndUpdate(id, {$set: usuario}, {new: true});
     res.json({status: 'User Updated'});  
 })

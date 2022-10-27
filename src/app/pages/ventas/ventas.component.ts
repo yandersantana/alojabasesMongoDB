@@ -325,13 +325,14 @@ export class VentasComponent implements OnInit {
       title: 'Vendedor',
       allowOutsideClick: false,
       showCancelButton: false,
+      allowEscapeKey : false,
       inputAttributes: {
         autocapitalize: 'off'
       },
       confirmButtonText: 'Ingresar',
       input: 'password',
     }).then((result) => {
-      var usuarioClave = this.usuarios.find(el => el.codigo == result.value);
+      var usuarioClave = this.usuarios.find(el => el.codigoFacturacion == result.value);
       if(usuarioClave != null){
         this.factura.nombreVendedor = usuarioClave.name
         switch (this.factura.tipoDocumento) {

@@ -29,7 +29,7 @@ export class UserComponent implements OnInit {
     sucursal: "matriz",
     username: "",
     status:"Activo",
-
+    codigoFacturacion: '',
   }
   popupVisible:boolean=false
   nombreUser: string = ""
@@ -54,7 +54,8 @@ export class UserComponent implements OnInit {
     "Administrador",
     "Usuario Web",
     "Supervisor",
-    "Inspector"
+    "Inspector",
+    "Distribuidor"
   ];
 
   constructor(
@@ -223,24 +224,20 @@ export class UserComponent implements OnInit {
 
     var x = document.getElementById("read");
     var y = document.getElementById("new");
-    var z = document.getElementById("edit");
     switch (i) {
       case 1:
         x.style.display = "block";
         y.style.display = "none";
-        z.style.display = "none";
         break;
 
       case 2:
         x.style.display = "none";
         y.style.display = "block";
-        z.style.display = "none";
         break;
 
       case 3:
         x.style.display = "none";
         y.style.display = "none";
-        z.style.display = "block";
         break;
       default:
     }
@@ -248,7 +245,7 @@ export class UserComponent implements OnInit {
 
 
   register(f: NgForm) {
-      if (this.usuario.email != "" && this.usuario.name != "" && this.usuario.password != "") {
+      if (this.usuario.email != "" && this.usuario.name != "" && this.usuario.password != "" && this.usuario.codigoFacturacion != "") {
         this.validarUserRepet(this.usuario.username)
       } else {
         Swal.fire({

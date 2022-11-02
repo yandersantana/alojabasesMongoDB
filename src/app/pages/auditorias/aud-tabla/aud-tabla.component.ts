@@ -11,7 +11,7 @@ import { AuditoriasService } from 'src/app/servicios/auditorias.service';
 import Swal from 'sweetalert2';
 import { AuditoriaProductoService } from 'src/app/servicios/auditoria-producto.service';
 import { TransaccionesService } from 'src/app/servicios/transacciones.service';
-import { transaccion } from '../../transacciones/transacciones';
+import { tipoBusquedaTransaccion, transaccion } from '../../transacciones/transacciones';
 import { inventario, invFaltanteSucursal } from '../../consolidado/consolidado';
 import { user } from '../../user/user';
 import { AuthenService } from 'src/app/servicios/authen.service';
@@ -89,6 +89,9 @@ export class AudTablaComponent implements OnInit {
   ];
   mostrarLoading = false;
   mensajeLoading = "Cargando..."
+  busquedaTransaccion: tipoBusquedaTransaccion; 
+  sectionListadoAuditorias = true;
+  sectionListadoProductosAuditados = false;
 
   @ViewChild('datag2') dataGrid2: DxDataGridComponent;
 
@@ -174,11 +177,12 @@ export class AudTablaComponent implements OnInit {
    })
   }
 
-  traerTransacciones(){
-    this.transaccionesService.getTransaccion().subscribe(res => {
+  traerTransacciones(numDoc : string){
+    this.transacciones = [];
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = numDoc
+    this.transaccionesService.getTransaccionesPorNumeroDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transacciones = res as transaccion[];
-      this.traerProductos2()
-      
    })
   }
 
@@ -186,7 +190,6 @@ export class AudTablaComponent implements OnInit {
     this.productoService.getProductosActivos().subscribe(res => {
       this.productos = res as producto[];
       this.cargarDatos()
-      //alert("jhjhj "+ this.productos.length)
    })
   }
 
@@ -222,26 +225,8 @@ export class AudTablaComponent implements OnInit {
 
   }
 
- /*  obtenerUbicacion(){
-    console.log("ssss "+this.auditoria.sucursal.nombre)
-    switch (this.auditoria.sucursal.nombre) {
-      case "Matriz":
-          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc1
-        break;
-      case "sucursal1":
-          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc2
-        break;
-      case "sucursal2":
-          this.auditoria.ubicacion = this.auditoria.producto.ubicacionSuc3
-        break;
-    
-      default:
-        break;
-    }
-  } */
 
   compararProducto(){
-    //alert("si")
     if(this.auditoriaProductosleida.length == 0){
       this.buscarInformacion()
     }else{
@@ -394,10 +379,8 @@ export class AudTablaComponent implements OnInit {
   
 
   regresar(){
-    var x = document.getElementById("tablaAuditoria");
-    var y = document.getElementById("newAudGlobal");
-      x.style.display = "none";
-      y.style.display = "block";
+    this.sectionListadoProductosAuditados = false;
+    this.sectionListadoAuditorias = true;
   }
 
   regresar2(){
@@ -428,11 +411,9 @@ export class AudTablaComponent implements OnInit {
   }
 
   verLista2(e){
-    var x = document.getElementById("tabla2");
-    var y = document.getElementById("tabla3");
-      x.style.display = "block";
-      y.style.display = "none";
-
+    this.traerTransacciones(e.idAuditoria);
+    this.sectionListadoProductosAuditados = true;
+    this.sectionListadoAuditorias = false;
     this.auditoriaProductosleida = []
     this.dataAuditoria = e;
     var newAuditoria = new auditoriasProductos();
@@ -583,8 +564,6 @@ export class AudTablaComponent implements OnInit {
   }
 
   eliminarTransaccion(e){
-    alert("ddd "+e.idPrincipal)
-    alert("ddd "+e.producto.PRODUCTO)
     this.transacciones.forEach(element=>{
       if(element.documento == e.idPrincipal &&  element.producto == e.producto.PRODUCTO){
         if(element.tipo_transaccion=="ajuste-faltante" || element.tipo_transaccion=="ajuste-sobrante"){
@@ -869,16 +848,11 @@ export class AudTablaComponent implements OnInit {
   }
 
   contadorValidaciones(i:number){
-    if(this.auditoriaProductosleida.length==i){
+    if(this.auditoriaProductosleida.length==i)
       this.actualizarProductos()
-     //alert("termine")
-    }else{
-      console.log("no he entrado "+i)
-    }
   }
 
   editarAuditoriaProducto(id:string){
-    //alert("entre editar"+id)
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idAud ==id ){
         this.editAuditoria = element
@@ -973,53 +947,41 @@ export class AudTablaComponent implements OnInit {
 
   calcularTotalM2Base(){
     this.auditoria.m2base=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_sistema)+((this.auditoria.piezas_sistema*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2base)
   }
 
   calcularTotalM2(){
     this.auditoria.m2fisico=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_fisico)+((this.auditoria.piezas_fisico*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2fisico)
     this.calculardiferencia()
   }
 
   calcularTotalM2Dano(){
     this.auditoria.m2daño=parseFloat(((this.auditoria.producto.M2*this.auditoria.cajas_danadas)+((this.auditoria.piezas_danadas*this.auditoria.producto.M2)/this.auditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.auditoria.m2daño)
     this.auditoria.impactoDanado = parseFloat((this.auditoria.m2daño * this.auditoria.producto.precio).toFixed(2))
   }
 
   calcularTotalM2Edit(){
     this.editAuditoria.m2fisico=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_fisico)+((this.editAuditoria.piezas_fisico*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.editAuditoria.m2fisico)
     this.calculardiferencia2()
   }
 
   calcularTotalM2DanoEdit(){
     this.editAuditoria.m2daño=parseFloat(((this.editAuditoria.producto.M2*this.editAuditoria.cajas_danadas)+((this.editAuditoria.piezas_danadas*this.editAuditoria.producto.M2)/this.editAuditoria.producto.P_CAJA)).toFixed(2))
-    console.log("fff "+this.editAuditoria.m2daño)
     this.editAuditoria.impactoDanado = parseFloat((this.editAuditoria.m2daño * this.editAuditoria.producto.precio).toFixed(2))
   }
 
   calculardiferencia(){
-    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
+    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" )
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
-    }else{
-      if(this.auditoria.m2fisico<this.auditoria.m2base){
-        
+    else{
+      if(this.auditoria.m2fisico<this.auditoria.m2base)
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base-0.04
-      }else{
-        //alert("entre2")
+      else
         this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base+0.03
-      }
-      
     }
     
-    console.log("la diferencia es "+this.auditoria.m2diferencia)
+
     this.auditoria.cajas_diferencia=Math.trunc(this.auditoria.m2diferencia /  this.auditoria.producto.M2);
-    console.log("cajas diferencia "+this.auditoria.cajas_diferencia)
-    
     this.auditoria.piezas_diferencia=Math.trunc(this.auditoria.m2diferencia * this.auditoria.producto.P_CAJA /this.auditoria.producto.M2) - (this.auditoria.cajas_diferencia * this.auditoria.producto.P_CAJA);
-    console.log("piezas diferencia "+this.auditoria.piezas_diferencia)
 
     this.auditoria.impacto = parseFloat((this.auditoria.m2diferencia * this.auditoria.producto.precio).toFixed(2))
     if(this.auditoria.cajas_diferencia==0 && this.auditoria.piezas_diferencia==0){
@@ -1044,31 +1006,22 @@ export class AudTablaComponent implements OnInit {
       }
     }
     
-    console.log("la diferencia es "+this.editAuditoria.m2diferencia)
-    this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);
-    console.log("SSS "+this.editAuditoria.producto.M2)
-    console.log("cajas diferencia "+this.editAuditoria.cajas_diferencia)
-    
+    this.editAuditoria.cajas_diferencia=Math.trunc(this.editAuditoria.m2diferencia /  this.editAuditoria.producto.M2);  
     this.editAuditoria.piezas_diferencia=Math.trunc(this.editAuditoria.m2diferencia * this.editAuditoria.producto.P_CAJA /this.editAuditoria.producto.M2) - (this.editAuditoria.cajas_diferencia * this.editAuditoria.producto.P_CAJA);
-    console.log("piezas diferencia "+this.editAuditoria.piezas_diferencia)
-
     this.editAuditoria.impacto = parseFloat((this.editAuditoria.m2diferencia * this.editAuditoria.producto.precio).toFixed(2))
-    console.log("sss "+this.editAuditoria.impacto)
-
-    if(this.editAuditoria.m2diferencia >0){
+    if(this.editAuditoria.m2diferencia >0)
       this.editAuditoria.condicion = "SOBRANTE"
-    }else if (this.editAuditoria.m2diferencia<0){
+    else if(this.editAuditoria.m2diferencia<0)
       this.editAuditoria.condicion = "FALTANTE"
-    }else{
+    else
       this.editAuditoria.condicion= "OK"
-    }
+    
   }
 
 
 
 
   actualizarUbicacion(){
-    //alert("entre")
      var cont=0
         switch (this.auditoria.sucursal.nombre) {
           case "matriz":
@@ -1229,8 +1182,6 @@ export class AudTablaComponent implements OnInit {
   //desde aqui comienza seccion de consolidado
 
   cargarDatos(){
-    // alert("entre con "+this.transacciones.length)
-     console.log("entre")
      var contCajas=0
      var contCajas2=0
      var contCajas3=0

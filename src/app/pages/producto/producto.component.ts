@@ -502,13 +502,21 @@ export class ProductoComponent implements OnInit {
       });
     });
 
-    if (contIn == 0) {
+    if (contIn == 0) 
       this.eliminarRemision(e);
-    } else {
+    else {
       Swal.fire({
         title: "Error",
-        text: "No hay inventario suficiente para realizar la anulación",
-        icon: "error",
+        text: "No hay inventario suficiente para realizar la anulación. Desea continuar?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Si",
+        cancelButtonText: "No",
+      }).then((result) => {
+        if (result.value) 
+          this.eliminarRemision(e);
+        else if (result.dismiss === Swal.DismissReason.cancel) 
+          Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
       });
     }
   }
@@ -589,12 +597,8 @@ export class ProductoComponent implements OnInit {
           this.facturasProveedorService
             .updateEstado3(this.ifFacturaP, "Por Ingresar")
             .subscribe(
-              (res) => {
-                console.log(res + "entre por si");
-              },
-              (err) => {
-                alert("error");
-              }
+              (res) => {},
+              (err) => { alert("error");}
             );
 
           this.productosEntregadosBase.forEach((element) => {
@@ -641,12 +645,8 @@ export class ProductoComponent implements OnInit {
                   this.productoService
                     .updateProductoSucursal1Bodega(element.nombreComercial)
                     .subscribe(
-                      (res) => {
-                        console.log(res + "entre por si");
-                      },
-                      (err) => {
-                        alert("error");
-                      }
+                      (res) => {},
+                      (err) => { alert("error");}
                     );
                   // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal1" :sumaProductos})
                   break;
@@ -656,12 +656,8 @@ export class ProductoComponent implements OnInit {
                   this.productoService
                     .updateProductoSucursal2Bodega(element.nombreComercial)
                     .subscribe(
-                      (res) => {
-                        console.log(res + "entre por si");
-                      },
-                      (err) => {
-                        alert("error");
-                      }
+                      (res) => {},
+                      (err) => { alert("error");}
                     );
                   //// this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal2" :sumaProductos})
                   break;
@@ -671,12 +667,8 @@ export class ProductoComponent implements OnInit {
                   this.productoService
                     .updateProductoSucursal3Bodega(element.nombreComercial)
                     .subscribe(
-                      (res) => {
-                        console.log(res + "entre por si");
-                      },
-                      (err) => {
-                        alert("error");
-                      }
+                      (res) => { },
+                      (err) => { alert("error");}
                     );
                   // this.db.collection('/productos').doc(element.nombreComercial.PRODUCTO).update({"sucursal3" :sumaProductos})
                   break;
@@ -685,12 +677,8 @@ export class ProductoComponent implements OnInit {
               this.productosIngresadoService
                 .updateEstadoIngreso(element, "Eliminado")
                 .subscribe(
-                  (res) => {
-                    console.log(res + "termine1");
-                  },
-                  (err) => {
-                    alert("error");
-                  }
+                  (res) => {},
+                  (err) => { alert("error");}
                 );
             }
           });
@@ -714,12 +702,8 @@ export class ProductoComponent implements OnInit {
         this.transacciones.forEach((element) => {
           if (element.factPro == num + "" && element.orden_compra == num2) {
             this.transaccionesService.deleteTransaccion(element).subscribe(
-              (res) => {
-                console.log(res + "termine1");
-              },
-              (err) => {
-                alert("error");
-              }
+              (res) => {},
+              (err) => {alert("error");}
             );
           }
         });
@@ -730,19 +714,9 @@ export class ProductoComponent implements OnInit {
   }
 
   cargarDatosRemisión(e: any) {
-    // alert("voy a buscar la remision "+e.id_remision)
-    /*var cont = 0;
-    this.productosControlIngresados.forEach((element) => {
-      cont++;
-    });
-    if (cont >= 0) {
-      this.productosControlIngresados.forEach((element) => {
-        this.productosControlIngresados.splice(0);
-      });
-    }*/
     this.mostrarLoading = true
     this.productosControlIngresados = []
-     var newFacturaP = new ProductoDetalleEntrega()
+    var newFacturaP = new ProductoDetalleEntrega()
     newFacturaP.numeroOrden = e.num_orden
     this.productosIngresadoService.getProductosIngresadosPorOrden(newFacturaP).subscribe((res) => {
       this.productosEntregadosBase = res as ProductoDetalleEntrega[];
@@ -822,12 +796,8 @@ export class ProductoComponent implements OnInit {
             element.estado
           )
           .subscribe(
-            (res) => {
-              console.log(res + "entre por si");
-            },
-            (err) => {
-              alert("error");
-            }
+            (res) => {},
+            (err) => { alert("error");}
           );
       });
     });
@@ -1009,15 +979,11 @@ export class ProductoComponent implements OnInit {
     this.remisionProducto.nombre_recibe = this.nombre_recibe;
     this.remisionProducto.nombre_transportador = this.nombre_transportador;
     this.remisionProducto.fechaRecibo = this.fechaRecibo.toLocaleDateString();
-    // this.remisionProducto.nombre_proveedor
     this.remisionProducto.num_orden = this.datoNsolicitud;
     this.remisionProducto.num_remEnt = this.nremisionEnt;
     this.remisionProducto.placa = this.placa;
-    //this.remisionProducto.sucursal= this.Id_remision
-    console.log("placa" + this.remisionProducto.placa);
     let num: string;
     num = this.remisionProducto.id_remision + "";
-    var contacoincidencias = 0;
 
     if (
       this.remisionProducto.nombre_recibe != "" &&
@@ -1030,11 +996,6 @@ export class ProductoComponent implements OnInit {
       new Promise<any>((resolve, reject) => {
         this.setearNFactura2();
         this.actualizarProductossolicitados();
-        //this.db.collection('/remisionProductos').doc(num).set({...Object.assign({},this.remisionProducto )}) ;
-        // this.db.collection('/remisionProductos').doc("matriz").update({"documento_n" :this.Id_remision});
-
-        //por revisar esta de aqui abajo
-        //this.db.collection('/facturasProveedor').doc(this.ifFacturaP).update({"estado3" :"Ingresada"});
         this.facturasProveedorService
           .updateEstado3(this.ifFacturaP, "Ingresada")
           .subscribe(
@@ -1063,8 +1024,6 @@ export class ProductoComponent implements OnInit {
           (err) => {}
         );
         if (this.productosObsequios.length > 0) {
-          //alert("entre a productos")
-          //alert("SSS "+this.productosObsequios.length)
           this.productosObsequios.forEach((element) => {
             element.fecha = new Date().toLocaleDateString();
             element.idfactura = this.remisionProducto.num_FactPro;
@@ -1660,8 +1619,6 @@ export class ProductoComponent implements OnInit {
   rechazarEliminacion(e: any) {
     var data2 = "";
     data2 = e.id_remision + "";
-    console.log("data2 " + data2);
-    console.log("entre por " + e.nFactura);
 
     Swal.fire({
       title: "Denegar eliminación",

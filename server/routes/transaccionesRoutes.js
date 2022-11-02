@@ -10,6 +10,7 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
+    isActive : true
   });
   res.json(transacciones);
 });
@@ -23,25 +24,32 @@ router.post("/getTransaccionesPorRango2", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
+    isActive : true 
   });
   res.json(transacciones);
 });
 
 
 router.post("/getTransaccionesPorProducto", async (req, res, next) => {
-  const transacciones = await Transacciones.find({ producto: req.body.nombre });
+  const transacciones = await Transacciones.find({ producto: req.body.nombre, isActive : true });
   res.json(transacciones);
 });
 
+
 router.post("/getTransaccionesPorProductoMultiple", async (req, res, next) => {
-  console.log(req.body)
-  const transacciones = await Transacciones.find({ producto: { $in:  req.body.array } });
+  const transacciones = await Transacciones.find({ producto: { $in:  req.body.array }, isActive: true});
   res.json(transacciones);
 });
 
 
 router.post("/getTransaccionesPorTipoDocumento", async (req, res, next) => {
-  const transacciones = await Transacciones.find({ tipo_transaccion: req.body.tipoTransaccion , documento:req.body.NumDocumento });
+  const transacciones = await Transacciones.find({ tipo_transaccion: req.body.tipoTransaccion , documento:req.body.NumDocumento, isActive : true  });
+  res.json(transacciones);
+});
+
+
+router.post("/getTransaccionesPorNumeroDocumento", async (req, res, next) => {
+  const transacciones = await Transacciones.find({ documento:req.body.NumDocumento });
   res.json(transacciones);
 });
 
@@ -55,13 +63,14 @@ router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
+    isActive : false 
   });
   res.json(transacciones);
 });
 
 
 router.get("/getTransacciones", async (req, res) => {
-  const transacciones = await Transacciones.find();
+  const transacciones = await Transacciones.find({ isActive : true });
   res.send(transacciones);
 });
 
@@ -109,10 +118,19 @@ router.put("/updateTransaccionEntrega/:id", async (req, res, next) => {
   res.json({ status: "Transaccion Updated" });
 });
 
+
+router.put("/updateEstadoTransaccion/:id", async (req, res, next) => {
+  const { id } = req.params;
+  await Transacciones.findByIdAndUpdate( id,{ $set: { isActive: false } },{ new: true } );
+  res.json({ status: "Transaccion Updated" });
+});
+
+
 router.delete("/delete/:id", async (req, res, next) => {
   await Transacciones.findByIdAndRemove(req.params.id);
   res.json({ status: "Transaccion Eliminada" });
 });
+
 
 router.post("/deletePorDocumento", async (req, res, next) => {
   var tipoDoc = req.body.tipoDocumento;
@@ -152,7 +170,8 @@ router.post("/newTransaccion", async (req, res) => {
     movimiento: req.body.movimiento,
     mcaEntregado: req.body.mcaEntregado,
     nombreUsuario: req.body.nombreUsuario,
-    nombreVendedor: req.body.nombreVendedor
+    nombreVendedor: req.body.nombreVendedor,
+    isActive: req.body.isActive
   });
   await newTransaccion.save();
   res.json({ status: "Transaccion creada" });

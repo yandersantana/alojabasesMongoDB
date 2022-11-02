@@ -27,9 +27,11 @@ export class transaccion {
   mcaEntregado : string;
   nombreUsuario : string;
   nombreVendedor : string;
+  isActive : boolean;
   constructor() {
     this.valor = 0;
     this.mcaEntregado = "SI";
+    this.isActive = true;
   }
 }
 

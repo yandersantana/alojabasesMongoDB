@@ -42,13 +42,16 @@ export class TransaccionesService {
     return this.http.post(this.URL + "/getTransaccionesPorProducto", producto);
   }
 
-
   getTransaccionesPorProductoMultiple(producto) {
     return this.http.post(this.URL + "/getTransaccionesPorProductoMultiple", producto);
   }
 
   getTransaccionesPorTipoDocumento(tipobusqueda) {
     return this.http.post(this.URL + "/getTransaccionesPorTipoDocumento", tipobusqueda);
+  }
+
+  getTransaccionesPorNumeroDocumento(tipobusqueda) {
+    return this.http.post(this.URL + "/getTransaccionesPorNumeroDocumento", tipobusqueda);
   }
 
   getTransaccionesPorProductoYFecha(producto) {
@@ -61,6 +64,10 @@ export class TransaccionesService {
 
   updateTransaccionEntrega(transaccion) {
     return this.http.put(this.URL + `/updateTransaccionEntrega/${transaccion._id}`, transaccion);
+  }
+
+  updateEstadoTransaccion(transaccion) {
+    return this.http.put(this.URL + `/updateEstadoTransaccion/${transaccion._id}`, transaccion);
   }
 
   deleteTransaccion(transaccion) {

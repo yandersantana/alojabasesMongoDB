@@ -18,6 +18,7 @@ import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { clasificacionActualizacion, inventario, invFaltanteSucursal, productoActualizable, productoMultiple, productosPorFiltros, productoTransaccion } from "../consolidado/consolidado";
 import { stockLocal } from "./stock-locales";
 import { ProductosStockLocalesService } from "src/app/servicios/productoStock.service";
+import pdfMake from "pdfmake/build/pdfmake";
 
 @Component({
   selector: "app-stock-locales",
@@ -55,6 +56,9 @@ export class StockLocalesComponent implements OnInit {
     'Sucursal1',
     'Sucursal2'
   ];
+
+  valorAncho = 390;
+  valorAncho2 = 100;
 
   sucursalSeleccionada = "Matriz"
 
@@ -113,6 +117,7 @@ export class StockLocalesComponent implements OnInit {
   ];
   tipoBusqueda = "Normal"
   cantidadProductos = 0;
+  fechaString = new Date().toLocaleDateString();
 
   valor1 = 100
   valor2 = 100 
@@ -135,14 +140,35 @@ export class StockLocalesComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.validarDispositivo();
     this.cargarUsuarioLogueado();
     this.traerProductosUnitarios();
     this.traerOpcionesCatalogo();
     this.traerBodegas();
     this.traerCatalogoUnitario();
     this.traerStockProductosLocales();
-    
   }
+
+  validarDispositivo(){
+    if(/Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i.test(navigator.userAgent))
+    {
+       this.valorAncho = 400;
+       this.valorAncho2 = 100;
+    }
+    else if(/Chrome/i.test(navigator.userAgent))
+    {
+      this.valorAncho = 700;
+      this.valorAncho2 = 120;
+       console.log('Chrome');
+    }
+    else
+    {
+      this.valorAncho = 700;
+      this.valorAncho2 = 120;
+      console.log('Desktop');
+    }
+  }
+
 
   traerOpcionesCatalogo(){
     this.opcionesService.getOpciones().subscribe(res => {
@@ -157,6 +183,7 @@ export class StockLocalesComponent implements OnInit {
       this.productosCatalogo = res as catalogo[];
       this.traerProductos();
    })
+   
   }
 
 
@@ -372,22 +399,26 @@ export class StockLocalesComponent implements OnInit {
   traerTransaccionesStockGeneral(){
     this.mostrarLoading = true;
     this.productosStockTraidos = [];
-    this._productosLocalesStockService.getProductosStock().subscribe((res) => {
-      this.productosStockTraidos = res as stockLocal[];
-
-      var prodTmp = this.productos;
-      this.productos = [];
-      var cont = 0 ;
-      prodTmp.forEach((element) => {
-        cont++;
-        var prod = this.productosStockTraidos.find(x=>x.PRODUCTO == element.PRODUCTO)
-        if (prod != null)   
-          this.productos.push(element)
-        
-        if(cont == prodTmp.length)
-          this.traerTransaccionesMultiples();
+    this.productoService.getProductosActivos().subscribe((res) => {
+      this.productos = res as producto[];
+      
+      this._productosLocalesStockService.getProductosStock().subscribe((res) => {
+        this.productosStockTraidos = res as stockLocal[];
+        var prodTmp = this.productos;
+        this.productos = [];
+        var cont = 0 ;
+        prodTmp.forEach((element) => {
+          cont++;
+          var prod = this.productosStockTraidos.find(x=>x.PRODUCTO == element.PRODUCTO)
+          if (prod != null)   
+            this.productos.push(element)
+          
+          if(cont == prodTmp.length)
+            this.traerTransaccionesMultiples();
+        });
       });
-    });
+    }); 
+    
   }
 
   cargarSeleccion(){
@@ -398,11 +429,11 @@ export class StockLocalesComponent implements OnInit {
     });
 
     this.selectedRows = this.listadoStockLocales.filter(el => el.isSelected == true)
-    this.mostrarLoading = false;
-    
+    this.mostrarLoading = false;  
   }
 
   separarProducto() {
+    this.mostrarLoading = true;
     this.productos.forEach((element) => {
       var producto = new stockLocal();
       producto.PRODUCTO = element.PRODUCTO
@@ -1084,7 +1115,7 @@ export class StockLocalesComponent implements OnInit {
 
     
 
-    if(arrayNuevos.length == 0 && arrayModificar.length == 0 && arrayNuevos.length == 0){
+    if(arrayNuevos.length == 0 && arrayModificar.length == 0 && arrayEliminar.length == 0){
       this.mostrarLoading = false;
       Swal.fire("Cancelado!", "No existe información que actualizar", "error"); 
     }else {
@@ -1094,8 +1125,6 @@ export class StockLocalesComponent implements OnInit {
         Swal.fire("Correcto!", "Se guardaron sus cambios con éxito", "success"); 
       });
     }
-      
-
   }
 
 
@@ -1734,5 +1763,236 @@ export class StockLocalesComponent implements OnInit {
     });
   }
 
+
+  exportarPDF(){
+    if(this.opMenu == "Stock General")
+      this.nombreClasificacion = "Todos"
+    this.mensajeLoading = "Descargando"
+    this.mostrarLoading = true;
+    this.invetarioMinimoProductos.sort(function(a, b) {
+      return a.producto.PRODUCTO.localeCompare(b.producto.PRODUCTO);
+    });
+    const documentDefinition = this.getDocumentDefinition();
+    pdfMake.createPdf(documentDefinition).download("Consulta Productos", function () {});
+    this.mostrarLoading = false;
+  }
+
+  getDocumentDefinition() {
+    sessionStorage.setItem("resume", JSON.stringify("jj"));
+    return {
+      pageSize: "A4",
+      pageOrientation: "portrait",
+      content: [
+        {
+          columns: [
+            [
+              { text: "Datos Consulta", alignment: "center", bold: true },
+              {
+                style: "tableExample",
+                table: {
+                  widths: [100, 140, 100, 140],
+                  body: [
+                    [
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            bold: true,
+                            fontSize: 8,
+                            ul: [
+                              "Grupo"
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            fontSize: 8,
+                            ul: [
+                              "" + this.nombreClasificacion
+                            ],
+                          },
+                        ],
+                      },
+                      {
+                        stack: [
+                          {
+                            type: "none",
+                            bold: true,
+                            fontSize: 8,
+                            ul: [
+                              "Fecha"
+                            ],
+                          },
+                        ],
+                      },
+                      [
+                        {
+                          stack: [
+                            {
+                              type: "none",
+                              fontSize: 8,
+                              ul: [
+                                "" + this.fechaString,
+                              ],
+                            },
+                          ],
+                        },
+                      ],
+                    ],
+                  ],
+                },
+              },
+            ],
+            [],
+          ],
+        },
+
+        this.getListadoProductos(this.invetarioMinimoProductos),
+      ],
+      pageBreakBefore: function (
+        currentNode,
+        followingNodesOnPage
+      ) {
+        return (
+          currentNode.headlineLevel === 1 && followingNodesOnPage.length === 0
+        );
+      },
+
+      images: {
+        mySuperImage: "data:image/jpeg;base64,...content...",
+      },
+      info: {
+        title: "Revision",
+        author: "this.resume.name",
+        subject: "RESUME",
+        keywords: "RESUME, ONLINE RESUME",
+      },
+      styles: {
+        header: {
+          fontSize: 18,
+          bold: true,
+          margin: [0, 20, 0, 10],
+          decoration: "underline",
+        },
+        textoPro: {
+          bold: true,
+          margin: [0, -12, 0, -5],
+        },
+        tableExample: {
+          margin: [0, 5, 0, 15],
+        },
+        tableExample2: {
+          margin: [-13, 5, 10, 15],
+        },
+        tableExample3: {
+          margin: [-13, -10, 10, 15],
+        },
+        tableExample4: {
+          margin: [10, -5, 0, 15],
+        },
+        texto6: {
+          fontSize: 14,
+          bold: true,
+          alignment: "center",
+        },
+        name: {
+          fontSize: 16,
+          bold: true,
+        },
+        jobTitle: {
+          fontSize: 14,
+          bold: true,
+          italics: true,
+        },
+        textFot: {
+          alignment: "center",
+          italics: true,
+          color: "#bebebe",
+          fontSize: 18,
+        },
+        tableHeader: {
+          bold: true,
+        },
+        tableHeader2: {
+          bold: true,
+          fontSize: 10,
+        },
+
+        fondoFooter: {
+          fontSize: 8,
+          alignment: "center",
+        },
+        totales: {
+          margin: [0, 0, 15, 0],
+          alignment: "right",
+        },
+        totales2: {
+          margin: [0, 0, 5, 0],
+          alignment: "right",
+        },
+        detalleTotales: {
+          margin: [15, 0, 0, 0],
+        },
+      },
+    };
+  }
+
+
+  getListadoProductos(listado: inventario[]) {
+    return {
+      table: {
+        widths: ["40%", "15%", "15%", "15%", "15%"],
+        alignment: "center",
+        fontSize: 7,
+        body: [
+          [
+            {
+              text: "Producto",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Cajas",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Piezas",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "M2",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            },
+            {
+              text: "Precio",
+              style: "tableHeader2",
+              fontSize: 7,
+              alignment: "center",
+            }
+          ],
+
+          ...listado.map((ed) => {
+            return [
+              { text: ed.producto.PRODUCTO, fontSize: 7, alignment: "left" },
+              { text: ed.cantidadCajas, alignment: "center", fontSize: 7 },
+              { text: ed.cantidadPiezas, alignment: "center", fontSize: 7 },
+              { text: ed.cantidadM2, alignment: "center", fontSize: 7 },
+              { text: ed.valorProducto, alignment: "center", fontSize: 7 }
+            ];
+          }),
+        ],
+      },
+    };
+  }
 
 }

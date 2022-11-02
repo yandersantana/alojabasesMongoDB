@@ -26,6 +26,7 @@ import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { TransaccionesRevisionProductoService } from "src/app/servicios/transaccionesRevisionProducto.service";
 import { comparacionResultadosRevision } from "../revision-inventario/revision-inventario";
+import { resolve } from "dns";
 
 @Component({
   selector: "app-consolidado",
@@ -96,6 +97,7 @@ export class ConsolidadoComponent implements OnInit {
   opcionesCatalogo: opcionesCatalogo[]=[]
   productosCatalogo:catalogo[]=[]
   catalogoLeido : catalogo
+  transaccion : transaccion
 
   tiposBusqueda: string[] = [
       'Normal',
@@ -168,8 +170,14 @@ export class ConsolidadoComponent implements OnInit {
            clasi.nombreClasificacion = element
            this.listaClasificacion.push(clasi)
            this.listadoCategorias.push(clasi.nombreClasificacion)
+           this.listadoCategorias.sort(function(a, b) {
+            return a.localeCompare(b);
+          });
          })
     })
+
+
+    
   }
 
   traerTransacciones() {
@@ -1011,10 +1019,6 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioP.forEach((element2) => {
         if (!element2.execute) {
           if (element.PRODUCTO == element2.producto.PRODUCTO) {
-            //element2.cantidadM2 = element2.cantidadM2 + element.suc1Pendiente;
-            //element2.cantidadM2b2 = element2.cantidadM2b2 + element.suc2Pendiente;
-            //element2.cantidadM2b3 = element2.cantidadM2b3 + element.suc3Pendiente;
-
             element2.cantidadM2 = element2.cantidadM2;
             element2.cantidadM2b2 = element2.cantidadM2b2;
             element2.cantidadM2b3 = element2.cantidadM2b3;
@@ -1064,6 +1068,143 @@ export class ConsolidadoComponent implements OnInit {
       }
     });
   }
+
+
+  mensajeActualizarTransacciones() {
+    Swal.fire({
+      title: "Alerta",
+      text: "Está seguro de realizar un ajuste a las transacciones, este proceso marcará como no válidas las transacciones antiguas e insertará una transacción de ajuste",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si",
+      allowOutsideClick: false,
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.value) 
+        this.realizarActualizacionTransacciones();
+      else if (result.dismiss === Swal.DismissReason.cancel) 
+        Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
+    });
+  }
+
+
+  realizarActualizacionTransacciones(){
+    this.mensajeLoading = "Realizando ajustes"
+    this.mostrarLoading = true;
+    var contadorProductos = 0;
+    this.invetarioP.forEach((element) => {
+      this.transaccion = new transaccion()
+      this.transaccion.fecha_mov = new Date().toLocaleString()
+      this.transaccion.fecha_transaccion = new Date()
+      this.transaccion.sucursal = "matriz"
+      this.transaccion.totalsuma = 0
+      this.transaccion.bodega = "12"
+      this.transaccion.costo_unitario = element.producto.precio
+      this.transaccion.documento = "000000"
+      this.transaccion.factPro = ""
+      this.transaccion.maestro = ""
+      this.transaccion.producto = element.producto.PRODUCTO
+      this.transaccion.observaciones = "Ajuste automatico de transacciones "+ new Date().toLocaleDateString()
+      if(element.cantidadCajas < 0 || element.cantidadPiezas < 0){
+        this.transaccion.cajas = element.cantidadCajas*(-1)
+        this.transaccion.piezas = element.cantidadPiezas*(-1)
+        this.transaccion.cantM2 = element.cantidadM2*(-1)
+        this.transaccion.valor = 0
+        this.transaccion.totalsuma = 0
+        this.transaccion.tipo_transaccion = "ajuste-faltante"
+        this.transaccion.movimiento = -1
+      }else{
+        this.transaccion.cajas = element.cantidadCajas
+        this.transaccion.piezas = element.cantidadPiezas
+        this.transaccion.cantM2 = element.cantidadM2
+        this.transaccion.valor = 0
+        this.transaccion.totalsuma = 0
+        this.transaccion.tipo_transaccion = "ajuste-sobrante"
+        this.transaccion.movimiento = 1
+      }
+        
+      this.transaccion.usu_autorizado = this.usuarioLogueado[0].username
+      this.transaccion.usuario = this.usuarioLogueado[0].username
+      this.transaccion.idTransaccion = 0
+      this.transaccion.cliente = ""
+
+
+      var p1 = new Promise((resolve, reject) => {
+        this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+          res => { resolve(true)},
+          err => { })
+      });
+
+
+      this.transaccion = new transaccion()
+      this.transaccion.fecha_mov = new Date().toLocaleString()
+      this.transaccion.fecha_transaccion = new Date()
+      this.transaccion.sucursal = "sucursal1"
+      this.transaccion.totalsuma = 0
+      this.transaccion.bodega = "12"
+      this.transaccion.costo_unitario = element.producto.precio
+      this.transaccion.documento = "000000"
+      this.transaccion.factPro = ""
+      this.transaccion.maestro = ""
+      this.transaccion.producto = element.producto.PRODUCTO
+      this.transaccion.observaciones = "Ajuste automatico de transacciones "+ new Date().toLocaleDateString()
+      if(element.cantidadCajas2 < 0 || element.cantidadPiezas2 < 0){
+        this.transaccion.cajas = element.cantidadCajas2*(-1)
+        this.transaccion.piezas = element.cantidadPiezas2*(-1)
+        this.transaccion.cantM2 = element.cantidadM2b2*(-1)
+        this.transaccion.valor = 0
+        this.transaccion.totalsuma = 0
+        this.transaccion.tipo_transaccion = "ajuste-faltante"
+        this.transaccion.movimiento = -1
+      }else{
+        this.transaccion.cajas = element.cantidadCajas2
+        this.transaccion.piezas = element.cantidadPiezas2
+        this.transaccion.cantM2 = element.cantidadM2b2
+        this.transaccion.valor = 0
+        this.transaccion.totalsuma = 0
+        this.transaccion.tipo_transaccion = "ajuste-sobrante"
+        this.transaccion.movimiento = 1
+      }
+        
+      this.transaccion.usu_autorizado = this.usuarioLogueado[0].username
+      this.transaccion.usuario = this.usuarioLogueado[0].username
+      this.transaccion.idTransaccion = 0
+      this.transaccion.cliente = ""
+
+
+      var p2 = new Promise((resolve, reject) => {
+        this.transaccionesService.newTransaccion(this.transaccion).subscribe(
+          res => { resolve(true)},
+          err => { })
+      });
+
+      Promise.all([p1, p2]).then(values => {
+        contadorProductos++;
+        if(contadorProductos == this.invetarioP.length)
+          this.actualizarTransaccionesEstado();
+      });  
+      
+    }); 
+  }
+
+
+  actualizarTransaccionesEstado(){
+    var cont= 0;
+    this.transacciones.forEach((element) => {
+      this.transaccionesService.updateEstadoTransaccion(element).subscribe(
+          res => { cont++;this.mostrarMensajeActualizacion(cont)},
+          err => { })
+    })
+  }
+
+  mostrarMensajeActualizacion(contador:number){
+    console.log(contador)
+    if(contador == this.transacciones.length){
+      this.mostrarLoading = false;
+      Swal.fire("Correcto!", "Se guardaron sus cambios con éxito", "success"); 
+    }   
+  }
+
 
   async actualizarInventario() {
     var m2s1 = 0;

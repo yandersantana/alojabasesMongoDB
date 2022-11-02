@@ -309,8 +309,8 @@ export class RevionInventarioComponent implements OnInit {
     cla.nombreClasificacion = "Todos"
     this.listaClasificacion.push(cla);
     this.listaClasificacion.sort(function(a, b) {
-   return a.nombreClasificacion.localeCompare(b.nombreClasificacion);
-});
+      return a.nombreClasificacion.localeCompare(b.nombreClasificacion);
+    });
   }
 
   obtenerDetallesproducto(e){
@@ -411,18 +411,22 @@ export class RevionInventarioComponent implements OnInit {
   }
 
   cerrarRevision(){
-    var cont = 0;
-    this.mensajeLoading = "Guardando Transacciones.."
-    this.mostrarLoading = true;
-    this.listadoComparacionResultados.forEach(element=>{
-      
-      this._transaccionesRevisionProductoService.newTransaccion(element).subscribe( 
-        res => { 
-          cont++;
-          this.actualizarEstadoRevision(cont)  }, 
-        err => { this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")
+    var listado = this.listadoComparacionResultados.filter(x=>x.estadoRevision == "Pendiente");
+    if(listado.length == 0){
+      var cont = 0;
+      this.mensajeLoading = "Guardando Transacciones.."
+      this.mostrarLoading = true;
+      this.listadoComparacionResultados.forEach(element=>{
+        this._transaccionesRevisionProductoService.newTransaccion(element).subscribe( 
+          res => { 
+            cont++;
+            this.actualizarEstadoRevision(cont)  }, 
+          err => { this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")
+        })
       })
-    })
+    }else
+      this.mostrarMensajeGenerico(2,"Hay productos aun sin validar, revise e intente nuevamente");
+    
   }
 
 
@@ -615,6 +619,7 @@ export class RevionInventarioComponent implements OnInit {
       newComparacion.m2_sistema = element.m2_sistema
       newComparacion.m2_diferencia = element.m2_diferencia
       newComparacion.resultado = element.resultado
+      newComparacion.estadoRevision = element.estadoRevision
       newComparacion.detalle = element.detalle
       newComparacion.fecha = element.fecha
       newComparacion.sucursal = this.revisionIniciada.sucursal
@@ -660,6 +665,10 @@ export class RevionInventarioComponent implements OnInit {
 
   eliminarProd2 = (e) => {
     this.eliminarRevisionProducto2(e.row.data)
+  }
+
+  validate = (e) => {
+    this.marcarValidado(e.row.data)
   }
 
   editarPro(e:any){
@@ -858,6 +867,31 @@ opcionRadioTipos(e){
       if (result.value) {
         this._revisionInventarioProductoService.deleteRevisionProducto(e).subscribe(res => {
           this.listadoComparacionResultados = this.listadoComparacionResultados.filter(element=> element._id !== e._id)
+          this.mostrarMensajeGenerico(1,"Se realizó su proceso con éxito")
+        })
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire(
+          'Cancelado!',
+          'Se ha cancelado su proceso.',
+          'error'
+        )
+      }
+    })
+  }
+
+
+  marcarValidado(e:any){
+    Swal.fire({
+      title: 'Alerta',
+      text: "Está seguro de marcar el producto como revisado?",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        e.estadoRevision = "Revisado"
+        this._revisionInventarioProductoService.updateEstadoRevision(e).subscribe(res => {
           this.mostrarMensajeGenerico(1,"Se realizó su proceso con éxito")
         })
       } else if (result.dismiss === Swal.DismissReason.cancel) {

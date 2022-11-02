@@ -34,4 +34,8 @@ export class RevisionInventarioProductoService {
     return this.http.put(this.URL + `/update/${revision._id}`, revision);
   }
 
+  updateEstadoRevision(revision) {
+    return this.http.put(this.URL + `/updateEstadoRevision/${revision._id}`, revision);
+  }
+
 }

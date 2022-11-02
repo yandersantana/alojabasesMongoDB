@@ -230,6 +230,8 @@ export class StockMinimoComponent implements OnInit {
   }
 
   traerProductosFiltrados(num : number, productoFiltro : productosPorFiltros){
+    this.productos = []
+    this.invetarioMinimoProductos = []
     switch (num) {
         case 1:
           this.productoService.getProductosPorFiltros1(productoFiltro).subscribe((res) => {
@@ -1241,12 +1243,14 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioP.forEach((element) => {
         var catal = this.productosCatalogo.find(p=> p.PRODUCTO == element.producto.PRODUCTO);
         if(catal != null){
-          if (element.cantidadM2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
+          if(catal.CANT_MINIMA != 0){
+            if (element.cantidadM2 <= catal.CANT_MINIMA) 
               this.invetarioMinimoProductosMatriz.push(element)
-          else if (element.cantidadM2b2 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
-              this.invetarioMinimoProductosSucursal1.push(element)
-          else if (element.cantidadM2b3 <= (catal?.CANT_MINIMA == 0 ? 10 : catal.CANT_MINIMA)) 
-              this.invetarioMinimoProductosSucursal2.push(element)
+            else if (element.cantidadM2b2 <= catal.CANT_MINIMA) 
+                this.invetarioMinimoProductosSucursal1.push(element)
+            else if (element.cantidadM2b3 <= catal.CANT_MINIMA) 
+                this.invetarioMinimoProductosSucursal2.push(element)
+          }
         }
       });
       

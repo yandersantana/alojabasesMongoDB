@@ -29,7 +29,9 @@ const TransaccionesSchema = new Schema({
     movimiento: { type: String, required: false},
     mcaEntregado: { type: String, required: false},
     nombreUsuario: { type: String, required: false},
-    nombreVendedor: { type: String, required: false}
+    nombreVendedor: { type: String, required: false},
+    isActive: { type: Boolean, required: false}
+    
     
 },{
     timestamps:true

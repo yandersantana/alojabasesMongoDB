@@ -12,7 +12,7 @@ import {
 import { Sucursal } from "../compras/compra";
 import { bodega } from "../producto/producto";
 import { producto, contadoresDocumentos } from "../ventas/venta";
-import { objDate, transaccion } from "../transacciones/transacciones";
+import { objDate, tipoBusquedaTransaccion, transaccion } from "../transacciones/transacciones";
 import Swal from "sweetalert2";
 import pdfMake from "pdfmake/build/pdfmake";
 import { DxDataGridComponent } from "devextreme-angular";
@@ -78,6 +78,7 @@ export class TrasladosComponent implements OnInit {
   valor2 = 100;
   valor3 = 100;
   bloquearBtn = false;
+  busquedaTransaccion: tipoBusquedaTransaccion;
 
   //procesos para inventario
   proTransaccion: productoTransaccion = new productoTransaccion();
@@ -155,7 +156,7 @@ export class TrasladosComponent implements OnInit {
     this.traerTransportistas();
     this.traerContadoresDocumentos();
     this.getIDDocumentos();
-    this.traerTransacciones();
+    //this.traerTransacciones();
     this.traerDatosConfiguracion();
   }
 
@@ -573,11 +574,15 @@ export class TrasladosComponent implements OnInit {
   };
 
   getCourseFile4 = (e) => {
-    this.eliminarRemision(e.row.data);
+    this.eliminarTraslado(e.row.data);
   };
 
   getCourseRecibido = (e) => {
     this.guardarTrasladoRecpcion(e.row.data);
+  };
+
+  rechazarIngresoTras = (e) => {
+    this.rechazarIngresoTraslado(e.row.data);
   };
 
   rechazarTraslado(e: any) {
@@ -608,9 +613,8 @@ export class TrasladosComponent implements OnInit {
     });
   }
 
-  eliminarRemision(e: any) {
-    var data = "";
-    data = e.id + "";
+
+  eliminarTraslado(e: any) {
     Swal.fire({
       title: "Eliminar Traslado",
       text: "Se eliminará definitivamente el traslado #" + e.idT,
@@ -622,7 +626,7 @@ export class TrasladosComponent implements OnInit {
       if (result.value) {
         this.mensajeGuardando();
         this.trasladosService.updateEstadoTraslado(e, "ELIMINADO").subscribe(
-          (res) => {this.eliminarTransacciones(e);},
+          (res) => {this.bajarTransaccionesTraslados(e);},
           (err) => { alert("error");}
         );
       } else if (result.dismiss === Swal.DismissReason.cancel) {
@@ -631,17 +635,55 @@ export class TrasladosComponent implements OnInit {
     });
   }
 
+  bajarTransaccionesTraslados(e : traslados){
+    this.transacciones = [];
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = e.idT.toString()
+    this.busquedaTransaccion.tipoTransaccion = "traslado1"
+    this.transaccionesService.getTransaccionesPorNumeroDocumento(this.busquedaTransaccion).subscribe(res => {
+      this.transacciones = res as transaccion[];
+      var listado = this.transacciones.filter(x=> x.documento == e.idT.toString() && (x.tipo_transaccion == "traslado1" || x.tipo_transaccion == "traslado2"))
+      console.log(listado)
+      this.transacciones = listado;
+      if(this.transacciones.length == 0){
+        Swal.close();
+        this.mostrarMensajeGenerico(2,"No se encontraron transacciones para este traslado")     
+      }else{
+        this.trasladosService.updateEstadoTraslado(e, "ELIMINADO").subscribe(
+          (res) => {this.eliminarTransacciones(e);},
+          (err) => { alert("error");}
+        );
+      }
+    })
+  }
+
   eliminarTransacciones(e) {
-    this.transacciones.forEach((element) => {
+    var cont = 0;
+    console.log(this.transacciones)
+    this.transacciones.forEach((element) => { 
       if (element.documento == e.idT && (element.tipo_transaccion == "traslado1" ||element.tipo_transaccion == "traslado2") ) {
         this.transaccionesService.deleteTransaccion(element).subscribe(
-          (res) => {},
+          (res) => {cont++;this.validarMensaje(cont)},
           (err) => { alert("error");}
         );
       }
     });
 
-    this.actualizarProductosBase2(e);
+    //this.actualizarProductosBase2(e);
+  }
+
+  validarMensaje(cont:number){
+    if(cont == this.transacciones.length){
+      this.mostrarLoading = false;
+      Swal.fire({
+        title: "Traslado rechazado",
+        text: "Se ha realizado con éxito",
+        icon: "success",
+        confirmButtonText: "Ok",
+      }).then((result) => {
+        window.location.reload();
+      });
+    }
   }
 
   mensajeGuardando() {
@@ -746,8 +788,8 @@ export class TrasladosComponent implements OnInit {
         (err) => {}
       );
     });
-    //this.actualizarProductosBaseRecibios();
   }
+
 
   guardarTraslado() {
     if (this.bodegaExternaSeleccion) {
@@ -1258,6 +1300,42 @@ export class TrasladosComponent implements OnInit {
         (err) => { alert("error")}
       );
     } 
+  }
+
+
+  rechazarIngresoTraslado(e){
+    Swal.fire({
+      title: "Rechazar Ingreso Traslado",
+      text: "Está seguro que desea rechazar el ingreso del traslado #" + e.idT,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Si",
+      cancelButtonText: "No",
+    }).then((result) => {
+      if (result.value) {
+        this.mensajeGuardando();
+        this.busquedaTransaccion = new tipoBusquedaTransaccion()
+        this.busquedaTransaccion.NumDocumento = e.idT.toString()
+        this.busquedaTransaccion.tipoTransaccion = "traslado1"
+        this.transaccionesService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
+          this.transacciones = res as transaccion[];
+          if(this.transacciones.length == 0){
+            Swal.close();
+            this.mostrarMensajeGenerico(2,"No se encontraron transacciones para este traslado")     
+          }else{
+            this.trasladosService.updateEstadoTraslado(e, "ELIMINADO").subscribe(
+              (res) => {this.eliminarTransacciones(e);},
+              (err) => { alert("error");}
+            );
+          }
+        })
+
+
+        
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
+      }
+    });
   }
 
 

@@ -37,6 +37,7 @@ export class detalleProductoRevisado{
   piezas_diferencia : number
   m2_diferencia : number
   resultado : string
+  estadoRevision : string
   constructor(){
     this.fecha = new Date()
     this.estado="Iniciada"
@@ -49,6 +50,7 @@ export class detalleProductoRevisado{
     this.cajas_sistema = 0
     this.piezas_diferencia = 0
     this.piezas_sistema = 0
+    this.estadoRevision = "Pendiente"
   }
 }
 
@@ -75,6 +77,7 @@ export class comparacionResultadosRevision{
   sucursal: string
   responsable: string
   nombreClasificacion: string
+  estadoRevision: string
   constructor(){
     this.cajas_sistema = 0
     this.piezas_sistema = 0

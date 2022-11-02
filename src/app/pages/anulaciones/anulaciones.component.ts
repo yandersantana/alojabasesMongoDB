@@ -21,6 +21,9 @@ import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.s
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
+import { dataDocumento } from '../reciboCaja/recibo-caja';
+import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
+import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
 
 @Component({
   selector: 'app-anulaciones',
@@ -121,7 +124,8 @@ subtotal:number=0
     public ordenesService:OrdenesCompraService,
     public authenService : AuthenService,
     public transaccionesService:TransaccionesService, 
-    public productoService:ProductoService,) 
+    public productoService:ProductoService,
+    public _cuentaPorCobrarService : CuentasPorCobrarService) 
     {
       this.anulacion= new anulaciones()
   }
@@ -1898,17 +1902,53 @@ subtotal:number=0
         var obs= e.observaciones + ".. Documento Anulado"  
         e.observaciones= obs
         this.facturasService.updateFacturasEstado2(e,"ANULADA").subscribe(
-          res => { this.actualizarProductos(e)},
-          err => {alert("error")})
+          res => { this.anularCuentasPorCobrar(e)},
+          err => { alert("error")})
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
-        Swal.fire(
-          'Cancelado!',
-          'Se ha cancelado su proceso.',
-          'error'
-        )
+        Swal.fire('Cancelado!', 'Se ha cancelado su proceso.','error')
       }
     })
+  }
+
+  anularCuentasPorCobrar(fact : factura){
+    var docData = new dataDocumento();
+    docData.rucCliente = fact.dni_comprador;
+    this._cuentaPorCobrarService.getCuentasXCobrarPorRUC(docData).subscribe(res => {
+      var cuentas = res as CuentaPorCobrar[];
+      var listado = cuentas?.filter(x=> x.documentoVenta == fact.documento_n.toString())
+      if(listado.length == 0){
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")
+      }else{
+        listado.forEach(element=>{
+          this._cuentaPorCobrarService.updateEstadoCuenta(element,"Anulado").subscribe(
+          res => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")},
+          err => { 
+            this.mostrarLoading = false; 
+            this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+        })   
+      }
+    });
+  }
+
+
+  mostrarMensajeGenerico(tipo:number , texto:string){
+    if(tipo == 1){
+      Swal.fire({
+        title: "Correcto",
+        text: texto,
+        icon: 'success'
+      })
+    }else{
+      Swal.fire({
+        title: "Error",
+        text: texto,
+        icon: 'error'
+      })
+    }
   }
 
   eliminarNot(e){
@@ -1979,17 +2019,17 @@ subtotal:number=0
 
   actualizarProductos(e){  
     this.eliminarTransacciones(e.documento_n)
-     var sumaProductos =0
-     var num1:number=0
-     var num2:number=0
-     var num3:number=0
-     var cont2ing=0
-      var contIng:number=0
-      var entre:boolean=true     
-      this.facturas.forEach(element=>{
-        if(e.documento_n== element.documento_n)
-          this.productosVendidos2=element.productosVendidos
-      })
+    var sumaProductos =0
+    var num1:number=0
+    var num2:number=0
+    var num3:number=0
+    var cont2ing=0
+    var contIng:number=0
+    var entre:boolean=true     
+    this.facturas.forEach(element=>{
+      if(e.documento_n== element.documento_n)
+        this.productosVendidos2=element.productosVendidos
+    })
 
       new Promise<any>((resolve, reject) => {
         this.productosVendidos2.forEach(element=>{

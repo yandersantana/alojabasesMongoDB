@@ -49,6 +49,12 @@
 
 <div id="busquedaProducto" *ngIf="mostrarBusquedaPorFiltros">
     <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="exportarPDF()">
+            <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
+    </div>
+    
+    <div class="row">
         <div class="col-md-12 card carIn">
             <div class="row">
                 <div class="col-md-2"></div>
@@ -81,9 +87,11 @@
 
     <div class="grilla">
         <dx-data-grid #datag2
+        class="dtgrid"
         id="gridContainer"
         [dataSource]="invetarioMinimoProductos"
         [showBorders]="true"
+        [columnWidth]="125"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
         <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
@@ -93,41 +101,46 @@
             caption="Producto"
             dataType="string"
             sortOrder="asc"
-            width="40%">
+            [width]="valorAncho">
         </dxi-column>
         <dxi-column
             dataField="cantidadM2"
             caption="M2/UNIDAD"
             dataType="number"
+            [width]="valorAncho2"
             [visible]="true">
         </dxi-column>
         <dxi-column
             dataField="cantidadCajas"
             caption="CAJAS"
             dataType="number"
+            [width]="100"
             class="d2">
         </dxi-column>
         <dxi-column
             dataField="cantidadPiezas"
             caption="PIEZAS"
+            [width]="100"
             dataType="number">
         </dxi-column>
         <dxi-column
             dataField="valorProducto"
             caption="PRECIO"
             [visible]="true"
-            width="15%">
+            [width]="100">
         </dxi-column>
-
-
-        
-        <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+        <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
     </dx-data-grid>
     </div>    
 </div>
 
 
 <div id="user" class="remiPro" *ngIf="mostrarStockMinimoGeneral">
+    <div class="row">
+        <div class="col-md-10"></div>
+        <div class="col-md-2"><button class="btn btnIcons6" style="background-color: #ff5722;" (click)="exportarPDF()">
+            <i class="fa fa-download fa-1x"></i> Exportar PDF</button></div>
+    </div>
     <dx-data-grid #datag2
         id="gridContainer"
         [dataSource]="invetarioMinimoProductos"

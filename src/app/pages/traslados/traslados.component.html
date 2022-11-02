@@ -289,8 +289,11 @@
         <dxi-column type="buttons" dataField="bt1"  caption="Ver" width="10%">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>   
         </dxi-column>
-         <dxi-column type="buttons"caption="Recibido" width="15%" [visible]="true" >
-            <dxi-button text="Recibido"  [onClick]="getCourseRecibido"  [visible]="isCloneIconDisabled"></dxi-button>   
+        <dxi-column type="buttons" caption="Confirmar" width="10%" [visible]="true" >
+            <dxi-button text="Confirmar"  [onClick]="getCourseRecibido"  [visible]="isCloneIconDisabled"></dxi-button>   
+        </dxi-column> 
+        <dxi-column type="buttons" caption="Rechazar" width="10%" [visible]="true" >
+            <dxi-button text="Rechazar"  [onClick]="rechazarIngresoTras"  [visible]="isCloneIconDisabled"></dxi-button>   
         </dxi-column> 
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>

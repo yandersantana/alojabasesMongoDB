@@ -19,7 +19,8 @@ router.post('/newRevisionInventarioProducto', async (req, res) => {
       cajas_diferencia:req.body.cajas_diferencia,
       piezas_diferencia:req.body.piezas_diferencia,
       m2_diferencia:req.body.m2_diferencia,
-      resultado:req.body.resultado
+      resultado:req.body.resultado,
+      estadoRevision:req.body.estadoRevision
     });
     await newRevision.save();
     res.json({status: 'Revision creada'});
@@ -43,6 +44,14 @@ router.delete('/delete/:id', async (req, res,next) => {
     await RevisionInventarioProducto.findByIdAndRemove(req.params.id);
     res.json({status: 'Revision Eliminado'});
 })
+
+
+router.put('/updateEstadoRevision/:id', async (req, res,next) => {
+    const { id } = req.params;
+    await RevisionInventarioProducto.findByIdAndUpdate(id, {$set: {estadoRevision:req.body.estadoRevision}}, {new: true});
+    res.json({status: 'factura Updated'});  
+})
+
 
 
 router.put('/update/:id', async (req, res,next) => {

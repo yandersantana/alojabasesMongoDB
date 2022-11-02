@@ -199,7 +199,7 @@
                                 <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                                 <dxo-export [enabled]="true" fileName="Revision Productos" [allowExportSelectedData]="true"></dxo-export>
                                 <dxi-column dataField="fecha"  [visible]="false" sortOrder="desc"></dxi-column>
-                                <dxi-column dataField="producto" width="42%"></dxi-column>
+                                <dxi-column dataField="producto" width="37%"></dxi-column>
                                 <dxi-column caption="Sistema">
                                     <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%"></dxi-column>
                                     <dxi-column dataField="piezas_sistema"  caption="Piezas" width="8%"></dxi-column>
@@ -214,6 +214,7 @@
                                 </dxi-column>
                                 
                                 <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
+                                <dxi-column dataField="estadoRevision" caption="Validación" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="idReferenciaRevision" [visible]="false" width="10%"></dxi-column>
@@ -225,6 +226,9 @@
                                 </dxi-column>
                                 <dxi-column type="buttons"  caption="Elim." width="5%">
                                     <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd2"></dxi-button>     
+                                </dxi-column>
+                                <dxi-column type="buttons"  caption="Valid." width="5%">
+                                    <dxi-button icon="fa fa-check" [onClick]="validate"></dxi-button>     
                                 </dxi-column>
 
                                 <dxo-paging [pageSize]="10"></dxo-paging>

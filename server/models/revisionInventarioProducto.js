@@ -17,7 +17,8 @@ const RevisionInventarioProductoSchema = new Schema({
     cajas_diferencia: { type: Number, required: false},
     piezas_diferencia: { type: Number, required: false},
     m2_diferencia: { type: Number, required: false},
-    resultado: { type: String, required: false}
+    resultado: { type: String, required: false},
+    estadoRevision: { type: String, required: false}
 },{
     timestamps:true
 });

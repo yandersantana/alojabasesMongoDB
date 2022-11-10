@@ -671,16 +671,16 @@ export class ComprobantePagoComponent implements OnInit {
          /*  if(ordenes[0].estadoOrden == "COMPLETO"){
             this.bloquearBoton = false;
           } */
-
+          console.log(ordenes)
           var transaccion = new TransaccionesFinancieras();
           var flag = false;
           transaccion.ordenCompra = this.listadoOperaciones[i].nOrden
           this._transaccionFinancieraService.getTransaccionesPorOrdenCompra(transaccion).subscribe(
-            res => { var transaccion = res as TransaccionesFinancieras[];
+            res => { 
+              var transaccion = res as TransaccionesFinancieras[];
               this.mostrarLoading = false;
               transaccion.forEach(element => {
-                console.log(element.ordenCompra)
-                if(element.ordenCompra ==  this.listadoOperaciones[i].nOrden ){
+                if(element.ordenCompra == this.listadoOperaciones[i].nOrden && ordenes[0].tipo != "Entregado"){
                   flag = true;
                   this.mostrarLoading = false;
                   this.bloquearBoton = true;

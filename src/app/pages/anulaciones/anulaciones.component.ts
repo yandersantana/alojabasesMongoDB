@@ -24,6 +24,10 @@ import { user } from '../user/user';
 import { dataDocumento } from '../reciboCaja/recibo-caja';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
+import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
+import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
+import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
+import { CajaMenor } from '../cajaMenor/caja-menor';
 
 @Component({
   selector: 'app-anulaciones',
@@ -125,7 +129,9 @@ subtotal:number=0
     public authenService : AuthenService,
     public transaccionesService:TransaccionesService, 
     public productoService:ProductoService,
-    public _cuentaPorCobrarService : CuentasPorCobrarService) 
+    public _cuentaPorCobrarService : CuentasPorCobrarService,
+    public _transaccionesFinancierasService : TransaccionesFinancierasService,
+    public _cajaMenorService : CajaMenorService) 
     {
       this.anulacion= new anulaciones()
   }
@@ -1888,10 +1894,10 @@ subtotal:number=0
     })
   }
   
-  eliminarFact(e){
+  eliminarFact(fact: factura){
     Swal.fire({
       title: 'Eliminar Factura',
-      text: "Eliminar factura #"+e.documento_n,
+      text: "Eliminar factura #"+fact.documento_n,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Si',
@@ -1899,16 +1905,42 @@ subtotal:number=0
     }).then((result) => {
       if (result.value) {
         this.mostrarMensaje()
-        var obs= e.observaciones + ".. Documento Anulado"  
-        e.observaciones= obs
-        this.facturasService.updateFacturasEstado2(e,"ANULADA").subscribe(
-          res => { this.anularCuentasPorCobrar(e)},
-          err => { alert("error")})
+        var fecha = new Date(fact.fecha)
+        fecha.setHours(0,0,0,0);
+        fact.fecha = fecha
+        this._cajaMenorService.getCajaMenorPorFecha(fact).subscribe(
+          res => {
+          var listaCaja = res as CajaMenor[];
+            if(listaCaja.length != 0 ){
+              var caja = listaCaja.find(element=>element.sucursal == fact.sucursal) ;
+              if(caja != undefined){
+                if(caja.sucursal == fact.sucursal && caja.estado == "Cerrada" ){
+                  Swal.close();
+                  Swal.fire( "Atención","No puede anular el documento la caja menor se encuentra cerrada",'error')
+                }
+                else
+                  this.seguirEliminando(fact)
+              }else 
+                this.seguirEliminando(fact)
+            }else
+              this.seguirEliminando(fact)
+          },
+          (err) => {});
      
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire('Cancelado!', 'Se ha cancelado su proceso.','error')
       }
     })
+  }
+
+
+ 
+  seguirEliminando(fact : factura){
+    var obs= fact.observaciones + ".. Documento Anulado"  
+    fact.observaciones= obs
+    this.facturasService.updateFacturasEstado2(fact,"ANULADA").subscribe(
+      res => { this.anularCuentasPorCobrar(fact)},
+      err => { alert("error")})
   }
 
   anularCuentasPorCobrar(fact : factura){
@@ -1918,14 +1950,43 @@ subtotal:number=0
       var cuentas = res as CuentaPorCobrar[];
       var listado = cuentas?.filter(x=> x.documentoVenta == fact.documento_n.toString())
       if(listado.length == 0){
-        this.mostrarLoading = false;
-        this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")
+        this.eliminarTransaccionesFinancieras(fact)
       }else{
         listado.forEach(element=>{
           this._cuentaPorCobrarService.updateEstadoCuenta(element,"Anulado").subscribe(
           res => { 
+            this.eliminarTransaccionesFinancieras(fact)},
+          err => { 
             this.mostrarLoading = false; 
-            this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")},
+            this.mostrarMensajeGenerico(2,"Error al actualizar estado")})
+        })   
+      }
+    });
+  }
+
+
+  eliminarTransaccionesFinancieras(fact:factura){
+    this.busquedaTransaccion = new tipoBusquedaTransaccion()
+    this.busquedaTransaccion.NumDocumento = fact.documento_n.toString();
+    this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
+    this._transaccionesFinancierasService.obtenerTransaccionesPorDocumentoYRecibo2(this.busquedaTransaccion).subscribe(res => {
+      var cuentas = res as TransaccionesFinancieras[];
+      var listado = cuentas?.filter(x=> x.cliente == fact.cliente.cliente_nombre)
+      console.log(listado)
+      if(listado.length == 0){
+        this.mostrarLoading = false;
+        this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")
+      }else{
+        var cont = 0;
+        listado.forEach(element=>{
+          this._transaccionesFinancierasService.deleteTransaccionFinanciera(element).subscribe(
+          res => { 
+            cont++;
+            if(cont == listado.length){
+              this.mostrarLoading = false; 
+              this.mostrarMensajeGenerico(1,"Su proceso se realizó correctamente")
+            }
+            },
           err => { 
             this.mostrarLoading = false; 
             this.mostrarMensajeGenerico(2,"Error al actualizar estado")})

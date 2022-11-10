@@ -34,12 +34,20 @@ export class TransaccionesService {
     return this.http.get(this.URL + "/getTransacciones");
   }
 
+  getTransaccionesGenerales() {
+    return this.http.get(this.URL + "/getTransaccionesGenerales");
+  }
+
   getTransaccionesPorRango(objFecha) {
     return this.http.post(this.URL + "/getTransaccionesPorRango", objFecha);
   }
 
   getTransaccionesPorProducto(producto) {
     return this.http.post(this.URL + "/getTransaccionesPorProducto", producto);
+  }
+
+  getTransaccionesPorProductoGeneral(producto) {
+    return this.http.post(this.URL + "/getTransaccionesPorProductoGeneral", producto);
   }
 
   getTransaccionesPorProductoMultiple(producto) {

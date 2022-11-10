@@ -54,10 +54,16 @@ h5{
 }
 
 
-
+::ng-deep .textNumber {
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: -0.3em;
+   
+}
 
 ::ng-deep .prueba2 /deep/ .dx-texteditor-input{
-    font-size: 26px;
+    font-size: 30px;
     text-align: center;
     font-weight: bold;
    

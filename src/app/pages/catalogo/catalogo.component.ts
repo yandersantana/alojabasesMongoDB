@@ -1210,6 +1210,7 @@ _handleReaderLoaded(readerEvt) {
             nuevoProducto.porcentaje_ganancia = this.catalogo2.porcentaje_ganancia
             nuevoProducto.precio = this.catalogo2.precio
             nuevoProducto.ESTADO = this.catalogo2.ESTADO
+            nuevoProducto.CASA = this.catalogo2.CASA
 
             this.productoService.updateNuevoProductoCatalogo(nuevoProducto).subscribe(
               res => { this.mostrarMensaje()},

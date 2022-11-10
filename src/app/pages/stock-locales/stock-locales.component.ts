@@ -1045,7 +1045,11 @@ export class StockLocalesComponent implements OnInit {
       cancelButtonText: "No",
     }).then((result) => {
       if (result.value) {
-        this.actualizarStock();
+        var existe = this.selectedRows.filter(x=> x.porcentaje == 0);
+        if(existe.length == 0)
+          this.actualizarStock();
+        else
+          Swal.fire("Error!", "Hay productos con porcentaje en 0, revise e intente nuevamente.", "error");
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire("Cancelado!", "Se ha cancelado su proceso.", "error");
       }
@@ -1120,9 +1124,15 @@ export class StockLocalesComponent implements OnInit {
       Swal.fire("Cancelado!", "No existe información que actualizar", "error"); 
     }else {
       Promise.all([p1, p2, p3]).then(values => {
-        console.log(values)
         this.mostrarLoading = false;
-        Swal.fire("Correcto!", "Se guardaron sus cambios con éxito", "success"); 
+        Swal.fire({
+          title: "Correcto",
+          text: "Se guardaron sus cambios con éxito",
+          icon: "success",
+          confirmButtonText: "Ok",
+        }).then((result) => {
+          window.location.reload();
+        });
       });
     }
   }

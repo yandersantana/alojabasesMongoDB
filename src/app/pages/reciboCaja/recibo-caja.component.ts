@@ -77,6 +77,7 @@ export class ReciboCajaComponent implements OnInit {
   bloquearValor = false;
   existeCuentaPorCobrar=false;
   seccionPrestamo : boolean = false;
+  mensajeLoading = "Guardando"
   isTipoCierre = false;
   menu: string[] = [
     "Nuevo Recibo",
@@ -339,13 +340,13 @@ export class ReciboCajaComponent implements OnInit {
     this.valorTotalInicioFactura = e.value.valorInicialFactura
     this.tipoDocumentoCuenta = e.value.tipo_documento
     this.fechaDeuda = e.value.fecha_deuda
+    var newarr = this.textoDatosFactura.split(" ");
+    this.numReciboCajaTraido = newarr[0];
     if(this.tipoRecibo == "Facturacion")
       this.reciboCaja.fecha = e.value.fecha;
 
     if(this.tipoRecibo == "Cta.x Cobrar"){
       this.fechaDocumentoPendiente = e.value.fecha;
-      console.log(e.value.fecha);
-      console.log(this.fechaDocumentoPendiente);
       this.reciboCaja.numDocumento = e.value.num_documento;
     }
       
@@ -428,7 +429,6 @@ export class ReciboCajaComponent implements OnInit {
       object.fecha = element.fecha;
       object.fecha_deuda = element.fecha;
       object.sucursal = element.sucursal;
-      console.log(object)
       this.datosDocumento.push(object);
     });
   }
@@ -1256,10 +1256,8 @@ export class ReciboCajaComponent implements OnInit {
   async guardarReciboCaja(){
     try {
       this._reciboCajaService.newReciboCaja(this.reciboCaja).subscribe(async (res) => {
-        this.actualizarContador();
         this.generarTransaccionesFinancieras();
         await this.actualizarEstadoTransacciones();
-
       },(err) => {});
     } catch (error) {
       this.mostrarMensajeGenerico(2,"Error al guardar la transaccion"); 
@@ -1274,10 +1272,11 @@ export class ReciboCajaComponent implements OnInit {
       this.busquedaTransaccion.NumDocumento = this.reciboCaja.numDocumento
       this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
       this.busquedaTransaccion.rCajaId = this.numReciboCajaTraido;
-      console.log(this.busquedaTransaccion)
+      this.actualizarContador();
       this._transaccionFinancieraService.obtenerTransaccionesPorDocumentoYRecibo(this.busquedaTransaccion).subscribe(
         async (res) => {
           var transacciones = res as TransaccionesFinancieras[];
+          console.log(transacciones)
           await this.actualizarTransacciones(transacciones);},
         (err) => {});
     } 
@@ -1285,7 +1284,7 @@ export class ReciboCajaComponent implements OnInit {
 
   async actualizarTransacciones(transacciones : TransaccionesFinancieras[]){
     transacciones.forEach(element=>{
-      if(element.subCuenta == "2.0.0 Cuentas x Cobrar"){
+      if(element.subCuenta == "2.0.0 Cuentas x Cobrar" || element.subCuenta == "1.3.2 Abono o pago Documento Venta" ){
         this._transaccionFinancieraService.updateEstado(element,false).subscribe((res) => {},(err) => {});
       }    
     });

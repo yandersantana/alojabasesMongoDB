@@ -34,6 +34,7 @@
             <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
             <dxi-column dataField="PRODUCTO" caption="Producto" dataType="string" [allowEditing]="false" sortOrder="asc" width="55%"></dxi-column>
             <dxi-column dataField="CLASIFICA" caption="Clasificacion" [allowEditing]="false" dataType="string" width="15%"></dxi-column>
+            <dxi-column dataField="isSelected" caption="Seleccionado" [allowEditing]="false" dataType="boolean" width="10%"></dxi-column>
             <dxi-column dataField="precio" caption="Precio" [allowEditing]="false" dataType="number" width="15%"></dxi-column>
             <dxi-column dataField="porcentaje" caption="Porcentaje" dataType="number" width="15%"></dxi-column>
     </dx-data-grid>

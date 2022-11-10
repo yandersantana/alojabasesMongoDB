@@ -10,7 +10,7 @@ router.post("/getTransaccionesPorRango", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
-    isActive : true
+    //isActive : true
   });
   res.json(transacciones);
 });
@@ -32,6 +32,12 @@ router.post("/getTransaccionesPorRango2", async (req, res, next) => {
 
 router.post("/getTransaccionesPorProducto", async (req, res, next) => {
   const transacciones = await Transacciones.find({ producto: req.body.nombre, isActive : true });
+  res.json(transacciones);
+});
+
+
+router.post("/getTransaccionesPorProductoGeneral", async (req, res, next) => {
+  const transacciones = await Transacciones.find({ producto: req.body.nombre });
   res.json(transacciones);
 });
 
@@ -63,7 +69,7 @@ router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
       $gte: start,
       $lt: end,
     },
-    isActive : false 
+    //isActive : false 
   });
   res.json(transacciones);
 });
@@ -71,6 +77,12 @@ router.post("/getTransaccionesPorProductoYFecha", async (req, res, next) => {
 
 router.get("/getTransacciones", async (req, res) => {
   const transacciones = await Transacciones.find({ isActive : true });
+  res.send(transacciones);
+});
+
+
+router.get("/getTransaccionesGenerales", async (req, res) => {
+  const transacciones = await Transacciones.find(/*{ isActive : true }*/);
   res.send(transacciones);
 });
 

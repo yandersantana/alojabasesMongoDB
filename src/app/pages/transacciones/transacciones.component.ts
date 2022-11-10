@@ -86,7 +86,7 @@ export class TransaccionesComponent implements OnInit {
     this.mensajeLoading = "Cargando Transacciones";
     this.mostrarLoading = true;
     if(this.isBusqGeneral){
-      this.transaccionesService.getTransaccion().subscribe(
+      this.transaccionesService.getTransaccionesGenerales().subscribe(
         (res) => {
           this.transaccionesGlobales = res as transaccion[];
           this.separarTransacciones();
@@ -95,7 +95,7 @@ export class TransaccionesComponent implements OnInit {
       );
     }else{
       this.proTransaccion.nombre = this.nombreProducto;
-      this.transaccionesService.getTransaccionesPorProducto(this.proTransaccion).subscribe((res) => {
+      this.transaccionesService.getTransaccionesPorProductoGeneral(this.proTransaccion).subscribe((res) => {
         this.transaccionesGlobales = res as transaccion[];
         this.separarTransacciones();
       });

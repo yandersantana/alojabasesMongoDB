@@ -114,12 +114,21 @@
             ></dx-select-box>
 
         </dxi-item>
-        <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
+        <!-- <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
             <dxo-label
             location="left"
             alignment="right">
         </dxo-label>
+        </dxi-item> -->
+
+
+        <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
+            <dxi-item [label]="{text: textoConsecutivo }" cssClass="textNumber"><dxo-label [visible]="true"></dxo-label></dxi-item>
+            <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
+                <dxo-label location="left" alignment="right" [visible]="false"></dxo-label>
+            </dxi-item>
         </dxi-item>
+
     </dxi-item>
         <dxi-item dataField="cliente.cliente_nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
             <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>

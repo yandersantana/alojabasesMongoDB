@@ -1243,6 +1243,7 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioP.forEach((element) => {
         var catal = this.productosCatalogo.find(p=> p.PRODUCTO == element.producto.PRODUCTO);
         if(catal != null){
+          element.producto.cantidad = catal.CANT_MINIMA
           if(catal.CANT_MINIMA != 0){
             if (element.cantidadM2 <= catal.CANT_MINIMA) 
               this.invetarioMinimoProductosMatriz.push(element)

@@ -80,7 +80,7 @@ export class VentasComponent implements OnInit {
   valor1 = 0;
   valor2 = 200;
   arrayCantidades: number [] = []
-
+  textoConsecutivo = "S0001 - "
 
   //procesos para inventario
   proTransaccion: productoTransaccion = new productoTransaccion();

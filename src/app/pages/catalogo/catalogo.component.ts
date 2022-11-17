@@ -279,13 +279,13 @@ export class CatalogoComponent implements OnInit {
   }
 
   traerProductosCatalogoActivos(){
-    this.catalogoService.getCatalogoActivos().subscribe(res => {
+    this.catalogoService.getCatalogo().subscribe(res => {
         this.productosCatalogoActivos = res as catalogo[];
     })
   }
 
   traerProductos(){
-    this.productoService.getProductosActivos().subscribe(res => {
+    this.productoService.getProducto().subscribe(res => {
       this.productosActivos = res as producto[]; 
       this.administrarPrecios();
     })
@@ -783,6 +783,7 @@ export class CatalogoComponent implements OnInit {
       this.productosActivos.forEach(element2=>{
         if(element.PRODUCTO == element2.PRODUCTO){
           element.precio = element2.precio
+          element.ESTADO = element2.ESTADO
           this.productosCatalogoUso.push(element)
         }
       })

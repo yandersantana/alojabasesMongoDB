@@ -31,7 +31,8 @@ export class ParametrizacionComponent implements OnInit {
     direccion:"",
     telefonos:"",
     contactoPrincipal:"",
-    celularPrincipal:""
+    celularPrincipal:"",
+    cabeceraData : ""
   }
   varDis:boolean=true
   varDis2:boolean=true

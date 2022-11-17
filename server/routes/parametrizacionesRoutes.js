@@ -21,7 +21,8 @@ router.put('/update/:id', async (req, res,next) => {
         inicio: req.body.inicio,
         fin: req.body.fin,
         direccion: req.body.direccion,
-        telefonos: req.body.telefonos
+        telefonos: req.body.telefonos,
+        cabeceraData: req.body.cabeceraData
     };
     await ParametrizacionesSuc.findByIdAndUpdate(id, {$set: parametrizacion}, {new: true});
     res.json({status: 'Opciones Actualizado'});  

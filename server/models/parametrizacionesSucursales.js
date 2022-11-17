@@ -14,7 +14,8 @@ const ParametrizacionesSucursalesSchema = new Schema({
     inicio: { type: Number, required: false},
     fin: { type: Number, required: false},
     direccion: { type: String, required: false},
-    telefonos: { type: String, required: false}
+    telefonos: { type: String, required: false},
+    cabeceraData:  { type: String, required: false}
 },{
     timestamps:true
 });

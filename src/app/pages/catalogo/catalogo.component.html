@@ -39,7 +39,7 @@
     <dxi-column dataField="M2" width="15%" caption="Metros * Caja"></dxi-column>
     <dxi-column dataField="DIM" width="10%" caption="Dimensión"></dxi-column>
     <dxi-column dataField="precio" width="10%" caption="Precio"></dxi-column>
-    <dxi-column dataField="estado2" width="10%" caption="Estado" [visible]="true"></dxi-column>
+    <dxi-column dataField="ESTADO" width="10%" caption="Estado"></dxi-column>
     <dxi-column dataField="porcentaje_ganancia" width="10%" caption="% Ganancia" [visible]="false"></dxi-column>
 
     <dxi-column dataField="UNIDAD" caption="Unidad" [visible]="false"></dxi-column>
@@ -64,7 +64,7 @@
             <td style="vertical-align: middle;text-align: center;">{{employee.data.M2}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.DIM}}</td>
             <td style="vertical-align: middle;text-align: center;">{{employee.data.precio}}</td>
-            <td style="vertical-align: middle;text-align: center;">{{employee.data.estado2}}</td>
+            <td style="vertical-align: middle;text-align: center;">{{employee.data.ESTADO}}</td>
     </tbody>
     <dxo-paging [pageSize]="12"></dxo-paging>
     <dxo-pager
@@ -624,18 +624,6 @@
                                                 
                                             </div>
 
-                                            
-                                            
-                                            <!--   <div>
-                                                <div>
-                                                    <label for="filePicker">Escoge una imagen:</label><br>
-                                                    <input type="file" id="filePicker" (change)="handleFileSelect($event)">
-                                                </div>
-                                                <div>
-                                                    <label for="filePicker">Escoge una imagen:</label><br>
-                                                    <input type="file" id="filePicker" (change)="handleFileSelect($event)">
-                                                </div>
-                                            </div> -->
                                         </div>
                                         <div class="col-md-1"></div>
                                     </div>

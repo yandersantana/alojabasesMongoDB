@@ -773,9 +773,11 @@ export class ConsolidadoComponent implements OnInit {
       this.invetarioProd.valorProducto = (element2.porcentaje_ganancia * element2.precio) + element2.precio ;
       this.invetarioProd.notas = element2.notas;
       this.invetarioProd.execute = false;
-      if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto) 
-        this.invetarioP.push(this.invetarioProd);
-      
+      if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto){
+        if(this.nombreProducto != "OTR - Transporte - 0")
+          this.invetarioP.push(this.invetarioProd);
+      } 
+        
       contCajas = 0;
       contPiezas = 0;
       contCajas2 = 0;

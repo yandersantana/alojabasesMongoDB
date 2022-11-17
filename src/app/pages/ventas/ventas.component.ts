@@ -2965,9 +2965,10 @@ cambiarestado(e,i:number){
     buscarDatosSucursal(){
       this.parametrizaciones.forEach(element=>{
         if(element.sucursal == this.factura.sucursal){
-          this.parametrizacionSucu= element
+          this.parametrizacionSucu = element
           this.factura.rucFactura = element.ruc
           this.RucSucursal = element.ruc
+          this.textoConsecutivo = element.cabeceraData
         }
       })
     }
@@ -3080,13 +3081,11 @@ cambiarestado(e,i:number){
   registrarFactura(){
     this.botonFactura = true;
     this.mostrarPopupCodigo();
-    //this.validarEstadoCajaFactura()
   }
 
   registrarNotaVenta(){
     this.botonNotaVenta = true;
     this.mostrarPopupCodigo();
-    //this.validarEstadoCajaNotaVenta()
   }
 
   validarEstadoCajaFactura(){
@@ -3142,7 +3141,6 @@ cambiarestado(e,i:number){
           if(this.facturasEctdas.length == 0){
             resolve("listo");
           }else{
-            console.log("entre con", this.factura.documento_n)
             this.factura.documento_n =  this.factura.documento_n + 1
             this.obtenerIdFactura();
           }

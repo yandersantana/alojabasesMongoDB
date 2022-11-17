@@ -237,6 +237,13 @@
             width="15%"
             [visible]="true">
         </dxi-column>
+        <dxi-column
+            dataField="producto.cantidad"
+            caption="Cant.Mínima"
+            dataType="number"
+            width="10%"
+            [visible]="true">
+        </dxi-column>
         <dxi-column caption="Matriz"  dataField="sucursal1" *ngIf="dataMatriz">
             <dxi-column
                 dataField="cantidadCajas"

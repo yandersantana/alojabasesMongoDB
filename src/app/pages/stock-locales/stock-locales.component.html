@@ -93,43 +93,20 @@
         [dataSource]="invetarioMinimoProductos"
         [showBorders]="true"
         [columnWidth]="125"
+        [hoverStateEnabled]="true"
+        [selectedRowKeys]="[]"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
-        <dxo-export [enabled]="true" fileName="Consolidado_productos" [allowExportSelectedData]="true"></dxo-export>
-        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
-        <dxi-column
-            dataField="producto.PRODUCTO"
-            caption="Producto"
-            dataType="string"
-            sortOrder="asc"
-            [width]="valorAncho">
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadM2"
-            caption="M2/UNIDAD"
-            dataType="number"
-            [width]="valorAncho2"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadCajas"
-            caption="CAJAS"
-            dataType="number"
-            [width]="100"
-            class="d2">
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadPiezas"
-            caption="PIEZAS"
-            [width]="100"
-            dataType="number">
-        </dxi-column>
-        <dxi-column
-            dataField="valorProducto"
-            caption="PRECIO"
-            [visible]="true"
-            [width]="100">
-        </dxi-column>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel  [visible]="true"  [width]="240"  placeholder="Buscar..."></dxo-search-panel>
+        <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
+        <dxo-export [enabled]="true" fileName="Inventario Productos" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string" sortOrder="asc" [width]="valorAncho" ></dxi-column>
+        <dxi-column dataField="cantidadM2" caption="M2/UNIDAD" dataType="number" [width]="valorAncho2"></dxi-column>
+        <dxi-column dataField="cantidadCajas" caption="CAJAS" dataType="number" [width]="70"></dxi-column>
+        <dxi-column dataField="cantidadPiezas" caption="PIEZAS" [width]="70" dataType="number"></dxi-column>   
+        <dxi-column dataField="valorProducto" caption="PRECIO" [width]="80"></dxi-column>
         <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
     </dx-data-grid>
     </div>    
@@ -146,54 +123,26 @@
         id="gridContainer"
         [dataSource]="invetarioMinimoProductos"
         [showBorders]="true"
+        [columnWidth]="125"
+        [hoverStateEnabled]="true"
+        [selectedRowKeys]="[]"
         (onExporting)="onExporting2($event)"
         (onExported)="onExported2($event)">
-        <dxo-filter-row 
-        [visible]="true" ></dxo-filter-row>
-        
-        <dxo-search-panel 
-        [visible]="true" 
-        [width]="240" 
-        placeholder="Buscar..."></dxo-search-panel>
+        <dxo-selection mode="single"></dxo-selection>
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-search-panel  [visible]="true"  [width]="240"  placeholder="Buscar..."></dxo-search-panel>
         <i class="fa fa-exclamation-triangle" aria-hidden="true"></i> 
         <dxo-export [enabled]="true" fileName="Inventario Productos" [allowExportSelectedData]="true"></dxo-export>
-        <dxi-column
-            dataField="producto.PRODUCTO"
-            caption="Producto"
-            dataType="string"
-            sortOrder="asc"
-            width="40%" >
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadM2"
-            caption="M2/UNIDAD"
-            dataType="number"
-            [visible]="true">
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadCajas"
-            caption="CAJAS"
-            dataType="number"
-            class="d2">
-        </dxi-column>
-        <dxi-column
-            dataField="cantidadPiezas"
-            caption="PIEZAS"
-            dataType="number">
-        </dxi-column>
-        
-        <dxi-column
-            dataField="valorProducto"
-            caption="PRECIO"
-            [visible]="true"
-            width="15%">
-        </dxi-column>
-        
-        <dxi-sort-by-group-summary-info summaryItem="count"></dxi-sort-by-group-summary-info>
+        <dxi-column dataField="producto.PRODUCTO" caption="Producto" dataType="string" sortOrder="asc" [width]="valorAncho" ></dxi-column>
+        <dxi-column dataField="cantidadM2" caption="M2/UNIDAD" dataType="number" [width]="valorAncho2"></dxi-column>
+        <dxi-column dataField="cantidadCajas" caption="CAJAS" dataType="number" [width]="70"></dxi-column>
+        <dxi-column dataField="cantidadPiezas" caption="PIEZAS" [width]="70" dataType="number"></dxi-column>   
+        <dxi-column dataField="valorProducto" caption="PRECIO" [width]="80"></dxi-column>
         <dxo-paging [pageSize]="12"></dxo-paging>
         <dxo-pager
             [showPageSizeSelector]="true"
             [allowedPageSizes]="[8, 12, 20]"
         ></dxo-pager>
+        <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
     </dx-data-grid>
 </div>

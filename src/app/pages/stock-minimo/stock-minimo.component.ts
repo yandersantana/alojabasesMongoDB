@@ -710,6 +710,8 @@ export class StockMinimoComponent implements OnInit {
       var cantidadRestante = 0;
       this.invetarioProd = new inventario();
       this.invetarioProd.producto = element2;
+      var casas = this.transacciones.filter(element=> element.producto == element2.PRODUCTO && element.tipo_transaccion == "compra");
+      this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
       this.invetarioProd.cantidadCajas = contCajas;
       this.invetarioProd.cantidadCajas2 = contCajas2;
       this.invetarioProd.cantidadCajas3 = contCajas3;
@@ -729,6 +731,8 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioProd.valorProducto = (element2.porcentaje_ganancia * element2.precio) + element2.precio ;
       this.invetarioProd.notas = element2.notas;
       this.invetarioProd.execute = false;
+
+      console.log(this.invetarioProd)
       if (this.invetarioProd.producto.PRODUCTO == this.nombreProducto) 
         this.invetarioP.push(this.invetarioProd);
       
@@ -908,9 +912,10 @@ export class StockMinimoComponent implements OnInit {
           }
         }
       });
-      var cantidadRestante = 0;
       this.invetarioProd = new inventario();
       this.invetarioProd.producto = element2;
+      var casas = this.transacciones.filter(element=> element.producto == element2.PRODUCTO && element.tipo_transaccion == "compra");
+      this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
       this.invetarioProd.cantidadCajas = contCajas;
       this.invetarioProd.cantidadCajas2 = contCajas2;
       this.invetarioProd.cantidadCajas3 = contCajas3;
@@ -1254,8 +1259,19 @@ export class StockMinimoComponent implements OnInit {
           }
         }
       });
-      
+
       this.invetarioMinimoProductos = this.invetarioMinimoProductosMatriz
+
+      /* this.invetarioMinimoProductos.forEach((element) => {
+          this._catalogoService.getProductosPorFiltros4(productoFiltro).subscribe((res) => {
+            this.productos = res as producto[];
+            this.traerTransaccionesMultiples();
+          });
+        var catal = this.productosCatalogo.find(p=> p.PRODUCTO == element.producto.PRODUCTO);
+        element.producto.CASA = "Rialto"
+      }); */
+      
+      
     }
     
     this.mostrarLoading = false;

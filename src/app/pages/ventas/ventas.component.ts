@@ -3088,8 +3088,8 @@ cambiarestado(e,i:number){
         detalle.descuento = 0
       var impuesto = new ImpuestoModel();
         impuesto.tarifa = 12
-        impuesto.baseImponible = element.total
-        impuesto.valor = element.total * 0.12
+        impuesto.baseImponible = element.subtP1
+        impuesto.valor = element.subtP1 * 0.12
         detalle.impuesto.push(impuesto)
       this.facturaVeronica.detalles.push(detalle);
     });
@@ -3097,7 +3097,7 @@ cambiarestado(e,i:number){
 
     //*************FORMA DE PAGO*********** */
     var pago = new PagosModel();
-    pago.total = this.factura.total
+    pago.total = Number(this.factura.subtotalF1.toFixed(2))
     this.facturaVeronica.pagos.push(pago);
 
 
@@ -3109,7 +3109,15 @@ cambiarestado(e,i:number){
 
     this._apiVeronicaService.newFactura(this.facturaVeronica).subscribe(
       res => {  this.mostrarLoading = false;
-                this.mostrarMensajeGenerico(1,"Factura registrada con éxito")},
+                  Swal.fire({
+                    title: 'Correcto',
+                    text: 'Factura registrada con éxito',
+                    icon: 'success',
+                    confirmButtonText: 'Ok'
+                  }).then((result) => {
+                    window.location.reload()
+                  })
+                },
       err => {  this.mostrarLoading = false;
                 this.mostrarMensajeGenerico(2,"Error al establecer coneccion con el SRI")});
   }

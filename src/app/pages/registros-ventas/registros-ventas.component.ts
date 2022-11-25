@@ -1173,6 +1173,7 @@ export class RegistrosVentasComponent implements OnInit {
        
         
       ],
+      
       footer: function (currentPage, pageCount) {
         return {
           table: {

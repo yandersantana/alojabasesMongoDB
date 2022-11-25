@@ -1,3 +1,4 @@
+import { Recoverable } from 'repl'
 import {ProductoDetalleVenta } from '../producto/producto'
 
 
@@ -333,3 +334,4 @@ export class contadoresDocumentos{
 
     }
 }
+

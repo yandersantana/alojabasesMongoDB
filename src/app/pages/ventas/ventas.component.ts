@@ -46,6 +46,8 @@ import { CajaMenor } from '../cajaMenor/caja-menor';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { AuthService } from 'src/app/shared/services';
 import { CombosService } from 'src/app/servicios/combos.service';
+import { ApiVeronicaService } from 'src/app/servicios/api_veronica.service';
+import { CampoAdicionalModel, ComprobanteDetalle, ConsecutivoDto, FacturaModel, ImpuestoModel, PagosModel, ReceptorModel } from '../api-veronica/api-veronica';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -231,6 +233,10 @@ export class VentasComponent implements OnInit {
   cantidadProductos = 0
 
 
+  facturaVeronica : FacturaModel
+  consecutivoVeronica : ConsecutivoDto
+  secuencialFactura : string
+
 
   constructor(private db: AngularFirestore,
     public preciosEspecialesService : PrecioEspecialService,
@@ -255,6 +261,7 @@ export class VentasComponent implements OnInit {
     public _transaccionFinancieraService : TransaccionesFinancierasService,
     public _cajaMenorService : CajaMenorService,
     public _comboService : CombosService,
+    public _apiVeronicaService : ApiVeronicaService,
     public router: Router) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -265,6 +272,10 @@ export class VentasComponent implements OnInit {
     this.factura.coste_transporte= 0
     this.factura.fecha2= this.now.toLocaleString()
     this.factura.tipoDocumento = "Factura"
+
+    this.facturaVeronica = new FacturaModel()
+
+
   }
 
   ngOnInit() {
@@ -287,6 +298,7 @@ export class VentasComponent implements OnInit {
     this.tDocumento= "Factura"
     this.factura.observaciones= " "
     this.nCotizacionFact= " "
+
   }
 
   
@@ -454,6 +466,14 @@ export class VentasComponent implements OnInit {
   }
 
 
+
+  traerConsecutivoVeronica(ruc : string){
+    this._apiVeronicaService.obtenerSecuencia(ruc).subscribe(
+      res => {  this.consecutivoVeronica = res as ConsecutivoDto
+                this.secuencialFactura = this.consecutivoVeronica.result[0].establecimiento.puntosEmision[0].secuencialFactura
+        },
+      err => { this.mostrarMensajeGenerico(2,"No se ha podido establecer conexión con el SRI")});
+  }
 
 
 
@@ -849,30 +869,30 @@ setSelectedProducto(i:number){
   }
       
       
-    asignarsucursalD(e){
-      this.factura.sucursal= e.value
-      if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
-        Swal.fire({
-          title: 'Cambiar de sucursal',
-          text: 'Desea cambiar de sucursal, se eliminará los productos detallados',
-          icon: 'success',
-          showCancelButton: true,
-          confirmButtonText: 'Si',
-          cancelButtonText: 'No'
-        }).then((result) => {
-          if (result.value) {
-            this.limpiarArreglo()
-            this.asignarIDdocumentos()
-            this.buscarDatosSucursal()
-            this.productosVendidos.push(new venta())
-          }
-        
-        })
-      }else{
-        this.asignarIDdocumentos()
-        this.buscarDatosSucursal()
-      }        
-    }
+  asignarsucursalD(e){
+    this.factura.sucursal= e.value
+    if(this.productosVendidos.length >= 1 && this.productosVendidos[0].producto.PRODUCTO!=undefined){
+      Swal.fire({
+        title: 'Cambiar de sucursal',
+        text: 'Desea cambiar de sucursal, se eliminará los productos detallados',
+        icon: 'success',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.limpiarArreglo()
+          this.asignarIDdocumentos()
+          this.buscarDatosSucursal()
+          this.productosVendidos.push(new venta())
+        }
+      
+      })
+    }else{
+      this.asignarIDdocumentos()
+      this.buscarDatosSucursal()
+    }        
+  }
 
   limpiarArreglo(){
     var cont=0
@@ -1573,13 +1593,33 @@ cambiarestado(e,i:number){
           {
             columns: [ 
               [
+                {
+                  columns: [
+                    {
+                      image:this.imagenLogotipo,
+                      width: 100,
+                      margin: [0, 0, 0, 0],
+                    },
+                    {
+                      width:410,
+                      columns: [          
+                                  [
+                                    { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
+                                    { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                    { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
+                                    { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
+                                  ],
+                      ]
+                    },
+                  ]
+                },
               {
               //Desde aqui comienza los datos del cliente
               style: 'tableExample',
-              relativePosition: {
+              /* relativePosition: {
 								x: 20,
 								y: 65,
-							},
+							}, */
                 table: {
                   type: 'none',
                   widths: [255,105,110],
@@ -1646,8 +1686,8 @@ cambiarestado(e,i:number){
             //Desde aqui comienza los datos del cliente
             style: 'tableExample',
             relativePosition: {
-              x: 20,
-              y: 265,
+              x: 0,
+              y: 165,
             },
             fontSize:8,
             table: {
@@ -1663,6 +1703,7 @@ cambiarestado(e,i:number){
                         bold: true,
                         fontSize:6,
                         ul: [
+                          {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                           "Vendedor: " + this.factura.nombreVendedor,
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
@@ -1683,7 +1724,7 @@ cambiarestado(e,i:number){
             style: 'tableExampleResultados',
             relativePosition: {
               x: 420,
-              y: 241,
+              y: 141,
             },
             fontSize:8,
             table: {
@@ -1706,12 +1747,36 @@ cambiarestado(e,i:number){
             {
               columns: [ 
                 [
+                  {
+                    relativePosition: {
+                      x: 0,
+                      y: 255,
+                    }, 
+                    columns: [
+                      {
+                        image:this.imagenLogotipo,
+                        width: 100,
+                        margin: [0, 0, 0, 0],
+                      },
+                      {
+                        width:410,
+                        columns: [          
+                                    [
+                                      { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
+                                      { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                      { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
+                                      { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
+                                    ],
+                        ]
+                      },
+                    ]
+                  },
                 {
                 //Desde aqui comienza los datos del cliente
                 style: 'tableExample',
                 relativePosition: {
-                  x: 20,
-                  y: 420,
+                  x: 0,
+                  y: 290,
                 },
                 table: {
                   type: 'none',
@@ -1778,8 +1843,8 @@ cambiarestado(e,i:number){
               //Desde aqui comienza los datos del cliente
               style: 'tableExample',
               relativePosition: {
-                x: 20,
-                y: 620,
+                x: 0,
+                y: 520,
               },
               fontSize:8,
               table: {
@@ -1795,6 +1860,7 @@ cambiarestado(e,i:number){
                           bold: true,
                           fontSize:6,
                           ul: [
+                            {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
                             "Vendedor: " + this.factura.nombreVendedor,
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
@@ -1816,7 +1882,7 @@ cambiarestado(e,i:number){
               style: 'tableExampleResultados',
               relativePosition: {
                 x: 420,
-                y: 591,
+                y: 491,
               },
               fontSize:8,
               table: {
@@ -1943,25 +2009,7 @@ cambiarestado(e,i:number){
       return {
         pageSize: 'A4',
         content: [
-          {
-            columns: [{
-              image: this.imagenLogotipo,
-            width: 100,
-            margin: [0, 20, 0, 10],
-            },
-            {
-              width:410,
-              margin: [0, 20, 0, 10],
-              text: "Fecha:   "+this.factura.fecha.toLocaleDateString(),
-              alignment:"right"
-            },
-            ]
-            
-            //alignment: 'center'
-          }, {
-      
-          },
-          
+         
           {
             columns: [
               
@@ -2453,7 +2501,7 @@ cambiarestado(e,i:number){
               style: 'tableExampleResultados',
               relativePosition: {
                 x: 420,
-                y: 591,
+                y: 491,
               },
               fontSize:8,
               table: {
@@ -2608,18 +2656,18 @@ cambiarestado(e,i:number){
     getProductosVendidos(productos: venta[]) {
       let productos2:venta[]=[]
       productos.forEach(element=>{
-        if(element.pedir==true){
+        if(element.pedir==true)
             element.tipoDocumentoVenta="P"
-        }else{
+        else
           element.tipoDocumentoVenta="E"
-        }
+        
         productos2.push(element)
       })
       return {
-        relativePosition: {
+        /* relativePosition: {
           x: 20,
           y: 94,
-        },
+        }, */
         table: {
           headerRows: 1,
           widths: ["8%","6%","55%","6%","10%","10%"],
@@ -2685,8 +2733,8 @@ cambiarestado(e,i:number){
       })
       return {
         relativePosition: {
-          x: 20,
-          y: 449,
+          x: 0,
+          y: 320,
         },
         table: {
           headerRows: 1,
@@ -2959,7 +3007,6 @@ cambiarestado(e,i:number){
 
       }
     }
-
     
 
     buscarDatosSucursal(){
@@ -2969,6 +3016,7 @@ cambiarestado(e,i:number){
           this.factura.rucFactura = element.ruc
           this.RucSucursal = element.ruc
           this.textoConsecutivo = element.cabeceraData
+          this.traerConsecutivoVeronica(this.RucSucursal)
         }
       })
     }
@@ -3001,18 +3049,71 @@ cambiarestado(e,i:number){
     }
   }
   
-    async guardarFactura(){
-      this.contadorVenta++
-      this.factura.username= this.username
-      this.factura.fecha= this.now
-      this.factura.fecha2= new Date().toLocaleString()
-      this.factura.productosVendidos=this.productosVendidos
-      this.facturasService.newFactura(this.factura).subscribe(
-        res => {this.actualizarFacturero();this.validarFormaPago()},
-        err => {this.mostrarMensajeGenerico(2,"Error al guardar")});
-    }
+  async guardarFactura(){
+    this.contadorVenta++
+    this.factura.username= this.username
+    this.factura.fecha= this.now
+    this.factura.fecha2= new Date().toLocaleString()
+    this.factura.productosVendidos=this.productosVendidos
+    this.facturasService.newFactura(this.factura).subscribe(
+      res => {this.registrarFacturaSRI();this.actualizarFacturero();this.validarFormaPago()},
+      err => {this.mostrarMensajeGenerico(2,"Error al guardar")});
+  }
 
    
+
+  registrarFacturaSRI(){
+    this.mensajeLoading = "Enviando Factura SRI"
+    this.mostrarLoading = true;
+    //--------------INICIO LLENADO DE OBJETO SRI VERONICA--------------------
+    this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString()
+    this.facturaVeronica.ruc = this.parametrizacionSucu.ruc
+    this.facturaVeronica.secuencial = this.secuencialFactura
+
+    //******DATOS DEL RECEPTOR********** */
+    this.facturaVeronica.receptor = new ReceptorModel()
+    this.facturaVeronica.receptor.tipoIdentificacion = this.factura.cliente.ruc.length == 13 ? "04" : "05"
+    this.facturaVeronica.receptor.razonSocial = this.factura.cliente.cliente_nombre
+    this.facturaVeronica.receptor.identificacion = this.factura.cliente.ruc
+    this.facturaVeronica.receptor.direccion = this.factura.cliente.direccion
+
+    //*********DETALLE FACTURA********** */
+    this.factura.productosVendidos.forEach(element => {
+      var detalle = new ComprobanteDetalle()
+        detalle.codigoPrincipal = "000000"
+        detalle.codigoAuxiliar = "000000"
+        detalle.descripcion = element.producto.PRODUCTO
+        detalle.cantidad = element.cantidad
+        detalle.precioUnitario = element.precio_venta-(element.precio_venta*(element.descuento/100))
+        detalle.descuento = 0
+      var impuesto = new ImpuestoModel();
+        impuesto.tarifa = 12
+        impuesto.baseImponible = element.total
+        impuesto.valor = element.total * 0.12
+        detalle.impuesto.push(impuesto)
+      this.facturaVeronica.detalles.push(detalle);
+    });
+    
+
+    //*************FORMA DE PAGO*********** */
+    var pago = new PagosModel();
+    pago.total = this.factura.total
+    this.facturaVeronica.pagos.push(pago);
+
+
+    //************CAMPOS ADICIONALES*********** */
+    var campoAdicional = new CampoAdicionalModel();
+    campoAdicional.nombre = "email"
+    campoAdicional.value = this.factura.cliente.correo //cambiar*********
+    this.facturaVeronica.campoAdicional.push(campoAdicional)
+
+    this._apiVeronicaService.newFactura(this.facturaVeronica).subscribe(
+      res => {  this.mostrarLoading = false;
+                this.mostrarMensajeGenerico(1,"Factura registrada con éxito")},
+      err => {  this.mostrarLoading = false;
+                this.mostrarMensajeGenerico(2,"Error al establecer coneccion con el SRI")});
+  }
+  
 
 
 

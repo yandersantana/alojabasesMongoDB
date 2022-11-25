@@ -147,9 +147,7 @@
             <dxo-label [visible]="false" ></dxo-label>
         </dxi-item>
         <dxi-item dataField="tipo_venta" [editorOptions]="{ placeholder: 'Tventa', disabled:true}" [colSpan]="1" >
-            
             <dxo-label [visible]="false"> </dxo-label>
-           
         </dxi-item>
     </dxi-item>
     <dxi-item itemType="group" [colCount]="5" [colSpan]="1">
@@ -181,7 +179,11 @@
     </dxi-item>
    
     <dxi-item itemType="group" [colCount]="3" [colSpan]="1">
-        <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}" [colSpan]="2">
+        <!-- <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}" [colSpan]="2">
+            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
+            <dxo-label [visible]="false"></dxo-label>
+        </dxi-item> -->
+        <dxi-item dataField="cliente.correo" [editorOptions]="{ placeholder: 'Correo'}" [colSpan]="2">
             <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
             <dxo-label [visible]="false"></dxo-label>
         </dxi-item>

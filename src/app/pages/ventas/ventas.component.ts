@@ -3069,6 +3069,7 @@ cambiarestado(e,i:number){
     this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString()
     this.facturaVeronica.ruc = this.parametrizacionSucu.ruc
     this.facturaVeronica.secuencial = this.secuencialFactura
+    this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "001":"002"
 
     //******DATOS DEL RECEPTOR********** */
     this.facturaVeronica.receptor = new ReceptorModel()
@@ -3084,12 +3085,12 @@ cambiarestado(e,i:number){
         detalle.codigoAuxiliar = "000000"
         detalle.descripcion = element.producto.PRODUCTO
         detalle.cantidad = element.cantidad
-        detalle.precioUnitario = element.precio_venta-(element.precio_venta*(element.descuento/100))
+        detalle.precioUnitario = element.precio_venta/1.12
         detalle.descuento = 0
       var impuesto = new ImpuestoModel();
         impuesto.tarifa = 12
-        impuesto.baseImponible = element.subtP1
-        impuesto.valor = element.subtP1 * 0.12
+        impuesto.baseImponible = Number(element.subtP1.toFixed(2))
+        impuesto.valor = impuesto.baseImponible * 0.12
         detalle.impuesto.push(impuesto)
       this.facturaVeronica.detalles.push(detalle);
     });
@@ -3097,7 +3098,7 @@ cambiarestado(e,i:number){
 
     //*************FORMA DE PAGO*********** */
     var pago = new PagosModel();
-    pago.total = Number(this.factura.subtotalF1.toFixed(2))
+    pago.total = Number(this.factura.total.toFixed(2))
     this.facturaVeronica.pagos.push(pago);
 
 
@@ -3106,6 +3107,10 @@ cambiarestado(e,i:number){
     campoAdicional.nombre = "email"
     campoAdicional.value = this.factura.cliente.correo //cambiar*********
     this.facturaVeronica.campoAdicional.push(campoAdicional)
+    var campoAdicional2 = new CampoAdicionalModel();
+    campoAdicional2.nombre = "NFactura"
+    campoAdicional2.value = this.factura.documento_n.toString() //cambiar*********
+    this.facturaVeronica.campoAdicional.push(campoAdicional2)
 
     this._apiVeronicaService.newFactura(this.facturaVeronica).subscribe(
       res => {  this.mostrarLoading = false;

@@ -75,6 +75,7 @@ app.use('/revisionInventario', require('./routes/revisionInventarioRoutes'));
 app.use('/revisionInventarioProducto', require('./routes/revisionInventarioProductoRoutes'));
 app.use('/transaccionRevisionProducto', require('./routes/transaccionesRevisionesProductosRoutes'));
 app.use('/stockProductosLocales', require('./routes/stockLocalesRoutes'));
+app.use('/servicioWebVeronica', require('./routes/servicioWebVeronicaRoutes'));
 
 
 //starting the server

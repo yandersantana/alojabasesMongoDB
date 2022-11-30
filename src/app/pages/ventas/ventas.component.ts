@@ -47,7 +47,8 @@ import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { AuthService } from 'src/app/shared/services';
 import { CombosService } from 'src/app/servicios/combos.service';
 import { ApiVeronicaService } from 'src/app/servicios/api_veronica.service';
-import { CampoAdicionalModel, ComprobanteDetalle, ConsecutivoDto, FacturaModel, ImpuestoModel, PagosModel, ReceptorModel } from '../api-veronica/api-veronica';
+import { CampoAdicionalModel, ComprobanteDetalle, ConsecutivoDto, FacturaModel, ImpuestoModel, PagosModel, ReceptorModel, ResponseVeronicaDto, ResultadoDto, ServicioWebVeronica } from '../api-veronica/api-veronica';
+import { ServicioWebVeronicaService } from 'src/app/servicios/servicioWebVeronica.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -262,6 +263,7 @@ export class VentasComponent implements OnInit {
     public _cajaMenorService : CajaMenorService,
     public _comboService : CombosService,
     public _apiVeronicaService : ApiVeronicaService,
+    public _logApiVeronicaService : ServicioWebVeronicaService,
     public router: Router) {
     this.factura = new factura()
     this.cotizacion = new cotizacion()
@@ -1601,7 +1603,7 @@ cambiarestado(e,i:number){
                       margin: [0, 0, 0, 0],
                     },
                     {
-                      width:410,
+                      width:290,
                       columns: [          
                                   [
                                     { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
@@ -1611,79 +1613,68 @@ cambiarestado(e,i:number){
                                   ],
                       ]
                     },
+                    { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, width:100, margin: [0, 12, 0, 0]},
                   ]
                 },
-              {
-              //Desde aqui comienza los datos del cliente
-              style: 'tableExample',
-              /* relativePosition: {
-								x: 20,
-								y: 65,
-							}, */
-                table: {
-                  type: 'none',
-                  widths: [255,105,110],
-                  body: [
-                    [
-                      {
-                        type: 'none',
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Cliente    : '+this.factura.cliente.cliente_nombre,
-                              'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.celular,  
+                {
+                  style: 'tableExample',
+                  table: {
+                    type: 'none',
+                    widths: [255,105,110],
+                    body: [
+                            [
+                              {
+                                type: 'none',
+                                stack: [
+                                        {
+                                          type: 'none',
+                                          bold: true,
+                                          fontSize:7,
+                                          ul: [
+                                            'Cliente    : '+this.factura.cliente.cliente_nombre,
+                                            'Dirección  : '+this.factura.cliente.direccion,  
+                                            'Teléfono   : '+this.factura.cliente.celular,  
+                                          ]
+                                        }
+                                ]
+                              },
+                              {
+                                stack: [
+                                        {
+                                          type: 'none',
+                                          bold: true,
+                                          fontSize:7,
+                                          ul: [
+                                            'RUC      : '+ this.factura.cliente.ruc,
+                                            'Sucursal : '+ this.factura.sucursal, 
+                                            'Usuario : ' + this.nombreUsuario, 
+                                          ]
+                                        }
+                                ]
+                              },
+                              {
+                                stack: [
+                                      {
+                                        type: 'none',
+                                        bold: true,
+                                        fontSize:7,
+                                        ul: [
+                                          'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
+                                          'Vendedor  :  '+this.factura.nombreVendedor,
+                                          'RUC/Suc  :  '+this.RucSucursal,
+                                        ]
+                                      }
+                                ]
+                              },
                             ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'RUC      : '+ this.factura.cliente.ruc,
-                              'Sucursal : '+ this.factura.sucursal, 
-                              'Usuario : ' + this.nombreUsuario, 
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
-                              'Código  :  '+this.numeroFactura,
-                              'RUC/Suc  :  '+this.RucSucursal,
-                            ]
-                          }
-                        ]
-                      },
                     ]
-                  ]
-              },
-              },
-              
+                  },
+                },
               ],
-              [
-                
-              ]
             ]
           },
-         
-          
           this.getProductosVendidos(this.productosVendidos),
           {
-            //Desde aqui comienza los datos del cliente
             style: 'tableExample',
             relativePosition: {
               x: 0,
@@ -1705,7 +1696,6 @@ cambiarestado(e,i:number){
                         ul: [
                           {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                          "Vendedor: " + this.factura.nombreVendedor,
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -1719,25 +1709,24 @@ cambiarestado(e,i:number){
             },
             layout: 'noBorders'
             },
-          {
-            //Desde aqui comienza los datos del cliente
-            style: 'tableExampleResultados',
-            relativePosition: {
-              x: 420,
-              y: 141,
-            },
-            fontSize:8,
-            table: {
-              widths: [100],
-              body: [
-                [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                [ {text:this.factura.total.toFixed(2), style:"totales" } ]
-              ]
-            },
-            layout: 'noBorders'
+            {
+              style: 'tableExampleResultados',
+              relativePosition: {
+                x: 410,
+                y: 141,
+              },
+              fontSize:8,
+              table: {
+                widths: [100],
+                body: [
+                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
+                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+                ]
+              },
+              layout: 'noBorders'
             },
 
 
@@ -1759,7 +1748,7 @@ cambiarestado(e,i:number){
                         margin: [0, 0, 0, 0],
                       },
                       {
-                        width:410,
+                        width:290,
                         columns: [          
                                     [
                                       { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
@@ -1769,78 +1758,74 @@ cambiarestado(e,i:number){
                                     ],
                         ]
                       },
+                      { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, width:100, margin: [0, 12, 0, 0]},
                     ]
                   },
-                {
-                //Desde aqui comienza los datos del cliente
-                style: 'tableExample',
-                relativePosition: {
-                  x: 0,
-                  y: 290,
-                },
-                table: {
-                  type: 'none',
-                  widths: [255,105,110],
-                  body: [
-                    [
-                      {
-                        type: 'none',
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Cliente    : '+this.factura.cliente.cliente_nombre,
-                              'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.celular,  
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'RUC      : '+ this.factura.cliente.ruc,
-                              'Sucursal : '+ this.factura.sucursal, 
-                              'Usuario :  '+ this.nombreUsuario, 
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
-                              'Código  :  '+this.numeroFactura,
-                              'RUC/Suc  :  '+this.RucSucursal,
-                            ]
-                          }
-                        ]
-                      },
-                    ]
-                  ]
-              },
-                }, 
+                  {
+                    style: 'tableExample',
+                    relativePosition: {
+                      x: 0,
+                      y: 290,
+                    },
+                    table: {
+                      type: 'none',
+                      widths: [255,105,110],
+                      body: [
+                              [
+                                {
+                                  type: 'none',
+                                  stack: [
+                                    {
+                                      type: 'none',
+                                      bold: true,
+                                      fontSize:7,
+                                      ul: [
+                                        'Cliente    : '+this.factura.cliente.cliente_nombre,
+                                        'Dirección  : '+this.factura.cliente.direccion,  
+                                        'Teléfono   : '+this.factura.cliente.celular,  
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  stack: [
+                                    {
+                                      type: 'none',
+                                      bold: true,
+                                      fontSize:7,
+                                      ul: [
+                                        'RUC      : '+ this.factura.cliente.ruc,
+                                        'Sucursal : '+ this.factura.sucursal, 
+                                        'Usuario :  '+ this.nombreUsuario, 
+                                      ]
+                                    }
+                                  ]
+                                },
+                                {
+                                  stack: [
+                                    {
+                                      type: 'none',
+                                      bold: true,
+                                      fontSize:7,
+                                      ul: [
+                                        'Fecha Factura  :  '+this.factura.fecha.toLocaleDateString(),
+                                        'Vendedor  :  '+this.factura.nombreVendedor,
+                                        'RUC/Suc  :  '+this.RucSucursal,
+                                      ]
+                                    }
+                                  ]
+                                },
+                              ]
+                      ]
+                    },
+                  }, 
                 ],
-                [
-                  
-                ]
               ]
             },
            
             
             this.getProductosVendidoscopia(this.productosVendidos),
             {
-              //Desde aqui comienza los datos del cliente
               style: 'tableExample',
               relativePosition: {
                 x: 0,
@@ -1862,26 +1847,21 @@ cambiarestado(e,i:number){
                           ul: [
                             {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                            "Vendedor: " + this.factura.nombreVendedor,
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
                         }
                       ]
                     },
-                   
-                   
                   ]
                 ],
               },
               layout: 'noBorders'
-              
-              },
+            },
             {
-              //Desde aqui comienza los datos del cliente
               style: 'tableExampleResultados',
               relativePosition: {
-                x: 420,
+                x: 410,
                 y: 491,
               },
               fontSize:8,
@@ -1896,7 +1876,7 @@ cambiarestado(e,i:number){
                 ]
               },
               layout: 'noBorders'
-              },
+            },
           
         ],
         footer: function (currentPage, pageCount) {
@@ -2014,9 +1994,6 @@ cambiarestado(e,i:number){
             columns: [
               
               [
-             /*  {
-                text: "Fecha de impresión: "+this.factura.fecha, fontSize:10
-              }, */
               {
                 text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:9
               },
@@ -2258,70 +2235,97 @@ cambiarestado(e,i:number){
           {
             columns: [ 
               [
-              {
-              //Desde aqui comienza los datos del cliente
-              style: 'tableExample',
-              relativePosition: {
-								x: 20,
-								y: 65,
-							},
-                table: {
-                  type: 'none',
-                  widths: [255,105,110],
-                  body: [
-                    [
-                      {
-                        type: 'none',
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Cliente    : '+this.factura.cliente.cliente_nombre,
-                              'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.celular,  
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'RUC      : '+ this.factura.cliente.ruc,
-                              'Sucursal : '+ this.factura.sucursal, 
-                              'Usuario : ' + this.nombreUsuario, 
-                            ]
-                          }
-                        ]
-                      },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
-                              'Código  :  '+this.numeroFactura,
-                              'RUC/Suc  :  '+this.RucSucursal,
-                            ]
-                          }
-                        ]
-                      },
-                    ]
+                {
+                  columns: [
+                    {
+                      image:this.imagenLogotipo,
+                      width: 100,
+                      margin: [0, 0, 0, 0],
+                    },
+                    {
+                      width:290,
+                      columns: [          
+                                  [
+                                    { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
+                                    { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                    { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
+                                    { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
+                                  ],
+                      ]
+                    },
+                    { 
+                      width:100,
+                      columns: [          
+                                  [
+                                    { text: "** NOTA DE VENTA **", fontSize:9, alignment: "right", bold: true},
+                                    { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
+                                  ],
+                      ]
+                    },
+                    //{ text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, width:100, margin: [0, 12, 0, 0]},
                   ]
-              },
-              },
+                },
+                {
+                  //Desde aqui comienza los datos del cliente
+                  style: 'tableExample',
+                  /* relativePosition: {
+                    x: 20,
+                    y: 65,
+                  }, */
+                  table: {
+                    type: 'none',
+                    widths: [255,105,110],
+                    body: [
+                      [
+                        {
+                          type: 'none',
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'Cliente    : '+this.factura.cliente.cliente_nombre,
+                                'Dirección  : '+this.factura.cliente.direccion,  
+                                'Teléfono   : '+this.factura.cliente.celular,  
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'RUC      : '+ this.factura.cliente.ruc,
+                                'Sucursal : '+ this.factura.sucursal, 
+                                'Usuario : ' + this.nombreUsuario, 
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
+                                'Vendedor  :  '+this.factura.nombreVendedor,
+                                'RUC/Suc  :  '+this.RucSucursal,
+                              ]
+                            }
+                          ]
+                        },
+                      ]
+                    ]
+                },
+                },
               
               ],
-              [
-                
-              ]
             ]
           },
          
@@ -2331,8 +2335,8 @@ cambiarestado(e,i:number){
             //Desde aqui comienza los datos del cliente
             style: 'tableExample',
             relativePosition: {
-              x: 20,
-              y: 265,
+              x: 0,
+              y: 165,
             },
             fontSize:8,
             table: {
@@ -2349,7 +2353,6 @@ cambiarestado(e,i:number){
                         fontSize:6,
                         ul: [
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                          "Vendedor: " + this.factura.nombreVendedor,
                           "Nota: Después de salir la mercadería no se aceptan devoluciones",
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
@@ -2363,25 +2366,24 @@ cambiarestado(e,i:number){
             },
             layout: 'noBorders'
             },
-          {
-            //Desde aqui comienza los datos del cliente
-            style: 'tableExampleResultados',
-            relativePosition: {
-              x: 420,
-              y: 241,
-            },
-            fontSize:8,
-            table: {
-              widths: [100],
-              body: [
-                [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                [ {text:this.factura.total.toFixed(2), style:"totales" } ]
-              ]
-            },
-            layout: 'noBorders'
+            {
+              style: 'tableExampleResultados',
+              relativePosition: {
+                x: 410,
+                y: 141,
+              },
+              fontSize:8,
+              table: {
+                widths: [100],
+                body: [
+                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
+                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+                ]
+              },
+              layout: 'noBorders'
             },
 
 
@@ -2391,69 +2393,99 @@ cambiarestado(e,i:number){
             {
               columns: [ 
                 [
-                {
-                //Desde aqui comienza los datos del cliente
-                style: 'tableExample',
-                relativePosition: {
-                  x: 20,
-                  y: 420,
-                },
-                table: {
-                  type: 'none',
-                  widths: [255,105,110],
-                  body: [
-                    [
+                  {
+                    relativePosition: {
+                      x: 0,
+                      y: 255,
+                    }, 
+                    columns: [
                       {
-                        type: 'none',
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Cliente    : '+this.factura.cliente.cliente_nombre,
-                              'Dirección  : '+this.factura.cliente.direccion,  
-                              'Teléfono   : '+this.factura.cliente.celular,  
-                            ]
-                          }
-                        ]
+                        image:this.imagenLogotipo,
+                        width: 100,
+                        margin: [0, 0, 0, 0],
                       },
                       {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'RUC      : '+ this.factura.cliente.ruc,
-                              'Sucursal : '+ this.factura.sucursal, 
-                              'Usuario : ' + this.nombreUsuario, 
-                            ]
-                          }
+                        width:290,
+                        columns: [          
+                                    [
+                                      { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
+                                      { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                      { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
+                                      { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
+                                    ],
                         ]
                       },
-                      {
-                        stack: [
-                          {
-                            type: 'none',
-                            bold: true,
-                            fontSize:7,
-                            ul: [
-                              'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
-                              'Código  :  '+this.numeroFactura,
-                              'RUC/Suc  :  '+this.RucSucursal,
-                            ]
-                          }
+                      { 
+                        width:100,
+                        columns: [          
+                                    [
+                                      { text: "** NOTA DE VENTA **", fontSize:9, alignment: "right", bold: true},
+                                      { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
+                                    ],
                         ]
                       },
                     ]
-                  ]
-              },
-                }, 
+                  },
+                  {
+                  //Desde aqui comienza los datos del cliente
+                  style: 'tableExample',
+                  relativePosition: {
+                    x: 0,
+                    y: 290,
+                  },
+                  table: {
+                    type: 'none',
+                    widths: [255,105,110],
+                    body: [
+                      [
+                        {
+                          type: 'none',
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'Cliente    : '+this.factura.cliente.cliente_nombre,
+                                'Dirección  : '+this.factura.cliente.direccion,  
+                                'Teléfono   : '+this.factura.cliente.celular,  
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'RUC      : '+ this.factura.cliente.ruc,
+                                'Sucursal : '+ this.factura.sucursal, 
+                                'Usuario : ' + this.nombreUsuario, 
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          stack: [
+                            {
+                              type: 'none',
+                              bold: true,
+                              fontSize:7,
+                              ul: [
+                                'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
+                                'Vendedor  :  '+this.factura.nombreVendedor,
+                                'RUC/Suc  :  '+this.RucSucursal,
+                              ]
+                            }
+                          ]
+                        },
+                      ]
+                    ]
+                },
+                  }, 
                 ],
-                [
-                  
-                ]
               ]
             },
            
@@ -2463,8 +2495,8 @@ cambiarestado(e,i:number){
               //Desde aqui comienza los datos del cliente
               style: 'tableExample',
               relativePosition: {
-                x: 20,
-                y: 620,
+                x: 0,
+                y: 520,
               },
               fontSize:8,
               table: {
@@ -2481,7 +2513,6 @@ cambiarestado(e,i:number){
                           fontSize:6,
                           ul: [
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                            "Vendedor: " + this.factura.nombreVendedor,
                             "Nota: Después de salir la mercadería no se aceptan devoluciones",
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
@@ -2500,7 +2531,7 @@ cambiarestado(e,i:number){
               //Desde aqui comienza los datos del cliente
               style: 'tableExampleResultados',
               relativePosition: {
-                x: 420,
+                x: 410,
                 y: 491,
               },
               fontSize:8,
@@ -3112,19 +3143,45 @@ cambiarestado(e,i:number){
     campoAdicional2.value = this.factura.documento_n.toString() //cambiar*********
     this.facturaVeronica.campoAdicional.push(campoAdicional2)
 
+    //****************LOG SERVICIO WEB VERONICA**********/
+    var logApiVeronica = new ServicioWebVeronica()
+    logApiVeronica.objetoRequest = JSON.stringify(this.facturaVeronica)
+    logApiVeronica.nroDocumento = this.factura.documento_n.toString()
+    logApiVeronica.fecha = this.factura.fecha
+    logApiVeronica.sucursal = this.factura.sucursal
+
+    console.log(logApiVeronica)
+
     this._apiVeronicaService.newFactura(this.facturaVeronica).subscribe(
-      res => {  this.mostrarLoading = false;
-                  Swal.fire({
-                    title: 'Correcto',
-                    text: 'Factura registrada con éxito',
-                    icon: 'success',
-                    confirmButtonText: 'Ok'
-                  }).then((result) => {
-                    window.location.reload()
-                  })
-                },
-      err => {  this.mostrarLoading = false;
-                this.mostrarMensajeGenerico(2,"Error al establecer coneccion con el SRI")});
+      res => {  var resultado = res as ResponseVeronicaDto;
+        console.log(resultado.result)
+                logApiVeronica.objetoResponse = JSON.stringify(res)
+                logApiVeronica.claveAcceso = resultado.result.claveAccesoConsultada
+                logApiVeronica.resultado = "OK"
+                this._logApiVeronicaService.newLog(logApiVeronica).subscribe(
+                  res =>{   this.mostrarLoading = false;
+                            Swal.fire({
+                              title: 'Correcto',
+                              text: 'Factura registrada con éxito',
+                              icon: 'success',
+                              confirmButtonText: 'Ok'
+                            }).then((result) => {
+                              window.location.reload()
+                            })
+                        },
+                  err => {  });
+            },
+      err => {  
+              
+                logApiVeronica.objetoResponse = JSON.stringify(err);
+                logApiVeronica.claveAcceso = null;
+                logApiVeronica.resultado = "NOK"
+                this._logApiVeronicaService.newLog(logApiVeronica).subscribe(
+                  res =>{  this.mostrarLoading = false;
+                            this.mostrarMensajeGenerico(2,"Error al establecer coneccion con el SRI")   
+                        },
+                  err => {  });              
+              });
   }
   
 

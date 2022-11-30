@@ -156,3 +156,43 @@ export class PuntoEmision{
 
     }
 }
+
+
+
+// ----------------LOGS DE LLAMADAS A LA API------------------
+export class ServicioWebVeronica{
+    objetoRequest : string
+    objetoResponse : string
+    nroDocumento : string
+    sucursal : string
+    resultado : string
+    claveAcceso : string
+    fecha : Date
+    constructor(){
+        this.fecha = new Date();
+        this.objetoRequest = ""
+        this.objetoResponse = ""
+        this.resultado = ""
+    }
+}
+
+
+
+
+
+// ----------------MODELO PARA OBTENCION DE RESPUESTA REGISTRO FACTURA------------------
+
+
+export class ResponseVeronicaDto{
+    success : boolean
+    result : ResultadoDto
+    constructor(){
+
+    }
+}
+
+export class ResultadoDto{
+    timestamp : number
+    claveAccesoConsultada : string
+}
+

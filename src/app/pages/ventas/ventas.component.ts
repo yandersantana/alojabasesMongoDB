@@ -3100,7 +3100,7 @@ cambiarestado(e,i:number){
     this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString()
     this.facturaVeronica.ruc = this.parametrizacionSucu.ruc
     this.facturaVeronica.secuencial = this.secuencialFactura
-    this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "001":"002"
+    this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "002":"001"
 
     //******DATOS DEL RECEPTOR********** */
     this.facturaVeronica.receptor = new ReceptorModel()

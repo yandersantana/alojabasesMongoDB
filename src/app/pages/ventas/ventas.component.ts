@@ -301,6 +301,8 @@ export class VentasComponent implements OnInit {
     this.factura.observaciones= " "
     this.nCotizacionFact= " "
 
+    console.log(this.factura.fecha.toLocaleDateString('en-GB', {month: '2-digit',day: '2-digit',year: 'numeric'}))
+
   }
 
   
@@ -3097,7 +3099,7 @@ cambiarestado(e,i:number){
     this.mensajeLoading = "Enviando Factura SRI"
     this.mostrarLoading = true;
     //--------------INICIO LLENADO DE OBJETO SRI VERONICA--------------------
-    this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString()
+    this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString('en-GB', {month: '2-digit',day: '2-digit',year: 'numeric'})
     this.facturaVeronica.ruc = this.parametrizacionSucu.ruc
     this.facturaVeronica.secuencial = this.secuencialFactura
     this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "002":"001"

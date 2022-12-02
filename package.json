@@ -44,6 +44,8 @@
     "ng-connection-service": "^1.0.4",
     "ngx-pinch-zoom": "^2.4.4",
     "ngx-spinner": "^8.1.0",
+    "node-cron": "^3.0.2",
+    "node-fetch": "^3.3.0",
     "pdfmake": "^0.1.65",
     "pdfmake-wrapper": "^2.0.0",
     "rxjs": "~6.5.5",

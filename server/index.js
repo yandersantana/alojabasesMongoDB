@@ -2,6 +2,17 @@ const express = require('express')
 const app = express();
 const cors = require('cors');
 const path= require('path');
+const cron = require("node-cron");
+const { Router } = require('express');
+const router = Router();
+const http = require('http');
+
+const request = require('request');
+
+const User = require('../server/models/user')
+
+
+
 
 require('./database');
 
@@ -10,6 +21,7 @@ app.use(cors());
 app.use(express.json());
 
 const bodyParser = require('body-parser');
+const { ConsoleReporter } = require('jasmine');
 
 app.use(bodyParser.json({limit: '50mb', extended: true}))
 app.use(bodyParser.urlencoded({limit: '50mb', extended: true}))
@@ -90,7 +102,30 @@ app.use((req, res, next) => {
 
 // error handler
 app.use(function (err, req, res, next) {
-  console.error(err.message);
   if (!err.statusCode) err.statusCode = 500;
   res.status(err.statusCode).send(err.message);
 });
+
+
+// cron.schedule("*/15 * * * * *", async function () {
+
+//   //OBTENER LOS DATOS
+//   //RECORRO LOS DATOS
+//     //OBTENER ID SRI
+//     //ACTUALIZAR DATO
+
+//     const grupos = await User.find();
+
+//     grupos.forEach(element => {
+//       element.name = "Yander"
+//       console.log(element.name)
+//     });
+    
+//  onsole.log(grupos)
+
+//   request('http://159.223.107.115:3000/usuario/getUsers', { json: true }, (err, res, body) => {
+//    //console.log(res)
+//   });
+
+
+// });

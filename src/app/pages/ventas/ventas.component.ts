@@ -1685,7 +1685,7 @@ cambiarestado(e,i:number){
             fontSize:8,
             table: {
               type: 'none',
-              widths: [330],
+              widths: [325],
               heights:22,
               body: [
                 [
@@ -1698,7 +1698,7 @@ cambiarestado(e,i:number){
                         ul: [
                           {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                           {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                          "Nota: Después de salir la mercadería no se aceptan devoluciones",
+                          {text: "Nota: Después de salida la mercadería no se aceptan devoluciones",fontSize:9 },
                           "Observaciones :  "+this.factura.observaciones,  
                         ]
                       }
@@ -1714,23 +1714,21 @@ cambiarestado(e,i:number){
             {
               style: 'tableExampleResultados',
               relativePosition: {
-                x: 410,
+                x: 325,
                 y: 141,
               },
               fontSize:8,
               table: {
-                widths: [100],
+                widths: [75,85],
                 body: [
-                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+                  [ { text: 'SUBTOTAL', bold: true ,style: "detalleTotales"},{text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                  [ { text: 'DESCUENTO', bold: true ,style: "detalleTotales"},{text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                  [ { text: 'IVA 12%', bold: true ,style: "detalleTotales"},{text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                  [ { text: 'IVA 0%', bold: true ,style: "detalleTotales"},{text:this.sIva0.toFixed(2), style:"totales" } ],
+                  [ { text: 'TOTAL US$', bold: true ,style: "detalleTotales"},{text:this.factura.total.toFixed(2), style:"totales" } ]
                 ]
               },
-              layout: 'noBorders'
             },
-
 
 
 
@@ -1836,7 +1834,7 @@ cambiarestado(e,i:number){
               fontSize:8,
               table: {
                 type: 'none',
-                widths: [330],
+                widths: [325],
                 heights:22,
                 body: [
                   [
@@ -1849,7 +1847,7 @@ cambiarestado(e,i:number){
                           ul: [
                             {text: "**** DOCUMENTO SIN VALIDEZ TRIBUTARIA **** ", fontSize:10 },
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                            "Nota: Después de salir la mercadería no se aceptan devoluciones",
+                            {text: "Nota: Después de salida la mercadería no se aceptan devoluciones",fontSize:9 },
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
                         }
@@ -1863,21 +1861,20 @@ cambiarestado(e,i:number){
             {
               style: 'tableExampleResultados',
               relativePosition: {
-                x: 410,
+                x: 325,
                 y: 491,
               },
               fontSize:8,
               table: {
-                widths: [100],
+                widths: [75,85],
                 body: [
-                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
+                  [ { text: 'SUBTOTAL', bold: true ,style: "detalleTotales"},{text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                  [ { text: 'DESCUENTO', bold: true ,style: "detalleTotales"},{text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                  [ { text: 'IVA 12%', bold: true ,style: "detalleTotales"},{text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                  [ { text: 'IVA 0%', bold: true ,style: "detalleTotales"},{text:this.sIva0.toFixed(2), style:"totales" } ],
+                  [ { text: 'TOTAL US$', bold: true ,style: "detalleTotales"},{text:this.factura.total.toFixed(2), style:"totales" } ]
                 ]
               },
-              layout: 'noBorders'
             },
           
         ],
@@ -1964,7 +1961,7 @@ cambiarestado(e,i:number){
               alignment: "center"
             },
             totales: {
-              margin: [0, 0, 15, 0],
+              margin: [0, 0, 5, 0],
               alignment: "right",
             },
             totales2: {
@@ -1972,7 +1969,8 @@ cambiarestado(e,i:number){
               alignment: "right",
             },
             detalleTotales: {
-              margin: [15, 0, 0, 0]
+              margin: [15, 0, 0, 0],
+              alignment: "left",
             }
           }
       };
@@ -2259,7 +2257,7 @@ cambiarestado(e,i:number){
                       width:100,
                       columns: [          
                                   [
-                                    { text: "** NOTA DE VENTA **", fontSize:9, alignment: "right", bold: true},
+                                    { text: "** NOTA DE ENTREGA **", fontSize:9, alignment: "right", bold: true},
                                     { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
                                   ],
                       ]
@@ -2343,153 +2341,150 @@ cambiarestado(e,i:number){
             fontSize:8,
             table: {
               type: 'none',
-              widths: [330],
+              widths: [325],
               heights:22,
               body: [
-                [
-                  {
-                    stack: [
-                      {
-                        type: 'none',
-                        bold: true,
-                        fontSize:6,
-                        ul: [
-                          {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                          "Nota: Después de salir la mercadería no se aceptan devoluciones",
-                          "Observaciones :  "+this.factura.observaciones,  
-                        ]
-                      }
-                    ]
-                  },
-                 
-                 
-                ]
-              ],
-            },
-            layout: 'noBorders'
-            },
-            {
-              style: 'tableExampleResultados',
-              relativePosition: {
-                x: 410,
-                y: 141,
-              },
-              fontSize:8,
-              table: {
-                widths: [100],
-                body: [
-                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
-                ]
-              },
-              layout: 'noBorders'
-            },
-
-
-
-
-            //---------------- COPIA 2 DE FACTURA----------------
-            {
-              columns: [ 
-                [
-                  {
-                    relativePosition: {
-                      x: 0,
-                      y: 255,
-                    }, 
-                    columns: [
-                      {
-                        image:this.imagenLogotipo,
-                        width: 100,
-                        margin: [0, 0, 0, 0],
-                      },
-                      {
-                        width:290,
-                        columns: [          
-                                    [
-                                      { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
-                                      { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
-                                      { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
-                                      { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
-                                    ],
-                        ]
-                      },
-                      { 
-                        width:100,
-                        columns: [          
-                                    [
-                                      { text: "** NOTA DE VENTA **", fontSize:9, alignment: "right", bold: true},
-                                      { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
-                                    ],
-                        ]
-                      },
-                    ]
-                  },
-                  {
-                  //Desde aqui comienza los datos del cliente
-                  style: 'tableExample',
-                  relativePosition: {
-                    x: 0,
-                    y: 290,
-                  },
-                  table: {
-                    type: 'none',
-                    widths: [255,105,110],
-                    body: [
                       [
                         {
-                          type: 'none',
                           stack: [
                             {
                               type: 'none',
                               bold: true,
-                              fontSize:7,
+                              fontSize:6,
                               ul: [
-                                'Cliente    : '+this.factura.cliente.cliente_nombre,
-                                'Dirección  : '+this.factura.cliente.direccion,  
-                                'Teléfono   : '+this.factura.cliente.celular,  
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          stack: [
-                            {
-                              type: 'none',
-                              bold: true,
-                              fontSize:7,
-                              ul: [
-                                'RUC      : '+ this.factura.cliente.ruc,
-                                'Sucursal : '+ this.factura.sucursal, 
-                                'Usuario : ' + this.nombreUsuario, 
-                              ]
-                            }
-                          ]
-                        },
-                        {
-                          stack: [
-                            {
-                              type: 'none',
-                              bold: true,
-                              fontSize:7,
-                              ul: [
-                                'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
-                                'Vendedor  :  '+this.factura.nombreVendedor,
-                                'RUC/Suc  :  '+this.RucSucursal,
+                                {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
+                                {text: "Nota: Después de salida la mercadería no se aceptan devoluciones",fontSize:9 },
+                                "Observaciones :  "+this.factura.observaciones,  
                               ]
                             }
                           ]
                         },
                       ]
-                    ]
-                },
-                  }, 
-                ],
+              ],
+            },
+            layout: 'noBorders'
+          },
+          {
+            style: 'tableExampleResultados',
+            relativePosition: {
+              x: 325,
+              y: 141,
+            },
+            fontSize:8,
+            table: {
+              widths: [75,85],
+              body: [
+                [ { text: 'SUBTOTAL', bold: true ,style: "detalleTotales"},{text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                [ { text: 'DESCUENTO', bold: true ,style: "detalleTotales"},{text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                [ { text: 'IVA 12%', bold: true ,style: "detalleTotales"},{text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                [ { text: 'IVA 0%', bold: true ,style: "detalleTotales"},{text:this.sIva0.toFixed(2), style:"totales" } ],
+                [ { text: 'TOTAL US$', bold: true ,style: "detalleTotales"},{text:this.factura.total.toFixed(2), style:"totales" } ]
               ]
             },
+          },
+
+
+
+
+          //---------------- COPIA 2 DE FACTURA----------------
+          {
+            columns: [ 
+              [
+                {
+                  relativePosition: {
+                    x: 0,
+                    y: 255,
+                  }, 
+                  columns: [
+                    {
+                      image:this.imagenLogotipo,
+                      width: 100,
+                      margin: [0, 0, 0, 0],
+                    },
+                    {
+                      width:290,
+                      columns: [          
+                                  [
+                                    { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
+                                    { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                    { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
+                                    { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
+                                  ],
+                      ]
+                    },
+                    { 
+                      width:100,
+                      columns: [          
+                                  [
+                                    { text: "** NOTA DE ENTREGA **", fontSize:9, alignment: "right", bold: true},
+                                    { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
+                                  ],
+                      ]
+                    },
+                  ]
+                },
+                {
+                //Desde aqui comienza los datos del cliente
+                style: 'tableExample',
+                relativePosition: {
+                  x: 0,
+                  y: 290,
+                },
+                table: {
+                  type: 'none',
+                  widths: [255,105,110],
+                  body: [
+                    [
+                      {
+                        type: 'none',
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Cliente    : '+this.factura.cliente.cliente_nombre,
+                              'Dirección  : '+this.factura.cliente.direccion,  
+                              'Teléfono   : '+this.factura.cliente.celular,  
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'RUC      : '+ this.factura.cliente.ruc,
+                              'Sucursal : '+ this.factura.sucursal, 
+                              'Usuario : ' + this.nombreUsuario, 
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        stack: [
+                          {
+                            type: 'none',
+                            bold: true,
+                            fontSize:7,
+                            ul: [
+                              'Fecha N/Venta  :  '+this.factura.fecha.toLocaleDateString(),
+                              'Vendedor  :  '+this.factura.nombreVendedor,
+                              'RUC/Suc  :  '+this.RucSucursal,
+                            ]
+                          }
+                        ]
+                      },
+                    ]
+                  ]
+              },
+                }, 
+              ],
+            ]
+          },
            
             
             this.getProductosVendidoscopia(this.productosVendidos),
@@ -2503,7 +2498,7 @@ cambiarestado(e,i:number){
               fontSize:8,
               table: {
                 type: 'none',
-                widths: [330],
+                widths: [325],
                 heights:22,
                 body: [
                   [
@@ -2515,39 +2510,35 @@ cambiarestado(e,i:number){
                           fontSize:6,
                           ul: [
                             {text: "TIPO DE PAGO: "+this.formaPago.toUpperCase(),fontSize:12 },
-                            "Nota: Después de salir la mercadería no se aceptan devoluciones",
+                            {text: "Nota: Después de salida la mercadería no se aceptan devoluciones",fontSize:9 },
                             "Observaciones :  "+this.factura.observaciones,  
                           ]
                         }
                       ]
-                    },
-                   
-                   
+                    },                
                   ]
                 ],
               },
               layout: 'noBorders'
               
               },
-            {
-              //Desde aqui comienza los datos del cliente
-              style: 'tableExampleResultados',
-              relativePosition: {
-                x: 410,
-                y: 491,
-              },
-              fontSize:8,
-              table: {
-                widths: [100],
-                body: [
-                  [ {text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
-                  [ {text:this.Sdescuento.toFixed(2), style:"totales" } ],
-                  [ {text: this.factura.totalIva.toFixed(2), style:"totales" } ],
-                  [ {text:this.sIva0.toFixed(2), style:"totales" } ],
-                  [ {text:this.factura.total.toFixed(2), style:"totales" } ]
-                ]
-              },
-              layout: 'noBorders'
+              {
+                style: 'tableExampleResultados',
+                relativePosition: {
+                  x: 325,
+                  y: 491,
+                },
+                fontSize:8,
+                table: {
+                  widths: [75,85],
+                  body: [
+                    [ { text: 'SUBTOTAL', bold: true ,style: "detalleTotales"},{text: this.factura.subtotalF1.toFixed(2), style:"totales" }],
+                    [ { text: 'DESCUENTO', bold: true ,style: "detalleTotales"},{text:this.Sdescuento.toFixed(2), style:"totales" } ],
+                    [ { text: 'IVA 12%', bold: true ,style: "detalleTotales"},{text: this.factura.totalIva.toFixed(2), style:"totales" } ],
+                    [ { text: 'IVA 0%', bold: true ,style: "detalleTotales"},{text:this.sIva0.toFixed(2), style:"totales" } ],
+                    [ { text: 'TOTAL US$', bold: true ,style: "detalleTotales"},{text:this.factura.total.toFixed(2), style:"totales" } ]
+                  ]
+                },
               },
           
         ],
@@ -2634,7 +2625,7 @@ cambiarestado(e,i:number){
               alignment: "center"
             },
             totales: {
-              margin: [0, 0, 15, 0],
+              margin: [0, 0, 5, 0],
               alignment: "right",
             },
             totales2: {
@@ -2771,7 +2762,7 @@ cambiarestado(e,i:number){
         },
         table: {
           headerRows: 1,
-          widths: ["7%","7%","6%","50%","6%","10%","9%"],
+          widths: ["7%","7%","6%","51%","6%","9%","9%"],
           alignment:'center',
           body: [
             

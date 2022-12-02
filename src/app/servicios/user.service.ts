@@ -1,8 +1,6 @@
 import { Injectable } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
-import { Router } from "@angular/router";
 import { user } from "../pages/user/user";
-import { AuthenService } from "./authen.service";
 
 @Injectable({
   providedIn: "root",
@@ -12,13 +10,9 @@ export class UserService {
   role = "";
   userEmail = "";
   //private URL = 'http://localhost:3000/usuario';
-  //private URL = "http://159.223.107.115:3000/usuario";
-  private URL = 'http://104.131.82.174:3000/usuario';
-  constructor(
-    private http: HttpClient,
-    private router: Router,
-    private authenService: AuthenService
-  ) {}
+  private URL = "http://159.223.107.115:3000/usuario";
+  //private URL = 'http://104.131.82.174:3000/usuario';
+  constructor(private http: HttpClient,) {}
 
   newUser(user) {
     return this.http.post<any>(this.URL + "/newUser", user);

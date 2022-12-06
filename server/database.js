@@ -6,8 +6,8 @@ const mongoose = require("mongoose");
 //const URI ="mongodb+srv://yander:YanderGrace096@alojabases.ynyl6.mongodb.net/AlojaBaseDiciembre"; // Diciembre-------------
 
 
-//const URI ="mongodb+srv://yander:yander1234@cluster0.dbmpy.mongodb.net/alojabasesOctubre"; // nuevaOCTUBRE-------------
-const URI ="mongodb+srv://yander:YanderGrace096@cluster0.axwc1.mongodb.net/alojabasesJunio"; // JUNIOOOOO-------------
+const URI ="mongodb+srv://yander:yander1234@cluster0.dbmpy.mongodb.net/alojabasesOctubre"; // nuevaOCTUBRE-------------
+//const URI ="mongodb+srv://yander:YanderGrace096@cluster0.axwc1.mongodb.net/alojabasesJunio"; // JUNIOOOOO-------------
 
 
 

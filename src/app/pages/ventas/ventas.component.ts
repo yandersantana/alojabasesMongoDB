@@ -1680,7 +1680,7 @@ cambiarestado(e,i:number){
             style: 'tableExample',
             relativePosition: {
               x: 0,
-              y: 165,
+              y: 177,
             },
             fontSize:8,
             table: {
@@ -1715,7 +1715,7 @@ cambiarestado(e,i:number){
               style: 'tableExampleResultados',
               relativePosition: {
                 x: 325,
-                y: 141,
+                y: 153,
               },
               fontSize:8,
               table: {
@@ -2336,7 +2336,7 @@ cambiarestado(e,i:number){
             style: 'tableExample',
             relativePosition: {
               x: 0,
-              y: 165,
+              y: 177,
             },
             fontSize:8,
             table: {
@@ -2368,7 +2368,7 @@ cambiarestado(e,i:number){
             style: 'tableExampleResultados',
             relativePosition: {
               x: 325,
-              y: 141,
+              y: 153,
             },
             fontSize:8,
             table: {
@@ -2688,10 +2688,10 @@ cambiarestado(e,i:number){
         productos2.push(element)
       })
       return {
-        /* relativePosition: {
-          x: 20,
-          y: 94,
-        }, */
+        relativePosition: {
+          x: 0,
+          y: 0,
+        },
         table: {
           headerRows: 1,
           widths: ["8%","6%","55%","6%","10%","10%"],

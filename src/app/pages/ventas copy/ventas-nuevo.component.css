@@ -1,0 +1,224 @@
+.mar-pricipal{
+    margin: 1em;
+}
+
+.btn-action{
+    margin-top: 1.5em;
+}
+
+.espacioDivs div{
+    margin-top: 1em;
+}
+
+.espacioDivs dx-text-box{
+    margin-top: -1em;
+}
+
+.espacioDivs dx-date-box, dx-select-box{
+    margin-top: 1em;
+}
+
+.espacioDivs dx-number-box{
+    text-align: right;
+}
+
+::ng-deep .espacioDivs .dx-texteditor-input{
+    text-align: center;
+}
+
+::ng-deep .align .dx-texteditor-input{
+    text-align: right;
+}
+
+.espacioSelect dx-select-box,dx-number-box,dx-text-box,dx-button{
+    margin-top: -0.8em;
+}
+
+.dxauto{
+    margin-left: -1em;
+}
+
+.espDivs{
+    margin-top: 1em;
+}
+
+
+.productos{
+    position: absolute;
+    margin-top: 185px;
+    height: 180px;
+}
+
+dx-form{
+    position: absolute;
+}
+
+.altura{
+    max-height: 30px;
+    margin-bottom: 5px;
+}
+
+/* h5{
+    font-size: 0.8em;
+} */
+
+.row{
+    margin-bottom: 5px;
+}
+
+.form{
+    width: 100% !important;
+}
+
+.tdoc{
+    margin-top: 1.5em;
+}
+
+.tdoc2{
+    margin-top: 1.5em; 
+    margin-right: 2em; 
+}
+
+.titlesCurrency{
+    margin-top: 10px;
+    margin-bottom: -12px;
+}
+
+.dx-button.dx-button-success{
+    background-color: darkseagreen;
+}
+
+.dx-button{
+    margin-right: 15px;
+}
+
+.label2{
+    font-size: 1.4em;
+    font-weight: bold;
+    margin-top: 0.5em;
+}
+
+
+::ng-deep .textNumber {
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+    margin-top: -0.3em;
+   
+}
+
+::ng-deep .prueba2 /deep/ .dx-texteditor-input{
+    font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+   
+}
+
+::ng-deep .sbox  /deep/ .dx-item-content.dx-list-item-content{
+    font-size: 12px;
+}
+
+table, th, td {
+    border: 1px solid black;
+    border-collapse: collapse;
+  }
+  th, td {
+    padding: 5px;
+    text-align: left;    
+  }
+
+.fondobt{
+    background-color: transparent;
+    border-color: transparent;
+    color: red;
+}
+
+.espacio{
+    margin-top: 1.5em;
+}
+
+
+.imgProducto2{
+    width: auto;
+    height: 400px;
+  }
+  
+  .imgProducto3{
+    width: auto;
+    height: 100px;
+  }
+
+
+
+
+.altura{
+    height: 200px;
+}
+
+
+
+.dx-field-item-content{
+    font-size: 20px;
+    background-color: blue; 
+}
+
+.radio{
+    float: right;
+    display: contents;
+}
+
+.nopadding {
+   padding: 0 !important;
+   margin: 0 !important;
+}
+
+.contenedorProductos{
+    margin-right: 20px;
+    text-align: center;
+}
+
+::ng-deep .altura1{
+    height: 200px;
+}
+
+::ng-deep .altura2{
+    height: 400px;
+}
+::ng-deep .altura3{
+    height: 600px;
+}
+::ng-deep .altura4{
+    height: 800px;
+}
+::ng-deep .altura5{
+    height: 1000px;
+}
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+.tooltip {
+    position: relative;
+    display: inline-block;
+    border-bottom: 1px dotted black;
+  }
+  
+  .tooltip .tooltiptext {
+    visibility: hidden;
+    width: 120px;
+    background-color: black;
+    color: #fff;
+    text-align: center;
+    border-radius: 6px;
+    padding: 5px 0;
+  
+    /* Position the tooltip */
+    position: absolute;
+    z-index: 1;
+  }
+  
+  .tooltip:hover .tooltiptext {
+    visibility: visible;
+  }

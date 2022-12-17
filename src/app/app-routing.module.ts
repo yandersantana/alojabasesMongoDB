@@ -55,6 +55,7 @@ import { TransaccionesNominasComponent } from "./pages/transaccionesNominas/tran
 import { RevionInventarioComponent } from "./pages/revision-inventario/revision-inventario.component";
 import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
 import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
+import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component";
 
 const routes: Routes = [
   {
@@ -80,6 +81,11 @@ const routes: Routes = [
   {
     path: "ventas",
     component: VentasComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "ventas-nuevo",
+    component: VentasNuevoComponent,
     canActivate: [AuthGuardService],
   },
   {

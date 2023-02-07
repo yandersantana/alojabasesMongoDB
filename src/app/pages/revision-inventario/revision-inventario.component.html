@@ -214,7 +214,7 @@
                                 </dxi-column>
                                 
                                 <dxi-column dataField="resultado" [visible]="true" width="10%"></dxi-column>
-                                <dxi-column dataField="estadoRevision" caption="Validación" [visible]="true" width="10%"></dxi-column>
+                                <dxi-column dataField="estadoRevision" caption="Validación" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="detalle" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="novedades" caption="Novedades" [visible]="true" width="10%"></dxi-column>
                                 <dxi-column dataField="idReferenciaRevision" [visible]="false" width="10%"></dxi-column>
@@ -227,9 +227,9 @@
                                 <dxi-column type="buttons"  caption="Elim." width="5%">
                                     <dxi-button icon="fa fa-trash-o" [onClick]="eliminarProd2"></dxi-button>     
                                 </dxi-column>
-                                <dxi-column type="buttons"  caption="Valid." width="5%">
+                                <!-- <dxi-column type="buttons"  caption="Valid." width="5%">
                                     <dxi-button icon="fa fa-check" [onClick]="validate"></dxi-button>     
-                                </dxi-column>
+                                </dxi-column> -->
 
                                 <dxo-paging [pageSize]="10"></dxo-paging>
                                 <dxo-pager 

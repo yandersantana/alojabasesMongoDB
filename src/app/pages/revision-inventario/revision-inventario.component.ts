@@ -412,7 +412,7 @@ export class RevionInventarioComponent implements OnInit {
 
   cerrarRevision(){
     var listado = this.listadoComparacionResultados.filter(x=>x.estadoRevision == "Pendiente");
-    if(listado.length == 0){
+    //if(listado.length == 0){
       var cont = 0;
       this.mensajeLoading = "Guardando Transacciones.."
       this.mostrarLoading = true;
@@ -424,8 +424,8 @@ export class RevionInventarioComponent implements OnInit {
           err => { this.mostrarMensajeGenerico(2,"Se ha producido un error al guardar")
         })
       })
-    }else
-      this.mostrarMensajeGenerico(2,"Hay productos aun sin validar, revise e intente nuevamente");
+    //}else
+    //  this.mostrarMensajeGenerico(2,"Hay productos aun sin validar, revise e intente nuevamente");
     
   }
 

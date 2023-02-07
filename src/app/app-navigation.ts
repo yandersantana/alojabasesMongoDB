@@ -143,6 +143,10 @@ export const navigation = [
     icon: "fa fa-bar-chart",
     items: [
       {
+        text: "Indicadores",
+        path: "menu-indicadores",
+      },
+      {
         text: "Reporte Detallado",
         path: "reporte-detallado",
       },

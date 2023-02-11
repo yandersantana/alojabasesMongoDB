@@ -8,3 +8,23 @@
     font-weight: bold;
     font-size: 40px;
 }
+
+
+.btnSearch{
+    text-align: center;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+.select{
+    text-align: center;
+    background-color: white;
+}
+
+::ng-deep .remiPro .dx-selectbox input {  
+    text-align: center;  
+} 
+
+::ng-deep .remiPro .dx-selectbox-popup-wrapper .dx-list-item {  
+    text-align: center;  
+} 

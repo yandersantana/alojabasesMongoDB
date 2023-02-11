@@ -21,13 +21,14 @@ import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.s
 import { DatosConfiguracionService } from 'src/app/servicios/datosConfiguracion.service';
 import { AuthenService } from 'src/app/servicios/authen.service';
 import { user } from '../user/user';
-import { dataDocumento } from '../reciboCaja/recibo-caja';
+import { dataDocumento, ReciboCaja } from '../reciboCaja/recibo-caja';
 import { CuentasPorCobrarService } from 'src/app/servicios/cuentasPorCobrar.service';
 import { CuentaPorCobrar } from '../cuentasPorCobrar/cuentasPorCobrar';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import { TransaccionesFinancieras } from '../transaccionesFinancieras/transaccionesFinancieras';
 import { CajaMenorService } from 'src/app/servicios/cajaMenor.service';
 import { CajaMenor } from '../cajaMenor/caja-menor';
+import { ReciboCajaService } from 'src/app/servicios/reciboCaja.service';
 
 @Component({
   selector: 'app-anulaciones',
@@ -131,6 +132,7 @@ subtotal:number=0
     public productoService:ProductoService,
     public _cuentaPorCobrarService : CuentasPorCobrarService,
     public _transaccionesFinancierasService : TransaccionesFinancierasService,
+    public _reciboCajaService : ReciboCajaService,
     public _cajaMenorService : CajaMenorService) 
     {
       this.anulacion= new anulaciones()
@@ -502,11 +504,13 @@ subtotal:number=0
   }
 
   anularFactura= (e) => {  
-    this.actualizarFact(e.row.data) 
+    this.validarEliminacionFactura(e.row.data) 
+    //this.actualizarFact(e.row.data) 
   }
 
-  anularNotaVenta= (e) => {  
-    this.actualizarNotV(e.row.data) 
+  anularNotaVenta= (e) => { 
+    this.validarEliminacionNotaVenta(e.row.data) 
+    //this.actualizarNotV(e.row.data) 
   }
 
   getCourseFile = (e) => {
@@ -1727,6 +1731,22 @@ subtotal:number=0
     };
   }
 
+  validarEliminacionNotaVenta(e){
+    var reciboCaja = new ReciboCaja();
+    reciboCaja.numDocumento = e.documento_n
+    reciboCaja.docVenta = "Nota de Venta"
+    reciboCaja.sucursal = e.sucursal
+    this.mostrarLoading = true;
+    this._reciboCajaService.getReciboCajaPorNumeroDocumento(reciboCaja).subscribe((res) => {
+      this.mostrarLoading = false;
+      var recibos = res as ReciboCaja[];
+      if(recibos?.length == 0)
+        this.actualizarNotV(e);
+      else
+        this.mostrarMensajeGenerico(2,"Hay Recibos de Caja vinculados a esta Nota de Venta, primero eliminelos y vuelva a intentar nuevamente")
+    }); 
+  }
+
   actualizarNotV(e){
     Swal.fire({
       title: 'Nota de venta #'+e.documento_n,
@@ -1766,6 +1786,22 @@ subtotal:number=0
   }
 
 
+  validarEliminacionFactura(e){
+    var reciboCaja = new ReciboCaja();
+    reciboCaja.numDocumento = e.documento_n
+    reciboCaja.docVenta = "Factura"
+    reciboCaja.sucursal = e.sucursal
+    this.mostrarLoading = true;
+    this._reciboCajaService.getReciboCajaPorNumeroDocumento(reciboCaja).subscribe((res) => {
+      this.mostrarLoading = false;
+      var recibos = res as ReciboCaja[];
+      if(recibos?.length == 0)
+        this.actualizarFact(e);
+      else
+        this.mostrarMensajeGenerico(2,"Hay Recibos de Caja vinculados a esta Factura, primero eliminelos y vuelva a intentar nuevamente")
+    }); 
+  }
+
   actualizarFact(e){
     Swal.fire({
       title: 'Factura #'+e.documento_n,
@@ -1804,7 +1840,7 @@ subtotal:number=0
       if (result.value) { 
         this.facturasService.updateFacturasEstado(e,"CONTABILIZADA").subscribe(
           res => {
-            console.log(res + "entre por si");this.coorecto()
+            this.coorecto()
           },err => {alert("error")})
        
      

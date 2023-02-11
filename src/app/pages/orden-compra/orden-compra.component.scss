@@ -138,9 +138,7 @@ background-color: green;
     text-align: center;
     
 }
-h5{
-    font-size: 0.8em;
-}
+
 
 .detalle{
     margin-right: 1em;
@@ -173,4 +171,17 @@ h5{
 ::ng-deep .dx-theme-material-typography h2 {
     font-weight: bold;
     font-size: 40px;
+}
+
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}
+
+
+.btnSearch{
+    text-align: center;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
 }

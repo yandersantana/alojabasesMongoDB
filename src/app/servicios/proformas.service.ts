@@ -9,8 +9,8 @@ import { factura } from "../pages/ventas/venta";
 export class ProformasService {
   facturas: factura[];
   //private URL = 'http://localhost:3000/proformas'; //localhost
-  //private URL = "http://159.223.107.115:3000/proformas";
-  private URL = 'http://104.131.82.174:3000/proformas';
+  private URL = "http://159.223.107.115:3000/proformas";
+  //private URL = 'http://104.131.82.174:3000/proformas';
   constructor(public http: HttpClient, public router: Router) {}
 
   newProforma(proforma) {
@@ -27,6 +27,10 @@ export class ProformasService {
 
   getProformaPorId(idComprobante) {
     return this.http.post(this.URL + "/getProformaPorId", idComprobante);
+  }
+
+  getProformasPorRango(objFecha) {
+    return this.http.post(this.URL + "/getProformasPorRango", objFecha);
   }
 
   updateProformas(proforma) {

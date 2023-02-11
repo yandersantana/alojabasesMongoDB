@@ -33,13 +33,21 @@ export class RegistrosVentasComponent implements OnInit {
   parametrizaciones:parametrizacionsuc[]=[]
   parametrizacionSucu:parametrizacionsuc
   correo:string
+  nowdesde: Date = new Date();
+  nowhasta: Date = new Date();
+  tituloBusqueda  = "Facturas Generadas"
+  mostrarSeccionFacturas = true;
+  mostrarSeccionNotasVenta = false;
+  mostrarSeccionCotizacion = false;
+  tipoBusqueda = "Factura"
 
-  menu1: string[] = [
-    "Consulta Mensual",
-    "Consulta Global"
+  menu2: string[] = [
+    "Facturas",
+    "Notas de Venta",
+    "Cotizaciones"
   ];
+
   obj:objDate
-  //valores de Factura
   subtotal1:number=0
   Sdescuento:number=0
   subtotal2:number=0
@@ -47,8 +55,6 @@ export class RegistrosVentasComponent implements OnInit {
   sIva12:number=0
   iva:number=0
   mostrarLoading:boolean=true;
-  mostrarLoadingNota:boolean=true;
-  mostrarLoadingCotizacion:boolean=true;
   usuarioLogueado:user
   numeroFactura:string=""
   imagenLogotipo= ''
@@ -95,7 +101,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   traerProformas(){
     this.cotizacionesGlobales=[]
-    this.mostrarLoadingCotizacion=true;
+    this.mostrarLoading = true;
     this.proformasService.getProformas().subscribe(res => {
       this.cotizacionesGlobales = res as factura[];
       this.separarRegistrosCotizaciones()
@@ -104,7 +110,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   traerNotasVenta(){
     this.notasVentaGlobales=[]
-    this.mostrarLoadingNota=true;
+    this.mostrarLoading = true;
     this.notasventaService.getNotasVentas().subscribe(res => {
       this.notasVentaGlobales = res as factura[];
       this.separarRegistrosNotasVenta()
@@ -123,7 +129,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   traerProformasMensuales(){
     this.cotizacionesGlobales=[]
-    this.mostrarLoadingCotizacion=true;
+    this.mostrarLoading = true;
     this.proformasService.getProformasMensuales(this.obj).subscribe(res => {
       this.cotizacionesGlobales = res as factura[];
       this.separarRegistrosCotizaciones()
@@ -132,7 +138,7 @@ export class RegistrosVentasComponent implements OnInit {
 
   traerNotasVentaMensuales(){
     this.notasVentaGlobales=[]
-    this.mostrarLoadingNota=true;
+    this.mostrarLoading=true;
     this.notasventaService.getNotasVentasMensuales(this.obj).subscribe(res => {
       this.notasVentaGlobales = res as factura[];
       this.separarRegistrosNotasVenta()
@@ -164,8 +170,6 @@ export class RegistrosVentasComponent implements OnInit {
               this.authService.logOut();
 
             this.traerFacturasMensuales()
-            this.traerProformasMensuales()
-            this.traerNotasVentaMensuales()
           },
           err => {}
         )
@@ -207,6 +211,60 @@ export class RegistrosVentasComponent implements OnInit {
 
 
 
+  traerRegistrosPorRango() {
+    this.facturas = [];
+    this.notasVenta = [];
+    this.cotizaciones = [];
+    this.mostrarLoading = true;
+    this.obj = new objDate();
+    this.obj.fechaActual = this.nowhasta;
+    this.obj.fechaAnterior = this.nowdesde;
+    this.obj.fechaAnterior.setHours(0, 0, 0, 0);
+    switch (this.tipoBusqueda) {
+      case "Factura":
+        this.facturasService.getFacturasPorRango(this.obj).subscribe(res => {
+          this.facturasGlobales = res as factura[];
+          this.separarRegistrosFacturas();
+        })
+        break;
+      case "Nota de Venta":
+        this.notasventaService.getNotasVentaPorRango(this.obj).subscribe(res => {
+          this.notasVentaGlobales = res as factura[];
+          this.separarRegistrosNotasVenta();
+        })
+        break;
+      case "Cotizacion":
+        this.proformasService.getProformasPorRango(this.obj).subscribe(res => {
+          this.cotizacionesGlobales = res as factura[];
+          this.separarRegistrosCotizaciones();
+        })
+        break;
+    
+      default:
+        break;
+    }
+  }
+
+
+
+  traerValoresGlobales(){
+    switch (this.tipoBusqueda) {
+      case "Factura":
+        this.traerFacturas();
+        break;
+      case "Nota de Venta":
+        this.traerNotasVenta();
+        break;
+      case "Cotizacion":
+        this.traerProformas();
+        break;
+      default:
+        break;
+    }
+  }
+
+
+
   separarRegistrosNotasVenta(){
     if(this.usuarioLogueado[0].rol!="Administrador"){
       switch (this.usuarioLogueado[0].sucursal) {
@@ -237,7 +295,7 @@ export class RegistrosVentasComponent implements OnInit {
     }else{
       this.notasVenta=this.notasVentaGlobales
     }
-    this.mostrarLoadingNota=false;
+    this.mostrarLoading = false;
   }
 
   separarRegistrosCotizaciones(){
@@ -267,10 +325,11 @@ export class RegistrosVentasComponent implements OnInit {
         default:
           break;
       }
-    }else{
-      this.cotizaciones=this.cotizacionesGlobales
     }
-    this.mostrarLoadingCotizacion=false;
+    else
+      this.cotizaciones=this.cotizacionesGlobales
+    
+    this.mostrarLoading=false;
   }
 
 
@@ -309,7 +368,6 @@ export class RegistrosVentasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         e.nota=result.value
-        //alert(e)
         this.notasventaService.actualizarNota(e,result.value).subscribe( res => {
           Swal.fire({
             title: 'Correcto',
@@ -341,7 +399,6 @@ export class RegistrosVentasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         e.nota=result.value
-        //alert(e)
         this.proformasService.actualizarNota(e,result.value).subscribe( res => {
           Swal.fire({
             title: 'Correcto',
@@ -373,7 +430,6 @@ export class RegistrosVentasComponent implements OnInit {
     }).then((result) => {
       if (result.value) {
         e.nota=result.value
-        //alert(e)
         this.facturasService.actualizarNota(e,result.value).subscribe( res => {
           Swal.fire({
             title: 'Correcto',
@@ -414,7 +470,16 @@ export class RegistrosVentasComponent implements OnInit {
 
     })
     this.tDocumento="Factura"
-    this.crearPDF(e)
+    
+    try {
+      this.crearPDF(e)
+    } catch(e) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Estimado usuario hay un error al generar su documento, por favor contactese con el área de sistemas',
+        icon: 'error',
+      })
+    }
   }
 
   //cargar Nota de Venta
@@ -434,7 +499,15 @@ export class RegistrosVentasComponent implements OnInit {
       }
     })
     this.tDocumento="NOTA DE VENTA 001"
-    this.crearPDF(e)
+    try {
+      this.crearPDF(e)
+    } catch(e) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Estimado usuario hay un error al generar su documento, por favor contactese con el área de sistemas',
+        icon: 'error',
+      })
+    }
   }
 
 
@@ -455,23 +528,47 @@ export class RegistrosVentasComponent implements OnInit {
       }
     })
     this.tDocumento="PROFORMA 000 001"
-    this.crearPDF(e)
+    try {
+      this.crearPDF(e)
+    } catch(e) {
+      Swal.fire({
+        title: 'Error',
+        text: 'Estimado usuario hay un error al generar su documento, por favor contactese con el área de sistemas',
+        icon: 'error',
+      })
+    }
   }
   
 
 
   opcionMenu(e){
+    this.setearFechaMensual();
     switch (e.value) {
-      case "Consulta Mensual":
+      case "Facturas":
+        this.tituloBusqueda = "Facturas Generadas"
+        this.tipoBusqueda = "Factura"
+        this.mostrarSeccionFacturas = true;
+        this.mostrarSeccionNotasVenta = false;
+        this.mostrarSeccionCotizacion = false;
         this.traerFacturasMensuales();
-        this.traerNotasVentaMensuales();
-        this.traerProformasMensuales();
        break;
   
-      case "Consulta Global":
-        this.traerFacturas();
-        this.traerNotasVenta();
-        this.traerProformas();
+      case "Notas de Venta":
+        this.tituloBusqueda = "Notas de Venta Generadas"
+        this.tipoBusqueda = "Nota de Venta"
+        this.traerNotasVentaMensuales();
+        this.mostrarSeccionFacturas = false;
+        this.mostrarSeccionNotasVenta = true;
+        this.mostrarSeccionCotizacion = false;
+        break;
+
+      case "Cotizaciones":
+        this.tituloBusqueda = "Cotizaciones Generadas"
+        this.tipoBusqueda = "Cotizacion"
+        this.traerProformasMensuales();
+        this.mostrarSeccionFacturas = false;
+        this.mostrarSeccionNotasVenta = false;
+        this.mostrarSeccionCotizacion = true;
         break;
       default:    
     }     
@@ -582,7 +679,6 @@ export class RegistrosVentasComponent implements OnInit {
   }
 
   calcularValoresFactura(){
-    //let costo=50;
    this.subtotal1=(((this.factura.total+this.factura.coste_transporte)-this.factura.coste_transporte)/1.12)+this.factura.coste_transporte
    this.Sdescuento=this.factura.subtotalF1-this.factura.subtotalF2
    this.subtotal2=this.subtotal1-this.Sdescuento
@@ -622,7 +718,6 @@ export class RegistrosVentasComponent implements OnInit {
     this.setearNFactura()
     this.calcularValoresFactura()
     sessionStorage.setItem('resume', JSON.stringify("jj"));
-    let tipoDocumento="Factura";
     return {
       pageSize: 'A4',
       content: [
@@ -732,11 +827,6 @@ export class RegistrosVentasComponent implements OnInit {
               ]
             }
             },
-
-            //aqui termina
-            
-            
-            
             ],
             [
               
@@ -1667,9 +1757,4 @@ export class RegistrosVentasComponent implements OnInit {
       }
     };
   }
-
-
-
-  
-
 }

@@ -1,4 +1,4 @@
-<br>
+<!-- <br>
 
 
 <div class="row" style="background-color: white;">
@@ -47,7 +47,6 @@
       </tr>
       <tr style="text-align: center;">
           <th style="background-color: bisque;">Cliente</th>
-          <!-- <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span> -->
           <span contenteditable="true" (blur)="actualizarDato( $event)" >{{infoproducto.cantidad}}</span>
           <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td>
       </tr>
@@ -70,4 +69,198 @@
     </dx-gallery>
   </div>
   <div class="col-md-3"></div>
+</div>
+ -->
+
+
+
+ <br>
+
+
+<div class="row" style="background-color: white;">
+  <div class="col-md-3"></div>
+  <div class="col-md-6">
+    <h5 class="card-header text-center font-weight-bold text-uppercase " style="font-size: 1.2rem;">Gestión de Inventario</h5>
+    <table style="width: 100%">
+      <tr>
+        <th>Nombre</th>
+        <td colspan="2">{{ infoproducto.producto }}</td>
+      </tr>
+      <tr>
+        <th>Piezas/Caja</th>
+        <td colspan="2" style="text-align: center">
+          {{ infoproducto.piezas }}
+        </td>
+      </tr>
+      <tr>
+        <th>Metros/Caja</th>
+        <td colspan="2" style="text-align: center">
+          {{ infoproducto.metros }}
+        </td>
+      </tr>
+      <tr>
+        <th>Fabrica</th>
+        <td colspan="2">{{ infoproducto.fabrica }}</td>
+      </tr>
+      <tr>
+        <th>Disponibilidad Matriz</th>
+        <td colspan="2">
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Disponibilidad Sucursal 1</th>
+        <td colspan="2">
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2b2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
+        </td>
+      </tr>
+      <tr>
+        <th>Ubicación</th>
+        <td colspan="2">
+          <span style="font-weight: bold; color: #828282">M( &nbsp; </span
+          ><span style="font-weight: bold">{{ ubi1 }}</span>
+          <span style="font-weight: bold; color: #828282">) S1( &nbsp; </span
+          ><span style="font-weight: bold">{{ ubi2 }}</span>
+          <span style="font-weight: bold; color: #828282">) S2( &nbsp;</span
+          ><span style="font-weight: bold">{{ ubi3 }}</span
+          >)
+        </td>
+      </tr>
+      <tr>
+        <th style="background-color: bisque">Costo</th>
+        <td
+          style="
+            background-color: #cdcdcd;
+            font-weight: bold;
+            text-align: center;
+          "
+          colspan="2"
+        >
+          {{ infoproducto.precioCosto }}
+        </td>
+      </tr>
+      <tr>
+        <th style="background-color: bisque">Precio Socio</th>
+        <td
+          style="
+            background-color: #cdcdcd;
+            font-weight: bold;
+            text-align: center;
+          "
+          colspan="2"
+        >
+          {{ infoproducto.precioSocio }}
+        </td>
+      </tr>
+      <tr>
+        <th style="background-color: bisque">Precio Distribuidor</th>
+        <td
+          style="
+            background-color: #cdcdcd;
+            font-weight: bold;
+            text-align: center;
+          "
+          colspan="2"
+        >
+          {{ infoproducto.precioDist }}
+        </td>
+      </tr>
+      <tr style="text-align: center">
+        <th style="background-color: bisque">Cliente</th>
+        <!-- <td style="background-color: #cdcdcd;font-weight: bold;text-align: center;">{{infoproducto.precioCliente}}</td> -->
+        <span contenteditable="true" (blur)="actualizarDato($event)">{{
+          infoproducto.cantidad
+        }}</span>
+        <td
+          style="
+            background-color: #cdcdcd;
+            font-weight: bold;
+            text-align: center;
+          "
+        >
+          {{ infoproducto.precioCliente }}
+        </td>
+      </tr>
+      <tr>
+        <th>Notas</th>
+        <td colspan="2">{{ infoproducto.notas }}</td>
+      </tr>
+      <tr>
+        <th>Resumen Precios</th>
+        <td colspan="2" style="text-align: center">
+          <button
+            style="
+              background-color: red;
+              border-color: transparent;
+              color: white;
+            "
+            (click)="traerTransaccionesPorRango()"
+          >
+            Ver
+          </button>
+        </td>
+      </tr>
+    </table>
+    <dx-gallery #gallery
+        id="gallery"
+        [dataSource]="imagenes"
+        [height]="200"
+        [loop]="true"
+        [showNavButtons]="true"
+        [showIndicator]="true">
+    </dx-gallery>
+
+    <div *ngIf="mostrarTabla">
+      <div class="row">
+        <div class="col-md-12">
+          <dx-data-grid
+            #data2
+            id="gridContainer"
+            [dataSource]="transaccionesCompras"
+            [showBorders]="true">
+            <dxo-paging [pageSize]="10"></dxo-paging>
+            <dxo-pager
+              [showPageSizeSelector]="true"
+              [allowedPageSizes]="[5, 10, 20]"
+              [showInfo]="true"
+            >
+            </dxo-pager>
+            <dxi-column
+              dataField="createdAt"
+              caption="Fecha de creación"
+              dataType="date"
+              sortOrder="desc"
+              [visible]="false"
+            ></dxi-column>
+            <dxi-column
+              dataField="fecha_transaccion"
+              caption="Fecha"
+              dataType="date"
+            ></dxi-column>
+            <dxi-column dataField="documento" dataType="number"></dxi-column>
+            <dxi-column
+              dataField="costo_unitario"
+              caption="P.Und"
+              [visible]="true"
+            ></dxi-column>
+            <dxi-column
+              dataField="valor"
+              dataType="number"
+              caption="V.Unt"
+              [visible]="true"
+            ></dxi-column>
+            <dxo-scrolling columnRenderingMode="virtual"></dxo-scrolling>
+          </dx-data-grid>
+          <br><br><br>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-3"></div>
+  
+
 </div>

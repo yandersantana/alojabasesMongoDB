@@ -77,6 +77,7 @@ export class AuditoriasComponent implements OnInit {
   arreglocoincidencias2:coincidencias[]=[]
   mostrarLoading:boolean=false;
   mensajeLoading = "Cargando";
+  esEditado = false;
   newAud = true;
   mostrarBloqueo = false;
   menuValoracion: string[] = [
@@ -271,10 +272,12 @@ export class AuditoriasComponent implements OnInit {
     })
   }
 
-   compararProducto(){
+  compararProducto(){
     var coincidencia = false;
+    if(this.esEditado)
+      coincidencia = true;
+
     if(this.auditoriaProductosleida.length == 0){
-      //this.buscarInformacionNuevoProceso()
       this.traerTransaccionesPorProducto(this.productoEntregado)
     }else{
        this.auditoriaProductosleida.forEach(element=>{
@@ -293,13 +296,14 @@ export class AuditoriasComponent implements OnInit {
                 this.editAuditoria.idAud = element.idAud
                 this.productoEntregado= element.nombreproducto
                 this.nombreSucursal= element.sucursal.nombre
+                this.mostrarTablaAuditoria = false
                 this.buscarInformacionEdit()
                 var x = document.getElementById("editAud");
-                  var y = document.getElementById("newAud");
-                  var z = document.getElementById("tabla3");
-                  x.style.display = "block";
-                  y.style.display = "none";
-                  z.style.display = "none";
+                var y = document.getElementById("newAud");
+                var z = document.getElementById("tabla3");
+                x.style.display = "block";
+                y.style.display = "none";
+                z.style.display = "none";
              
             } else if (result.dismiss === Swal.DismissReason.cancel) {
               Swal.fire(
@@ -311,8 +315,7 @@ export class AuditoriasComponent implements OnInit {
               this.btnRe=true
             }
           })
-          
-        }else{}
+        }
       })
 
       if(!coincidencia){
@@ -835,22 +838,22 @@ guardarAuditoriaProducto(){
    }
 }
 
- guardarEditAuditoriaProducto(){
-  this.editAuditoria.fecha= new Date().toLocaleString()
- if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
-  this.actualizarUbicacionEdit()
-    this.mostrarMensaje()
-   new Promise<any>((resolve, reject) => {
-      this.auditoriaProductoService.updateAuditoriaProducto(this.editAuditoria).subscribe( res => {this.mensajeUpdate()}, err => {alert("error")})
-   }) 
- }else{
-   Swal.fire({
-     title: 'Error al guardar',
-     text: 'Hay campos vacios',
-     icon: 'error'
-   })
- }
-}
+  guardarEditAuditoriaProducto(){
+    this.editAuditoria.fecha= new Date().toLocaleString()
+    if( this.editAuditoria.m2fisico!=0 && this.editAuditoria.valoracion!= undefined){
+      this.actualizarUbicacionEdit()
+        this.mostrarMensaje()
+      new Promise<any>((resolve, reject) => {
+          this.auditoriaProductoService.updateAuditoriaProducto(this.editAuditoria).subscribe( res => {this.mensajeUpdate()}, err => {alert("error")})
+      }) 
+    }else{
+      Swal.fire({
+        title: 'Error al guardar',
+        text: 'Hay campos vacios',
+        icon: 'error'
+      })
+    }
+  }
 
   finalizarAuditoria(i:number){
     this.auditoriasIniciadas[i].estado = "Finalizada"
@@ -1045,25 +1048,28 @@ guardarAuditoriaProducto(){
       this.actualizarProductos()
   }
 
-  editarAuditoriaProducto(id:string,producto:string){
+  editarAuditoriaProducto(id:string, producto:string){
     this.auditoriaProductosBase.forEach(element=>{
       if(element.idAud ==id && element.nombreproducto == producto){
+        this.esEditado = true
         this.editAuditoria = element
         this.editAuditoria.idAud = element.idAud
-        this.productoEntregado= element.nombreproducto
-        this.nombreSucursal= element.sucursal.nombre
+        this.productoEntregado = element.nombreproducto
+        this.nombreSucursal = element.sucursal.nombre
         this.mostrarTablaAuditoria = true;
-       // var x = document.getElementById("editAud");
-          var y = document.getElementById("tablaAuditoria");
-          //x.style.display = "block";
-          y.style.display = "none";
+        
+        var x = document.getElementById("editAud");
+        var y = document.getElementById("newAud");
+        var z = document.getElementById("tabla3");
+        x.style.display = "block";
+        y.style.display = "none";
+        z.style.display = "none";
       }
     })
   }
 
 
   actualizarProductos(){
-   // alert("entre actualizar")
     var contVal=0
     this.auditoriaProductosleida.forEach(element=>{
         switch (element.sucursal.nombre) {
@@ -1384,10 +1390,8 @@ guardarAuditoriaProducto(){
       if (result.value) {
         if(result.value == this.auditoriasIniciadas[i].contrasena){
           var x = document.getElementById("newAud");
-         // var y = document.getElementById("newAudGlobal");
           var z = document.getElementById("tabla3");
           x.style.display = "block";
-         // y.style.display = "none";
           z.style.display = "none";
           this.newAud = false;
           localStorage.setItem('contrasena',  result.value);
@@ -1401,7 +1405,6 @@ guardarAuditoriaProducto(){
           this.numProductos = Number(this.auditoriasIniciadas[i].cantidad_productos+1)
           this.llenarLista(this.auditoriasIniciadas[i].idAuditoria)
         }else{ this.mostrarMensajeGenerico(2,"Código incorrecto")}
-       
       } else if (result.dismiss === Swal.DismissReason.cancel) {
         Swal.fire(
           'Cancelado!',
@@ -1759,7 +1762,7 @@ guardarAuditoriaProducto(){
 
   ajustarSaldos() {
     var producto = this.productosActivos.find(element=> element.PRODUCTO == this.productoEntregado);
-    console.log(producto)
+    console.log(this.auditoria)
     this.invetarioP.forEach((element) => {
       switch (this.auditoria.sucursal.nombre) {
         case "matriz":

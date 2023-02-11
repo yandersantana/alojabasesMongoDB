@@ -19,6 +19,18 @@ router.post('/getProformasMensuales', async (req, res,next) => {
     res.json(transacciones)      
 })
 
+router.post("/getProformasPorRango", async (req, res, next) => {
+  var start = req.body.fechaAnterior;
+  var end = req.body.fechaActual;
+  const notas = await Proformas.find({
+    createdAt: {
+      $gte: start,
+      $lt: end,
+    },
+  });
+  res.json(notas);
+});
+
 
 router.post('/getProformaPorId', async (req, res, next) => {
   const documentos = await Proformas.find({

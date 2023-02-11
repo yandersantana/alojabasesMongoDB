@@ -57,6 +57,12 @@ router.post('/getReciboCajaPorId', async (req, res, next) => {
 });
 
 
+router.post('/getReciboCajaPorNumeroDocumento', async (req, res, next) => {
+  const documentos = await ReciboCaja.find({ numDocumento: req.body.numDocumento , docVenta: req.body.docVenta, sucursal: req.body.sucursal });
+  res.json(documentos);
+});
+
+
 router.put('/updateEstado/:id/:estado', async (req, res,next) => {
     const { id } = req.params;
     const { estado } = req.params;

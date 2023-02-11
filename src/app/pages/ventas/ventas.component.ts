@@ -3080,7 +3080,7 @@ cambiarestado(e,i:number){
     this.factura.fecha2= new Date().toLocaleString()
     this.factura.productosVendidos=this.productosVendidos
     this.facturasService.newFactura(this.factura).subscribe(
-      res => {this.registrarFacturaSRI();this.actualizarFacturero();this.validarFormaPago()},
+      res => {this.validarFormaPago();this.registrarFacturaSRI();this.actualizarFacturero();},
       err => {this.mostrarMensajeGenerico(2,"Error al guardar")});
   }
 
@@ -3147,7 +3147,6 @@ cambiarestado(e,i:number){
 
     this._apiVeronicaService.newFactura(this.facturaVeronica).subscribe(
       res => {  var resultado = res as ResponseVeronicaDto;
-        console.log(resultado.result)
                 logApiVeronica.objetoResponse = JSON.stringify(res)
                 logApiVeronica.claveAcceso = resultado.result.claveAccesoConsultada
                 logApiVeronica.resultado = "OK"
@@ -3159,7 +3158,10 @@ cambiarestado(e,i:number){
                               icon: 'success',
                               confirmButtonText: 'Ok'
                             }).then((result) => {
-                              window.location.reload()
+                              if(this.formaPago == "Otros medios Pago" || this.formaPago == "Abonos")
+                                this.router.navigate(['/recibo-caja'], { queryParams: { id: this.factura.documento_n , tipo: 1 } });
+                              else
+                                window.location.reload();
                             })
                         },
                   err => {  });
@@ -3170,8 +3172,18 @@ cambiarestado(e,i:number){
                 logApiVeronica.claveAcceso = null;
                 logApiVeronica.resultado = "NOK"
                 this._logApiVeronicaService.newLog(logApiVeronica).subscribe(
-                  res =>{  this.mostrarLoading = false;
-                            this.mostrarMensajeGenerico(2,"Error al establecer coneccion con el SRI")   
+                  res =>{   this.mostrarLoading = false;
+                            Swal.fire({
+                              title: 'Error',
+                              text: 'Error al establecer coneccion con el SRI',
+                              icon: 'error',
+                              confirmButtonText: 'Ok'
+                            }).then((result) => {
+                              if(this.formaPago == "Otros medios Pago" || this.formaPago == "Abonos")
+                                this.router.navigate(['/recibo-caja'], { queryParams: { id: this.factura.documento_n , tipo: 1 } });
+                              else
+                                window.location.reload();
+                            })
                         },
                   err => {  });              
               });

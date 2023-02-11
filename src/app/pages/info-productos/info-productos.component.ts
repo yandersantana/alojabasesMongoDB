@@ -10,6 +10,9 @@ import { element } from 'protractor';
 import { ControlPreciosService } from 'src/app/servicios/control-precios.service';
 import { PrecioEspecialService } from 'src/app/servicios/precio-especial.service';
 import { preciosEspeciales, precios } from '../control-precios/controlPrecios';
+import { inventario, productoTransaccion } from '../consolidado/consolidado';
+import { transaccion } from '../transacciones/transacciones';
+import { TransaccionesService } from 'src/app/servicios/transacciones.service';
 
 @Component({
   selector: 'app-info-productos',
@@ -33,10 +36,23 @@ export class InfoProductosComponent implements OnInit {
   prodSuc2=0
   prodSuc3=0
   prodBod=0
+  invetarioP: inventario[] = [];
+  invetarioProd: inventario;
+  transaccionesGlobales: transaccion[] = [];
+  transaccionesCompras: transaccion[] = [];
+  mostrarTabla = false;
+  proTransaccion: productoTransaccion;
+  nombre_producto: string;
 
-  constructor(public catalogoService: CatalogoService,public preciosEspecialesService:PrecioEspecialService,public preciosService:ControlPreciosService, private rutaActiva: ActivatedRoute,public productoService:ProductoService) {
+  constructor(public catalogoService: CatalogoService,
+    public preciosEspecialesService:PrecioEspecialService,
+    public preciosService:ControlPreciosService, 
+    private rutaActiva: ActivatedRoute,
+    private transaccionesService: TransaccionesService,
+    public productoService:ProductoService) {
     this.idProducto = this.rutaActiva.snapshot.paramMap.get("id")
-    this.infoproducto = new infoprod()
+    this.infoproducto = new infoprod();
+    this.proTransaccion = new productoTransaccion();
    }
 
   ngOnInit() {
@@ -83,11 +99,12 @@ export class InfoProductosComponent implements OnInit {
   }
 
   cargarProductoTabla(){
-    this.infoproducto.producto = this.productoLeido.PRODUCTO
-    this.infoproducto.productoLeido = this.productoLeido
-    this.infoproducto.piezas = this.productoLeido.P_CAJA
-    this.infoproducto.metros = this.productoLeido.M2
-    this.infoproducto.fabrica = ""
+    this.infoproducto.producto = this.productoLeido.PRODUCTO;
+    this.infoproducto.precioCosto = this.productoLeido.precio;
+    this.infoproducto.productoLeido = this.productoLeido;
+    this.infoproducto.piezas = this.productoLeido.P_CAJA;
+    this.infoproducto.metros = this.productoLeido.M2;
+    this.infoproducto.fabrica = "";
     //this.infoproducto.disponibilidad = this.productoLeido.sucursal1+"M  - "+this.productoLeido.sucursal2+"S1  - "+this.productoLeido.sucursal3+"S2  - "+this.productoLeido.bodegaProveedor+"P "
     this.prodSuc1 =parseFloat((this.productoLeido.sucursal1).toFixed(2))
     this.prodSuc2 =parseFloat((this.productoLeido.sucursal2).toFixed(2))
@@ -162,5 +179,38 @@ export class InfoProductosComponent implements OnInit {
       }
     })
    }
+
+
+
+   traerTransaccionesPorRango() {
+    this.mostrarTabla = true;
+    this.transaccionesCompras = [];
+    this.transaccionesGlobales = [];
+    var fechaHoy = new Date();
+    var fechaAnterior = new Date();
+    fechaHoy.setDate(fechaHoy.getDate() + 1);
+    fechaAnterior.setDate(fechaHoy.getDate() - 60);
+    this.proTransaccion.nombre = this.nombre_producto;
+    this.proTransaccion.fechaActual = fechaHoy;
+    this.proTransaccion.fechaAnterior = fechaAnterior;
+    this.transaccionesService
+      .getTransaccionesPorProductoYFecha(this.proTransaccion)
+      .subscribe((res) => {
+        this.transaccionesGlobales = res as transaccion[];
+        this.buscarTransacciones();
+      });
+  }
+
+  buscarTransacciones() {
+    this.transaccionesGlobales.forEach((element) => {
+      if (
+        element.tipo_transaccion == "venta-not" ||
+        element.tipo_transaccion == "venta-fact"
+      ) {
+        this.transaccionesCompras.push(element);
+      }
+    });
+    //this.mostrarTabla = fals
+  }
 
 }

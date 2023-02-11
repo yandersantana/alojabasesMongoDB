@@ -1,23 +1,84 @@
-<div *ngIf="mostrarLoading || mostrarLoadingNota || mostrarLoadingCotizacion">
+<div *ngIf="mostrarLoading">
     <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
 </div>
 
-<div class="row menu">
+<div class="row menu remiPro">
     <div class="col-md-8"><div class=""></div></div>
     <div class="col-md-4"> 
-        <dx-select-box [items]="menu1" 
-            [value]="menu1[0]" 
+        <dx-select-box [items]="menu2" 
+            [value]="menu2[0]" 
             [readOnly]="false" 
             [disabled]="false"
-            (onValueChanged)="opcionMenu($event)"
-            >
+            class="form-control select"
+            (onValueChanged)="opcionMenu($event)">
         </dx-select-box>
     </div>
 </div>
 
-<div>
+
+<br>
+<div class="card">
+    <h5 class="card-header text-center font-weight-bold text-uppercase ">{{tituloBusqueda}}</h5>
+    <div class="card-body">
+            <div class="row">
+                <div class="col-md-2"></div>
+                <div class="col-md-4">
+                    <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta Específica</h6></div>
+                    <div class="row card">
+                        <div class="col-md-12"> 
+                            <div class="row">
+                                <div class="col-md-3"  style="margin-top: 0.5em;">Desde</div>
+                                <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowdesde"
+                                        type="date">
+                                    </dx-date-box>
+                                </div>
+
+                                <div class="col-md-3" style="margin-top: 0.5em;">Hasta</div>
+                                <div class="col-md-9">
+                                    <dx-date-box
+                                        [(value)]="nowhasta"
+                                        type="date">
+                                    </dx-date-box>
+                                </div>
+
+                                <div class="col-md-4"></div>
+                                <div class="col-md-4 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerRegistrosPorRango()">Buscar</button>
+                                </div>
+                                <div class="col-md-4"></div>
+                            </div>        
+                        </div>
+                    </div>                
+                </div>
+                
+                <div class="col-md-4 " style="margin-left: 1em;">
+                <div class="col-md-12" style="text-align: center;font-weight: bold;"><h6>Consulta General</h6></div>
+                <div class="row card">
+                    <br><br>
+                    <div class="col-md-12"> 
+                        <div class="row">  
+                    
+                            <div class="col-md-3"></div>
+                            <div class="col-md-6 btnSearch">
+                                <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerValoresGlobales()">Buscar Todos</button>
+                            </div>
+                            <div class="col-md-3"></div>
+                        </div>        
+                    </div>
+                    <br>
+                </div>         
+
+            </div>
+            <div class="col-md-2"></div>
+        </div>   
+    </div>
+</div>
+
+
+<div *ngIf="mostrarSeccionFacturas">
     <br>
-    <h4>Facturas</h4>
     <dx-data-grid id="gridContainer"
         [dataSource]="facturas"
         [showBorders]="true"
@@ -25,141 +86,44 @@
         (onExporting)="onExporting($event)"
         (onExported)="onExported($event)">
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
-        <dxo-search-panel 
-            [visible]="true" 
-            [width]="240" 
-            placeholder="Buscar..."></dxo-search-panel>
+        <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
         <dxo-export [enabled]="true" fileName="Facturas_ingresadas" [allowExportSelectedData]="true"></dxo-export>
         <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
-        <dxi-column
-            dataField="documento_n"
-            caption="Factura #"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            caption="Fecha"
-            dataType="date">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha2"
-            caption="Fecha Transaccion"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="rucFactura"
-            caption="RUC Suc">
-        </dxi-column>
-        <dxi-column
-            dataField="sucursal"
-            caption="Sucursal"
-            dataType="string"
-            [groupIndex]="0">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.cliente_nombre"
-            caption="Cliente"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.ruc"
-            caption="Cliente"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="tipo_venta"
-            caption="Tipo Venta"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="cotizacion"
-            caption="Cotización"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="coste_transporte"
-            caption="Transporte"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="totalIva"
-            caption="Iva"
-            dataType="number"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="total"
-            caption="Total"
-            dataType="number"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="estado"
-            caption="Estado"
-            dataType="string"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="caja"
-            caption="Caja"
-            dataType="number"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Vendedor"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Usuario"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="maestro"
-            caption="Maestro"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="observaciones"
-            caption="Observaciones"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-        dataField="nota"
-        caption="Notas"
-        dataType="string"
-        [visible]=false>
-    </dxi-column>
-      <dxi-column type="buttons"  caption="Ver">
+        <dxi-column dataField="documento_n" caption="Factura #" dataType="string"></dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="date"></dxi-column>
+        <dxi-column dataField="fecha2"  caption="Fecha Transaccion" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="rucFactura"  caption="RUC Suc"></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string" [groupIndex]="0"></dxi-column>
+        <dxi-column dataField="cliente.cliente_nombre" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente.ruc" caption="Cliente" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="tipo_venta" caption="Tipo Venta" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="cotizacion" caption="Cotización" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="coste_transporte" caption="Transporte" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="totalIva" caption="Iva" dataType="number" [visible]=false></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="number" [visible]=true></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]=true></dxi-column>
+        <dxi-column dataField="caja" caption="Caja" dataType="number" [visible]=false></dxi-column>
+        <dxi-column dataField="username" caption="Vendedor" dataType="string" [visible]=false></dxi-column>
+        <dxi-column  dataField="username" caption="Usuario" dataType="string" [visible]=false></dxi-column>
+        <dxi-column  dataField="maestro" caption="Maestro" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="observaciones" caption="Observaciones"  dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="nota" caption="Notas" dataType="string" [visible]=false></dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile"></dxi-button>    
         </dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotas"></dxi-button>
         </dxi-column>
-        <dxo-paging [pageSize]="5"></dxo-paging>
+        <dxo-paging [pageSize]="8"></dxo-paging>
         <dxo-group-panel [visible]="true"></dxo-group-panel>
         <dxo-grouping #expand [autoExpandAll]="true"></dxo-grouping>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
     </dx-data-grid>
 </div>
 
 
-<div>
+<div *ngIf="mostrarSeccionNotasVenta">
     <br>
-    <h4>Notas de Venta</h4>
     <dx-data-grid id="gridContainer"
         [dataSource]="notasVenta"
         [showBorders]="true"
@@ -168,136 +132,40 @@
         (onExported)="onExported($event)">
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
         <dxo-export [enabled]="true" fileName="NotasVenta_ingresadas" [allowExportSelectedData]="true"></dxo-export>
-        <dxo-search-panel 
-            [visible]="true" 
-            [width]="240" 
-            placeholder="Buscar..."></dxo-search-panel>
-            <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
-        <dxi-column
-            dataField="documento_n"
-            caption="Factura #"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            caption="Fecha"
-            dataType="date">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha2"
-            caption="Fecha Transaccion"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-      
-        <dxi-column
-            dataField="sucursal"
-            caption="Sucursal"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.cliente_nombre"
-            caption="Cliente"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.ruc"
-            caption="Cliente"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="tipo_venta"
-            caption="Tipo Venta"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="cotizacion"
-            caption="Cotización"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        
-        
-        <dxi-column
-            dataField="coste_transporte"
-            caption="Transporte"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="totalIva"
-            caption="Iva"
-            dataType="number"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="total"
-            caption="Total"
-            dataType="number"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="estado"
-            caption="Estado"
-            dataType="string"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="caja"
-            caption="Caja"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Vendedor"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="maestro"
-            caption="Maestro"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Usuario"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="observaciones"
-            caption="Observaciones"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="nota"
-            caption="Notas"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-      <dxi-column type="buttons"  caption="Ver">
+        <dxo-search-panel  [visible]="true" [width]="240"  placeholder="Buscar..."></dxo-search-panel>
+        <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
+        <dxi-column dataField="documento_n" caption="Factura #" dataType="string"></dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="date"></dxi-column>
+        <dxi-column dataField="fecha2" caption="Fecha Transaccion" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente.cliente_nombre" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente.ruc" caption="Cliente" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="tipo_venta" caption="Tipo Venta" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="cotizacion" caption="Cotización" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="coste_transporte" caption="Transporte" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="totalIva" caption="Iva" dataType="number" [visible]=false></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="number" [visible]=true></dxi-column>
+        <dxi-column dataField="estado" caption="Estado" dataType="string" [visible]=true></dxi-column>
+        <dxi-column dataField="caja" caption="Caja" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="username" caption="Vendedor" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="maestro" caption="Maestro" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="username" caption="Usuario" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="observaciones" caption="Observaciones" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="nota" caption="Notas" dataType="string" [visible]=false></dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile2"></dxi-button>    
         </dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotasVenta"></dxi-button>
         </dxi-column>
-        <dxo-paging [pageSize]="5"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
+        <dxo-paging [pageSize]="8"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
     </dx-data-grid>
 </div>
 
 
-<div>
+<div *ngIf="mostrarSeccionCotizacion">
     <br>
-    <h4>Cotizaciones</h4>
     <dx-data-grid id="gridContainer"
         [dataSource]="cotizaciones"
         [showBorders]="true"
@@ -305,109 +173,31 @@
         (onExporting)="onExporting($event)"
         (onExported)="onExported($event)">
         <dxo-filter-row [visible]="true" ></dxo-filter-row>
-        <dxo-search-panel 
-            [visible]="true" 
-            [width]="240" 
-            placeholder="Buscar..."></dxo-search-panel>
-            <dxo-export [enabled]="true" fileName="Cotizaciones_ingresadas" [allowExportSelectedData]="true"></dxo-export>
-            <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
-            <dxi-column
-            dataField="documento_n"
-            caption="ID #"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha"
-            caption="Fecha"
-            dataType="date">
-        </dxi-column>
-        <dxi-column
-            dataField="fecha2"
-            caption="Fecha Transaccion"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <!-- <dxi-column
-            dataField="cotizacion"
-            caption="Cotización"
-            dataType="string">
-        </dxi-column> -->
-        <dxi-column
-            dataField="sucursal"
-            caption="Sucursal"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.cliente_nombre"
-            caption="Cliente"
-            dataType="string">
-        </dxi-column>
-        <dxi-column
-            dataField="cliente.ruc"
-            caption="Cliente"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="tipo_venta"
-            caption="Tipo Venta"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-       
-        <dxi-column
-            dataField="coste_transporte"
-            caption="Transporte"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="totalIva"
-            caption="Iva"
-            dataType="number"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="total"
-            caption="Total"
-            dataType="number"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Vendedor"
-            dataType="string"
-            [visible]=true>
-        </dxi-column>
-        <dxi-column
-            dataField="username"
-            caption="Usuario"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="observaciones"
-            caption="Observaciones"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-        <dxi-column
-            dataField="nota"
-            caption="Notas"
-            dataType="string"
-            [visible]=false>
-        </dxi-column>
-      <dxi-column type="buttons"  caption="Ver">
+        <dxo-search-panel [visible]="true"  [width]="240"  placeholder="Buscar..."></dxo-search-panel>
+        <dxo-export [enabled]="true" fileName="Cotizaciones_ingresadas" [allowExportSelectedData]="true"></dxo-export>
+        <dxi-column dataField="createdAt" caption="Fecha de creación" dataType="date" sortOrder="desc" [visible]="false"></dxi-column>
+        <dxi-column dataField="documento_n" caption="ID #" dataType="string"></dxi-column>
+        <dxi-column dataField="fecha" caption="Fecha" dataType="date"></dxi-column>
+        <dxi-column dataField="fecha2" caption="Fecha Transaccion" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="sucursal" caption="Sucursal" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente.cliente_nombre" caption="Cliente" dataType="string"></dxi-column>
+        <dxi-column dataField="cliente.ruc" caption="Cliente" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="tipo_venta" caption="Tipo Venta" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="coste_transporte" caption="Transporte" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="totalIva" caption="Iva" dataType="number" [visible]=false></dxi-column>
+        <dxi-column dataField="total" caption="Total" dataType="number" [visible]=true></dxi-column>
+        <dxi-column dataField="username" caption="Vendedor" dataType="string" [visible]=true></dxi-column>
+        <dxi-column dataField="username" caption="Usuario" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="observaciones" caption="Observaciones" dataType="string" [visible]=false></dxi-column>
+        <dxi-column dataField="nota" caption="Notas" dataType="string" [visible]=false></dxi-column>
+        <dxi-column type="buttons"  caption="Ver">
             <dxi-button icon="fa fa-arrow-down" [onClick]="getCourseFile3"></dxi-button>    
         </dxi-column>
         <dxi-column type="buttons" dataField="bt1" caption="Notas" width="7%">
             <dxi-button hint="Notas" icon="fa fa-list-alt" [onClick]="mostrarNotasCtiza"></dxi-button>
         </dxi-column>
         
-        <dxo-paging [pageSize]="5"></dxo-paging>
-        <dxo-pager
-            [showPageSizeSelector]="true"
-            [allowedPageSizes]="[8, 12, 20]"
-        ></dxo-pager>
+        <dxo-paging [pageSize]="8"></dxo-paging>
+        <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[8, 12, 20]"></dxo-pager>
     </dx-data-grid>
 </div>

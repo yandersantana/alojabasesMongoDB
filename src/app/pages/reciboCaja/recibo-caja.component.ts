@@ -548,6 +548,10 @@ export class ReciboCajaComponent implements OnInit {
     this.anularRecibo(e.row.data)  
   }
 
+  rechazarEliminacion = (e) => {  
+    this.rechazarAnulacionRecibo(e.row.data)  
+  }
+
   anularRecibo(e:any){ 
     Swal.fire({
       title: 'Anular Recibo',
@@ -563,6 +567,34 @@ export class ReciboCajaComponent implements OnInit {
         Swal.fire({
           title: 'Correcto',
           text: 'Un administrador aprobará su anulación',
+          icon: 'success',
+          confirmButtonText: 'Ok'
+        }).then((result) => {
+         this.traerRecibosCajaPorRango();
+        })
+        }, err => {alert("error")})
+      
+      }else if (result.dismiss === Swal.DismissReason.cancel) {
+        this.mostrarMensajeGenerico(2,"Se ha cancelado su proceso");
+      }
+    })
+  }
+
+
+  rechazarAnulacionRecibo(e:any){ 
+    Swal.fire({
+      title: 'Rechazar Anulación',
+      text: "Desea rechazar la anulación del recibo #"+e.idDocumento,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Si',
+      cancelButtonText: 'No'
+    }).then((result) => {
+      if (result.value) {
+        this._reciboCajaService.updateEstado( e._id ,"Activo").subscribe( res => {
+        Swal.fire({
+          title: 'Correcto',
+          text: 'Se realizó su proceso con éxito',
           icon: 'success',
           confirmButtonText: 'Ok'
         }).then((result) => {

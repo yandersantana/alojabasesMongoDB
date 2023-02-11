@@ -423,6 +423,9 @@
         <dxi-column type="buttons" dataField="bt2" caption="Aprobar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
             <dxi-button icon="clear" [onClick]="aprobarEliminacion"></dxi-button>   
         </dxi-column>
+        <dxi-column type="buttons" dataField="bt2" caption="Rechazar" width="6%" [visible]="true" *ngIf="mostrarAprobacion">
+            <dxi-button icon="fa fa-reply" [onClick]="rechazarEliminacion"></dxi-button>   
+        </dxi-column>
     
 
         

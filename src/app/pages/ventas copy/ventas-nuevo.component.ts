@@ -169,6 +169,8 @@ export class VentasNuevoComponent implements OnInit {
   catalogoLeido:catalogo
   username:string
   nombreUsuario : string
+  mostrarOP1 : boolean = true;
+  mostrarOP2 : boolean = false;
 
   @ViewChild('ventasForm', { static: false }) ventasForm: DxFormComponent;
   @ViewChild("data2", { static: false }) dataGrid: dxAutocomplete;
@@ -177,15 +179,13 @@ export class VentasNuevoComponent implements OnInit {
 
   pipe = new DatePipe('en-US');
   sucursalUsuario = "";
-
   now2 = Date.now();
-  //now3 = Date.now();
+
   tipoDocumentos: string[] = [
     "Factura",
     "Cotización",
     "Nota de Venta"
   ];
-
 
   sucursalesDefault: string[] = [
     "matriz",
@@ -227,60 +227,55 @@ export class VentasNuevoComponent implements OnInit {
   preciosEspeciales:preciosEspeciales[]=[]
   productos22: DataSource;
   RucSucursal:string="";
-
   popupVisibleCombos = false;
   nombreCombo = "";
   productosComboLeidos: productosCombo[] = []
   cantidadProductos = 0
   clienteFactura : cliente;
-
   facturaVeronica : FacturaModel
   consecutivoVeronica : ConsecutivoDto
   secuencialFactura : string
 
-
   constructor(private db: AngularFirestore,
-    public preciosEspecialesService : PrecioEspecialService,
-    public notasVentService : NotasVentasService, 
-    public productosPendientesService : ProductosPendientesService, 
-    public authenService : AuthenService, 
-    public proformasService : ProformasService, 
-    public transaccionesService: TransaccionesService, 
-    public productosVenService:ProductosVendidosService,
-    public parametrizacionService:ParametrizacionesService, 
-    public contadoresService: ContadoresDocumentosService, 
-    public facturasService:FacturasService,
-    public preciosService:ControlPreciosService, 
-    public clienteService: ClienteService, 
-    public catalogoService: CatalogoService, public productoService:ProductoService,
-    public sucursalesService: SucursalesService, 
-    public userService: UserService,
-    public _configuracionService : DatosConfiguracionService,
-    public _reciboCajaService : ReciboCajaService,
-    public authService: AuthService,
-    public _cuentaPorCobrar : CuentasPorCobrarService,
-    public _transaccionFinancieraService : TransaccionesFinancierasService,
-    public _cajaMenorService : CajaMenorService,
-    public _comboService : CombosService,
-    public _apiVeronicaService : ApiVeronicaService,
-    public _logApiVeronicaService : ServicioWebVeronicaService,
-    public router: Router) {
-    this.factura = new factura()
-    this.cotizacion = new cotizacion()
-    this.factura.fecha = this.now
-    this.maxDate = new Date(this.maxDate.setDate(this.maxDate.getDate() - 2));
-    this.minDate = this.now
-    this.productosVendidos.push(new venta)
-    this.factura.coste_transporte= 0
-    this.factura.fecha2= this.now.toLocaleString()
-    this.factura.tipoDocumento = "Factura"
-    this.clienteFactura = new cliente()
-    this.facturaVeronica = new FacturaModel()
-
-
-
-
+              public preciosEspecialesService : PrecioEspecialService,
+              public notasVentService : NotasVentasService, 
+              public productosPendientesService : ProductosPendientesService, 
+              public authenService : AuthenService, 
+              public proformasService : ProformasService, 
+              public transaccionesService: TransaccionesService, 
+              public productosVenService:ProductosVendidosService,
+              public parametrizacionService:ParametrizacionesService, 
+              public contadoresService: ContadoresDocumentosService, 
+              public facturasService:FacturasService,
+              public preciosService:ControlPreciosService, 
+              public clienteService: ClienteService, 
+              public catalogoService: CatalogoService, public productoService:ProductoService,
+              public sucursalesService: SucursalesService, 
+              public userService: UserService,
+              public _configuracionService : DatosConfiguracionService,
+              public _reciboCajaService : ReciboCajaService,
+              public authService: AuthService,
+              public _cuentaPorCobrar : CuentasPorCobrarService,
+              public _transaccionFinancieraService : TransaccionesFinancierasService,
+              public _cajaMenorService : CajaMenorService,
+              public _comboService : CombosService,
+              public _apiVeronicaService : ApiVeronicaService,
+              public _logApiVeronicaService : ServicioWebVeronicaService,
+              public router: Router) {
+      this.factura = new factura()
+      this.factura.cliente = new cliente()
+      this.cotizacion = new cotizacion()
+      this.factura.fecha = this.now
+      this.maxDate = new Date(this.maxDate.setDate(this.maxDate.getDate() - 2));
+      this.minDate = this.now
+      this.productosVendidos.push(new venta)
+      this.factura.coste_transporte= 0
+      this.factura.fecha2= this.now.toLocaleString()
+      this.factura.tipoDocumento = "Factura"
+      this.clienteFactura = new cliente()
+      this.facturaVeronica = new FacturaModel()
   }
+
 
   ngOnInit() {
     this.cargarUsuarioLogueado()
@@ -293,18 +288,13 @@ export class VentasNuevoComponent implements OnInit {
     this.traerProductosCatalogo()
     this.traerPrecios()
     this.traerPreciosEspeciales()
-
     this.traerUsuarios()
     this.traerDatosConfiguracion();
-
     this.factura.tipo_venta="Normal"
     this.factura.tipo_cliente="C"
     this.tDocumento= "Factura"
     this.factura.observaciones= " "
     this.nCotizacionFact= " "
-
-    console.log(this.factura.fecha.toLocaleDateString('en-GB', {month: '2-digit',day: '2-digit',year: 'numeric'}))
-
   }
 
   
@@ -396,6 +386,7 @@ export class VentasNuevoComponent implements OnInit {
       this.sucursales = res as sucursal[];
    })
   }
+
 
   traerProductos(){
     this.mostrarLoading = true;
@@ -490,7 +481,6 @@ export class VentasNuevoComponent implements OnInit {
           case "matriz":
             this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
-            console.log(this.factura.documento_n)
             break;
           case "sucursal1":
             this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
@@ -526,39 +516,38 @@ export class VentasNuevoComponent implements OnInit {
     })
   }
 
-
   
-    asignarIDFactura(tipoFac:string){
-      switch (tipoFac) {
-        case "Factura":
-          switch (this.factura.sucursal) {
-            case "matriz":
-              this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
-              console.log(this.factura.documento_n)
-              break;
-            case "sucursal1":
-              this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
-              break;
-            case "sucursal2":
-              this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
-              break;
-            default:
-              break;
-          } 
-          break;
-        case "Nota de Venta":
-          this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-          break;
-        case "Cotización":
-          this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
-          break;
-        default:
-          break;
-      }
+  asignarIDFactura(tipoFac:string){
+    switch (tipoFac) {
+      case "Factura":
+        switch (this.factura.sucursal) {
+          case "matriz":
+            this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+            console.log(this.factura.documento_n)
+            break;
+          case "sucursal1":
+            this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
+            break;
+          case "sucursal2":
+            this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
+            break;
+          default:
+            break;
+        } 
+        break;
+      case "Nota de Venta":
+        this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
+        break;
+      case "Cotización":
+        this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
+        break;
+      default:
+        break;
     }
+  }
 
 
   anadirProducto = (e) => {
@@ -603,22 +592,19 @@ export class VentasNuevoComponent implements OnInit {
   }
 
   opcionMenu(e){
-    var x = document.getElementById("op1");
-    var y = document.getElementById("op2");
-
     switch (e.value) {
       case "De cajas a m2":
-        x.style.display = "block";
-        y.style.display="none";
+        this.mostrarOP1 = true;
+        this.mostrarOP2 = false;
        break;
 
       case "De m2 a cajas":
-        x.style.display = "none";
-        y.style.display="block";
+        this.mostrarOP1 = false;
+        this.mostrarOP2 = true;
         break;
       default:    
     }     
-    }
+  }
 
 
 stringIsNumber(s) {
@@ -858,12 +844,12 @@ setSelectedProducto(i:number){
         this.factura.cliente.cliente_nombre= element.cliente_nombre
         this.factura.cliente.direccion = element.direccion
         this.factura.cliente.celular = element.celular
-        this.factura.tipo_venta= element.tventa
-        this.factura.cliente.nombreContacto=element.nombreContacto
-        
+        this.factura.tipo_venta = element.tventa
+        this.factura.cliente.nombreContacto = element.nombreContacto
       }
     }); 
     this.calcularTipoCliente(); 
+    //this.clienteFactura = this.factura.cliente
   }
 
   asignarMaestro(e){
@@ -3082,7 +3068,7 @@ cambiarestado(e,i:number){
     this.factura.fecha2= new Date().toLocaleString()
     this.factura.productosVendidos=this.productosVendidos
     this.facturasService.newFactura(this.factura).subscribe(
-      res => {this.registrarFacturaSRI();this.actualizarFacturero();this.validarFormaPago()},
+      res => {this.validarFormaPago();this.registrarFacturaSRI();this.actualizarFacturero();},
       err => {this.mostrarMensajeGenerico(2,"Error al guardar")});
   }
 
@@ -3161,7 +3147,10 @@ cambiarestado(e,i:number){
                               icon: 'success',
                               confirmButtonText: 'Ok'
                             }).then((result) => {
-                              window.location.reload()
+                              if(this.formaPago == "Otros medios Pago" || this.formaPago == "Abonos")
+                                this.router.navigate(['/recibo-caja'], { queryParams: { id: this.factura.documento_n , tipo: 1 } });
+                              else
+                                window.location.reload();
                             })
                         },
                   err => {  });
@@ -3396,8 +3385,8 @@ cambiarestado(e,i:number){
           this.guardarDatosCliente()
           this.setearNFactura()
           this.factura.dni_comprador= this.factura.cliente.ruc
-          if(this.ventasForm.instance.validate().isValid){
-            this.factura.cliente= this.factura.cliente
+          //if(this.ventasForm.instance.validate().isValid){
+            this.factura.cliente = this.factura.cliente
             if(this.factura.cliente.nombreContacto == "" || this.factura.cliente.nombreContacto == undefined)
               this.factura.cliente.nombreContacto=this.factura.cliente.cliente_nombre
             
@@ -3445,7 +3434,6 @@ cambiarestado(e,i:number){
                     this.transaccion.valor = this.transaccion.valor - element.producto.precio
                     this.transaccion.totalsuma = this.transaccion.valor * this.transaccion.cantM2
                   }
-
                 }
 
 
@@ -3460,7 +3448,7 @@ cambiarestado(e,i:number){
               });
               
             });
-          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento"),this.botonFactura = false }
+          //}else{ this.mostrarMensajeGenerico(2,"Error al crear el documento"),this.botonFactura = false }
         }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista"),this.botonFactura = false}  
       }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente"),this.botonFactura = false }
     }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente"),this.botonFactura = false }
@@ -3545,21 +3533,18 @@ cambiarestado(e,i:number){
           this.factura.productosVendidos=this.productosVendidos
           this.guardarDatosCliente()
           this.factura.dni_comprador= this.factura.cliente.ruc
-          if(this.ventasForm.instance.validate().isValid){
-            this.factura.cliente= this.factura.cliente
-            new Promise<any>((resolve, reject) => {
-              this.crearCliente()
-              this.guardarCotización()
-              this.productosVendidos.forEach(element => {
-                element.factura_id = this.factura.documento_n
-                this.productosVenService.newProductoVendido(element).subscribe(
-                  res => {},
-                  err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
-              });
-
+          this.factura.cliente= this.factura.cliente
+          new Promise<any>((resolve, reject) => {
+            this.crearCliente()
+            this.guardarCotización()
+            this.productosVendidos.forEach(element => {
+              element.factura_id = this.factura.documento_n
+              this.productosVenService.newProductoVendido(element).subscribe(
+                res => {},
+                err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
             });
-            this.crearPDF();
-          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento")}
+          });
+          this.crearPDF();
         }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista") }  
       }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") } 
     }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente") }  
@@ -3584,10 +3569,7 @@ cambiarestado(e,i:number){
       } 
     })
 
-    IdNum.then((data) => {
-      this.validarNotaVenta();
-      //this.generarNotaDeVenta();
-    })
+    IdNum.then((data) => {  this.validarNotaVenta(); })
   }
 
 
@@ -3604,16 +3586,14 @@ cambiarestado(e,i:number){
         var bandera:boolean=true
         this.productosVendidos.forEach(element => {
           contpro++     
-          if(element.total==0){ 
+          if(element.total==0)
             bandera=false
-          }
         });
         if(contpro>=1 &&bandera){
           this.factura.dni_comprador= this.factura.cliente.ruc
           this.factura.cliente.cliente_nombre= this.mensaje
           this.guardarDatosCliente()
           this.factura.dni_comprador= this.factura.cliente.ruc
-          if(this.ventasForm.instance.validate().isValid){
             this.factura.cliente= this.factura.cliente
             new Promise<any>((resolve, reject) => {
               this.setearNFactura()
@@ -3676,10 +3656,7 @@ cambiarestado(e,i:number){
                   },
                   err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente");})
               });
-          
             });
-
-          }else{ this.mostrarMensajeGenerico(2,"Error al crear el documento");this.botonNotaVenta = false;}
         }else{ this.mostrarMensajeGenerico(2,"Error no hay productos en la lista");this.botonNotaVenta = false;}   
       }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");this.botonNotaVenta = false;}  
     }else{ this.mostrarMensajeGenerico(2,"Error hay campos vacios, revise e intente nuevamente");this.botonNotaVenta = false;}
@@ -3912,8 +3889,6 @@ cambiarestado(e,i:number){
     }
 
 
-
-
   traerTransaccionesPorProducto(nombreProducto: producto,numero : number) {
     this.invetarioP = [];
     this.mostrarLoading = true;
@@ -4083,7 +4058,6 @@ cambiarestado(e,i:number){
         }
       }
     });
-    var cantidadRestante = 0;
     this.invetarioProd = new inventario();
     this.invetarioProd.producto = nombreProducto;
     this.invetarioProd.cantidadCajas = contCajas;
@@ -4202,15 +4176,6 @@ cambiarestado(e,i:number){
     
     this.mostrarLoading = false;
   }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -4479,3 +4444,5 @@ cambiarestado(e,i:number){
 
  
 }
+
+//4486

@@ -182,6 +182,9 @@ export class StockMinimoComponent implements OnInit {
     this.mostrarLoading = true;
     var productoM = new productoMultiple();
     var arregloProductos = [];
+    this.invetarioMinimoProductosMatriz = []
+    this.invetarioMinimoProductosSucursal1 = []
+    this.invetarioMinimoProductosSucursal2 = []
     this.productos.forEach(element=>{ arregloProductos.push(element.PRODUCTO)})
     productoM.array = arregloProductos;
     this.transaccionesService.getTransaccionesPorProductoMultiple(productoM).subscribe((res) => {
@@ -711,7 +714,9 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioProd = new inventario();
       this.invetarioProd.producto = element2;
       var casas = this.transacciones.filter(element=> element.producto == element2.PRODUCTO && element.tipo_transaccion == "compra");
-      this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
+      //this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
+      console.log(element2)
+      this.invetarioProd.producto.CASA = element2.CASA;
       this.invetarioProd.cantidadCajas = contCajas;
       this.invetarioProd.cantidadCajas2 = contCajas2;
       this.invetarioProd.cantidadCajas3 = contCajas3;
@@ -915,7 +920,8 @@ export class StockMinimoComponent implements OnInit {
       this.invetarioProd = new inventario();
       this.invetarioProd.producto = element2;
       var casas = this.transacciones.filter(element=> element.producto == element2.PRODUCTO && element.tipo_transaccion == "compra");
-      this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
+      //this.invetarioProd.producto.CASA = casas[casas.length-1]?.proveedor;
+      this.invetarioProd.producto.CASA = element2.CASA;
       this.invetarioProd.cantidadCajas = contCajas;
       this.invetarioProd.cantidadCajas2 = contCajas2;
       this.invetarioProd.cantidadCajas3 = contCajas3;

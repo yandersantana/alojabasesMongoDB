@@ -59,10 +59,6 @@ dx-form{
     margin-bottom: 5px;
 }
 
-/* h5{
-    font-size: 0.8em;
-} */
-
 .row{
     margin-bottom: 5px;
 }
@@ -110,6 +106,12 @@ dx-form{
 
 ::ng-deep .prueba2 /deep/ .dx-texteditor-input{
     font-size: 30px;
+    text-align: center;
+    font-weight: bold;
+   
+}
+
+::ng-deep .inputTransporte /deep/ .dx-texteditor-input{
     text-align: center;
     font-weight: bold;
    
@@ -223,3 +225,24 @@ table, th, td {
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+.id3 h5{
+    font-weight: bold;
+}
+
+::ng-deep .calT /deep/ .dx-texteditor-input{
+    text-align: center;
+    font-weight: bold;
+   
+}
+
+::ng-deep .calT2 /deep/ .dx-texteditor-input{
+    font-size: 18pt;
+    text-align: center;
+    font-weight: bold;
+}
+
+.select{
+    text-align: center;
+    background-color: white;
+}

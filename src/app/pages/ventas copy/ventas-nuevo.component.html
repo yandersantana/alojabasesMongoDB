@@ -11,6 +11,7 @@
             <div class="dx-field-value">
                 <dx-radio-group
                 [items]="sucursalesDefault"
+                [(value)]="sucursalUsuario" 
                 layout="horizontal"
                 (onValueChanged)="asignarsucursalD($event)">
                 </dx-radio-group>
@@ -58,7 +59,7 @@
                                 </dx-select-box>
                             </div>
 
-                            <div class="col-md-12 espDivs">
+                            <div class="col-md-12 espDivs" style="margin-left: 0.2em;">
                                 <div class="row">
                                     <div class="col-md-8 dxauto">
                                         <dx-autocomplete #data2
@@ -69,36 +70,36 @@
                                             (onChange)="setClienteData($event)">
                                         </dx-autocomplete>
                                     </div>
-                                    <div class="col-md-4 espDivs">
-                                        <dx-text-box [(value)]="clienteFactura.ruc" placeholder="RUC" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <div class="col-md-4 espDivs" style="margin-left: 0.1em;">
+                                        <dx-text-box [(value)]="factura.cliente.ruc" placeholder="RUC" [disabled]="false" [readOnly]="false"></dx-text-box>
                                     </div>
                                 </div>
                             </div>                          
 
                         </div>
 
-                        <div class="col-md-12 espDivs">
+                        <div class="col-md-12 espDivs" style="margin-left: 0.2em;">
                             <div class="row">
                                 <div class="col-md-8">
-                                    <dx-text-box [(value)]="clienteFactura.direccion" placeholder="Dirección" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <dx-text-box [(value)]="factura.cliente.direccion" placeholder="Dirección" [disabled]="false" [readOnly]="false"></dx-text-box>
                                 </div>
                                 <div class="col-md-4">
-                                    <dx-text-box [(value)]="clienteFactura.correo" placeholder="Correo" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <dx-text-box [(value)]="factura.cliente.correo" placeholder="Correo" [disabled]="false" [readOnly]="false"></dx-text-box>
                                 </div>
                                 
                             </div>
                         </div>
 
-                        <div class="col-md-12 espDivs" style="margin-top: 1.5em;">
+                        <div class="col-md-12 espDivs" style="margin-top: 1.5em;margin-left: 0.2em;">
                             <div class="row">
                                 <div class="col-md-4">
-                                    <dx-text-box [(value)]="clienteFactura.telefono" placeholder="Teléfono" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <dx-text-box [(value)]="factura.cliente.telefono" placeholder="Teléfono" [disabled]="false" [readOnly]="false"></dx-text-box>
                                 </div>
                                 <div class="col-md-4">
-                                    <dx-text-box [(value)]="clienteFactura.direccion" placeholder="Tipo Cliente" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <dx-text-box [(value)]="factura.tipo_cliente" placeholder="Tipo Cliente" [disabled]="false" [readOnly]="false"></dx-text-box>
                                 </div>
                                 <div class="col-md-4">
-                                    <dx-text-box [(value)]="clienteFactura.correo" placeholder="Tipo Venta" [disabled]="false" [readOnly]="false"></dx-text-box>
+                                    <dx-text-box [(value)]="factura.tipo_venta" placeholder="Tipo Venta" [disabled]="false" [readOnly]="false"></dx-text-box>
                                 </div>
                             </div>
                         </div>
@@ -150,6 +151,10 @@
                 </div>
 
 
+                <div style="text-align: left;">
+                    <dx-button [text]="'Agregar'" [type]="'success'" [disabled]="newButtonEnabled" style="background-color: #ff5722;" (onClick)="anadirProducto($event)"></dx-button>              
+                    <dx-button [text]="'Ver calculadora'" [type]="'success'" style="background-color: #ff5722;" (onClick)="verCalculadora($event)"></dx-button>
+                </div>
                 <br>
                 <h6 class="card-header card-header-subtitle text-center font-weight-bold ">Detalle de Productos</h6>
                 <br>
@@ -311,10 +316,10 @@
                 <br><br><br>
                 <div class="row">
                     <div class="col-md-8 espDivs">
-                        <div class="row">
+                        <div class="row" style="margin-left:0.2em">
                             <div class="col-md-3">Transporte</div>
-                            <div class="col-md-3">
-                                <dx-number-box [(value)]="factura.coste_transporte" placeholder="Observaciones" ></dx-number-box>
+                            <div class="col-md-3 inputTransporte">
+                                <dx-number-box [(value)]="factura.coste_transporte" (onChange)="calcularTransporte()" placeholder="Observaciones" ></dx-number-box>
                             </div>
                             <div class="col-md-3">Maestro</div>
                             <div class="col-md-3" style="margin-top: -1.3em;">
@@ -328,7 +333,7 @@
                                 </dx-select-box>
                             </div>
                         </div>
-                        <div class="row">
+                        <div class="row" style="margin-left:0.2em">
                             <div class="col-md-3">Observaciones</div>
                             <div class="col-md-9">
                                 <dx-text-box [(value)]="factura.observaciones" placeholder="Observaciones" [disabled]="false" [readOnly]="false"></dx-text-box>
@@ -339,7 +344,7 @@
                         <div class="row" >
                             <div class="col-md-2"></div>
                             <div class="col-md-3" style="text-align: center;">Total</div>
-                            <div class="col-md-6"><dx-number-box [(value)]="factura.total" placeholder="Total" [disabled]="false" [readOnly]="false"></dx-number-box></div>
+                            <div class="col-md-6 prueba2"><dx-number-box [(value)]="factura.total"  placeholder="Total" [disabled]="false" [readOnly]="false"></dx-number-box></div>
                         </div>
                     </div>
                 </div>
@@ -353,397 +358,6 @@
 
 
 
-<div class="row" style="margin-bottom: 1.5em;">
-    <div class="col-md-4">
-        <h3>Ventas</h3>
-        RUC: {{RucSucursal}}
-    </div>
-    <div class="col-md-8"></div>
-
-    <div class="col-4 tdoc">
-        <div class="row">
-            <div class="col-md-6"><h6>Tipo de Venta</h6></div>
-            <div class="col-md-6"> 
-                <dx-select-box [items]="tipoDocumentos" 
-                    [value]="tipoDocumentos[0]" 
-                    [readOnly]="false" 
-                    [disabled]="false"
-                    (onValueChanged)="obtenerTipoDocumento($event)">
-                </dx-select-box>
-            </div>
-        </div> 
-    </div>
-
-    <div class="col-2">
-        <div class="tdco2">
-            <dx-button icon="plus" (onClick)="mostrarDiv()" class="tdoc2"></dx-button>
-        </div>         
-    </div>
-
-    
-
-</div>
-
-
-<div *ngIf="sectionSearch" style="margin-bottom: 1em;">
-    <div class="dx-field row">
-        <div class="col-md-4">
-            <div class="dx-field-label label2">N/ Cotizacion</div>
-            <div class="dx-field-value"><dx-text-box [(value)]="Ncotizacion"></dx-text-box></div>
-        </div>
-        <div class="col-md-2">
-            <dx-button icon="fa fa-search" (onClick)="buscarCotizacion()"></dx-button>
-        </div>
-    </div>
-</div>
-
-
-
-<!--ENCABEZADO DEL FORMULARIO-->
-<br>
-<div class="prueba">
-<dx-form id="form" #ventasForm [(formData)]="factura" [readOnly]="false" [colCount]="3" [width]="1000">
-    <dxi-item itemType="group" [colCount]="3" [colSpan]="3">
-        <dxi-item dataField="fecha" [editorOptions]="{ placeholder: 'Fecha'}">
-            <dx-date-box [(value)]="now" [type]="'date'" [readOnly]="!isAdmin" [showClearButton]="true">
-                <dx-validator>
-                    <dxi-validation-rule type="required" message="La fecha es requerida"></dxi-validation-rule>
-                   <!--  <dxi-validation-rule type="range" [max]="minDate" message="No puede ser mayor a la fecha actual">
-                    </dxi-validation-rule> -->
-                </dx-validator>
-            </dx-date-box>
-            <dxo-label [visible]="false"></dxo-label>
-
-        </dxi-item>
-        <dxi-item dataField="">
-            <dx-select-box [items]="usuarios" 
-            [(value)]="username" 
-            [readOnly]="false" 
-            [disabled]="false"
-            displayExpr="username"
-            valueExpr="username"
-            ></dx-select-box>
-
-        </dxi-item>
-        <!-- <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
-            <dxo-label
-            location="left"
-            alignment="right">
-        </dxo-label>
-        </dxi-item> -->
-
-
-        <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
-            <dxi-item [label]="{text: textoConsecutivo }" cssClass="textNumber"><dxo-label [visible]="true"></dxo-label></dxi-item>
-            <dxi-item dataField="documento_n" caption="Documento" [editorOptions]="{ placeholder: 'Documento', disabled:true}" cssClass="prueba2">
-                <dxo-label location="left" alignment="right" [visible]="false"></dxo-label>
-            </dxi-item>
-        </dxi-item>
-
-    </dxi-item>
-        <dxi-item dataField="cliente.cliente_nombre" [editorOptions]="{ placeholder: 'Cliente'}" [colSpan]="2">
-            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-            <dxo-label [visible]="false"></dxo-label>
-            <dx-autocomplete #data2
-            [dataSource]="clientes"
-            placeholder="Nombre del cliente"
-            valueExpr="cliente_nombre"
-            [(value)]= "mensaje"
-            (onChange)="setClienteData($event)">
-        </dx-autocomplete>
-        </dxi-item>
-    
-    <dxi-item itemType="group" [colCount]="2" [colSpan]="1">
-        <dxi-item dataField="tipo_cliente" [editorOptions]="{ placeholder: 'Tcliente', disabled:true }" [colSpan]="1" >
-            <dxo-label [visible]="false" ></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="tipo_venta" [editorOptions]="{ placeholder: 'Tventa', disabled:true}" [colSpan]="1" >
-            <dxo-label [visible]="false"> </dxo-label>
-        </dxi-item>
-    </dxi-item>
-    <dxi-item itemType="group" [colCount]="5" [colSpan]="1">
-      
-        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}" [colSpan]="4" >
-            <dxi-validation-rule
-            type= "pattern"
-            pattern= '^[0-9]{10,15}$'
-            message="El Ruc debe ser tipo  y minimo 10 caracteres">
-        </dxi-validation-rule>
-            <dxo-label [visible]="false" ></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="" [colSpan]="1" >
-            <dx-button
-                        type="normal"
-                        [width]="100"
-                        icon="fa fa-user"
-                        (onClick)="buscarCliente($event)">
-                    </dx-button>
-        </dxi-item>
-
-    
-    </dxi-item>
-   
-    
-    <dxi-item dataField="cliente.direccion" [editorOptions]="{ placeholder: 'Direccion'}">
-        <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-        <dxo-label [visible]="false"></dxo-label>
-    </dxi-item>
-   
-    <dxi-item itemType="group" [colCount]="3" [colSpan]="1">
-        <!-- <dxi-item dataField="cliente.celular" [editorOptions]="{ placeholder: 'Celular'}" [colSpan]="2">
-            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item> -->
-        <dxi-item dataField="cliente.correo" [editorOptions]="{ placeholder: 'Correo'}" [colSpan]="2">
-            <dxi-validation-rule type="required" message="Campo requerido"></dxi-validation-rule>
-            <dxo-label [visible]="false"></dxo-label>
-        </dxi-item>
-        <dxi-item dataField="">
-            <dx-button
-                        type="normal"
-                        [width]="30"
-                        icon="fa fa-trash"
-                        (onClick)="eliminarData($event)">
-                    </dx-button>
-        </dxi-item>
-    </dxi-item>
-
-    
-
-
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item itemType="empty" [colSpan]="3"></dxi-item>
-    <dxi-item #espacio itemType="group"  [colSpan]="3"  [name]="espacio">
-        <dxi-item itemType="empty" [colSpan]="3" ></dxi-item>
-       
-      
-    </dxi-item>
-    
-    
-    <dxi-item itemType="group" [colSpan]="3">
-        <dxi-item *ngFor="let p of productosVendidos;let i = index"></dxi-item>
-    </dxi-item>
-
-
-    <dxi-item itemType="group" [colCount]="3" [colSpan]="2">
-        <dxi-item dataField="coste_transporte" [editorOptions]="{ placeholder: 'Cost/Transporte'}" [colSpan]="1" onChange="calcularTotalFacturaconTransporte($event)">
-            <dxo-label
-                location="left"
-                alignment="right">
-            </dxo-label>
-        </dxi-item>
-        <dxi-item dataField="">
-            <dx-button
-                type="normal"
-                [width]="80"
-                icon="fa fa-car"
-                (onClick)="calcularTransporte()">
-            </dx-button>
-            <dx-check-box [(value)]="costoTr" [readOnly]="true"></dx-check-box>
-        </dxi-item>
-
-        <dxi-item dataField="">
-            <dx-select-box [items]="clientesMaestros" 
-            [(value)]="maestroConstructor" 
-            [readOnly]="false" 
-            [disabled]="false"
-            displayExpr="cliente_nombre"
-            valueExpr="cliente_nombre"
-            (onValueChanged)="asignarMaestro($event)"></dx-select-box>
-        </dxi-item>
-    
-    </dxi-item>
-    
-    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-    <dxi-item dataField="observaciones" [editorOptions]="{ placeholder: 'Observaciones'}" [colSpan]="2" >
-        <dxo-label
-            location="left"
-            alignment="right"> <!-- or "left" | "center" -->
-        </dxo-label>
-       
-    </dxi-item>
-    <dxi-item  [editorOptions]="{ disabled: true }" dataField="total" [colSpan]="1" cssClass="prueba2">
-        <dxo-label
-            location="left"
-            alignment="left"> <!-- or "left" | "center" -->
-        </dxo-label>
-    </dxi-item>
-    <dxi-item itemType="empty" [colSpan]="2" ></dxi-item>
-    <dxo-label [visible]="false"></dxo-label>
-    <dxi-item itemType="empty" [colSpan]="2"></dxi-item>
-    <dxo-label [visible]="false"></dxo-label>
-    
-    
-</dx-form>
-</div>
-
-<div class="productos">
-    
-    <dx-button [text]="'Añadir producto'" [type]="'success'" [disabled]="newButtonEnabled"
-        (onClick)="anadirProducto($event)">
-    </dx-button>
-    <dx-button [text]="'Ver calculadora'" [type]="'success'" (onClick)="verCalculadora($event)">
-    </dx-button>
-    <div class="row titlesCurrency contenedorProductos">
-        <div class="col-1">
-            <div class="row" style="position: absolute;text-align: left;">
-                <div class="col-4">
-                    <h5>Select</h5>
-                </div>
-                <div class="col-4" style="text-align: center;">
-                    <h5>Iva</h5>
-                </div>
-            <div class="col-4" style="text-align:left">
-                    <h5 style="text-align: left">Img</h5>
-                </div>
-               
-            </div>
-        </div>
-        <div class="col-3">
-            <h5>Producto</h5>
-        </div>
-        <div class="col-2">
-            <div class="row">
-                <div class="col-6">
-                    <h5>Disp.</h5>
-
-                </div>
-                <div class="col-6">
-                    <h5>P. min</h5>
-                </div>
-            </div>
-        </div>
-        <div class="col-1">
-            <h5>Equivalencia</h5>
-        </div>
-        <div class="col-1">
-            <h5>Cantidad (m2/uni.)</h5>
-        </div>
-        <div class="col-1">
-            <h5>Precio venta</h5>
-        </div>
-        <div class="col-1">
-            <h5>Dscto.(%)</h5>
-        </div>
-
-        <div class="col-1">
-            <h5>Total</h5>
-        </div>
-        <div class="col-1">
-            <div class="row">
-                <div class="col-4" >
-                    <h5>Pedir</h5>
-
-                </div>
-                <div class="col-4" >
-                    <h5 style="text-align: center;">Entre</h5>
-                </div>
-                <div class="col-4" >
-                    <h5></h5>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div *ngFor="let p of productosVendidos;let i = index" class="contenedorProductos">
-        <div class="row altura">
-            <div class="col-1">
-                <div class="row" style="position: absolute;text-align: left;">
-                    <div class="col-md-3">
-                        <dx-check-box [(value)]="p.seleccionado" (onValueChanged)="cambiarEstadoSeleccionado($event)">
-                        </dx-check-box>
-                    </div>
-                    <div class="col-md-3">
-                        <dx-check-box [(value)]="p.iva" (onValueChanged)="carcularTotalProducto($event, i)" [readOnly]="selectAct"></dx-check-box>
-                    </div>
-                    <div class="col-md-3" style="text-align: left">
-                        <button class="fondobt" (click)="mostrarPopup($event,i)">
-                            <i class="fa fa-eye"></i>
-                        </button>
-                    </div>
-                    
-                </div>
-            </div>
-            <div class="col-3">
-                <dx-select-box
-                    [dataSource]="productos22"
-                    displayExpr="PRODUCTO"
-                    [searchEnabled]="true"
-                    valueExpr="PRODUCTO"
-                    [(value)]="p.REFERENCIA"
-                    hint={{p.producto.PRODUCTO}}
-                    (onValueChanged)="obtenerDatosDeProductoParaUnDetalle($event, i)"
-                    itemTemplate="item">
-                    <div *dxTemplate="let data of 'item'">
-                       
-                        <div style="display:inline-block;font-size: 0.8rem;">{{data.PRODUCTO}}
-                           </div>
-                    </div>
-                </dx-select-box>
-            </div>
-
-            <div class="col-2">
-                <div class="row">
-                    <div class="col-6" >
-                        <dx-text-box [(value)]="p.disponible" [disabled]="true" [readOnly]="true"></dx-text-box>
-                    </div>
-                    <div class="col-6">
-                        <dx-text-box [(value)]="p.precio_min" [disabled]="true" [readOnly]="true"></dx-text-box>
-                    </div>
-                    
-                </div>
-            </div>
-            <div class="col-1">
-                <dx-text-box [(value)]="p.equivalencia" [disabled]="false" [readOnly]="true"></dx-text-box>
-            </div>
-            <div class="col-1">
-                <dx-number-box [(value)]="p.cantidad" [disabled]="false" [readOnly]="false"
-                    (onChange)="calcularEquivalencia($event, i)"  (onChange)="calcularDisponibilidadProducto($event, i)" (onChange)="carcularTotalProducto($event, i)"
-                    (onFocusIn)="setSelectedProducto(i)" >
-                </dx-number-box>
-            </div>
-            <div class="col-1">
-                <dx-number-box [(value)]="p.precio_venta" [disabled]="false" [readOnly]="false"
-                    (onChange)="carcularTotalProducto($event, i)" [min]="p.precio_min">
-                </dx-number-box>
-            </div>
-            <div class="col-1">
-                <dx-number-box [(value)]="p.descuento" [disabled]="false" [readOnly]="false"
-                (onChange)="calcularDescuento($event, i)">
-                </dx-number-box>
-            </div>
-
-            <div class="col-1">
-                <dx-number-box [value]="p.total" [disabled]="false" [readOnly]="false">
-                </dx-number-box>
-            </div>
-            <div class="col-1">
-                <div class="row">
-                    <div class="col-4" style="padding: unset;">
-                        <dx-check-box [value]="p.pedir"></dx-check-box>
-
-                    </div>
-                    <div class="col-4" style="padding: unset;">
-                        <dx-check-box [(value)]="p.entregar" (onValueChanged)="cambiarestado($event, i)"></dx-check-box>
-                    </div>
-                    <div class="col-4" style="padding: unset;">
-                        <i class="dx-icon-close" (click)="deleteProductoVendido(i)"></i>
-
-                    </div>
-                </div>
-            </div>
-           
-
-        </div>
-
-    </div>
-    
-</div>
 
 
 
@@ -926,16 +540,21 @@
     [closeOnOutsideClick]="true" [(visible)]="visibleCalculadora" class="row">
         <div class="row">
             <div class="col-md-6"></div>
-            <div class="col-md-6"> <dx-select-box [items]="tipoConversiones" 
-                [value]="tipoConversiones[0]" 
-                [readOnly]="false" 
-                [disabled]="false"
-                (onValueChanged)="opcionMenu($event)"></dx-select-box></div>
+            <div class="col-md-6" style="text-align: center;"> 
+                <dx-select-box 
+                    [items]="tipoConversiones" 
+                    [value]="tipoConversiones[0]" 
+                    [readOnly]="false" 
+                    [disabled]="false"
+                    class="form-control select"
+                    (onValueChanged)="opcionMenu($event)">
+                </dx-select-box>
+            </div>
         </div>
         <br><br>
 
-        <div id="op1" style="display: block;">
-            <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+        <div *ngIf="mostrarOP1">
+            <div style="text-align: center;" class="id3"><h5>EQUIVALENCIA A M2</h5></div>
 
             <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
             [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora($event)" 
@@ -956,9 +575,9 @@
             <div class="col-md-6" style="text-align: center;">
                 <br>
                 <br>
-                <h4>m2</h4>
+                <h5>M2</h5>
                 <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="true"
-                        (onKeyDown)="calcularMetros($event)" class="tot">
+                        (onKeyDown)="calcularMetros($event)" class="tot calT2">
                     </dx-number-box></div>
                 </div>
      
@@ -970,8 +589,8 @@
                 </dx-number-box>
         </div>
 
-        <div id="op2" style="display: none;">
-            <div style="text-align: center;" class="id3"><h4>Equivalencia a m2</h4></div>
+        <div *ngIf="mostrarOP2">
+            <div style="text-align: center;" class="id3"><h5>EQUIVALENCIA A M2</h5></div>
 
             <dx-select-box [items]="productos2" [value]="productos2" [readOnly]="false" [disabled]="false"
             [searchEnabled]="true"  (onValueChanged)="obtenerDatosCalculadora2($event)"  (onChange)="calcularMetros2($event)" 
@@ -981,22 +600,19 @@
                 <div class="col-md-6" style="text-align: center;">
                     <br>
                     <br>
-                    <h4>m2</h4>
+                    <h5>M2</h5>
                     <dx-number-box [(value)]="caltotal" [disabled]="false" [readOnly]="false"
-                    (onChange)="calcularMetros2($event)" class="tot">
-                        </dx-number-box></div>
-            <div class="col-md-6">
-                <br>
-                <label for="">Cajas</label>
-                <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="true"
-                >
-                </dx-number-box>
-                <label for="">Piezas</label>
-                <dx-text-box [(value)]="valorEnM2" class="calT" [disabled]="false" [readOnly]="true"></dx-text-box>
-                <br>   
-            </div>
-    
-            
+                    (onChange)="calcularMetros2($event)" class="tot calT2">
+                        </dx-number-box>
+                </div>
+                <div class="col-md-6">
+                    <br>
+                    <label for="">Cajas</label>
+                    <dx-number-box [(value)]="cantidadcal" class="calT" [disabled]="false" [readOnly]="true"></dx-number-box>
+                    <label for="">Piezas</label>
+                    <dx-text-box [(value)]="valorEnM2" class="calT" [disabled]="false" [readOnly]="true"></dx-text-box>
+                    <br>   
+                </div>
             </div>
             
 

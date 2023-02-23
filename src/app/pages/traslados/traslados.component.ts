@@ -643,7 +643,6 @@ export class TrasladosComponent implements OnInit {
     this.transaccionesService.getTransaccionesPorNumeroDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transacciones = res as transaccion[];
       var listado = this.transacciones.filter(x=> x.documento == e.idT.toString() && (x.tipo_transaccion == "traslado1" || x.tipo_transaccion == "traslado2"))
-      console.log(listado)
       this.transacciones = listado;
       if(this.transacciones.length == 0){
         Swal.close();
@@ -659,7 +658,6 @@ export class TrasladosComponent implements OnInit {
 
   eliminarTransacciones(e) {
     var cont = 0;
-    console.log(this.transacciones)
     this.transacciones.forEach((element) => { 
       if (element.documento == e.idT && (element.tipo_transaccion == "traslado1" ||element.tipo_transaccion == "traslado2") ) {
         this.transaccionesService.deleteTransaccion(element).subscribe(
@@ -668,8 +666,6 @@ export class TrasladosComponent implements OnInit {
         );
       }
     });
-
-    //this.actualizarProductosBase2(e);
   }
 
   validarMensaje(cont:number){
@@ -796,7 +792,7 @@ export class TrasladosComponent implements OnInit {
       this.traslados.sucursal_destino = this.bodegaExterna;
       this.traslados.bodega_destino = "BodegaExterna";
     }
-    this.transportista._id = this.traslados.transportista._id
+    this.transportista._id = this.traslados.transportista?._id
     this.transportista.identificacion = this.identificacion;
     this.transportista.nombre = this.nombre_transportista;
     this.transportista.celular = this.celular;

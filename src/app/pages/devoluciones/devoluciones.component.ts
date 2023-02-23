@@ -955,7 +955,7 @@ export class DevolucionesComponent implements OnInit {
         this.transaccion.bodega = "bodega2";
         this.transaccion.documento = this.devolucioLeida.id_devolucion + "";
         this.transaccion.producto = element.producto.PRODUCTO;
-        this.transaccion.costo_unitario = element.valorunitario;
+        this.transaccion.costo_unitario = element.producto.precio;
         this.transaccion.cajas = element.cantDevueltaCajas;
         this.transaccion.piezas = element.cantDevueltaPiezas;
         this.transaccion.observaciones = element.justificacion;

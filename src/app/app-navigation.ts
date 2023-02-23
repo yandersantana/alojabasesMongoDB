@@ -199,6 +199,16 @@ export const navigationWEB = [
     path: "",
     icon: "home",
   },
+  {
+    text: "Business Inteligence",
+    icon: "fa fa-bar-chart",
+    items: [
+      {
+        text: "Indicadores",
+        path: "menu-indicadores",
+      },
+    ],
+  },
 ];
 
 export const navigationAdmin = [
@@ -242,8 +252,8 @@ export const navigationAdmin = [
         path: "/registrosVentas",
       },
       {
-        text: "Cambios",
-        path: "/cambios",
+        text: "Ventas-Nuevo",
+        path: "/ventas-nuevo",
       },
       {
         text: "Devoluciones",
@@ -761,6 +771,16 @@ export const navigationInspector = [
       },
     ],
   },
+  {
+    text: "Business Inteligence",
+    icon: "fa fa-bar-chart",
+    items: [
+      {
+        text: "Indicadores",
+        path: "menu-indicadores",
+      },
+    ],
+  },
 ];
 
 
@@ -772,6 +792,16 @@ export const navigationDistribuidor = [
       {
         text: "Stock Productos",
         path: "/stock-locales",
+      },
+    ],
+  },
+  {
+    text: "Business Inteligence",
+    icon: "fa fa-bar-chart",
+    items: [
+      {
+        text: "Indicadores",
+        path: "menu-indicadores",
       },
     ],
   },

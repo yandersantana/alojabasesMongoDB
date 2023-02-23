@@ -504,13 +504,13 @@ subtotal:number=0
   }
 
   anularFactura= (e) => {  
-    this.validarEliminacionFactura(e.row.data) 
-    //this.actualizarFact(e.row.data) 
+    //this.validarEliminacionFactura(e.row.data) 
+    this.actualizarFact(e.row.data) 
   }
 
   anularNotaVenta= (e) => { 
-    this.validarEliminacionNotaVenta(e.row.data) 
-    //this.actualizarNotV(e.row.data) 
+    //this.validarEliminacionNotaVenta(e.row.data) 
+    this.actualizarNotV(e.row.data) 
   }
 
   getCourseFile = (e) => {

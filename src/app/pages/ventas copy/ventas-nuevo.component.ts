@@ -70,6 +70,7 @@ export class VentasNuevoComponent implements OnInit {
   recibosEncontrados : ReciboCaja[]=[]
   facturasEctdas : factura[]=[]
   newRecibo = new ReciboCaja();
+  btnDis = false
 
   formasPago: string[] = [
     'Cancelado',
@@ -733,6 +734,7 @@ setSelectedProducto(i:number){
   }
 
    obtenerDatosDeProductoParaUnDetalle(e, i:number) {
+    this.btnDis = true
     this.newButtonEnabled = false
     var cont=0
     this.productosVendidos.forEach(element=>{

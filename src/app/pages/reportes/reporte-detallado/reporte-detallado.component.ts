@@ -152,6 +152,11 @@ export class ReporteDetalladoComponent implements OnInit {
               if(element.sucursal == "matriz"){
                 sumaN = Number(sumaN) - Number(element.totalsuma? element.totalsuma:0);
                 sumaDevolMatriz = Number(sumaDevolMatriz)+ Number(element.totalsuma? element.totalsuma:0)
+                sumaCalculoPCostoMat = Number(element.costo_unitario) * Number (element.cantM2)
+                sumaCalculoPVentaMat = Number(element.valor) * Number (element.cantM2)
+                sumaCalUtilidadMat = Number(sumaCalculoPVentaMat) - Number(sumaCalculoPCostoMat)
+                sumaTotalCalculoUtilidadMat =  Number(sumaTotalCalculoUtilidadMat) - Number(sumaCalUtilidadMat)
+
               }else if(element.sucursal == "sucursal1"){
                 sumaSuc1 = Number(sumaSuc1) - Number(element.totalsuma? element.totalsuma:0);
                 sumaDevolSuc1 = Number(sumaDevolSuc1)+ Number(element.totalsuma? element.totalsuma:0)

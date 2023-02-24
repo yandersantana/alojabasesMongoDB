@@ -734,6 +734,8 @@ setSelectedProducto(i:number){
   }
 
    obtenerDatosDeProductoParaUnDetalle(e, i:number) {
+    this.productosVendidos[i].precio_venta = 0;
+    this.productosVendidos[i].total = 0;
     this.btnDis = true
     this.newButtonEnabled = false
     var cont=0
@@ -742,7 +744,7 @@ setSelectedProducto(i:number){
         cont++
     })
 
-    if(cont==0){
+    if(cont == 0){
       this.productos.forEach(element => {
         if (element.PRODUCTO == e.value) {
           if(element.CLASIFICA == "COMBO")
@@ -781,6 +783,7 @@ setSelectedProducto(i:number){
       )
       this.deleteProductoVendido(i)
     } 
+    this.calcularEquivalencia(e,i);
   }
 
 

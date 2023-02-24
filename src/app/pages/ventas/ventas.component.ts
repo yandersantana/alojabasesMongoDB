@@ -745,6 +745,8 @@ setSelectedProducto(i:number){
   }
 
    obtenerDatosDeProductoParaUnDetalle(e, i:number) {
+    this.productosVendidos[i].precio_venta = 0;
+    this.productosVendidos[i].total = 0;
     this.newButtonEnabled = false
     var cont=0
     this.productosVendidos.forEach(element=>{
@@ -791,6 +793,7 @@ setSelectedProducto(i:number){
       )
       this.deleteProductoVendido(i)
     } 
+    this.calcularEquivalencia(e,i);
   }
 
 

@@ -39,15 +39,25 @@ export class AnulacionesComponent implements OnInit {
   num_orden:number=0
   motivo:string
   anulacion:anulaciones
+  mensajeLoading = "Cargando..."
+  mostrarMotivo = false;
+  mostrarAnulacion1 = true;
+  mostrarAnulacion2 = false;
+  mostrarOrdenesCompraGenerales = true;
+  mostrarOrdenesCompraDirectas = false;
+  mostrarFacturas = false;
+  mostrarNotasVenta = false;
 
   estadoD:string
   nsolicitudOrden:number
   nAnulacion:number=0
   ordenesCompra:OrdenDeCompra[]=[]
+  ordenesCompraGenerales:OrdenDeCompra[]=[]
   ordenesCompraPendientes:OrdenDeCompra[]=[]
   ordenesCompraPendientesAnulacion:OrdenDeCompra[]=[]
   ordenesCompraAnuladas:OrdenDeCompra[]=[]
 
+  ordenesCompraGeneralesDirectas:OrdenDeCompra[]=[]
   ordenesCompraDirectasPendientes:OrdenDeCompra[]=[]
   ordenesCompraDirectasPendientesAnulacion:OrdenDeCompra[]=[]
   ordenesCompraDirectasAnuladas:OrdenDeCompra[]=[]
@@ -73,6 +83,37 @@ export class AnulacionesComponent implements OnInit {
     "Facturas",
     "Notas de Venta"
   ];
+
+  tiposOrdenesCompra: string[] = [
+    'Vigentes',
+    'Pendiente Anulacion',
+    'Anuladas',
+  ];
+
+  tiposOrdenesCompraDirectas: string[] = [
+    'Vigentes',
+    'Pendiente Anulacion',
+    'Anuladas',
+  ];
+
+  tiposFacturas: string[] = [
+    'Vigentes',
+    'Pendiente Anulacion',
+    'Anuladas',
+  ];
+
+  tiposNotasVenta: string[] = [
+    'Vigentes',
+    'Pendiente Anulacion',
+    'Anuladas',
+  ];
+
+
+  tipoOrdenCompra = "Vigentes"
+  tipoOrdenCompraDirecta = "Vigentes"
+  tipoFactura = "Vigentes"
+  tipoNotaVenta = "Vigentes"
+
   numeroFactura:string
 subtotal:number=0
   subtotal1:number=0
@@ -90,9 +131,11 @@ subtotal:number=0
   totalsuma2:number=0
   mostrarLoading: boolean = false
   facturas:factura[]=[]
+  facturasGenerales:factura[]=[]
   facturasAP:factura[]=[]
   facturasPEN:factura[]=[]
   facturasELI:factura[]=[]
+  notasVentaGenerales:factura[]=[]
   notasVenta:factura[]=[]
   notasVentaAP:factura[]=[]
   notasVentaPEN:factura[]=[]
@@ -208,6 +251,7 @@ subtotal:number=0
   }
 
   traerOrdenesCompra(){
+    this.mostrarLoading = true;
     this.ordenesService.getOrden().subscribe(res => {
       this.ordenesCompra = res as OrdenDeCompra[];
       this.obtenerOrdenesPendientes()
@@ -221,6 +265,7 @@ subtotal:number=0
   }
 
   traerFacturas(){
+    this.mostrarLoading = true;
     this.facturasService.getFacturas().subscribe(res => {
       this.facturas = res as factura[];
       this.dividirFacturas()
@@ -234,6 +279,7 @@ subtotal:number=0
   }
 
   traerNotasVenta(){
+    this.mostrarLoading = true;
     this.notasventaService.getNotasVentas().subscribe(res => {
       this.notasVenta = res as factura[];
       this.dividirNotasVenta()
@@ -306,6 +352,109 @@ subtotal:number=0
   }
 
 
+   opcionRadioTipos(e){
+    this.ordenesCompraGenerales = [];
+    switch (e.value) {
+      case "Vigentes":
+        this.mostrarMotivo = false;
+        this.mostrarAnulacion1 = true;
+        this.mostrarAnulacion2 = false;
+        this.ordenesCompraGenerales = this.ordenesCompraPendientes;
+        break;
+      case "Pendiente Anulacion":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = true;
+        this.ordenesCompraGenerales = this.ordenesCompraPendientesAnulacion;
+        break;
+      case "Anuladas":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = false;
+        this.ordenesCompraGenerales = this.ordenesCompraAnuladas;
+        break;
+      default:    
+    }      
+  }
+
+  opcionRadioTiposDirectas(e){
+    this.ordenesCompraGeneralesDirectas = [];
+    switch (e.value) {
+      case "Vigentes":
+        this.mostrarMotivo = false;
+        this.mostrarAnulacion1 = true;
+        this.mostrarAnulacion2 = false;
+        this.ordenesCompraGeneralesDirectas = this.ordenesCompraDirectasPendientes;
+        break;
+      case "Pendiente Anulacion":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = true;
+        this.ordenesCompraGeneralesDirectas = this.ordenesCompraDirectasPendientesAnulacion;
+        break;
+      case "Anuladas":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = false;
+        this.ordenesCompraGeneralesDirectas = this.ordenesCompraDirectasAnuladas;
+        break;
+      default:    
+    }      
+  }
+
+
+  opcionRadioTiposFacturas(e){
+    this.facturasGenerales = [];
+    switch (e.value) {
+      case "Vigentes":
+        this.mostrarMotivo = false;
+        this.mostrarAnulacion1 = true;
+        this.mostrarAnulacion2 = false;
+        this.facturasGenerales = this.facturasAP;
+        break;
+      case "Pendiente Anulacion":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = true;
+        this.facturasGenerales = this.facturasPEN;
+        break;
+      case "Anuladas":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = false;
+        this.facturasGenerales = this.facturasELI;
+        break;
+      default:    
+    }      
+  }
+
+
+  opcionRadioTiposNotaVenta(e){
+    this.notasVentaGenerales = [];
+    switch (e.value) {
+      case "Vigentes":
+        this.mostrarMotivo = false;
+        this.mostrarAnulacion1 = true;
+        this.mostrarAnulacion2 = false;
+        this.notasVentaGenerales = this.notasVentaAP;
+        break;
+      case "Pendiente Anulacion":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = true;
+        this.notasVentaGenerales = this.notasVentaPEN;
+        break;
+      case "Anuladas":
+        this.mostrarMotivo = true;
+        this.mostrarAnulacion1 = false;
+        this.mostrarAnulacion2 = false;
+        this.notasVentaGenerales = this.notasVentaELI;
+        break;
+      default:    
+    }      
+  }
+
+
   traerFacturasPorRango() {
     this.mostrarLoading = true;
     this.fechaAnteriorDesde = this.nowdesde
@@ -343,22 +492,24 @@ subtotal:number=0
 
   obtenerOrdenesPendientes(){
     this.ordenesCompra.forEach(element=>{
-      if(element.estadoOrden=="PENDIENTE" && element.tipo!="Entregado"){
+      if(element.estadoOrden=="PENDIENTE" && element.tipo!="Entregado")
         this.ordenesCompraPendientes.push(element)
-      }else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo!="Entregado"){
+      else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo!="Entregado")
         this.ordenesCompraPendientesAnulacion.push(element)
-      }else if(element.estadoOrden=="ANULADO" && element.tipo!="Entregado"){
+      else if(element.estadoOrden=="ANULADO" && element.tipo!="Entregado")
         this.ordenesCompraAnuladas.push(element)
-      }
+      
 
-      if(element.tipo=="Entregado" && element.estadoOrden=="COMPLETO"){
+      if(element.tipo=="Entregado" && element.estadoOrden=="COMPLETO")
         this.ordenesCompraDirectasPendientes.push(element)
-      }else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo=="Entregado"){
+      else if(element.estadoOrden=="Pendiente-Anulacion" && element.tipo=="Entregado")
         this.ordenesCompraDirectasPendientesAnulacion.push(element)
-      }else if(element.estadoOrden=="ANULADO" && element.tipo=="Entregado"){
+      else if(element.estadoOrden=="ANULADO" && element.tipo=="Entregado")
         this.ordenesCompraDirectasAnuladas.push(element)
-      }
     })
+
+    this.ordenesCompraGenerales = this.ordenesCompraPendientes
+    this.ordenesCompraGeneralesDirectas = this.ordenesCompraDirectasPendientes
     this.mostrarLoading = false
   }
 
@@ -538,6 +689,7 @@ subtotal:number=0
         this.facturasAP.push(element)
       }
     })
+    this.facturasGenerales = this.facturasAP;
     this.mostrarLoading = false
   }
 
@@ -551,6 +703,7 @@ subtotal:number=0
         this.notasVentaAP.push(element)
       }
     })
+    this.notasVentaGenerales = this.notasVentaAP
     this.mostrarLoading= false
   }
 
@@ -2497,38 +2650,34 @@ subtotal:number=0
 
 
   opcionMenu(e){
-    var x = document.getElementById("ordenes");
-    var y = document.getElementById("facturas");
-    var z = document.getElementById("notas");
-    var z1 = document.getElementById("ordenesDirectas");
     switch (e.value) {
       case "Ordenes de Compra":
-        x.style.display = "block";
-        y.style.display="none";
-        z.style.display="none";
-        z1.style.display="none";
-       break;
+        this.mostrarOrdenesCompraGenerales = true;
+        this.mostrarOrdenesCompraDirectas = false;
+        this.mostrarFacturas = false;
+        this.mostrarNotasVenta = false;
+        break;
 
-       case "Ordenes de Compra Directas":
-        z1.style.display = "block";
-        x.style.display = "none";
-        y.style.display="none";
-        z.style.display="none";
-       break;
+      case "Ordenes de Compra Directas":
+        this.mostrarOrdenesCompraGenerales = false;
+        this.mostrarOrdenesCompraDirectas = true;
+        this.mostrarFacturas = false;
+        this.mostrarNotasVenta = false;
+        break;
 
       case "Facturas":
-        x.style.display = "none";
-        y.style.display="block";
-        z.style.display="none";
-        z1.style.display="none";
+        this.mostrarOrdenesCompraGenerales = false;
+        this.mostrarOrdenesCompraDirectas = false;
+        this.mostrarFacturas = true;
+        this.mostrarNotasVenta = false;
         break;
 
       case "Notas de Venta":
-          x.style.display = "none";
-          y.style.display="none";
-          z.style.display="block";
-          z1.style.display="none";
-          break;
+        this.mostrarOrdenesCompraGenerales = false;
+        this.mostrarOrdenesCompraDirectas = false;
+        this.mostrarFacturas = false;
+        this.mostrarNotasVenta = true;
+        break;
       default:    
     }       
   }
@@ -2597,11 +2746,11 @@ getDocumentDefinition() {
     pageSize: 'A4',
     content: [
       {
-        columns: [{
-         text:"jkj",
-        width: 100,
-        margin: [0, 20, 0, 10],
-        },
+         columns: [{
+          image:this.imagenLogotipo,
+          width: 100,
+          margin: [0, 20, 0, 10],
+          },
         {
           
           width:410,

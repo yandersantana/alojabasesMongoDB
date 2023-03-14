@@ -184,8 +184,6 @@ export class ConsultasComponent implements OnInit {
     this.proTransaccion.nombre = this.nombre_producto;
     this.traerTransaccionesPorProducto();
 
-
-
     this.productos.forEach((element) => {
       if (element.PRODUCTO == this.nombre_producto) {
         this.productoLeido = element;

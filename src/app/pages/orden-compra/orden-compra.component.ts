@@ -86,6 +86,7 @@ export class OrdenCompraComponent implements OnInit {
   totalsuma2:number=0
   mostrarLoading:boolean=true;
   mensajeLoading = "Cargando..."
+  nombreDocumento = "Ordenes_Compra"
 
   imagenLogotipo = ""
 
@@ -249,6 +250,7 @@ export class OrdenCompraComponent implements OnInit {
     this.tipoMenu = e.value;
     switch (e.value) {
       case "Solicitudes":
+        this.nombreDocumento = "Solicitud_Ordenes"
         this.mostrarNroOrden = false
         this.mostrarMotivoRechazo = false
         this.mostrarTotal = true
@@ -260,6 +262,7 @@ export class OrdenCompraComponent implements OnInit {
         this.ordenesCompraGenerales = this.ordenesCompraPendientes;
         break;
       case "Rechazadas":
+        this.nombreDocumento = "Ordenes_Rechazadas"
         this.mostrarNroOrden = false
         this.mostrarMotivoRechazo = true
         this.mostrarTotal = false
@@ -271,6 +274,7 @@ export class OrdenCompraComponent implements OnInit {
         this.ordenesCompraGenerales = this.ordenesCompraRechazadas;
         break;
       case "Aprobadas":
+        this.nombreDocumento = "Ordenes_Aprobadas"
         this.mostrarNroOrden = true
         this.mostrarMotivoRechazo = false
         this.mostrarTotal = true

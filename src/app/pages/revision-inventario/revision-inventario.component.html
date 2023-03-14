@@ -198,7 +198,8 @@
                                 <dxo-filter-row [visible]="true" ></dxo-filter-row>
                                 <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>
                                 <dxo-export [enabled]="true" fileName="Revision Productos" [allowExportSelectedData]="true"></dxo-export>
-                                <dxi-column dataField="fecha"  [visible]="false" sortOrder="desc"></dxi-column>
+                                <dxi-column dataField="fecha" format="dd/MM/yyyy" [visible]="false" type="date" sortOrder="desc"></dxi-column>
+                                <dxi-column dataField="fechaString" caption="Fecha"  [visible]="false"></dxi-column>
                                 <dxi-column dataField="producto" width="37%"></dxi-column>
                                 <dxi-column caption="Sistema">
                                     <dxi-column dataField="cajas_sistema"  caption="Cajas" width="8%"></dxi-column>
@@ -221,6 +222,7 @@
                                 <dxi-column dataField="sucursal" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="responsable" [visible]="false" width="10%"></dxi-column>
                                 <dxi-column dataField="nombreClasificacion" [visible]="false" width="10%"></dxi-column>
+                                
                                 <dxi-column type="buttons"  caption="Edit." width="5%">
                                     <dxi-button icon="fa fa-pencil" [onClick]="verEdit2"></dxi-button>     
                                 </dxi-column>

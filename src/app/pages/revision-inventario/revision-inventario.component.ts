@@ -189,9 +189,13 @@ export class RevionInventarioComponent implements OnInit {
         this.mostrarCreacion = true
       else  
         this.mostrarSeccionIngresos = true;
+
+
   }
 
   ngOnInit() {
+    console.log(new Date().toLocaleString())
+
     this.cargarUsuarioLogueado();
     this.traerSucursales()
     this.traerOpcionesCatalogo()
@@ -456,6 +460,8 @@ export class RevionInventarioComponent implements OnInit {
     e.component.columnOption("sucursal", "visible", true);
     e.component.columnOption("responsable", "visible", true);
     e.component.columnOption("nombreClasificacion", "visible", true);
+    /* e.component.columnOption("fecha", "visible", true); */
+    e.component.columnOption("fechaString", "visible", true);
   };
 
 
@@ -464,6 +470,8 @@ export class RevionInventarioComponent implements OnInit {
     e.component.columnOption("sucursal", "visible", false);
     e.component.columnOption("responsable", "visible", false);
     e.component.columnOption("nombreClasificacion", "visible", false);
+    /* e.component.columnOption("fecha", "visible", false); */
+    e.component.columnOption("fechaString", "visible", false);
     e.component.endUpdate();
   }
 
@@ -622,10 +630,12 @@ export class RevionInventarioComponent implements OnInit {
       newComparacion.estadoRevision = element.estadoRevision
       newComparacion.detalle = element.detalle
       newComparacion.fecha = element.fecha
+      newComparacion.fechaString = element.fechaString
       newComparacion.sucursal = this.revisionIniciada.sucursal
       newComparacion.responsable = this.revisionIniciada.responsable
       newComparacion.idReferenciaRevision = this.revisionIniciada.idDocumento
       newComparacion.nombreClasificacion = this.revisionIniciada.nombreClasificacion
+      console.log(newComparacion.fecha)
       //this.traerTransaccionesPorProducto(element.producto , index )
       this.listadoComparacionResultados.push(newComparacion)
     })

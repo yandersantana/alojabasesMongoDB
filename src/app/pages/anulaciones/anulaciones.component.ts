@@ -2133,6 +2133,7 @@ subtotal:number=0
   }
 
   anularCuentasPorCobrar(fact : factura){
+    this.eliminarTransacciones();
     var docData = new dataDocumento();
     docData.rucCliente = fact.dni_comprador;
     this._cuentaPorCobrarService.getCuentasXCobrarPorRUC(docData).subscribe(res => {
@@ -2229,11 +2230,13 @@ subtotal:number=0
       }
     })
   }
-  eliminarTransacciones(num:number){
+
+  
+  eliminarTransacciones(){
     this.transacciones.forEach(element=>{
-      if(element.documento== num+"" && element.tipo_transaccion=="venta-fact"){
+      //if(element.documento== num+"" && element.tipo_transaccion=="venta-fact"){
         this.transaccionesService.deleteTransaccion(element).subscribe( res => {console.log(res + "termine1");}, err => {alert("error")})
-      }
+      //}
     })
    }
 
@@ -2268,7 +2271,7 @@ subtotal:number=0
   }
 
   actualizarProductos(e){  
-    this.eliminarTransacciones(e.documento_n)
+    //his.eliminarTransacciones(e.documento_n)
     var sumaProductos =0
     var num1:number=0
     var num2:number=0

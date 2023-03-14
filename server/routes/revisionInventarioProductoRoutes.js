@@ -7,6 +7,7 @@ router.post('/newRevisionInventarioProducto', async (req, res) => {
       idReferenciaRevision:req.body.idReferenciaRevision, 
       producto:req.body.producto, 
       fecha:req.body.fecha,
+      fechaString:req.body.fechaString,
       estado:req.body.estado,
       detalle:req.body.detalle,
       novedades:req.body.novedades,

@@ -868,9 +868,9 @@ export class ReciboCajaComponent implements OnInit {
     this.busquedaTransaccion.tipoTransaccion = "recibo-caja"
     this._transaccionFinancieraService.getTransaccionesPorTipoDocumento(this.busquedaTransaccion).subscribe(res => {
       this.transaccionesFinancieras = res as TransaccionesFinancieras[];
-      if(this.transaccionesFinancieras.length == 0)
+      /* if(this.transaccionesFinancieras.length == 0)
         this.mostrarMensajeGenerico(2,"No se encontraron transacciones")
-      else
+      else */
         this.eliminarComp(e)
     })
   }
@@ -1048,16 +1048,28 @@ export class ReciboCajaComponent implements OnInit {
 
   eliminarTransacciones(){
     var cont = 0;
-    this.transaccionesFinancieras.forEach(element=>{
-      if(element.subCuenta == "1.3.3 Pago o Abono Préstamo")
-        this.actualizarPrestamo(element)
-      cont++;
-      this._transaccionFinancieraService.deleteTransaccionFinanciera(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})
-    })
+    if(this.transaccionesFinancieras.length == 0){
+      Swal.close()
+      Swal.fire({
+        title: 'Recibo Anulado',
+        text: 'Se ha guardado con éxito',
+        icon: 'success',
+        confirmButtonText: 'Ok'
+      }).then((result) => {
+        this.traerRecibosCajaPorRango();
+      })
+    }else{
+      this.transaccionesFinancieras.forEach(element=>{
+        if(element.subCuenta == "1.3.3 Pago o Abono Préstamo")
+          this.actualizarPrestamo(element)
+        cont++;
+        this._transaccionFinancieraService.deleteTransaccionFinanciera(element).subscribe( res => {this.contarTransacciones(cont)}, err => {alert("error")})
+      })
+    }
+    
   }
 
   actualizarPrestamo(transaccion : TransaccionesFinancieras){
-    console.log("ddd",transaccion.referenciaPrestamo)
     this._prestamosService.getPrestamosPorReferencias(transaccion).subscribe(res => {
       var lista = res as Prestamos[];
       var prestamo = lista[0];
@@ -1082,7 +1094,6 @@ export class ReciboCajaComponent implements OnInit {
     cuenta.rucCliente = e.ruc;
     this._cuentaPorCobrar.getCuentasXCobrarPorRUCCancelada(cuenta).subscribe( res => {
       var cuentas = res as CuentaPorCobrar[];
-      console.log("traje",cuentas)
       cuentas.forEach(element =>{
         if(element.valorFactura == e.valorFactura){
           this._cuentaPorCobrar.updateEstadoCuenta(element, "Activa").subscribe( res => {}, err => {alert("error")})

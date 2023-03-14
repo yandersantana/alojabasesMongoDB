@@ -24,6 +24,7 @@ export class detalleProductoRevisado{
   idReferenciaRevision: number
   producto: string
   fecha: Date
+  fechaString : string
   estado: string
   detalle : string
   novedades : string
@@ -51,6 +52,7 @@ export class detalleProductoRevisado{
     this.piezas_diferencia = 0
     this.piezas_sistema = 0
     this.estadoRevision = "Pendiente"
+    this.fechaString = new Date().toLocaleString()
   }
 }
 
@@ -78,6 +80,7 @@ export class comparacionResultadosRevision{
   responsable: string
   nombreClasificacion: string
   estadoRevision: string
+  fechaString : string
   constructor(){
     this.cajas_sistema = 0
     this.piezas_sistema = 0

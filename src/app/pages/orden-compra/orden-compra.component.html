@@ -88,6 +88,8 @@
         [dataSource]="ordenesCompraGenerales"
         [showBorders]="true"
         [remoteOperations]="true">
+        <dxo-filter-row [visible]="true" ></dxo-filter-row>
+        <dxo-export [enabled]="true" [fileName]="nombreDocumento" [allowExportSelectedData]="true"></dxo-export>
         <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>   
         <dxi-column dataField="_id" caption="ID" dataType="string" [visible]="false"></dxi-column>
         <dxi-column dataField="n_orden" caption="Orden #" dataType="string" sortOrder="desc" *ngIf="mostrarNroOrden"></dxi-column>

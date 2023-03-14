@@ -1982,20 +1982,30 @@ cambiarestado(e,i:number){
       return {
         pageSize: 'A4',
         content: [
-         
+          {
+            columns: [{
+                        image:this.imagenLogotipo,
+                        width: 100,
+                        margin: [0, 20, 0, 10],
+                      },
+                      {
+                        width:410,
+                        margin: [0, 20, 0, 10],
+                        text: "Fecha:   "+this.factura.fecha2,
+                        alignment:"right"
+                      },
+                    ]
+          },
           {
             columns: [
               
               [
-              {
-                text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:9
-              },
-              {
-                text: "Dirección: "+this.parametrizacionSucu.direccion,
-              },
-              {
-                text: "Teléfonos: "+this.parametrizacionSucu.telefonos,
-              },
+              { text: this.parametrizacionSucu.razon_social, },
+              { text: "RUC: "+this.parametrizacionSucu.ruc, },
+              { text: "Fecha de impresión: "+this.factura.fecha, fontSize:10 },
+              { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:9 },
+              { text: "Dirección: "+this.parametrizacionSucu.direccion, },
+              { text: "Teléfonos: "+this.parametrizacionSucu.telefonos, },
               {
                 columns: [{
                 width:300,

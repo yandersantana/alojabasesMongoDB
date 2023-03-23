@@ -33,17 +33,17 @@
       <tr>
         <th>Disponibilidad Matriz</th>
         <td colspan="2">
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadM2 < 0 }">{{ invetarioP[0]?.cantidadM2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadCajas < 0 }">{{ invetarioP[0]?.cantidadCajas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadPiezas < 0 }">{{ invetarioP[0]?.cantidadPiezas }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
         </td>
       </tr>
       <tr>
         <th>Disponibilidad Sucursal 1</th>
         <td colspan="2">
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadM2b2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadCajas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
-          <span style="font-weight: bold">{{ invetarioP[0]?.cantidadPiezas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadM2b2 < 0 }">{{ invetarioP[0]?.cantidadM2b2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">M2 &nbsp;&nbsp;</span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadCajas2 < 0 }">{{ invetarioP[0]?.cantidadCajas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Cajas &nbsp;&nbsp; </span>
+          <span style="font-weight: bold" [ngClass]="{'txtRed' : invetarioP[0]?.cantidadPiezas2 < 0 }">{{ invetarioP[0]?.cantidadPiezas2 }} &nbsp;</span><span style="font-weight: bold; color: #828282">Piezas &nbsp;&nbsp;</span>
         </td>
       </tr>
       <tr>

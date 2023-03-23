@@ -56,6 +56,7 @@ import { RevionInventarioComponent } from "./pages/revision-inventario/revision-
 import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
 import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
 import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component";
+import { ControlUnidadesComponent } from "./pages/control-unidades/control-unidades.component";
 
 const routes: Routes = [
   {
@@ -175,6 +176,12 @@ const routes: Routes = [
     canActivate: [AuthGuardService],
     data: { roles: ["Administrador"] },
     component: ControlPreciosComponent,
+  },
+  {
+    path: "control-unidades",
+    canActivate: [AuthGuardService],
+    data: { roles: ["Administrador"] },
+    component: ControlUnidadesComponent,
   },
   {
     path: "proveedores",

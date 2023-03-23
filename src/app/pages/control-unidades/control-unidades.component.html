@@ -1,0 +1,92 @@
+<br>
+<div class="row" *ngIf="mostrarBloqueo"></div>
+<div *ngIf="!mostrarBloqueo">
+    <div class="row">
+        <div class="col-md-1"></div>
+        <div class="col-md-10">
+            <div class="card">
+                <h5 class="card-header text-center font-weight-bold text-uppercase ">CONTROL DE MERCADERIA</h5>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-2">
+                            <div class="row botones">
+
+                                <div class="col-md-12"> <button title="Ver Lista" class="btn btn-primary btnIcons2" (click)="mostrar(1)">
+                                        <i class="fa fa-list fa-2x"></i>
+                                    </button></div>
+
+                                <div class="col-md-12"> <button title="Agregar Nuevo Grupo" class="btn btn-primary btnIcons2" (click)="mostrar(2)">
+                                        <i class="fa fa-user-plus fa-2x"></i>
+                                    </button></div>
+
+    
+                            </div>
+                        </div>
+
+                    
+                        <div class="col-md-10 card carIn">
+                            <div *ngIf="mostrarListado">
+                                <dx-data-grid id="gridContainer" [dataSource]="listaParametrizaciones" [showBorders]="true">
+                                    <dxo-search-panel [visible]="true" [width]="240" placeholder="Buscar..."></dxo-search-panel>                                    
+                                    <dxi-column dataField="nombreGrupo" width="35%" caption="NOMBRE GRUPO" [visible]="true"></dxi-column>
+                                    <dxi-column dataField="piezasRestantes" width="25%" caption="# PIEZAS RESTANTES"></dxi-column>
+                                    <dxi-column dataField="cajasLimite" width="25%" caption="A PARTIR DE # CAJAS"></dxi-column>
+                                    <dxi-column type="buttons" dataField="bt1" width="15%" caption="Acciones" width="10%">
+                                        <dxi-button hint="Editar" icon="fa fa-pencil-square-o" [onClick]="mostrarUpdateUser"></dxi-button>
+                                        <dxi-button hint="Eliminar" icon="fa fa-trash-o" [onClick]="deletePrecio"></dxi-button>
+                                    </dxi-column>
+                                    <dxo-paging [pageSize]="5"></dxo-paging>
+                                    <dxo-pager [showPageSizeSelector]="true" [allowedPageSizes]="[5, 10, 20]" [showInfo]="true">
+                                    </dxo-pager>
+                                </dx-data-grid>
+                                <br><br>
+                            </div>
+
+                          
+
+                            <div *ngIf="mostrarNuevo">
+                                <br>
+                                <div class="col-md-12" style="text-align: center;"><h5>NUEVA PARAMETRIZACIÓN</h5></div>
+                                <div class="row">
+                                    <div class="col-md-2"></div>
+                                    <div class="col-md-8">
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Grupo de Producto</div>
+                                            <div class="col-md-8"><dx-select-box [items]="listaClasificacion" [(value)]="nombreClasificacion" [readOnly]="false" [disabled]="false"
+                                                [searchEnabled]="true" valueExpr="nombreClasificacion" displayExpr="nombreClasificacion">
+                                            </dx-select-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">Piezas a restar</div>
+                                            <div class="col-md-8"> <dx-number-box [(value)]="nuevaParametrizacion.piezasRestantes" [readOnly]="false"></dx-number-box></div>
+                                        </div>
+                                        <div class="row espacio">
+                                            <div class="col-md-4" style="text-align: left;">A partir de # Cajas</div>
+                                            <div class="col-md-8"> <dx-number-box [(value)]="nuevaParametrizacion.cajasLimite" [readOnly]="false"></dx-number-box></div>
+                                        </div>
+                                        <br>
+                                       
+                                        <div class="col-md-12">
+                                            <div class="row">
+                                                <div class="col-md-4"></div>
+                                                <div class="col-md-4">
+                                                <button class="btn btn-block btn-success espacio" style="background-color: #ff5722;border-color: #ff5722;"  (click)="registrar()">Registrar</button>
+                                                </div>
+                                                <div class="col-md-4"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-2"></div>
+                                </div>
+                                <br>
+
+                            </div>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-1"></div>
+    </div>
+</div>

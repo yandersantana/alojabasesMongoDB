@@ -106,6 +106,7 @@ import { RevionInventarioComponent } from "./pages/revision-inventario/revision-
 import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.component";
 import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
 import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component";
+import { ControlUnidadesComponent } from "./pages/control-unidades/control-unidades.component";
 
 @NgModule({
   declarations: [
@@ -132,6 +133,7 @@ import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component
     ClientesComponent,
     CalculadorasComponent,
     ControlPreciosComponent,
+    ControlUnidadesComponent,
     AuditoriasComponent,
     BodegasComponent,
     AuditoriaClComponent,

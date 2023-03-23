@@ -355,6 +355,10 @@ export const navigationAdmin = [
             text: "Matriz Precios",
             path: "/precios",
           },
+          {
+            text: "Control Unidades",
+            path: "/control-unidades",
+          },
         ],
       },
       {

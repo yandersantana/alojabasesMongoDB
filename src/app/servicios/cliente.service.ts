@@ -22,6 +22,10 @@ export class ClienteService {
     return this.http.get(this.URL + "/getClientes");
   }
 
+  getClientesActivos() {
+    return this.http.get(this.URL + "/getClientesActivos");
+  }
+
   updateCliente(cliente) {
     return this.http.put(this.URL + `/update/${cliente._id}`, cliente);
   }

@@ -614,7 +614,7 @@ export class ConsultasComponent implements OnInit {
       element.cantidadM2b3 = parseFloat(element.cantidadM2b3.toFixed(2));
     });
 
-    this.invetarioP.forEach((element) => {
+    /* this.invetarioP.forEach((element) => {
       if(element.cantidadM2 < 0){
         element.cantidadCajas = 0
         element.cantidadPiezas = 0
@@ -631,7 +631,7 @@ export class ConsultasComponent implements OnInit {
         element.cantidadM2b3 = 0
       }
       
-    });
+    }); */
 
     this.mostrarLoading = false;
   }

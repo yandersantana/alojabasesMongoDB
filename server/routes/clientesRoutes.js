@@ -38,9 +38,14 @@ router.get('/getCliente/:id', async (req, res) => {
     res.json(cliente); 
 })
 
-router.get('/getClientes', async (req, res) => {
+router.get('/getClientesActivos', async (req, res) => {
     const clientes = await Cliente.find({estado:{ $in: [ "Activo", null]}});
     //const clientes = await Cliente.find({estado:{ $ne: [ "Inactivo"]}});
+    res.send(clientes)      
+})
+
+router.get('/getClientes', async (req, res) => {
+    const clientes = await Cliente.find();
     res.send(clientes)      
 })
 

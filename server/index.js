@@ -88,6 +88,9 @@ app.use('/revisionInventarioProducto', require('./routes/revisionInventarioProdu
 app.use('/transaccionRevisionProducto', require('./routes/transaccionesRevisionesProductosRoutes'));
 app.use('/stockProductosLocales', require('./routes/stockLocalesRoutes'));
 app.use('/servicioWebVeronica', require('./routes/servicioWebVeronicaRoutes'));
+app.use('/controlMercaderia', require('./routes/controlMercaderiaRoutes'));
+
+
 
 
 //starting the server

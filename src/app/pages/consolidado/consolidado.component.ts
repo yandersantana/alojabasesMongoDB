@@ -1601,6 +1601,7 @@ export class ConsolidadoComponent implements OnInit {
   onExporting2(e) {
     e.component.beginUpdate();
     e.component.columnOption("producto.CLASIFICA", "visible", true);
+    e.component.columnOption("producto.CASA", "visible", true);
     e.component.columnOption("producto.DIMENSION", "visible", true);
     e.component.columnOption("producto.REFERENCIA", "visible", true);
     e.component.columnOption("producto.precio", "visible", true);
@@ -1617,6 +1618,7 @@ export class ConsolidadoComponent implements OnInit {
   }
   onExported2(e) {
     e.component.columnOption("producto.CLASIFICA", "visible", false);
+    e.component.columnOption("producto.CASA", "visible", false);
     e.component.columnOption("producto.DIMENSION", "visible", false);
     e.component.columnOption("producto.REFERENCIA", "visible", false);
     e.component.columnOption("producto.precio", "visible", false);

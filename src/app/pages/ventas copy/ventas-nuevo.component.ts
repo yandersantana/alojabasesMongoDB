@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { compra } from '../compras/compra';
 import { DxFormComponent } from 'devextreme-angular';
 import { transaccion } from '../transacciones/transacciones';
@@ -49,6 +49,8 @@ import { CombosService } from 'src/app/servicios/combos.service';
 import { ApiVeronicaService } from 'src/app/servicios/api_veronica.service';
 import { CampoAdicionalModel, ComprobanteDetalle, ConsecutivoDto, FacturaModel, ImpuestoModel, PagosModel, ReceptorModel, ResponseVeronicaDto, ResultadoDto, ServicioWebVeronica } from '../api-veronica/api-veronica';
 import { ServicioWebVeronicaService } from 'src/app/servicios/servicioWebVeronica.service';
+import { controlUnidades } from '../control-unidades/control-unidades';
+import { ControlMercaderiaService } from 'src/app/servicios/control-mercaderia.service';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -158,6 +160,7 @@ export class VentasNuevoComponent implements OnInit {
   textoTipoDocumento2: string         //para detalle de nombre comercial 
   Ncotizacion: number
   contadoProductos=0
+  listaParametrizaciones : controlUnidades[]=[]
 
   
   foo:string
@@ -262,6 +265,8 @@ export class VentasNuevoComponent implements OnInit {
               public _comboService : CombosService,
               public _apiVeronicaService : ApiVeronicaService,
               public _logApiVeronicaService : ServicioWebVeronicaService,
+              public _controlMercaderiaService : ControlMercaderiaService,
+              private cdRef : ChangeDetectorRef,
               public router: Router) {
       this.factura = new factura()
       this.factura.cliente = new cliente()
@@ -291,6 +296,7 @@ export class VentasNuevoComponent implements OnInit {
     this.traerPreciosEspeciales()
     this.traerUsuarios()
     this.traerDatosConfiguracion();
+    this.traerParametrizacionesMercaderia();
     this.factura.tipo_venta="Normal"
     this.factura.tipo_cliente="C"
     this.tDocumento= "Factura"
@@ -303,6 +309,12 @@ export class VentasNuevoComponent implements OnInit {
     this._configuracionService.getDatosConfiguracion().subscribe((res) => {
       this.imagenLogotipo = res[0].urlImage;
     });
+  }
+
+  traerParametrizacionesMercaderia(){
+    this._controlMercaderiaService.getParametrizaciones().subscribe(res => {
+      this.listaParametrizaciones = res as controlUnidades[];
+    })
   }
 
   cargarUsuarioLogueado() {
@@ -405,7 +417,7 @@ export class VentasNuevoComponent implements OnInit {
   }
 
   traerClientes(){
-    this.clienteService.getCliente().subscribe(res => {
+    this.clienteService.getClientesActivos().subscribe(res => {
       this.clientes = res as cliente[];
       this.separarClientes()
    })
@@ -480,7 +492,7 @@ export class VentasNuevoComponent implements OnInit {
       case "Factura":
         switch (this.factura.sucursal) {
           case "matriz":
-            this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+            this.factura.documento_n =this.contadores[0]?.facturaMatriz_Ndocumento+1
             this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
             break;
           case "sucursal1":
@@ -842,20 +854,59 @@ setSelectedProducto(i:number){
     this.calcularTotalFactura();
   }
 
+  ngAfterViewChecked(){
+    this.cdRef.detectChanges();
+  }
+
   setClienteData(e){
     this.clientes.forEach(element => {
         if(element.cliente_nombre == e.component._changedValue){
-        this.factura.cliente = element
-        this.factura.cliente.cliente_nombre= element.cliente_nombre
-        this.factura.cliente.direccion = element.direccion
-        this.factura.cliente.celular = element.celular
-        this.factura.tipo_venta = element.tventa
-        this.factura.cliente.nombreContacto = element.nombreContacto
+          console.log(this.factura.cliente)
+          if(this.factura.cliente == undefined || this.factura.cliente.cliente_nombre == undefined){
+            this.factura.cliente = element
+            this.factura.cliente.cliente_nombre= element.cliente_nombre
+            this.factura.cliente.direccion = element.direccion
+            this.factura.cliente.celular = element.celular
+            this.factura.tipo_venta= element.tventa
+            this.factura.cliente.nombreContacto=element.nombreContacto
+          }
+          else{
+            if(this.factura.cliente.tventa == element.tventa){
+              this.factura.cliente = element
+              this.factura.cliente.cliente_nombre= element.cliente_nombre
+              this.factura.cliente.direccion = element.direccion
+              this.factura.cliente.celular = element.celular
+              this.factura.tipo_venta= element.tventa
+              this.factura.cliente.nombreContacto=element.nombreContacto
+            }
+            else {
+              Swal.fire({
+                title: 'Error tipo Cliente',
+                text: "El nuevo cliente ingresado tiene un tipo diferente al inicial. Desea Cambiar de cliente?",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Si',
+                cancelButtonText: 'No'
+              }).then((result) => {
+                if (result.value) {
+                  this.productosVendidos = []
+                  this.productosVendidos.push(new venta)
+                  this.factura.cliente = element
+                  this.factura.cliente.cliente_nombre= element.cliente_nombre
+                  this.factura.cliente.direccion = element.direccion
+                  this.factura.cliente.celular = element.celular
+                  this.factura.tipo_venta= element.tventa
+                  this.factura.cliente.nombreContacto=element.nombreContacto
+                }                  
+              })
+            }
+          }
+        
       }
     }); 
     this.calcularTipoCliente(); 
-    //this.clienteFactura = this.factura.cliente
   }
+
 
   asignarMaestro(e){
     this.factura.maestro = e.value
@@ -1339,11 +1390,19 @@ cambiarestado(e,i:number){
 
   calcularEquivalencia(e, i:number) {
     this.productos.forEach(element => {
-
       if(element.PRODUCTO == this.productosVendidos[i].producto.PRODUCTO){
         let cajas = Math.trunc((this.productosVendidos[i].cantidad+0.01) / element.M2);
         let piezas = Math.trunc((this.productosVendidos[i].cantidad+0.01) * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);
-        this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
+        if(this.productosVendidos[i].producto.CLASIFICA == "Ceramicas" || this.productosVendidos[i].producto.CLASIFICA == "Porcelanatos"){
+          var confProd = this.listaParametrizaciones.find(x=> x.nombreGrupo == this.productosVendidos[i].producto.CLASIFICA)
+          if(confProd != null){
+            if(cajas >= confProd.cajasLimite && piezas >= confProd.piezasRestantes)
+              piezas = piezas - confProd.piezasRestantes
+          }
+          this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
+        }
+        else
+          this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
       }
     })
   }

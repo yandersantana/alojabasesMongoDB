@@ -752,7 +752,7 @@ setSelectedProducto(i:number){
   }
 
    obtenerDatosDeProductoParaUnDetalle(e, i:number) {
-    this.productosVendidos[i].precio_venta = 0;
+    //this.productosVendidos[i].precio_venta = 0;
     this.productosVendidos[i].total = 0;
     this.newButtonEnabled = false
     var cont=0
@@ -902,6 +902,7 @@ setSelectedProducto(i:number){
                   this.factura.tipo_venta= element.tventa
                   this.factura.cliente.nombreContacto=element.nombreContacto    
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  console.log("entre false")
                   this.factura.cliente = this.factura.cliente
                   this.mensaje = this.factura.cliente.cliente_nombre
                 }             
@@ -1094,43 +1095,44 @@ setSelectedProducto(i:number){
         
       }else
         this.productosVendidos[i].entregar= true
-    }
-    
-    
+    } 
   }
 
   calcularPrecioMinino(e, i:number){
-  switch (this.factura.tipo_venta) {
-    case "Normal":
-      this.productosVendidos[i].producto
-    this.precios.forEach(element=>{
-      if(element.aplicacion == this.productosVendidos[i].producto.APLICACION){
-       
-        if(this.productosVendidos[i].cantidad >0 && this.productosVendidos[i].cantidad <=element.cant1){
-          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent1 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-          
-        }
-        if(this.productosVendidos[i].cantidad >element.cant1 && this.productosVendidos[i].cantidad <=element.cant2){
-          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent2 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-         
-        }
+    
+    switch (this.factura.tipo_venta) {
+      case "Normal":
+        this.productosVendidos[i].producto
+        this.precios.forEach(element=>{
+          if(element.aplicacion == this.productosVendidos[i].producto.APLICACION){
+            if(this.productosVendidos[i].cantidad >0 && this.productosVendidos[i].cantidad <=element.cant1){
+              this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent1 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+              
+            }
+            if(this.productosVendidos[i].cantidad >element.cant1 && this.productosVendidos[i].cantidad <=element.cant2){
+              this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent2 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+            
+            }
 
-        if(this.productosVendidos[i].cantidad >element.cant2){
-          this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent3 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-        }
-      }
-    })
-      break;
-    case "Distribuidor":
-      this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-      break;
-    case "Socio":
-      this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioSocio / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
-      break;
-  
-    default:
-      break;
-  }
+            if(this.productosVendidos[i].cantidad >element.cant2){
+              this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * element.percent3 / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+            }
+          }
+        })
+        
+        break;
+      case "Distribuidor":
+        this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioDistribuidor / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+        
+        break;
+      case "Socio":
+        this.productosVendidos[i].precio_min = parseFloat((this.productosVendidos[i].producto.precio * this.preciosEspeciales[0].precioSocio / 100 + this.productosVendidos[i].producto.precio).toFixed(2))
+        
+        break;
+    
+      default:
+        break;
+    }
     
   }
 
@@ -1412,6 +1414,7 @@ cambiarestado(e,i:number){
           this.productosVendidos[i].equivalencia = cajas + "C " + piezas + "P"
       }
     })
+
   }
 
   calcularTotalRow(i:number) {

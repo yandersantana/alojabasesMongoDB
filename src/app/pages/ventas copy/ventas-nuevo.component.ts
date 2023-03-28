@@ -746,7 +746,7 @@ setSelectedProducto(i:number){
   }
 
    obtenerDatosDeProductoParaUnDetalle(e, i:number) {
-    this.productosVendidos[i].precio_venta = 0;
+    //this.productosVendidos[i].precio_venta = 0;
     this.productosVendidos[i].total = 0;
     this.btnDis = true
     this.newButtonEnabled = false
@@ -898,6 +898,7 @@ setSelectedProducto(i:number){
                   this.factura.tipo_venta= element.tventa
                   this.factura.cliente.nombreContacto=element.nombreContacto
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  console.log("si entre")
                   this.factura.cliente = this.factura.cliente
                   this.mensaje = this.factura.cliente.cliente_nombre
                 }             

@@ -688,16 +688,16 @@ mostrarPopup(e,i:number){
         var suc2=this.productosVendidos[i].producto.sucursal2+this.productosVendidos[i].producto.suc2Pendiente
         var suc3=this.productosVendidos[i].producto.sucursal3+this.productosVendidos[i].producto.suc3Pendiente */
         this.disponibilidadProducto = "MATRIZ: "+
-                                      this.productosVendidos[i].cantM2_1.toFixed(2)+"M - "+
-                                      this.productosVendidos[i].cantCajas_1.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantM2_1.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantCajas_1.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_1.toFixed(0)+"P"
         this.disponibilidadProductoS1 = "SUC1: "+
-                                      this.productosVendidos[i].cantM2_2.toFixed(2)+"M - "+
-                                      this.productosVendidos[i].cantCajas_2.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantM2_2.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantCajas_2.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_2.toFixed(0)+"P"
         this.disponibilidadProductoS2 = "SUC2: "+
-                                      this.productosVendidos[i].cantM2_3.toFixed(2)+"M - "+
-                                      this.productosVendidos[i].cantCajas_3.toFixed(0)+"C - "+
+                                      this.productosVendidos[i].cantM2_3.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantCajas_3.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_3.toFixed(0)+"P"
         
         
@@ -897,7 +897,10 @@ setSelectedProducto(i:number){
                   this.factura.cliente.celular = element.celular
                   this.factura.tipo_venta= element.tventa
                   this.factura.cliente.nombreContacto=element.nombreContacto
-                }                  
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                  this.factura.cliente = this.factura.cliente
+                  this.mensaje = this.factura.cliente.cliente_nombre
+                }             
               })
             }
           }

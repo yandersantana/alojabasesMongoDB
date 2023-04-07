@@ -26,7 +26,6 @@ import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { TransaccionesRevisionProductoService } from "src/app/servicios/transaccionesRevisionProducto.service";
 import { comparacionResultadosRevision } from "../revision-inventario/revision-inventario";
-import { resolve } from "dns";
 
 @Component({
   selector: "app-consolidado",
@@ -56,6 +55,7 @@ export class ConsolidadoComponent implements OnInit {
   arregloUbicaciones3: string[] = [];
   arregloNotas: string[] = [];
   transacciones: transaccion[] = [];
+  arrayBuffer : any;
   invetarioP: inventario[] = [];
   invetarioFaltante1: invFaltanteSucursal;
   invetarioFaltante: invFaltanteSucursal[] = [];
@@ -1982,6 +1982,5 @@ export class ConsolidadoComponent implements OnInit {
             .catch((err) => { });
     });
   }
-
 
 }

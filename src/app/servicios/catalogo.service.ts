@@ -37,6 +37,10 @@ export class CatalogoService {
     );
   }
 
+  updateCatalogoEstado(productoId: number, estado: string) {
+    return this.http.put(this.URL + `/updateEstado/${productoId}/${estado}`, productoId);
+  }
+
   updateCatalogoAplicacion(nombre: string, aplicacion: string) {
     return this.http.put(
       this.URL + `/updateAplicacion/${nombre}/${aplicacion}`,

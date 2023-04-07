@@ -173,3 +173,7 @@ table, th, td {
   .tooltip:hover .tooltiptext {
     visibility: visible;
   }
+
+  .txtRed{
+  color: red;
+}

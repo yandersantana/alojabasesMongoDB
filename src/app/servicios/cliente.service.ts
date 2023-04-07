@@ -30,6 +30,10 @@ export class ClienteService {
     return this.http.put(this.URL + `/update/${cliente._id}`, cliente);
   }
 
+  updateClienteDataContacto(cliente) {
+    return this.http.put(this.URL + `/updateClienteDataContacto/${cliente._id}`, cliente);
+  }
+
   deleteClientes(cliente) {
     return this.http.delete(this.URL + `/delete/${cliente._id}`, cliente);
   }

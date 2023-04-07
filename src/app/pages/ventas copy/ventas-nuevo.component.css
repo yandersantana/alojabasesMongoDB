@@ -246,3 +246,7 @@ table, th, td {
     text-align: center;
     background-color: white;
 }
+
+.txtRed{
+  color: red;
+}

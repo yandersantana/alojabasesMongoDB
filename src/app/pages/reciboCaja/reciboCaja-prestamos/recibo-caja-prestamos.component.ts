@@ -47,6 +47,7 @@ export class ReciboCajaPrestamosComponent implements OnInit {
   isNormal: boolean = false;
   isFacturacion: boolean = false;
   numeroDocumento = "";
+  mensajeLoading = "Guardando..."
   
   numReciboCajaTraido = "";
   contadores:contadoresDocumentos[]

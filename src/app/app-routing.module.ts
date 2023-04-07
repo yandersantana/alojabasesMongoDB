@@ -57,6 +57,7 @@ import { StockMinimoComponent } from "./pages/stock-minimo/stock-minimo.componen
 import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.component";
 import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component";
 import { ControlUnidadesComponent } from "./pages/control-unidades/control-unidades.component";
+import { CargaMasivaComponent } from "./pages/carga-masiva/carga-masiva.component";
 
 const routes: Routes = [
   {
@@ -191,6 +192,11 @@ const routes: Routes = [
   {
     path: "traslados",
     component: TrasladosComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "carga-masiva",
+    component: CargaMasivaComponent,
     canActivate: [AuthGuardService],
   },
   {

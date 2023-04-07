@@ -154,6 +154,13 @@ router.put('/updateEstado/:producto/:estado', async (req, res,next) => {
 })
 
 
+router.put('/updateEstadoPorId/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await Producto.findByIdAndUpdate(id, {$set: {ESTADO:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 
 router.put('/updateBodega/:id', async (req, res,next) => {
     const { id } = req.params;

@@ -25,8 +25,6 @@ import { TransaccionesFacturasService } from 'src/app/servicios/transaccionesFac
 import { TransaccionesChequesService } from 'src/app/servicios/transaccionesCheques.service';
 import { CuentaBancariaService } from 'src/app/servicios/cuentaBancaria.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
-import { element } from 'protractor';
-import { ProductosEntregadosService } from 'src/app/servicios/productos-entregados.service';
 import { ProductoDetalleEntrega } from '../producto/producto';
 import { ProductosIngresadosService } from 'src/app/servicios/productos-ingresados.service';
 

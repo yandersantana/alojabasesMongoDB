@@ -50,6 +50,13 @@ router.get('/getCatalogosActivos', async (req, res) => {
     res.json(catalogo); 
 })
 
+router.put('/updateEstado/:id/:estado', async (req, res,next) => {
+    const { id } = req.params;
+    const { estado } = req.params;
+    await Catalogo.findByIdAndUpdate(id, {$set: {ESTADO:estado}}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
 router.put('/update/:id', async (req, res,next) => {
     console.log("entrando")
     const { id } = req.params;

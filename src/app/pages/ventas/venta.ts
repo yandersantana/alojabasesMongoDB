@@ -68,6 +68,9 @@ export class venta {
     cantM2_1 : number
     cantM2_2 : number
     cantM2_3 : number
+    cantM2_1_Original : number
+    cantM2_2_Original : number
+    cantM2_3_Original : number
     cantCajas_1 : number
     cantPiezas_1 : number
     cantCajas_2 : number

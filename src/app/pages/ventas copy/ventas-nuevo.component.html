@@ -454,9 +454,9 @@
                                 <tr>
                                     <th>DISPONIBILIDAD</th>
                                     <td style="font-weight: bold;">
-                                        <p>{{disponibilidadProducto}}</p>
-                                        <p>{{disponibilidadProductoS1}}</p>
-                                        <p>{{disponibilidadProductoS2}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdMatriz }">{{disponibilidadProducto}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdSuc1 }">{{disponibilidadProductoS1}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdSuc2 }">{{disponibilidadProductoS2}}</p>
                                         <span style="text-align: right;">
                                             <button style="text-align: right;color: red;border-color: transparent;background-color: transparent;" (click)="mostrarDivUbicaciones()"><i class="fa fa-map-marker"></i>
                                             </button>

@@ -90,6 +90,10 @@ export class ProductoService {
     );
   }
 
+   updateEstadoPorId(productoId: string, estado: string) {
+    return this.http.put(this.URL + `/updateEstadoPorId/${productoId}/${estado}`, productoId);
+  }
+
   updateProductoBodegaProveedor(producto) {
     return this.http.put(this.URL + `/updateBodega/${producto._id}`, producto);
   }

@@ -76,6 +76,18 @@ router.put('/update/:id', async (req, res,next) => {
     res.json({status: 'Actualización Exitosa'}); 
 })
 
+router.put('/updateClienteDataContacto/:id', async (req, res,next) => {
+    const { id } = req.params;
+    const newCliente ={ 
+        direccion:req.body.direccion,
+        celular: req.body.celular,
+        correo:req.body.correo};
+    await Cliente.findByIdAndUpdate(id, {$set: newCliente}, {new: true});
+    res.json({status: 'Actualización Exitosa'}); 
+})
+
+
+
 
 router.delete('/delete/:id', async (req, res,next) => {
     await Cliente.findByIdAndRemove(req.params.id);

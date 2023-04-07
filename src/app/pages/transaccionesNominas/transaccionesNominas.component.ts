@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { BeneficiarioService } from 'src/app/servicios/beneficiario.service';
-import { ComprobantePagoService } from 'src/app/servicios/ComprobantePago.service';
+import { ComprobantePagoService } from 'src/app/servicios/comprobantePago.service';
 import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';

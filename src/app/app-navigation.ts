@@ -301,6 +301,10 @@ export const navigationAdmin = [
         text: "Stock Productos",
         path: "/stock-locales",
       },
+      {
+        text: "Carga Masiva",
+        path: "/carga-masiva",
+      },
     ],
   },
   {

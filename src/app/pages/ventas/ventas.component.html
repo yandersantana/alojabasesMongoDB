@@ -152,24 +152,22 @@
     </dxi-item>
     <dxi-item itemType="group" [colCount]="5" [colSpan]="1">
       
-        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc'}" [colSpan]="4" >
+        <dxi-item dataField="cliente.ruc" [editorOptions]="{ placeholder: 'Ruc', onValueChanged:'buscarClienteExistente($event)'}"  [colSpan]="4" >
             <dxi-validation-rule
-            type= "pattern"
-            pattern= '^[0-9]{10,15}$'
-            message="El Ruc debe ser tipo  y minimo 10 caracteres">
-        </dxi-validation-rule>
-            <dxo-label [visible]="false" ></dxo-label>
+                type= "pattern"
+                pattern= '^[0-9]{10,15}$'
+                message="El Ruc debe ser tipo  y minimo 10 caracteres">
+            </dxi-validation-rule>
+            <dxo-label [visible]="false"></dxo-label>
         </dxi-item>
         <dxi-item dataField="" [colSpan]="1" >
             <dx-button
-                        type="normal"
-                        [width]="100"
-                        icon="fa fa-user"
-                        (onClick)="buscarCliente($event)">
-                    </dx-button>
+                type="normal"
+                [width]="100"
+                icon="fa fa-user"
+                (onClick)="buscarCliente($event)">
+            </dx-button>
         </dxi-item>
-
-    
     </dxi-item>
    
     
@@ -529,9 +527,9 @@
                                 <tr>
                                     <th>DISPONIBILIDAD</th>
                                     <td style="font-weight: bold;">
-                                        <p>{{disponibilidadProducto}}</p>
-                                        <p>{{disponibilidadProductoS1}}</p>
-                                        <p>{{disponibilidadProductoS2}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdMatriz }">{{disponibilidadProducto}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdSuc1 }">{{disponibilidadProductoS1}}</p>
+                                        <p [ngClass]="{'txtRed' : flagDisProdSuc2 }">{{disponibilidadProductoS2}}</p>
                                         <span style="text-align: right;">
                                             <button style="text-align: right;color: red;border-color: transparent;background-color: transparent;" (click)="mostrarDivUbicaciones()"><i class="fa fa-map-marker"></i>
                                             </button>

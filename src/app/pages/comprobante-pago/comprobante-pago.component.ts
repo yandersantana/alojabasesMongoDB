@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ContadoresDocumentosService } from 'src/app/servicios/contadores-documentos.service';
 import { CuentasService } from 'src/app/servicios/cuentas.service';
-import { ComprobantePagoService } from 'src/app/servicios/ComprobantePago.service';
 import { SubCuentasService } from 'src/app/servicios/subCuentas.service';
 import { TransaccionesFinancierasService } from 'src/app/servicios/transaccionesFinancieras.service';
 import Swal from 'sweetalert2';
@@ -32,6 +31,7 @@ import { NotasPagoService } from 'src/app/servicios/notas.service';
 import { OrdenesCompraService } from 'src/app/servicios/ordenes-compra.service';
 import { FacturasProveedorService } from 'src/app/servicios/facturas-proveedor.service';
 import { FacturaProveedor } from '../orden-compra/ordencompra';
+import { ComprobantePagoService } from 'src/app/servicios/comprobantePago.service';
 
 
 
@@ -123,6 +123,7 @@ export class ComprobantePagoComponent implements OnInit {
   mostrarBeneficiario = false;
   mostrarProveedor = false;
   mostrarDocumento = false;
+  mensajeLoading = "Cargando..."
   datosDocumento: dataDocumento [] = []
   textoDatosFactura = "";
   valorDocumento = "";
@@ -743,6 +744,7 @@ export class ComprobantePagoComponent implements OnInit {
 
 
   async guardar(){
+    this.mensajeLoading = "Guardando.."
     var flag = true;
     this.bloquearBoton = true;
     this.listadoOperaciones.forEach(element=>{

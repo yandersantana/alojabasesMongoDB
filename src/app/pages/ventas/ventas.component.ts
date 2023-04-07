@@ -111,6 +111,7 @@ export class VentasComponent implements OnInit {
   productosActivos: producto[] = []
   productos2: producto[] = []
   clientes:cliente[] = []
+  clientesGenerales:cliente[] = []
   clientes2:cliente[] = []
   clientesMaestros:cliente[] = []
   facturas:factura[] = []
@@ -218,6 +219,9 @@ export class VentasComponent implements OnInit {
   disponibilidadProducto:string=""
   disponibilidadProductoS1:string=""
   disponibilidadProductoS2:string=""
+  flagDisProdMatriz = false
+  flagDisProdSuc1 = false
+  flagDisProdSuc2 = false
   parametrizaciones:parametrizacionsuc[]=[]
   usuarios: user[] = []
   parametrizacionSucu:parametrizacionsuc
@@ -363,10 +367,29 @@ export class VentasComponent implements OnInit {
         this.factura.nombreVendedor = usuarioClave.name
         switch (this.factura.tipoDocumento) {
           case "Factura":
-            this.validarEstadoCajaFactura();
+            var existe = this.clientesGenerales.find(x=> x.ruc == this.factura.cliente.ruc);
+            if(existe != undefined){
+              if(existe.estado == "Inactivo"){
+                this.botonFactura = false;
+                this.mostrarMensajeGenerico(2,"Ya existe en base un usuario con el mismo RUC inactivo, ingrese otro RUC para poder continuar")
+              }
+              else
+                this.validarEstadoCajaFactura();
+            } else 
+              this.validarEstadoCajaFactura();
+
             break;
           case "Nota de Venta":
-            this.validarEstadoCajaNotaVenta();
+            var existe = this.clientesGenerales.find(x=> x.ruc == this.factura.cliente.ruc);
+            if(existe != undefined){
+              if(existe.estado == "Inactivo"){
+                this.botonNotaVenta = false;
+                this.mostrarMensajeGenerico(2,"Ya existe en base un usuario con el mismo RUC inactivo, ingrese otro RUC para poder continuar")
+              }
+              else
+                this.validarEstadoCajaNotaVenta();
+            } else 
+              this.validarEstadoCajaNotaVenta();
             break;
           case "Cotización":
             break;
@@ -421,8 +444,8 @@ export class VentasComponent implements OnInit {
   }
 
   traerClientes(){
-    this.clienteService.getClientesActivos().subscribe(res => {
-      this.clientes = res as cliente[];
+    this.clienteService.getCliente().subscribe(res => {
+      this.clientesGenerales = res as cliente[];
       this.separarClientes()
    })
   }
@@ -527,47 +550,42 @@ export class VentasComponent implements OnInit {
 
 
   separarClientes(){
-    this.clientes.forEach(element=>{
-      if(element.tventa == "Maestro"){
-        this.clientesMaestros.push(element)
-      }
-    })
+    this.clientes = this.clientesGenerales.filter(x=> x.estado != "Inactivo");
+    this.clientesMaestros = this.clientes.filter(x=> x.tventa == "Maestro");
   }
 
 
-  
-    asignarIDFactura(tipoFac:string){
-      switch (tipoFac) {
-        case "Factura":
-          switch (this.factura.sucursal) {
-            case "matriz":
-              this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
-              console.log(this.factura.documento_n)
-              break;
-            case "sucursal1":
-              this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
-              break;
-            case "sucursal2":
-              this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
-              this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
-              break;
-            default:
-              break;
-          } 
-          break;
-        case "Nota de Venta":
-          this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
-          break;
-        case "Cotización":
-          this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
-          break;
-        default:
-          break;
-      }
+  asignarIDFactura(tipoFac:string){
+    switch (tipoFac) {
+      case "Factura":
+        switch (this.factura.sucursal) {
+          case "matriz":
+            this.factura.documento_n =this.contadores[0].facturaMatriz_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaMatriz_Ndocumento+1
+            console.log(this.factura.documento_n)
+            break;
+          case "sucursal1":
+            this.factura.documento_n =this.contadores[0].facturaSucursal1_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal1_Ndocumento+1
+            break;
+          case "sucursal2":
+            this.factura.documento_n =this.contadores[0].facturaSucursal2_Ndocumento+1
+            this.numeroFactura2=this.contadores[0].facturaSucursal2_Ndocumento+1
+            break;
+          default:
+            break;
+        } 
+        break;
+      case "Nota de Venta":
+        this.factura.documento_n = this.contadores[0].notasVenta_Ndocumento+1 
+        break;
+      case "Cotización":
+        this.factura.documento_n = this.contadores[0].proformas_Ndocumento+1 
+        break;
+      default:
+        break;
     }
-
+  }
 
   anadirProducto = (e) => {
     this.newButtonEnabled = true
@@ -694,22 +712,21 @@ mostrarPopup(e,i:number){
         this.catalogoLeido.ubicacion2 = this.productosVendidos[i].producto.ubicacionSuc2
         this.catalogoLeido.ubicacion3 = this.productosVendidos[i].producto.ubicacionSuc3
         this.disponibilidadProducto = "MATRIZ: "+
-                                      this.productosVendidos[i].cantM2_1.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantM2_1_Original.toFixed(2)+"M /-/ "+
                                       this.productosVendidos[i].cantCajas_1.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_1.toFixed(0)+"P"
         this.disponibilidadProductoS1 = "SUC1: "+
-                                      this.productosVendidos[i].cantM2_2.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantM2_2_Original.toFixed(2)+"M /-/ "+
                                       this.productosVendidos[i].cantCajas_2.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_2.toFixed(0)+"P"
         this.disponibilidadProductoS2 = "SUC2: "+
-                                      this.productosVendidos[i].cantM2_3.toFixed(2)+"M /-/ "+
+                                      this.productosVendidos[i].cantM2_3_Original.toFixed(2)+"M /-/ "+
                                       this.productosVendidos[i].cantCajas_3.toFixed(0)+"C /-/ "+
                                       this.productosVendidos[i].cantPiezas_3.toFixed(0)+"P"
         
-        
-        //this.productosVendidos[i].cantM2_2.toFixed(0)+"S1 - "+
-        //this.productosVendidos[i].cantM2_3.toFixed(0)+"S2 - "
-        //this.productosVendidos[i].producto.bodegaProveedor.toFixed(0)+"P  "
+        this.flagDisProdMatriz =  this.productosVendidos[i].cantM2_1_Original < 0 ? true : false;
+        this.flagDisProdSuc1 =  this.productosVendidos[i].cantM2_2_Original < 0 ? true : false;
+        this.flagDisProdSuc2 =  this.productosVendidos[i].cantM2_3_Original < 0 ? true : false;
       }
     })
     this.popupvisible=true 
@@ -918,6 +935,10 @@ setSelectedProducto(i:number){
 
   asignarMaestro(e){
     this.factura.maestro = e.value
+  }
+
+  buscarClienteExistente(e){
+    console.log(e.value)
   }
 
   asignarUsuario(e){
@@ -1402,7 +1423,10 @@ cambiarestado(e,i:number){
       if(element.PRODUCTO == this.productosVendidos[i].producto.PRODUCTO){
         let cajas = Math.trunc((this.productosVendidos[i].cantidad+0.01) / element.M2);
         let piezas = Math.trunc((this.productosVendidos[i].cantidad+0.01) * element.P_CAJA / element.M2) - (cajas * element.P_CAJA);
-        if(this.productosVendidos[i].producto.CLASIFICA == "Ceramicas" || this.productosVendidos[i].producto.CLASIFICA == "Porcelanatos"){
+        if(this.productosVendidos[i].producto.CLASIFICA == "Ceramicas" || this.productosVendidos[i].producto.CLASIFICA == "Porcelanatos" || this.productosVendidos[i].producto.CLASIFICA == "Porcelanato"){
+          if(this.productosVendidos[i].producto.CLASIFICA == "Porcelanato")
+            this.productosVendidos[i].producto.CLASIFICA = "Porcelanatos"
+
           var confProd = this.listaParametrizaciones.find(x=> x.nombreGrupo == this.productosVendidos[i].producto.CLASIFICA)
           if(confProd != null){
             if(cajas >= confProd.cajasLimite && piezas >= confProd.piezasRestantes)
@@ -2297,9 +2321,6 @@ cambiarestado(e,i:number){
     getDocumentDefinitionNotaVenta() {
 
       this.calcularValoresFactura()
-      sessionStorage.setItem('resume', JSON.stringify("jj"));
-      let tipoDocumento="Factura";
-
       return {
         pageSize: 'A4',
         content: [
@@ -2317,8 +2338,7 @@ cambiarestado(e,i:number){
                       width:290,
                       columns: [          
                                   [
-                                    { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
-                                    { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                    { text: "NOTA DE VENTA", fontSize:12, alignment: "center", bold: true},
                                     { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
                                     { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
                                   ],
@@ -2476,8 +2496,7 @@ cambiarestado(e,i:number){
                       width:290,
                       columns: [          
                                   [
-                                    { text: this.parametrizacionSucu.razon_social.toUpperCase(), fontSize:9, alignment: "center", bold: true},
-                                    { text: "RUC: "+this.parametrizacionSucu.ruc, fontSize:9, bold: true, alignment: "center"},
+                                    { text: "NOTA DE VENTA", fontSize:12, alignment: "center", bold: true},
                                     { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
                                     { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
                                   ],
@@ -3118,9 +3137,9 @@ cambiarestado(e,i:number){
 
     crearCliente(){
       if(this.factura.cliente._id) {
-        this.clienteService.updateCliente(this.factura.cliente).subscribe(
+        this.clienteService.updateClienteDataContacto(this.factura.cliente).subscribe(
           res => {},
-          err => {this.mostrarMensajeGenerico(2,"Recise e intente nuevamente")})
+          err => {this.mostrarMensajeGenerico(2,"Revise e intente nuevamente")})
       } else {
         this.clienteService.newCliente(this.factura.cliente).subscribe(
           res => {},
@@ -3153,8 +3172,10 @@ cambiarestado(e,i:number){
     this.facturasService.newFactura(this.factura).subscribe(
       res => {this.validarFormaPago();this.registrarFacturaSRI();this.actualizarFacturero();},
       err => {this.mostrarMensajeGenerico(2,"Error al guardar")});
-  }
 
+
+    
+  }
    
 
   registrarFacturaSRI(){
@@ -3399,9 +3420,13 @@ cambiarestado(e,i:number){
 
     IdNum.then((data) => {
       this.validarFechaFactura();
-      //this.generarFactura();
     })
   }
+
+  
+    
+ 
+
 
 
   validarFechaFactura(){
@@ -4266,6 +4291,9 @@ cambiarestado(e,i:number){
     this.productosVendidos[numero].cantM2_3 = this.invetarioP[0].cantidadM2b3;
     this.productosVendidos[numero].cantCajas_3 = this.invetarioP[0].cantidadCajas3;
     this.productosVendidos[numero].cantPiezas_3 = this.invetarioP[0].cantidadPiezas3;
+    this.productosVendidos[numero].cantM2_1_Original = this.productosVendidos[numero].cantM2_1
+    this.productosVendidos[numero].cantM2_2_Original = this.productosVendidos[numero].cantM2_2
+    this.productosVendidos[numero].cantM2_3_Original = this.productosVendidos[numero].cantM2_3
 
     if(this.productosVendidos[numero].cantM2_1 < 0){
       this.productosVendidos[numero].cantM2_1 = 0

@@ -77,6 +77,12 @@ export class venta {
     cantPiezas_2 : number
     cantCajas_3 : number
     cantPiezas_3 : number
+    cantCajas_1_Original : number
+    cantPiezas_1_Original : number
+    cantCajas_2_Original : number
+    cantPiezas_2_Original : number
+    cantCajas_3_Original : number
+    cantPiezas_3_Original : number
     
     constructor() {
         this.pedir = false

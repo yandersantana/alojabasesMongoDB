@@ -51,6 +51,7 @@ import { CampoAdicionalModel, ComprobanteDetalle, ConsecutivoDto, FacturaModel, 
 import { ServicioWebVeronicaService } from 'src/app/servicios/servicioWebVeronica.service';
 import { ControlMercaderiaService } from 'src/app/servicios/control-mercaderia.service';
 import { controlUnidades } from '../control-unidades/control-unidades';
+import { element } from 'protractor';
 pdfMake.vfs = pdfFonts.pdfMake.vfs;
 
 @Component({
@@ -72,6 +73,8 @@ export class VentasComponent implements OnInit {
   recibosEncontrados : ReciboCaja[]=[]
   facturasEctdas : factura[]=[]
   newRecibo = new ReciboCaja();
+  clienteAnterior = new cliente();
+  rucAnterior = ""
 
   formasPago: string[] = [
     'Cancelado',
@@ -711,18 +714,18 @@ mostrarPopup(e,i:number){
         this.catalogoLeido.ubicacion1 = this.productosVendidos[i].producto.ubicacionSuc1
         this.catalogoLeido.ubicacion2 = this.productosVendidos[i].producto.ubicacionSuc2
         this.catalogoLeido.ubicacion3 = this.productosVendidos[i].producto.ubicacionSuc3
-        this.disponibilidadProducto = "MATRIZ: "+
+         this.disponibilidadProducto = "MATRIZ: "+
                                       this.productosVendidos[i].cantM2_1_Original.toFixed(2)+"M /-/ "+
-                                      this.productosVendidos[i].cantCajas_1.toFixed(0)+"C /-/ "+
-                                      this.productosVendidos[i].cantPiezas_1.toFixed(0)+"P"
+                                      this.productosVendidos[i].cantCajas_1_Original.toFixed(0)+"C /-/ "+
+                                      this.productosVendidos[i].cantPiezas_1_Original.toFixed(0)+"P"
         this.disponibilidadProductoS1 = "SUC1: "+
                                       this.productosVendidos[i].cantM2_2_Original.toFixed(2)+"M /-/ "+
-                                      this.productosVendidos[i].cantCajas_2.toFixed(0)+"C /-/ "+
-                                      this.productosVendidos[i].cantPiezas_2.toFixed(0)+"P"
+                                      this.productosVendidos[i].cantCajas_2_Original.toFixed(0)+"C /-/ "+
+                                      this.productosVendidos[i].cantPiezas_2_Original.toFixed(0)+"P"
         this.disponibilidadProductoS2 = "SUC2: "+
                                       this.productosVendidos[i].cantM2_3_Original.toFixed(2)+"M /-/ "+
-                                      this.productosVendidos[i].cantCajas_3.toFixed(0)+"C /-/ "+
-                                      this.productosVendidos[i].cantPiezas_3.toFixed(0)+"P"
+                                      this.productosVendidos[i].cantCajas_3_Original.toFixed(0)+"C /-/ "+
+                                      this.productosVendidos[i].cantPiezas_3_Original.toFixed(0)+"P"
         
         this.flagDisProdMatriz =  this.productosVendidos[i].cantM2_1_Original < 0 ? true : false;
         this.flagDisProdSuc1 =  this.productosVendidos[i].cantM2_2_Original < 0 ? true : false;
@@ -890,6 +893,8 @@ setSelectedProducto(i:number){
             this.factura.cliente.celular = element.celular
             this.factura.tipo_venta= element.tventa
             this.factura.cliente.nombreContacto=element.nombreContacto
+            /* if(this.clienteAnterior == null || this.clienteAnterior == undefined)
+              this.clienteAnterior = element */
           }
           else{
             if(this.factura.cliente.tventa == element.tventa){
@@ -899,6 +904,7 @@ setSelectedProducto(i:number){
               this.factura.cliente.celular = element.celular
               this.factura.tipo_venta= element.tventa
               this.factura.cliente.nombreContacto=element.nombreContacto
+              
             }
             else {
               Swal.fire({
@@ -929,6 +935,7 @@ setSelectedProducto(i:number){
         
       }
     }); 
+    this.rucAnterior = this.factura.cliente.ruc
     this.calcularTipoCliente(); 
   }
 
@@ -985,8 +992,24 @@ setSelectedProducto(i:number){
   }
 
   eliminarData(e){
-    this.factura.cliente = null
-    this.mensaje=null
+    Swal.fire({
+        title: 'Borrar Datos Cliente',
+        text: "Está seguro que desea eliminar los datos del cliente?. Si elimina los datos se eliminaran los productos listados",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Si',
+        cancelButtonText: 'No'
+      }).then((result) => {
+        if (result.value) {
+          this.factura.cliente = null
+          this.mensaje=null
+          this.factura.tipo_venta = "Normal"
+          this.productosVendidos = [];
+          this.productosVendidos.push(new venta());
+        } else if (result.dismiss === Swal.DismissReason.cancel) {
+          console.log("nada")
+        }
+      })
   }
       
   buscarCliente(e){
@@ -1140,6 +1163,7 @@ setSelectedProducto(i:number){
             }
           }
         })
+        console.log(this.productosVendidos[i].precio_min)
         
         break;
       case "Distribuidor":
@@ -2338,7 +2362,7 @@ cambiarestado(e,i:number){
                       width:290,
                       columns: [          
                                   [
-                                    { text: "NOTA DE VENTA", fontSize:12, alignment: "center", bold: true},
+                                    { text: "NOTA DE ENTREGA", fontSize:12, alignment: "center", bold: true},
                                     { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
                                     { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
                                   ],
@@ -2348,7 +2372,7 @@ cambiarestado(e,i:number){
                       width:100,
                       columns: [          
                                   [
-                                    { text: "** NOTA DE ENTREGA **", fontSize:9, alignment: "right", bold: true},
+                                    { text: "** CONSECUTIVO **", fontSize:9, alignment: "right", bold: true},
                                     { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
                                   ],
                       ]
@@ -2496,7 +2520,7 @@ cambiarestado(e,i:number){
                       width:290,
                       columns: [          
                                   [
-                                    { text: "NOTA DE VENTA", fontSize:12, alignment: "center", bold: true},
+                                    { text: "NOTA DE ENTREGA", fontSize:12, alignment: "center", bold: true},
                                     { text: "Venta de materiales para acabados de construcción, porcelanatos, cerámicas ", fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},
                                     { text: "Dirección: "+this.parametrizacionSucu.direccion + "      Teléfonos: "+this.parametrizacionSucu.telefonos, fontSize:6, alignment: "center", margin: [10, 0, 0, 0]},       
                                   ],
@@ -2506,7 +2530,7 @@ cambiarestado(e,i:number){
                       width:100,
                       columns: [          
                                   [
-                                    { text: "** NOTA DE ENTREGA **", fontSize:9, alignment: "right", bold: true},
+                                    { text: "** CONSECUTIVO **", fontSize:9, alignment: "right", bold: true},
                                     { text: this.textoConsecutivo + " - 0" + this.factura.documento_n, fontSize:12, alignment: "right", bold: true, margin: [0, 4, 0, 0]},
                                   ],
                       ]
@@ -3357,47 +3381,59 @@ cambiarestado(e,i:number){
   }
 
   validarEstadoCajaFactura(){
-    this.factura.fecha.setHours(0,0,0,0);
-    this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
-      res => {
-       var listaCaja = res as CajaMenor[];
-        if(listaCaja.length != 0 ){
-          var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
-          if(caja != undefined){
-            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
-              this.botonFactura = false
-              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-            }
-            else
+    if(this.factura.cliente.ruc != this.rucAnterior){
+      this.botonFactura = false;
+      this.mostrarMensajeGenerico(2,"Error no se puede generar la factura con un ruc diferente al inicial")
+    }else{
+      this.factura.fecha.setHours(0,0,0,0);
+      this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
+        res => {
+        var listaCaja = res as CajaMenor[];
+          if(listaCaja.length != 0 ){
+            var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
+            if(caja != undefined){
+              if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
+                this.botonFactura = false
+                Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+              }
+              else
+                this.obtenerIdFactura()
+            }else 
               this.obtenerIdFactura()
-          }else 
+          }else
             this.obtenerIdFactura()
-        }else
-          this.obtenerIdFactura()
-      },
-      (err) => {});
+        },
+        (err) => {});
+    }
   }
 
   validarEstadoCajaNotaVenta(){
-    this.factura.fecha.setHours(0,0,0,0);
-    this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
-      res => {
-       var listaCaja = res as CajaMenor[];
-        if(listaCaja.length != 0 ){
-          var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
-          if(caja != undefined){
-            if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
-              this.botonNotaVenta = false;
-              Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
-            }
-            else
+     if(this.factura.cliente.ruc != this.rucAnterior){
+      this.botonNotaVenta = false;
+      this.mostrarMensajeGenerico(2,"Error no se puede generar la nota venta con un ruc diferente al inicial")
+    }else{
+      this.factura.fecha.setHours(0,0,0,0);
+      this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
+        res => {
+        var listaCaja = res as CajaMenor[];
+          if(listaCaja.length != 0 ){
+            var caja = listaCaja.find(element=>element.sucursal == this.factura.sucursal) ;
+            if(caja != undefined){
+              if(caja.sucursal == this.factura.sucursal && caja.estado == "Cerrada" ){
+                this.botonNotaVenta = false;
+                Swal.fire( "Atención","No puede generar registros para la fecha establecida, la caja menor se encuentra cerrada",'error')
+              }
+              else
+                this.obtenerIdNotasVenta()
+            }else 
               this.obtenerIdNotasVenta()
-          }else 
+          }else
             this.obtenerIdNotasVenta()
-        }else
-          this.obtenerIdNotasVenta()
-      },
-      (err) => {});
+        },
+        (err) => {});
+    }
+
+    
   }
 
   obtenerIdFactura(){
@@ -4294,6 +4330,12 @@ cambiarestado(e,i:number){
     this.productosVendidos[numero].cantM2_1_Original = this.productosVendidos[numero].cantM2_1
     this.productosVendidos[numero].cantM2_2_Original = this.productosVendidos[numero].cantM2_2
     this.productosVendidos[numero].cantM2_3_Original = this.productosVendidos[numero].cantM2_3
+    this.productosVendidos[numero].cantCajas_1_Original = this.productosVendidos[numero].cantCajas_1
+    this.productosVendidos[numero].cantCajas_2_Original = this.productosVendidos[numero].cantCajas_2
+    this.productosVendidos[numero].cantCajas_3_Original = this.productosVendidos[numero].cantCajas_3
+    this.productosVendidos[numero].cantPiezas_1_Original = this.productosVendidos[numero].cantPiezas_1
+    this.productosVendidos[numero].cantPiezas_2_Original = this.productosVendidos[numero].cantPiezas_2
+    this.productosVendidos[numero].cantPiezas_3_Original = this.productosVendidos[numero].cantPiezas_3
 
     if(this.productosVendidos[numero].cantM2_1 < 0){
       this.productosVendidos[numero].cantM2_1 = 0

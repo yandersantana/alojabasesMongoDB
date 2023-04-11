@@ -886,17 +886,15 @@ setSelectedProducto(i:number){
   setClienteData(e){
     this.clientes.forEach(element => {
         if(element.cliente_nombre == e.component._changedValue){
-          if(this.factura.cliente == undefined){
+          //if(this.factura.cliente == undefined){
             this.factura.cliente = element
             this.factura.cliente.cliente_nombre= element.cliente_nombre
             this.factura.cliente.direccion = element.direccion
             this.factura.cliente.celular = element.celular
             this.factura.tipo_venta= element.tventa
             this.factura.cliente.nombreContacto=element.nombreContacto
-            /* if(this.clienteAnterior == null || this.clienteAnterior == undefined)
-              this.clienteAnterior = element */
-          }
-          else{
+          //}
+          /* else{
             if(this.factura.cliente.tventa == element.tventa){
               this.factura.cliente = element
               this.factura.cliente.cliente_nombre= element.cliente_nombre
@@ -931,7 +929,7 @@ setSelectedProducto(i:number){
                 }             
               })
             }
-          }
+          } */
         
       }
     }); 
@@ -992,7 +990,10 @@ setSelectedProducto(i:number){
   }
 
   eliminarData(e){
-    Swal.fire({
+    this.factura.cliente = null
+    this.mensaje=null
+
+    /* Swal.fire({
         title: 'Borrar Datos Cliente',
         text: "Está seguro que desea eliminar los datos del cliente?. Si elimina los datos se eliminaran los productos listados",
         icon: 'warning',
@@ -1009,7 +1010,7 @@ setSelectedProducto(i:number){
         } else if (result.dismiss === Swal.DismissReason.cancel) {
           console.log("nada")
         }
-      })
+      }) */
   }
       
   buscarCliente(e){
@@ -3381,10 +3382,10 @@ cambiarestado(e,i:number){
   }
 
   validarEstadoCajaFactura(){
-    if(this.factura.cliente.ruc != this.rucAnterior){
+    /* if(this.factura.cliente.ruc != this.rucAnterior){
       this.botonFactura = false;
       this.mostrarMensajeGenerico(2,"Error no se puede generar la factura con un ruc diferente al inicial")
-    }else{
+    }else{ */
       this.factura.fecha.setHours(0,0,0,0);
       this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
         res => {
@@ -3404,14 +3405,14 @@ cambiarestado(e,i:number){
             this.obtenerIdFactura()
         },
         (err) => {});
-    }
+    //}
   }
 
   validarEstadoCajaNotaVenta(){
-     if(this.factura.cliente.ruc != this.rucAnterior){
+     /* if(this.factura.cliente.ruc != this.rucAnterior){
       this.botonNotaVenta = false;
       this.mostrarMensajeGenerico(2,"Error no se puede generar la nota venta con un ruc diferente al inicial")
-    }else{
+    }else{ */
       this.factura.fecha.setHours(0,0,0,0);
       this._cajaMenorService.getCajaMenorPorFecha(this.factura).subscribe(
         res => {
@@ -3431,7 +3432,7 @@ cambiarestado(e,i:number){
             this.obtenerIdNotasVenta()
         },
         (err) => {});
-    }
+    //}
 
     
   }

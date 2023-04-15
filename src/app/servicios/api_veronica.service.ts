@@ -8,17 +8,17 @@ import { Router } from "@angular/router";
 export class ApiVeronicaService {
 
   //*****************SANDBOX VERONICA***************** */
-  //public APIKEY = "0JXSvTZbe0WWqf6PxX9L"  //SANDBOX
-  //private URLSECUENCIAL = "https://api-sbox.veronica.ec/api/v1.0/empresas" //SANDBOX
-  //private URLFACTURACION = "https://api-sbox.veronica.ec/api/v2.0/sri";   //INTEGRACION DIRECTA SANDBOX
-  //private URLFACTURACIONMANUAL = "https://api-sbox.veronica.ec/api/v2.0/comprobantes";   //INTEGRACION MANUAL SANDBOX
+  public APIKEY = "0JXSvTZbe0WWqf6PxX9L"  //SANDBOX
+  private URLSECUENCIAL = "https://api-sbox.veronica.ec/api/v1.0/empresas" //SANDBOX
+  private URLFACTURACION = "https://api-sbox.veronica.ec/api/v2.0/sri";   //INTEGRACION DIRECTA SANDBOX
+  private URLFACTURACIONMANUAL = "https://api-sbox.veronica.ec/api/v2.0/comprobantes";   //INTEGRACION MANUAL SANDBOX
 
 
   //******************PRODUCCION VERONICA************ */
-  public APIKEY = "dwRgAygAHxtiSPPDhIup"  //PRODUCCION
-  private URLSECUENCIAL = "https://api.veronica.ec/api/v1.0/empresas" //PRODUCCION
-  private URLFACTURACION = "https://api.veronica.ec/api/v2.0/sri";   //INTEGRACION DIRECTA PRODUCCION
-  private URLFACTURACIONMANUAL = "https://api.veronica.ec/api/v2.0/comprobantes";   //INTEGRACION MANUAL PRODUCCION
+  //public APIKEY = "dwRgAygAHxtiSPPDhIup"  //PRODUCCION
+  //private URLSECUENCIAL = "https://api.veronica.ec/api/v1.0/empresas" //PRODUCCION
+  //private URLFACTURACION = "https://api.veronica.ec/api/v2.0/sri";   //INTEGRACION DIRECTA PRODUCCION
+  //private URLFACTURACIONMANUAL = "https://api.veronica.ec/api/v2.0/comprobantes";   //INTEGRACION MANUAL PRODUCCION
 
 
   constructor(public http: HttpClient, public router: Router) {}

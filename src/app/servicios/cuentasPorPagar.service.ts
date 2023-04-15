@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 })
 export class CuentasPorPagarService {
   //private URL = "http://localhost:3000/cuentaPorPagar"; //localhost
-  private URL = "http://104.131.82.174:3000/cuentaPorPagar";
-  //private URL = "http://159.223.107.115:3000/cuentaPorPagar";
+  //private URL = "http://104.131.82.174:3000/cuentaPorPagar";
+  private URL = "http://159.223.107.115:3000/cuentaPorPagar";
   constructor(public http: HttpClient, public router: Router) {}
 
   newCuentaPorPagar(cuenta) {

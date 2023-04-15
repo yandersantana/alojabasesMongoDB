@@ -7,8 +7,8 @@ import { Router } from "@angular/router";
 })
 export class TransaccionesFacturasService {
   //private URL = "http://localhost:3000/transaccionFacturas"; //localhost
-  private URL = "http://104.131.82.174:3000/transaccionFacturas";
-  //private URL = "http://159.223.107.115:3000/transaccionFacturas";
+  //private URL = "http://104.131.82.174:3000/transaccionFacturas";
+  private URL = "http://159.223.107.115:3000/transaccionFacturas";
   
   constructor(public http: HttpClient, public router: Router) {}
 

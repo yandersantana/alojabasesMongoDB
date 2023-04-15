@@ -366,6 +366,7 @@ export class VentasComponent implements OnInit {
       input: 'password',
     }).then((result) => {
       var usuarioClave = this.usuarios.find(el => el.codigoFacturacion == result.value);
+      console.log(usuarioClave)
       if(usuarioClave != null){
         this.factura.nombreVendedor = usuarioClave.name
         switch (this.factura.tipoDocumento) {

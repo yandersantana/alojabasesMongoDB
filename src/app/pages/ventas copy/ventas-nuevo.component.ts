@@ -3150,9 +3150,10 @@ cambiarestado(e,i:number){
 
     crearCliente(){
       if(this.factura.cliente._id) {
-        this.clienteService.updateClienteDataContacto(this.factura.cliente).subscribe(
+        console.log("No actualizo")
+        /* this.clienteService.updateClienteDataContacto(this.factura.cliente).subscribe(
           res => {},
-          err => {this.mostrarMensajeGenerico(2,"Recise e intente nuevamente")})
+          err => {this.mostrarMensajeGenerico(2,"Recise e intente nuevamente")}) */
       } else {
         this.clienteService.newCliente(this.factura.cliente).subscribe(
           res => {},

@@ -1,0 +1,59 @@
+.espacioDivs div{
+    margin-top: 1em;
+}
+
+.espacioDivs dx-text-box{
+    margin-top: -1em;
+}
+
+.espacioDivs dx-number-box{
+    text-align: right;
+}
+
+::ng-deep .espacioDivs .dx-texteditor-input{
+    text-align: center;
+}
+
+::ng-deep .align .dx-texteditor-input{
+    text-align: right;
+}
+
+.espacioSelect dx-select-box,dx-number-box,dx-text-box,dx-button{
+    margin-top: -0.8em;
+}
+
+.cardPadding{
+    padding-top: 1em;
+    padding-bottom: 1em;
+}
+
+.content {
+  text-align: center;
+}
+
+.sectionDatos{
+    background-color: white;
+    margin-left: 0.1em;
+    margin-right: 0em;
+}
+
+.sectionDatos div{
+  height: 1.5em;
+  font-weight: bold;
+}
+
+
+.padding-ob{
+    padding: 0.6em;
+}
+
+.btnSearch{
+    text-align: center;
+    margin-top: 0.4em;
+    margin-bottom: 0.4em;
+}
+
+::ng-deep .dx-theme-material-typography h2 {
+    font-weight: bold;
+    font-size: 40px;
+}

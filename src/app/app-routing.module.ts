@@ -58,6 +58,7 @@ import { StockLocalesComponent } from "./pages/stock-locales/stock-locales.compo
 import { VentasNuevoComponent } from "./pages/ventas copy/ventas-nuevo.component";
 import { ControlUnidadesComponent } from "./pages/control-unidades/control-unidades.component";
 import { CargaMasivaComponent } from "./pages/carga-masiva/carga-masiva.component";
+import { DescuentoComponent } from "./pages/descuentos/descuentos.component";
 
 const routes: Routes = [
   {
@@ -88,6 +89,11 @@ const routes: Routes = [
   {
     path: "ventas-nuevo",
     component: VentasNuevoComponent,
+    canActivate: [AuthGuardService],
+  },
+  {
+    path: "descuentos",
+    component: DescuentoComponent,
     canActivate: [AuthGuardService],
   },
   {

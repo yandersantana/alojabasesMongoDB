@@ -1,0 +1,56 @@
+<div *ngIf="mostrarLoading">
+    <app-loading-messagge [messagge]="mensajeLoading"></app-loading-messagge>
+</div>
+
+<div class="row" *ngIf="mostrarBloqueo"></div>
+
+<div *ngIf="!mostrarBloqueo">
+    <br><br>
+    <div class="card">
+        <h5 class="card-header text-center font-weight-bold text-uppercase ">Código Descuento</h5>
+        <div class="card-body">
+                <div class="row">
+                <div class="col-md-2"></div>               
+                <div class="col-md-8" style="margin-left: 1em;">
+                    <div class="row card" style="margin-right: 0.2em;">
+                        <br><br>
+                        <div class="col-md-12"> 
+                            <div class="row">  
+                                <div class="col-md-3"></div>
+                                <div class="col-md-6 btnSearch">
+                                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="generar()">Generar</button>
+                                </div>
+                                <div class="col-md-3"></div>
+                            </div>        
+                        </div>
+                        <br>
+                    </div>         
+
+                </div>
+                <div class="col-md-2"></div>
+            </div>   
+        </div>
+    </div>
+
+    <div>
+        <div class="col-md-12" style="text-align: center;">
+            <h2>{{codigoGenerado}}</h2>
+            <!-- <div class="row">  
+                <div class="col-md-3 col-sm-3 col-lg-3"></div>
+                <div class="col-md-6 col-sm-6  col-lg-6 btnSearch">
+                    <button class="btn btn-block btn-success" style="background-color: #ff5722;border-color: #ff5722;" (click)="traerlistaPrestamos()">Copiar</button>
+                </div>
+                <div class="col-md-3 col-sm-3 col-lg-3"></div>
+            </div>   -->  
+        </div>
+        
+    </div> 
+
+</div>
+
+
+
+
+
+
+

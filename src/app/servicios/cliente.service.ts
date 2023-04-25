@@ -8,8 +8,8 @@ import { cliente } from "../pages/ventas/venta";
 })
 export class ClienteService {
   clientes: cliente[];
-  private URL = "http://159.223.107.115:3000/clientes";
-  //private URL = "http://104.131.82.174:3000/clientes";
+  //private URL = "http://159.223.107.115:3000/clientes";
+  private URL = "http://104.131.82.174:3000/clientes";
   //private URL = 'http://localhost:3000/clientes'; //localhost
 
   constructor(public http: HttpClient, public router: Router) {}

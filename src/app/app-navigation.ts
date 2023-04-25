@@ -39,6 +39,10 @@ export const navigation = [
         path: "/registrosVentas",
       },
       {
+        text: "Ventas-Nuevo",
+        path: "/ventas-nuevo",
+      },
+      {
         text: "Devoluciones",
         path: "/devoluciones",
       },
@@ -193,6 +197,11 @@ export const navigationWEB = [
     text: "Profile",
     path: "/profile",
     icon: "home",
+  },
+  {
+    text: "Descuentos",
+    path: "/descuentos",
+    icon: "money",
   },
   {
     text: "Tutoriales",
@@ -559,6 +568,10 @@ export const navigationSupervisor = [
       {
         text: "Registros Ventas",
         path: "/registrosVentas",
+      },
+      {
+        text: "Ventas-Nuevo",
+        path: "/ventas-nuevo",
       },
       {
         text: "Cambios",

@@ -58,6 +58,34 @@ export class ProductoService {
     return this.http.post(this.URL + "/getProductosPorFiltros7", producto);
   }
 
+  getProductosPorFiltros1Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros1Multiple", producto);
+  }
+
+  getProductosPorFiltros2Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros2Multiple", producto);
+  }
+
+  getProductosPorFiltros3Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros3Multiple", producto);
+  }
+
+  getProductosPorFiltros4Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros4Multiple", producto);
+  }
+
+  getProductosPorFiltros5Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros5Multiple", producto);
+  }
+
+  getProductosPorFiltros6Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros6Multiple", producto);
+  }
+
+  getProductosPorFiltros7Multiple(producto) {
+    return this.http.post(this.URL + "/getProductosPorFiltros7Multiple", producto);
+  }
+
   updateProducto(producto) {
     return this.http.put(this.URL + `/update/${producto._id}`, producto);
   }

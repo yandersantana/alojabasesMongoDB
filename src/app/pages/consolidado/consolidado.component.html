@@ -268,11 +268,35 @@
                         </div>
                         <div class="col-md-4" style="padding-top: 0.7em;">GRUPO PRODUCTO</div>
                         <div class="col-md-6">
-                            <dx-select-box [items]="listadoCategorias" 
+                            <dx-drop-down-box
+                                [(value)]="treeBoxValue"
+                                valueExpr="ID"
+                                displayExpr="name"
+                                placeholder="Select a value..."
+                                [showClearButton]="true"
+                                [dataSource]="listadoCategorias"
+                                (onValueChanged)="onDropDownBoxValueChanged($event)">
+                                <div *dxTemplate="let data of 'content'">
+                                <dx-tree-view
+                                    [dataSource]="listadoCategorias"
+                                    dataStructure="nombreClasificacion"
+                                    keyExpr="nombreClasificacion"
+                                    parentIdExpr="nombreClasificacion"
+                                    selectionMode="multiple"
+                                    showCheckBoxesMode="normal"
+                                    [selectNodesRecursive]="false"
+                                    displayExpr="nombreClasificacion"
+                                    [selectByClick]="true"
+                                    (onSelectionChanged)="treeViewSelectionChanged($event)"
+                                    (onContentReady)="treeViewContentReady($event)">
+                                </dx-tree-view>
+                                </div>
+                            </dx-drop-down-box>
+                            <!-- <dx-select-box [items]="listadoCategorias" 
                                 [(value)]="nombreClasificacion" 
                                 [readOnly]="false" 
-                                [disabled]="false"
-                                ></dx-select-box>
+                                [disabled]="false">
+                            </dx-select-box> -->
                         </div>
                         <div class="col-md-4" style="padding-top: 0.7em;">REFERENCIA</div>
                         <div class="col-md-6">

@@ -36,6 +36,8 @@ import {
   DxTextAreaModule,
   DxRadioGroupModule,
   DxMenuModule,
+  DxDropDownBoxModule,
+  DxTreeViewModule,
 } from "devextreme-angular";
 import { AngularFireModule } from "angularfire2";
 import { AngularFirestoreModule } from "angularfire2/firestore";
@@ -184,6 +186,8 @@ import { DescuentoComponent } from "./pages/descuentos/descuentos.component";
     AppRoutingModule,
     HttpClientModule,
     DxButtonModule,
+    DxDropDownBoxModule,
+    DxTreeViewModule,
     DxTextBoxModule,
     DxListModule,
     DxFormModule,

@@ -262,7 +262,7 @@ export class AuditoriasComponent implements OnInit {
         this.auditoria.producto = element
         this.auditoria.nombreproducto = element.PRODUCTO
         
-        if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos")
+        if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos" && element.CLASIFICA != "Porcelanato")
           this.lectura=true
         else
           this.lectura=false
@@ -1218,7 +1218,7 @@ guardarAuditoriaProducto(){
     impactoNeto=this.auditoria.m2fisico-this.auditoria.m2base
     console.log("this.auditoria.m2fisico",this.auditoria.m2fisico)
     console.log("this.auditoria.m2base",this.auditoria.m2base)
-    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" )
+    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" && this.auditoria.producto.CLASIFICA != "Porcelanato")
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     else{
       if(this.auditoria.m2fisico<this.auditoria.m2base)

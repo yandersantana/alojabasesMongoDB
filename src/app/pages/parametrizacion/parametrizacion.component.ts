@@ -24,6 +24,7 @@ export class ParametrizacionComponent implements OnInit {
     sucursal:"",
     ruc:"",
     razon_social:"",
+    nroEstablecimiento: "",
     sri:"",
     fecha:"",
     inicio:0,
@@ -368,6 +369,7 @@ export class ParametrizacionComponent implements OnInit {
     this.parametroSuc.fin=0
     this.parametroSuc.inicio=0
     this.parametroSuc.razon_social=""
+    this.parametroSuc.nroEstablecimiento=""
     this.parametroSuc.ruc=""
     this.parametroSuc.sri=""
 

@@ -3140,6 +3140,7 @@ cambiarestado(e,i:number){
       this.parametrizaciones.forEach(element=>{
         if(element.sucursal == this.factura.sucursal){
           this.parametrizacionSucu = element
+          console.log(element)
           this.factura.rucFactura = element.ruc
           this.RucSucursal = element.ruc
           this.textoConsecutivo = element.cabeceraData
@@ -3197,7 +3198,8 @@ cambiarestado(e,i:number){
     this.facturaVeronica.fechaEmision = this.factura.fecha.toLocaleDateString('en-GB', {month: '2-digit',day: '2-digit',year: 'numeric'})
     this.facturaVeronica.ruc = this.parametrizacionSucu.ruc
     this.facturaVeronica.secuencial = this.secuencialFactura
-    this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "002":"001"
+    //this.facturaVeronica.estab = this.factura.sucursal == "matriz" ? "002":"001"
+    this.facturaVeronica.estab = this.parametrizacionSucu.nroEstablecimiento
 
     //******DATOS DEL RECEPTOR********** */
     this.facturaVeronica.receptor = new ReceptorModel()

@@ -22,7 +22,8 @@ router.put('/update/:id', async (req, res,next) => {
         fin: req.body.fin,
         direccion: req.body.direccion,
         telefonos: req.body.telefonos,
-        cabeceraData: req.body.cabeceraData
+        cabeceraData: req.body.cabeceraData,
+        nroEstablecimiento : req.body.nroEstablecimiento
     };
     await ParametrizacionesSuc.findByIdAndUpdate(id, {$set: parametrizacion}, {new: true});
     res.json({status: 'Opciones Actualizado'});  
@@ -48,7 +49,8 @@ router.post('/newParametrizacion', async (req, res) => {
         contactoPrincipal: req.body.contactoPrincipal,
         celularPrincipal: req.body.celularPrincipal,
         direccion: req.body.direccion,
-        telefonos: req.body.telefonos 
+        telefonos: req.body.telefonos ,
+        nroEstablecimiento : req.body.nroEstablecimiento
         });
     await newParametrizacion.save();
     res.json({status: 'Opciones creado'});

@@ -50,6 +50,11 @@ export class productoTransaccion {
   constructor() {}
 }
 
+export class categorias{
+  nombreClasificacion :string;
+  constructor(){}
+}
+
 export class productoActualizable {
   producto: producto;
   suc1: number;
@@ -78,4 +83,11 @@ export class clasificacionActualizacion{
   constructor(){
 
   }
+}
+
+export class productosPorFiltrosMultiple {
+  clasificacion: string[];
+  nombreCasa: string;
+  nombreReferencia: string;
+  constructor() {}
 }

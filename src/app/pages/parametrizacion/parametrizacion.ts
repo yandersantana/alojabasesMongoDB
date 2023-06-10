@@ -15,6 +15,7 @@ export class parametrizacionsuc{
     direccion:string
     telefonos:string
     cabeceraData : string
+    nroEstablecimiento : string
     constructor(){
         
     }

@@ -220,7 +220,7 @@ export class Auditoria2Component implements OnInit {
       if(element.PRODUCTO == this.productoEntregado){
         this.auditoria.producto = element
         this.auditoria.nombreproducto = element.PRODUCTO
-        if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos"){
+        if(element.CLASIFICA != "Ceramicas" && element.CLASIFICA != "Porcelanatos" && element.CLASIFICA != "Porcelanato"){
           this.lectura=true
         }else{
           this.lectura=false
@@ -1011,7 +1011,7 @@ export class Auditoria2Component implements OnInit {
   }
 
   calculardiferencia(){
-    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" ){
+    if(this.auditoria.producto.CLASIFICA != "Ceramicas" && this.auditoria.producto.CLASIFICA != "Porcelanatos" && this.auditoria.producto.CLASIFICA != "Porcelanato"){
        this.auditoria.m2diferencia=this.auditoria.m2fisico-this.auditoria.m2base
     }else{
       if(this.auditoria.m2fisico<this.auditoria.m2base){
@@ -1044,7 +1044,7 @@ export class Auditoria2Component implements OnInit {
 
   calculardiferencia2(){
     //alert("sssss "+JSON.stringify(this.editAuditoria))
-    if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" ){
+    if(this.editAuditoria.producto.CLASIFICA != "Ceramicas" && this.editAuditoria.producto.CLASIFICA != "Porcelanatos" && this.editAuditoria.producto.CLASIFICA != "Porcelanato"){
       this.editAuditoria.m2diferencia=this.editAuditoria.m2fisico-this.editAuditoria.m2base
     }else{
       if(this.editAuditoria.m2fisico<this.editAuditoria.m2base){

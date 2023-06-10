@@ -1,13 +1,15 @@
-import { Component, OnInit } from "@angular/core";
+import { Component, OnInit, ViewChild } from "@angular/core";
 import { producto, productosPendientesEntrega } from "../ventas/venta";
 import { transaccion } from "../transacciones/transacciones";
 import {
+  categorias,
   clasificacionActualizacion,
   inventario,
   invFaltanteSucursal,
   productoActualizable,
   productoMultiple,
   productosPorFiltros,
+  productosPorFiltrosMultiple,
   productoTransaccion,
 } from "./consolidado";
 import { TransaccionesService } from "src/app/servicios/transacciones.service";
@@ -26,6 +28,7 @@ import { CombosService } from "src/app/servicios/combos.service";
 import { CatalogoService } from "src/app/servicios/catalogo.service";
 import { TransaccionesRevisionProductoService } from "src/app/servicios/transaccionesRevisionProducto.service";
 import { comparacionResultadosRevision } from "../revision-inventario/revision-inventario";
+import { DxTreeViewComponent } from "devextreme-angular";
 
 @Component({
   selector: "app-consolidado",
@@ -33,6 +36,7 @@ import { comparacionResultadosRevision } from "../revision-inventario/revision-i
   styleUrls: ["./consolidado.component.scss"],
 })
 export class ConsolidadoComponent implements OnInit {
+  @ViewChild(DxTreeViewComponent, { static: false }) treeView;
   menu1: string[] = [
     "Busqueda Individual",
     "Busqueda Por Filtros",
@@ -65,7 +69,7 @@ export class ConsolidadoComponent implements OnInit {
   productosPendientesNoENLista: productosPendientesEntrega[] = [];
   listaClasificacion: clasificacionActualizacion[] = [];
   transaccionesProductosRevisados : comparacionResultadosRevision[]=[];
-  listadoCategorias: string[] = [];
+  listadoCategorias: categorias[] = [];
   nombreClasificacion : string = ""
   bodegas: bodega[] = [];
   bodegasMatriz: string = "";
@@ -110,6 +114,7 @@ export class ConsolidadoComponent implements OnInit {
   popupVi = false;
   imagenes:string[]
   imagenesData:string[]
+  treeBoxValue: string[];
 
   valor1 = 100
   valor2 = 100 
@@ -169,9 +174,11 @@ export class ConsolidadoComponent implements OnInit {
            var clasi = new clasificacionActualizacion()
            clasi.nombreClasificacion = element
            this.listaClasificacion.push(clasi)
-           this.listadoCategorias.push(clasi.nombreClasificacion)
+           var clasif = new categorias();
+           clasif.nombreClasificacion = clasi.nombreClasificacion;
+           this.listadoCategorias.push(clasif)
            this.listadoCategorias.sort(function(a, b) {
-            return a.localeCompare(b);
+            return a.nombreClasificacion.localeCompare(b.nombreClasificacion);
           });
          })
     })
@@ -213,16 +220,16 @@ export class ConsolidadoComponent implements OnInit {
 
 
   traerProductosPorFiltros() {
-    var productoFiltro = new productosPorFiltros();
-    productoFiltro.clasificacion = this.nombreClasificacion
+    var productoFiltro = new productosPorFiltrosMultiple();
+    productoFiltro.clasificacion = this.treeBoxValue
     productoFiltro.nombreCasa = this.nombreCasa
     productoFiltro.nombreReferencia = this.nombreReferencia
 
-    var filtro1 = productoFiltro.clasificacion == "" ? false : true
+    var filtro1 = productoFiltro.clasificacion.length >= 1 ? true : false
     var filtro2 = productoFiltro.nombreCasa == "" ? false : true
     var filtro3 = productoFiltro.nombreReferencia == "" ? false : true
 
-    if(productoFiltro.clasificacion == "" && productoFiltro.nombreCasa == "" && productoFiltro.nombreReferencia == ""){
+    if(productoFiltro.clasificacion.length == 0 && productoFiltro.nombreCasa == "" && productoFiltro.nombreReferencia == ""){
       Swal.fire("Error!", "No hay ningún filtro para aplicar", "error");
       return;
     }
@@ -250,46 +257,46 @@ export class ConsolidadoComponent implements OnInit {
   
   }
 
-  traerProductosFiltrados(num : number, productoFiltro : productosPorFiltros){
+  traerProductosFiltrados(num : number, productoFiltro : productosPorFiltrosMultiple){
     switch (num) {
         case 1:
-          this.productoService.getProductosPorFiltros1(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros1Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 2:
-          this.productoService.getProductosPorFiltros2(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros2Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 3:
-          this.productoService.getProductosPorFiltros3(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros3Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 4:
-          this.productoService.getProductosPorFiltros4(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros4Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 5:
-          this.productoService.getProductosPorFiltros5(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros5Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 6:
-          this.productoService.getProductosPorFiltros6(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros6Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
           break;
         case 7:
-          this.productoService.getProductosPorFiltros7(productoFiltro).subscribe((res) => {
+          this.productoService.getProductosPorFiltros7Multiple(productoFiltro).subscribe((res) => {
             this.productos = res as producto[];
             this.traerTransaccionesMultiples();
           });
@@ -350,6 +357,46 @@ export class ConsolidadoComponent implements OnInit {
           this.traerTransaccionesPorProductoCombo2(element2, element)
       });
     });
+  }
+
+  onDropDownBoxValueChanged(e) {
+    this.updateSelection(this.treeView && this.treeView.instance);
+  }
+
+  onTreeViewReady(e) {
+    this.updateSelection(e.component);
+  }
+
+  updateSelection(treeView) {
+    if (!treeView) return;
+
+    if (!this.treeBoxValue) {
+      treeView.unselectAll();
+    }
+
+    if (this.treeBoxValue) {
+      this.treeBoxValue.forEach(((value) => {
+        treeView.selectItem(value);
+      }));
+    }
+  }
+
+  onTreeViewSelectionChanged(e) {
+    this.treeBoxValue = e.component.getSelectedNodes();
+    console.log(this.treeBoxValue)
+  }
+
+  treeViewSelectionChanged(e) {
+    this.syncSelection(e.component);
+  }
+
+  treeViewContentReady(e) {
+    this.syncSelection(e.component);
+  }
+
+  syncSelection(treeView) {
+    const selectedEmployees = treeView.getNodes().filter(x=> x.selected == true)
+    this.treeBoxValue = selectedEmployees.map((node) => node.text);
   }
 
 

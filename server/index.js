@@ -41,6 +41,7 @@ app.use('/productosVendidos', require('./routes/productosVendidosRoutes'));
 app.use('/productosComprados', require('./routes/productosCompradosRoutes'));
 app.use('/productosPendientes', require('./routes/productosPendientesRoutes'));
 app.use('/transaccion', require('./routes/transaccionesRoutes'));
+app.use('/parametrizaciones/generales', require('./routes/parametrizacionesGeneralesRoutes'));
 app.use('/parametrizaciones', require('./routes/parametrizacionesRoutes'));
 app.use('/proveedores', require('./routes/proveedorRoutes'));
 app.use('/ordenesCompra', require('./routes/ordenCompraRoutes'));
